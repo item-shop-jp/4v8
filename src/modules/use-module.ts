@@ -1,7 +1,12 @@
 import * as React from 'react';
 import { Modules, BaseModule } from '../types/module';
+import { EventEmitter } from '../utils/event-emitter';
 
-export function useModule(): [
+interface Props {
+  eventEmitter: EventEmitter;
+}
+
+export function useModule({ eventEmitter }: Props): [
   Modules,
   {
     addModule: <T extends BaseModule>(
@@ -12,6 +17,7 @@ export function useModule(): [
   },
 ] {
   const [modules, setModules] = React.useState<Modules>({});
+  const eventEmitterRef = React.useRef(eventEmitter);
   const modulesRef = React.useRef<Modules>({});
 
   const addModule = React.useCallback(
@@ -21,6 +27,7 @@ export function useModule(): [
         return { ...prevModules, [name]: moduleInstance };
       });
       moduleInstance.onInit();
+      eventEmitterRef.current.emit('test', { hogehoge: 'add modules' });
     },
     [],
   );

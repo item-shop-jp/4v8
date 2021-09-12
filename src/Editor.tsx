@@ -1,8 +1,10 @@
 import * as React from 'react';
 import styled from 'styled-components';
+import { Subscription } from 'rxjs';
 import { Block } from './types/block';
 import { Header, Text } from './components/blocks';
 // import { createBlock } from './utils/block';
+import { EventEmitter } from './utils/event-emitter';
 import { useModule } from './modules/use-module';
 import { KeyBoardModule } from './modules/keyboard';
 
@@ -40,10 +42,12 @@ const Container = styled.div`
   min-height: 300px;
 `;
 
+const eventEmitter = new EventEmitter();
+
 export const Editor: React.VFC<Props> = React.memo(
   ({ readOnly = false }: Props) => {
     const containerRef = React.useRef(null);
-    const [modules, moduleController] = useModule();
+    const [modules, moduleController] = useModule({ eventEmitter });
     const [blocks] = React.useState<Block[]>([]);
     const [formats] = React.useState<Formats>({
       text: Text,
@@ -83,8 +87,18 @@ export const Editor: React.VFC<Props> = React.memo(
 
     React.useEffect(() => {
       console.log(modules);
+
+      const subs = new Subscription();
+      subs.add(
+        eventEmitter.on('test').subscribe((res) => {
+          console.log('test', res);
+        }),
+      );
+
       moduleController.addModule<KeyBoardModule>('keyboard', KeyBoardModule);
+
       return () => {
+        subs.unsubscribe();
         moduleController.removeAll();
       };
     }, []);

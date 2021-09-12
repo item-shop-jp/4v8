@@ -16,16 +16,18 @@ interface BlockProps {
   formats: Formats;
 }
 
-const BlockContainer: React.VFC<BlockProps> = ({ block, formats }) => {
-  let Container;
-  if (!formats[block.type.toLocaleLowerCase()]) {
-    Container = formats['header'];
-  } else {
-    Container = formats['header'];
-  }
+const BlockContainer: React.VFC<BlockProps> = React.memo(
+  ({ block, formats }) => {
+    let Container;
+    if (!formats[block.type.toLocaleLowerCase()]) {
+      Container = formats['header'];
+    } else {
+      Container = formats['header'];
+    }
 
-  return <Container block={block}></Container>;
-};
+    return <Container block={block}></Container>;
+  },
+);
 
 const EditorContainer = styled.div`
   border: 1px solid #ccc;

@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Editor } from './Editor';
 
-export const EditorContainer: React.VFC = React.memo(() => {
+export const Container: React.VFC = React.memo(() => {
   const [isDisplay, setDisplay] = React.useState(true);
   const handleToggleEditor = React.useCallback(() => {
     setDisplay((prev) => !prev);
@@ -17,7 +17,7 @@ export const EditorContainer: React.VFC = React.memo(() => {
 
 ReactDOM.render(
   <React.StrictMode>
-    <EditorContainer />
+    <Container />
   </React.StrictMode>,
   document.getElementById('root'),
 );

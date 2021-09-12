@@ -1,7 +1,10 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { Block } from './models/Block';
-import { Header } from './formats';
+import { Block } from './types/block';
+import { Header, Text } from './components/blocks';
+import { createBlock } from './utils/block';
+import { useModule } from './modules/use-module';
+import { KeyBoard } from './modules/keyboard';
 
 interface Props {
   readOnly?: boolean;
@@ -20,7 +23,7 @@ const BlockContainer: React.VFC<BlockProps> = React.memo(
   ({ block, formats }) => {
     let Container;
     if (!formats[block.type.toLocaleLowerCase()]) {
-      Container = formats['header'];
+      Container = formats['text'];
     } else {
       Container = formats['header'];
     }
@@ -37,64 +40,71 @@ const EditorContainer = styled.div`
   min-height: 300px;
 `;
 
-export const Editor = ({ readOnly = false }: Props) => {
-  const containerRef = React.useRef(null);
-  const [blocks, setBlocks] = React.useState<Block[]>([]);
-  const [formats] = React.useState<Formats>({
-    header: Header,
-  });
-  const handleBeforeInput = React.useCallback(() => {}, []);
-  const handleKeyDown = React.useCallback(() => {
-    const selection = document.getSelection();
-    if (selection) {
-      const range = selection.getRangeAt(0);
-      console.log('keydown', selection, range);
-    }
-  }, []);
-  const handleClick = React.useCallback(() => {
-    const selection = document.getSelection();
-    if (selection) {
-      const range = selection.getRangeAt(0);
-      console.log(
-        'click',
-        range.commonAncestorContainer === containerRef.current,
-      );
-    }
-  }, []);
-  const handleCreateBlock = React.useCallback(() => {
-    setBlocks((prevBlocks) => {
-      return [
-        ...prevBlocks,
-        {
-          contents: [
-            {
-              attributes: {},
-              text: '\n',
-              type: 'TEXT',
-            },
-          ],
-          attributes: { header: 1 },
-          type: 'HEADER',
-        },
-      ];
+export const Editor: React.VFC<Props> = React.memo(
+  ({ readOnly = false }: Props) => {
+    const containerRef = React.useRef(null);
+    const [modules, moduleController] = useModule();
+    const [blocks, setBlocks] = React.useState<Block[]>([]);
+    const [formats] = React.useState<Formats>({
+      text: Text,
+      header: Header,
     });
-  }, []);
 
-  return (
-    <>
-      <EditorContainer
-        ref={containerRef}
-        contentEditable={!readOnly}
-        onBeforeInput={handleBeforeInput}
-        onKeyDown={handleKeyDown}
-        onClick={handleClick}
-        suppressContentEditableWarning={true}
-      >
-        {blocks.map((block, index) => {
-          return <BlockContainer key={index} formats={formats} block={block} />;
-        })}
-      </EditorContainer>
-      <button onClick={handleCreateBlock}>ブロック作成</button>
-    </>
-  );
-};
+    const handleBeforeInput = React.useCallback(() => {}, []);
+
+    const handleKeyDown = React.useCallback((event: React.KeyboardEvent) => {
+      event.preventDefault();
+      event.stopPropagation();
+      const selection = document.getSelection();
+      if (selection) {
+        const range = selection.getRangeAt(0);
+        console.log('keydown', selection, range);
+      }
+    }, []);
+
+    const handleClick = React.useCallback(() => {
+      const selection = document.getSelection();
+      if (selection) {
+        const range = selection.getRangeAt(0);
+        console.log(
+          'click',
+          range.commonAncestorContainer === containerRef.current,
+        );
+      }
+    }, []);
+
+    const handleCreateBlock = React.useCallback(() => {
+      setBlocks((prevBlocks) => {
+        return [...prevBlocks, createBlock('TEXT')];
+      });
+    }, []);
+
+    React.useEffect(() => {
+      console.log(modules);
+      moduleController.addModule('keyboard', KeyBoard);
+      return () => {
+        moduleController.removeAll();
+      };
+    }, []);
+
+    return (
+      <>
+        <EditorContainer
+          ref={containerRef}
+          contentEditable={!readOnly}
+          onBeforeInput={handleBeforeInput}
+          onKeyDown={handleKeyDown}
+          onClick={handleClick}
+          suppressContentEditableWarning={true}
+        >
+          {blocks.map((block, index) => {
+            return (
+              <BlockContainer key={index} formats={formats} block={block} />
+            );
+          })}
+        </EditorContainer>
+        <button onClick={handleCreateBlock}>ブロック作成</button>
+      </>
+    );
+  },
+);

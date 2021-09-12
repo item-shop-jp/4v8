@@ -1,4 +1,4 @@
-import { Inline } from './Inline';
+import { Inline } from './inline';
 
 export type BlockType = 'TEXT' | 'HEADER';
 

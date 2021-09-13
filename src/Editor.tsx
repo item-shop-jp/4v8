@@ -2,7 +2,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 import { Block } from './types/block';
 import { Header, Text } from './components/blocks';
-// import { createBlock } from './utils/block';
+import { createBlock } from './utils/block';
 import { useModule } from './hooks/use-module';
 import { useEventEmitter } from './hooks/use-event-emitter';
 import { KeyBoardModule } from './modules/keyboard';
@@ -24,9 +24,10 @@ const BlockContainer: React.VFC<BlockProps> = React.memo(
   ({ block, formats }) => {
     let Container;
     if (!formats[block.type.toLocaleLowerCase()]) {
+      // defalut block format
       Container = formats['text'];
     } else {
-      Container = formats['header'];
+      Container = formats[block.type.toLocaleLowerCase()];
     }
 
     return <Container block={block}></Container>;
@@ -46,7 +47,7 @@ export const Editor: React.VFC<Props> = React.memo(
     const containerRef = React.useRef(null);
     const [eventEmitter, eventController] = useEventEmitter();
     const [modules, moduleController] = useModule({ eventEmitter });
-    const [blocks] = React.useState<Block[]>([]);
+    const [blocks, setBlocks] = React.useState<Block[]>([]);
     const [formats] = React.useState<Formats>({
       text: Text,
       header: Header,
@@ -95,6 +96,12 @@ export const Editor: React.VFC<Props> = React.memo(
         moduleController.removeAll();
       };
     }, []);
+
+    React.useEffect(() => {
+      if (blocks.length < 1) {
+        setBlocks([createBlock('TEXT')]);
+      }
+    }, [blocks]);
 
     return (
       <Container

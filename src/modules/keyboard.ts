@@ -13,6 +13,11 @@ export class KeyBoardModule implements BaseModule {
   }
 
   onKeyDown(e: React.KeyboardEvent) {
+    if (e.keyCode === 13) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
     console.log(e.keyCode);
   }
 }

@@ -27,7 +27,7 @@ export function useModule({ eventEmitter }: Props): [
         return { ...prevModules, [name]: moduleInstance };
       });
       moduleInstance.onInit();
-      eventEmitterRef.current.emit('test', { hogehoge: 'add modules' });
+      eventEmitterRef.current.emit('module_created', name);
     },
     [],
   );

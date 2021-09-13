@@ -1,11 +1,10 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { Subscription } from 'rxjs';
 import { Block } from './types/block';
 import { Header, Text } from './components/blocks';
 // import { createBlock } from './utils/block';
-import { EventEmitter } from './utils/event-emitter';
-import { useModule } from './modules/use-module';
+import { useModule } from './hooks/use-module';
+import { useEventEmitter } from './hooks/use-event-emitter';
 import { KeyBoardModule } from './modules/keyboard';
 
 interface Props {
@@ -42,11 +41,10 @@ const Container = styled.div`
   min-height: 300px;
 `;
 
-const eventEmitter = new EventEmitter();
-
 export const Editor: React.VFC<Props> = React.memo(
   ({ readOnly = false }: Props) => {
     const containerRef = React.useRef(null);
+    const [eventEmitter, eventController] = useEventEmitter();
     const [modules, moduleController] = useModule({ eventEmitter });
     const [blocks] = React.useState<Block[]>([]);
     const [formats] = React.useState<Formats>({
@@ -87,18 +85,13 @@ export const Editor: React.VFC<Props> = React.memo(
 
     React.useEffect(() => {
       console.log(modules);
-
-      const subs = new Subscription();
-      subs.add(
-        eventEmitter.on('test').subscribe((res) => {
-          console.log('test', res);
-        }),
-      );
+      eventController.on('module_created', (name: string) => {
+        console.log('module_created', name);
+      });
 
       moduleController.addModule<KeyBoardModule>('keyboard', KeyBoardModule);
 
       return () => {
-        subs.unsubscribe();
         moduleController.removeAll();
       };
     }, []);

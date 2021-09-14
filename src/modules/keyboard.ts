@@ -1,8 +1,17 @@
 import * as React from 'react';
 import { BaseModule } from '../types/module';
+import { EventEmitter } from '../utils/event-emitter';
+
+interface Props {
+  eventEmitter: EventEmitter;
+}
 
 export class KeyBoardModule implements BaseModule {
-  constructor() {}
+  private eventEmitter;
+
+  constructor({ eventEmitter }: Props) {
+    this.eventEmitter = eventEmitter;
+  }
 
   onInit() {
     console.log('init keyboard');
@@ -13,6 +22,6 @@ export class KeyBoardModule implements BaseModule {
   }
 
   onKeyDown(e: React.KeyboardEvent) {
-    console.log(e.keyCode);
+    this.eventEmitter.emit('keydown', e.keyCode);
   }
 }

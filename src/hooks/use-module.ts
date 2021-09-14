@@ -11,7 +11,7 @@ export function useModule({ eventEmitter }: Props): [
   {
     addModule: <T extends BaseModule>(
       name: string,
-      module: { new (): T },
+      module: { new (params: { eventEmitter: EventEmitter }): T },
     ) => void;
     removeAll: () => void;
   },
@@ -21,8 +21,11 @@ export function useModule({ eventEmitter }: Props): [
   const modulesRef = React.useRef<Modules>({});
 
   const addModule = React.useCallback(
-    <T extends BaseModule>(name: string, module: { new (): T }) => {
-      const moduleInstance = new module();
+    <T extends BaseModule>(
+      name: string,
+      module: { new (params: { eventEmitter: EventEmitter }): T },
+    ) => {
+      const moduleInstance = new module({ eventEmitter });
       setModules((prevModules) => {
         return { ...prevModules, [name]: moduleInstance };
       });

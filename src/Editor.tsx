@@ -88,6 +88,9 @@ export const Editor: React.VFC<Props> = React.memo(
       eventController.on('module_created', (name: string) => {
         console.log('module_created', name);
       });
+      eventController.on('keydown', (keycode: number) => {
+        console.log('keydown', keycode);
+      });
 
       moduleController.addModule<KeyBoardModule>('keyboard', KeyBoardModule);
 

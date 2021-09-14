@@ -1,3 +1,5 @@
+import { EventEmitter } from '../utils/event-emitter';
+
 export interface Modules {
   [key: string]: BaseModule;
 }

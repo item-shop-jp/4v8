@@ -1,15 +1,11 @@
 import { EventEmitter } from '../utils/event-emitter';
 
 export interface Modules {
-  [key: string]: BaseModule;
+  [key: string]: Module;
 }
 
-export interface BaseModule {
-  options?: ModuleOptions;
+export interface Module {
+  options?: any;
   onInit(): void;
   onDestroy(): void;
-}
-
-export interface ModuleOptions {
-  [key: string]: any;
 }

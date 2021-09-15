@@ -7,7 +7,7 @@ interface Props {
   eventEmitter: EventEmitter;
 }
 
-export class KeyBoardModule implements Module {
+export class EditorModule implements Module {
   private eventEmitter;
 
   constructor({ eventEmitter }: Props) {
@@ -15,11 +15,11 @@ export class KeyBoardModule implements Module {
   }
 
   onInit() {
-    this.eventEmitter.emit(EditorEvents.EVENT_LOG_INFO, 'init keyboard module');
+    this.eventEmitter.emit(EditorEvents.EVENT_LOG_INFO, 'init editor module');
   }
 
   onDestroy() {
-    this.eventEmitter.emit(EditorEvents.EVENT_LOG_INFO, 'destory keyboard module');
+    this.eventEmitter.emit(EditorEvents.EVENT_LOG_INFO, 'destory editor module');
   }
 
   onKeyDown(e: React.KeyboardEvent) {

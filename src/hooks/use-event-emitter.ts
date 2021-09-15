@@ -5,10 +5,7 @@ import { EventEmitter } from '../utils/event-emitter';
 export function useEventEmitter(): [
   EventEmitter,
   {
-    on: <T extends {}>(
-      key: string,
-      callback: (res: T) => void,
-    ) => Subscription | undefined;
+    on: <T extends {}>(key: string, callback: (res: T) => void) => Subscription | undefined;
     removeAll: () => void;
   },
 ] {
@@ -32,10 +29,8 @@ export function useEventEmitter(): [
   }, []);
 
   React.useEffect(() => {
-    console.log('init event emitter');
     subscriptionRef.current = new Subscription();
     return () => {
-      console.log('destroy event emitter');
       subscriptionRef.current?.unsubscribe();
     };
   }, []);

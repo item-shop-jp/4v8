@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Modules, BaseModule } from '../types/module';
+import { Modules, Module } from '../types/module';
 import { EventEmitter } from '../utils/event-emitter';
 
 interface Props {
@@ -9,28 +9,32 @@ interface Props {
 export function useModule({ eventEmitter }: Props): [
   Modules,
   {
-    addModule: <T extends BaseModule>(
+    addModule: <T extends Module>(
       name: string,
-      module: { new (params: { eventEmitter: EventEmitter }): T },
+      module: {
+        new (params: { eventEmitter: EventEmitter; options: any }): T;
+      },
+      options?: any,
     ) => void;
     removeAll: () => void;
   },
 ] {
   const [modules, setModules] = React.useState<Modules>({});
-  const eventEmitterRef = React.useRef(eventEmitter);
   const modulesRef = React.useRef<Modules>({});
 
   const addModule = React.useCallback(
-    <T extends BaseModule>(
+    <T extends Module>(
       name: string,
-      module: { new (params: { eventEmitter: EventEmitter }): T },
+      module: {
+        new (params: { eventEmitter: EventEmitter; options: any }): T;
+      },
+      options: any = {},
     ) => {
-      const moduleInstance = new module({ eventEmitter });
+      const moduleInstance = new module({ eventEmitter, options });
       setModules((prevModules) => {
         return { ...prevModules, [name]: moduleInstance };
       });
       moduleInstance.onInit();
-      eventEmitterRef.current.emit('module_created', name);
     },
     [],
   );

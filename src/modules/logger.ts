@@ -2,6 +2,7 @@ import { Subscription } from 'rxjs';
 import { Module } from '../types/module';
 import { EventEmitter } from '../utils/event-emitter';
 import { EditorEvents, LogLevels } from '../constants';
+
 interface Props {
   eventEmitter: EventEmitter;
   options: {

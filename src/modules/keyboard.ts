@@ -23,7 +23,7 @@ export class KeyBoardModule implements Module {
   }
 
   onKeyDown(e: React.KeyboardEvent) {
-    if (e.code === KeyCodes.ENTER) {
+    if ([KeyCodes.ENTER, KeyCodes.NUMPAD_ENTER].includes(e.code)) {
       e.preventDefault();
       e.stopPropagation();
       this.eventEmitter.emit(EditorEvents.EVENT_BLOCK_CREATE, {});

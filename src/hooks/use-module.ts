@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Modules, Module } from '../types/module';
+import { Modules } from '../types/module';
 import { EventEmitter } from '../utils/event-emitter';
 
 interface Props {
@@ -9,10 +9,10 @@ interface Props {
 export function useModule({ eventEmitter }: Props): [
   Modules,
   {
-    addModule: <T extends Module>(
+    addModule: (
       name: string,
       module: {
-        new (params: { eventEmitter: EventEmitter; options: any }): T;
+        new (params: { eventEmitter: EventEmitter; options: any }): any;
       },
       options?: any,
     ) => void;
@@ -23,10 +23,10 @@ export function useModule({ eventEmitter }: Props): [
   const modulesRef = React.useRef<Modules>({});
 
   const addModule = React.useCallback(
-    <T extends Module>(
+    (
       name: string,
       module: {
-        new (params: { eventEmitter: EventEmitter; options: any }): T;
+        new (params: { eventEmitter: EventEmitter; options: any }): any;
       },
       options: any = {},
     ) => {

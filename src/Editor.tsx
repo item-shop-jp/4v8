@@ -2,11 +2,11 @@ import * as React from 'react';
 import styled from 'styled-components';
 import { Block } from './types/block';
 import { Header, Text } from './components/blocks';
-import { createBlock } from './utils/block';
+import { useEditor } from './hooks/use-editor';
 import { useModule } from './hooks/use-module';
 import { useEventEmitter } from './hooks/use-event-emitter';
 import { EditorModule, KeyBoardModule, LoggerModule } from './modules';
-import { LogLevels } from './constants';
+import { EditorEvents, LogLevels } from './constants';
 
 interface Props {
   readOnly?: boolean;
@@ -42,8 +42,8 @@ const Container = styled.div`
 `;
 
 export const Editor: React.VFC<Props> = React.memo(({ readOnly = false }: Props) => {
-  const containerRef = React.useRef(null);
   const [eventEmitter, eventController] = useEventEmitter();
+  const [editorRef] = useEditor({ eventEmitter });
   const [modules, moduleController] = useModule({ eventEmitter });
   const [blocks, setBlocks] = React.useState<Block[]>([]);
   const [formats] = React.useState<Formats>({
@@ -66,45 +66,29 @@ export const Editor: React.VFC<Props> = React.memo(({ readOnly = false }: Props)
     const selection = document.getSelection();
     if (selection) {
       const range = selection.getRangeAt(0);
-      console.log('click', range.commonAncestorContainer === containerRef.current);
+      console.log('click', range.commonAncestorContainer === editorRef.current);
     }
   }, []);
 
-  // const handleCreateBlock = React.useCallback(() => {
-  //   setBlocks((prevBlocks) => {
-  //     return [...prevBlocks, createBlock('TEXT')];
-  //   });
-  // }, []);
-
   React.useEffect(() => {
-    console.log(modules);
-    eventController.on('module_created', (name: string) => {
-      console.log('module_created', name);
-    });
-    eventController.on('keydown', (keycode: number) => {
-      console.log('keydown', keycode);
+    eventController.on(EditorEvents.EVENT_EDITOR_UPDATE, (blocks: Block[]) => {
+      setBlocks(blocks);
     });
 
-    moduleController.addModule<LoggerModule>('logger', LoggerModule, {
+    moduleController.addModule('logger', LoggerModule, {
       logLevel: LogLevels.INFO,
     });
-    moduleController.addModule<EditorModule>('editor', EditorModule);
-    moduleController.addModule<KeyBoardModule>('keyboard', KeyBoardModule);
+    moduleController.addModule('editor', EditorModule);
+    moduleController.addModule('keyboard', KeyBoardModule);
 
     return () => {
       moduleController.removeAll();
     };
   }, []);
 
-  React.useEffect(() => {
-    if (blocks.length < 1) {
-      setBlocks([createBlock('TEXT')]);
-    }
-  }, [blocks]);
-
   return (
     <Container
-      ref={containerRef}
+      ref={editorRef}
       contentEditable={!readOnly}
       onBeforeInput={handleBeforeInput}
       onKeyDown={handleKeyDown}

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Modules } from '../types/module';
+import { Modules, ModuleOptions } from '../types/module';
 import { EventEmitter } from '../utils/event-emitter';
 
 interface Props {
@@ -15,6 +15,15 @@ export function useModule({ eventEmitter }: Props): [
         new (params: { eventEmitter: EventEmitter; options: any }): any;
       },
       options?: any,
+    ) => void;
+    addModules: (
+      modules: {
+        name: string;
+        module: {
+          new (params: { eventEmitter: EventEmitter; options: any }): any;
+        };
+      }[],
+      options?: ModuleOptions,
     ) => void;
     removeAll: () => void;
   },
@@ -39,6 +48,27 @@ export function useModule({ eventEmitter }: Props): [
     [],
   );
 
+  const addModules = React.useCallback(
+    (
+      modules: {
+        name: string;
+        module: {
+          new (params: { eventEmitter: EventEmitter; options: any }): any;
+        };
+      }[],
+      options: ModuleOptions = {},
+    ) => {
+      modules.forEach(({ name, module }) => {
+        const moduleInstance = new module({ eventEmitter, options: options[name] ?? {} });
+        setModules((prevModules) => {
+          return { ...prevModules, [name]: moduleInstance };
+        });
+        moduleInstance.onInit();
+      });
+    },
+    [],
+  );
+
   const removeAll = React.useCallback(() => {
     Object.keys(modulesRef.current).forEach((key) => {
       modulesRef.current[key].onDestroy();
@@ -50,5 +80,5 @@ export function useModule({ eventEmitter }: Props): [
     modulesRef.current = modules;
   }, [modules]);
 
-  return [modules, { addModule, removeAll }];
+  return [modules, { addModule, addModules, removeAll }];
 }

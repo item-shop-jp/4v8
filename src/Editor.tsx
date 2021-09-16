@@ -1,15 +1,17 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { Block } from './types/block';
+import { ModuleOptions } from './types/module';
 import { Header, Text } from './components/blocks';
 import { useEditor } from './hooks/use-editor';
 import { useModule } from './hooks/use-module';
 import { useEventEmitter } from './hooks/use-event-emitter';
 import { EditorModule, KeyBoardModule, LoggerModule } from './modules';
-import { EditorEvents, LogLevels } from './constants';
+import { EditorEvents } from './constants';
 
 interface Props {
   readOnly?: boolean;
+  settings?: ModuleOptions;
 }
 
 interface Formats {
@@ -30,7 +32,7 @@ const BlockContainer: React.VFC<BlockProps> = React.memo(({ block, formats }) =>
     Container = formats[block.type.toLocaleLowerCase()];
   }
 
-  return <Container block={block}></Container>;
+  return <Container block={block} />;
 });
 
 const Container = styled.div`
@@ -41,9 +43,9 @@ const Container = styled.div`
   min-height: 300px;
 `;
 
-export const Editor: React.VFC<Props> = React.memo(({ readOnly = false }: Props) => {
+export const Editor: React.VFC<Props> = React.memo(({ readOnly = false, settings = {} }: Props) => {
   const [eventEmitter, eventController] = useEventEmitter();
-  const [editorRef] = useEditor({ eventEmitter });
+  const [editorRef, editorController] = useEditor({ eventEmitter });
   const [modules, moduleController] = useModule({ eventEmitter });
   const [blocks, setBlocks] = React.useState<Block[]>([]);
   const [formats] = React.useState<Formats>({
@@ -67,6 +69,7 @@ export const Editor: React.VFC<Props> = React.memo(({ readOnly = false }: Props)
     if (selection) {
       const range = selection.getRangeAt(0);
       console.log('click', range.commonAncestorContainer === editorRef.current);
+      editorController.focus();
     }
   }, []);
 
@@ -75,11 +78,14 @@ export const Editor: React.VFC<Props> = React.memo(({ readOnly = false }: Props)
       setBlocks(blocks);
     });
 
-    moduleController.addModule('logger', LoggerModule, {
-      logLevel: LogLevels.INFO,
-    });
-    moduleController.addModule('editor', EditorModule);
-    moduleController.addModule('keyboard', KeyBoardModule);
+    moduleController.addModules(
+      [
+        { name: 'logger', module: LoggerModule },
+        { name: 'editor', module: EditorModule },
+        { name: 'keyboard', module: KeyBoardModule },
+      ],
+      settings,
+    );
 
     return () => {
       moduleController.removeAll();

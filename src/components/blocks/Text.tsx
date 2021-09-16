@@ -14,5 +14,5 @@ export const Text = React.memo(({ block }: Props) => {
     return { __html: convertInlineArrayToHTML(block.contents) };
   }, [block]);
 
-  return <P dangerouslySetInnerHTML={memoInnerHTML} />;
+  return <P data-block-id="1234-5678" dangerouslySetInnerHTML={memoInnerHTML} />;
 });

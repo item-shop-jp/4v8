@@ -7,33 +7,46 @@ interface Props {
   eventEmitter: EventEmitter;
 }
 
-export function useEditor({
-  eventEmitter,
-}: Props): [React.MutableRefObject<HTMLDivElement | null>, { focus: () => void }] {
+export interface EditorController {
+  focus: () => void;
+  blur: () => void;
+  getCaretPosition: () => CaretPosition | null;
+  updateCaretPosition: () => CaretPosition | null;
+}
+
+export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTMLDivElement | null>, EditorController] {
   const editorRef = React.useRef(null);
-  const lastRangeRef = React.useRef<CaretRange>({ index: 0, length: 0 });
-  console.log(eventEmitter);
+  const lastCaretPositionRef = React.useRef<CaretPosition | null>();
 
   const focus = React.useCallback(() => {
-    updateCaret(lastRangeRef.current);
+    console.log('focus');
   }, []);
 
-  const updateCaret = React.useCallback(
-    (range: CaretRange) => {
-      console.log(getNativeRange(), range);
-    },
-    [editorRef.current],
-  );
+  const blur = React.useCallback(() => {
+    console.log('blur');
+  }, []);
 
-  const getNativeRange = () => {
+  const getCaretPosition = React.useCallback(() => {
+    const nativeRange = getNativeRange();
+    if (!nativeRange) return null;
+    return normalizeRange(nativeRange);
+  }, []);
+
+  const updateCaretPosition = React.useCallback(() => {
+    const postion = getCaretPosition();
+    lastCaretPositionRef.current = postion;
+    return postion;
+  }, [editorRef.current]);
+
+  const getNativeRange = React.useCallback(() => {
     const selection = document.getSelection();
     if (!selection || selection.rangeCount < 1) return null;
     const range = selection.getRangeAt(0);
     if (!range) return null;
-    return normalizeRange(range);
-  };
+    return range;
+  }, []);
 
-  const normalizeRange = (nativeRange: Range) => {
+  const normalizeRange = React.useCallback((nativeRange: Range) => {
     const startBlockId = getBlockId(nativeRange.startContainer as HTMLElement);
     const endBlockId = getBlockId(nativeRange.endContainer as HTMLElement);
 
@@ -49,7 +62,7 @@ export function useEditor({
       end: { blockId: endBlockId, offset: nativeRange.endOffset },
     };
     return range;
-  };
+  }, []);
 
-  return [editorRef, { focus }];
+  return [editorRef, { focus, blur, getCaretPosition, updateCaretPosition }];
 }

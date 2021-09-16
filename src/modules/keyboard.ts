@@ -2,31 +2,48 @@ import * as React from 'react';
 import { Module } from '../types/module';
 import { EventEmitter } from '../utils/event-emitter';
 import { KeyCodes, EditorEvents } from '../constants';
+import { EditorController } from '../hooks/use-editor';
 
 interface Props {
   eventEmitter: EventEmitter;
+  editor: EditorController;
 }
 
 export class KeyBoardModule implements Module {
   private eventEmitter;
+  private editor;
 
-  constructor({ eventEmitter }: Props) {
+  constructor({ eventEmitter, editor }: Props) {
     this.eventEmitter = eventEmitter;
+    this.editor = editor;
   }
 
   onInit() {
-    this.eventEmitter.emit(EditorEvents.EVENT_LOG_INFO, 'init keyboard module');
+    this.eventEmitter.info('init keyboard module');
   }
 
   onDestroy() {
-    this.eventEmitter.emit(EditorEvents.EVENT_LOG_INFO, 'destory keyboard module');
+    this.eventEmitter.info('destroy keyboard module');
   }
 
   onKeyDown(e: React.KeyboardEvent) {
+    if ([KeyCodes.ARROW_UP, KeyCodes.ARROW_RIGHT, KeyCodes.ARROW_LEFT, KeyCodes.ARROW_DOWN].includes(e.code)) {
+      // update caret position (Used default behavior of contenteditable)
+      this._updateCaret();
+    }
+
     if ([KeyCodes.ENTER, KeyCodes.NUMPAD_ENTER].includes(e.code)) {
       e.preventDefault();
       e.stopPropagation();
       this.eventEmitter.emit(EditorEvents.EVENT_BLOCK_CREATE, {});
+      return;
     }
+  }
+
+  private _updateCaret() {
+    setTimeout(() => {
+      const caret = this.editor.updateCaretPosition();
+      console.log(caret?.start.offset, caret?.end.offset);
+    });
   }
 }

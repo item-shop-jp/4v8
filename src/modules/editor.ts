@@ -4,9 +4,11 @@ import { createBlock } from '../utils/block';
 import { EditorEvents } from '../constants';
 import { Module } from '../types/module';
 import { Block } from '../types/block';
+import { EditorController } from '../hooks/use-editor';
 
 interface Props {
   eventEmitter: EventEmitter;
+  editor: EditorController;
 }
 
 export class EditorModule implements Module {
@@ -20,7 +22,7 @@ export class EditorModule implements Module {
   }
 
   onInit() {
-    this.eventEmitter.emit(EditorEvents.EVENT_LOG_INFO, 'init editor module');
+    this.eventEmitter.info('init editor module');
 
     const sub = this.eventEmitter.on(EditorEvents.EVENT_BLOCK_CREATE).subscribe(() => {
       this.createBlock();
@@ -33,7 +35,7 @@ export class EditorModule implements Module {
   }
 
   onDestroy() {
-    this.eventEmitter.emit(EditorEvents.EVENT_LOG_INFO, 'destory editor module');
+    this.eventEmitter.info('destory editor module');
     setTimeout(() => this.subs.unsubscribe());
   }
 

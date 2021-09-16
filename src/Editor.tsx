@@ -44,9 +44,9 @@ const Container = styled.div`
 `;
 
 export const Editor: React.VFC<Props> = React.memo(({ readOnly = false, settings = {} }: Props) => {
-  const [eventEmitter, eventController] = useEventEmitter();
-  const [editorRef, editorController] = useEditor({ eventEmitter });
-  const [modules, moduleController] = useModule({ eventEmitter });
+  const [eventEmitter, eventTool] = useEventEmitter();
+  const [editorRef, editor] = useEditor({ eventEmitter });
+  const [modules, moduleTool] = useModule({ eventEmitter, editor });
   const [blocks, setBlocks] = React.useState<Block[]>([]);
   const [formats] = React.useState<Formats>({
     text: Text,
@@ -65,20 +65,15 @@ export const Editor: React.VFC<Props> = React.memo(({ readOnly = false, settings
   );
 
   const handleClick = React.useCallback(() => {
-    const selection = document.getSelection();
-    if (selection) {
-      const range = selection.getRangeAt(0);
-      console.log('click', range.commonAncestorContainer === editorRef.current);
-      editorController.focus();
-    }
+    console.log(editor.getCaretPosition());
   }, []);
 
   React.useEffect(() => {
-    eventController.on(EditorEvents.EVENT_EDITOR_UPDATE, (blocks: Block[]) => {
+    eventTool.on(EditorEvents.EVENT_EDITOR_UPDATE, (blocks: Block[]) => {
       setBlocks(blocks);
     });
 
-    moduleController.addModules(
+    moduleTool.addModules(
       [
         { name: 'logger', module: LoggerModule },
         { name: 'editor', module: EditorModule },
@@ -88,7 +83,7 @@ export const Editor: React.VFC<Props> = React.memo(({ readOnly = false, settings
     );
 
     return () => {
-      moduleController.removeAll();
+      moduleTool.removeAll();
     };
   }, []);
 

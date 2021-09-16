@@ -1,33 +1,34 @@
 import * as React from 'react';
 import { Modules, ModuleOptions } from '../types/module';
 import { EventEmitter } from '../utils/event-emitter';
+import { EditorController } from './use-editor';
 
 interface Props {
+  editor: EditorController;
   eventEmitter: EventEmitter;
 }
 
-export function useModule({ eventEmitter }: Props): [
-  Modules,
-  {
-    addModule: (
-      name: string,
+export interface ModuleController {
+  addModule: (
+    name: string,
+    module: {
+      new (params: { eventEmitter: EventEmitter; options: any }): any;
+    },
+    options?: any,
+  ) => void;
+  addModules: (
+    modules: {
+      name: string;
       module: {
-        new (params: { eventEmitter: EventEmitter; options: any }): any;
-      },
-      options?: any,
-    ) => void;
-    addModules: (
-      modules: {
-        name: string;
-        module: {
-          new (params: { eventEmitter: EventEmitter; options: any }): any;
-        };
-      }[],
-      options?: ModuleOptions,
-    ) => void;
-    removeAll: () => void;
-  },
-] {
+        new (params: { eventEmitter: EventEmitter; editor: EditorController; options: any }): any;
+      };
+    }[],
+    options?: ModuleOptions,
+  ) => void;
+  removeAll: () => void;
+}
+
+export function useModule({ eventEmitter, editor }: Props): [Modules, ModuleController] {
   const [modules, setModules] = React.useState<Modules>({});
   const modulesRef = React.useRef<Modules>({});
 
@@ -35,11 +36,11 @@ export function useModule({ eventEmitter }: Props): [
     (
       name: string,
       module: {
-        new (params: { eventEmitter: EventEmitter; options: any }): any;
+        new (params: { eventEmitter: EventEmitter; editor: EditorController; options: any }): any;
       },
       options: any = {},
     ) => {
-      const moduleInstance = new module({ eventEmitter, options });
+      const moduleInstance = new module({ eventEmitter, editor, options });
       setModules((prevModules) => {
         return { ...prevModules, [name]: moduleInstance };
       });
@@ -53,13 +54,13 @@ export function useModule({ eventEmitter }: Props): [
       modules: {
         name: string;
         module: {
-          new (params: { eventEmitter: EventEmitter; options: any }): any;
+          new (params: { eventEmitter: EventEmitter; editor: EditorController; options: any }): any;
         };
       }[],
       options: ModuleOptions = {},
     ) => {
       modules.forEach(({ name, module }) => {
-        const moduleInstance = new module({ eventEmitter, options: options[name] ?? {} });
+        const moduleInstance = new module({ eventEmitter, editor, options: options[name] ?? {} });
         setModules((prevModules) => {
           return { ...prevModules, [name]: moduleInstance };
         });

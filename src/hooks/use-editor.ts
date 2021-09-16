@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { EventEmitter } from '../utils/event-emitter';
+import { getBlockId } from '../utils/block';
 import { CaretRange, CaretPosition } from '../types/caret';
 
 interface Props {
@@ -11,9 +12,9 @@ export function useEditor({
 }: Props): [React.MutableRefObject<HTMLDivElement | null>, { focus: () => void }] {
   const editorRef = React.useRef(null);
   const lastRangeRef = React.useRef<CaretRange>({ index: 0, length: 0 });
+  console.log(eventEmitter);
 
   const focus = React.useCallback(() => {
-    console.log(eventEmitter);
     updateCaret(lastRangeRef.current);
   }, []);
 
@@ -33,16 +34,19 @@ export function useEditor({
   };
 
   const normalizeRange = (nativeRange: Range) => {
-    if (!editorRef.current) {
+    const startBlockId = getBlockId(nativeRange.startContainer as HTMLElement);
+    const endBlockId = getBlockId(nativeRange.endContainer as HTMLElement);
+
+    if (!editorRef.current || !startBlockId || !endBlockId) {
       return null;
     }
-    console.log(nativeRange.endContainer);
+
     const range: CaretPosition = {
       start: {
-        blockId: '',
+        blockId: startBlockId,
         offset: nativeRange.startOffset,
       },
-      end: { blockId: '', offset: nativeRange.endOffset },
+      end: { blockId: endBlockId, offset: nativeRange.endOffset },
     };
     return range;
   };

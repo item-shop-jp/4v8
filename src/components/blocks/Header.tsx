@@ -26,12 +26,12 @@ export const Header = React.memo(({ block }: Props) => {
 
   switch (block.attributes['header']) {
     case 1:
-      return <Header1 dangerouslySetInnerHTML={memoInnerHTML} />;
+      return <Header1 data-block-id={block.id} dangerouslySetInnerHTML={memoInnerHTML} />;
     case 2:
-      return <Header2 dangerouslySetInnerHTML={memoInnerHTML} />;
+      return <Header2 data-block-id={block.id} dangerouslySetInnerHTML={memoInnerHTML} />;
     case 3:
-      return <Header3 dangerouslySetInnerHTML={memoInnerHTML} />;
+      return <Header3 data-block-id={block.id} dangerouslySetInnerHTML={memoInnerHTML} />;
     default:
-      return <Header1 dangerouslySetInnerHTML={memoInnerHTML} />;
+      return <Header1 data-block-id={block.id} dangerouslySetInnerHTML={memoInnerHTML} />;
   }
 });

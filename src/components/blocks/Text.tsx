@@ -7,12 +7,16 @@ interface Props {
   block: Block;
 }
 
-const P = styled.p``;
+const P = styled.p`
+  margin: 0;
+  padding: 0;
+  font-size: 1rem;
+`;
 
 export const Text = React.memo(({ block }: Props) => {
   const memoInnerHTML = React.useMemo(() => {
     return { __html: convertInlineArrayToHTML(block.contents) };
   }, [block]);
 
-  return <P data-block-id="1234-5678" dangerouslySetInnerHTML={memoInnerHTML} />;
+  return <P data-block-id={block.id} dangerouslySetInnerHTML={memoInnerHTML} />;
 });

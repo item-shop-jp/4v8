@@ -39,19 +39,25 @@ export class KeyBoardModule implements Module {
       return;
     }
 
+    if ([KeyCodes.BACKSPACE].includes(e.code)) {
+      e.preventDefault();
+      e.stopPropagation();
+      this.eventEmitter.emit(EditorEvents.EVENT_BLOCK_CREATE, {});
+      return;
+    }
+
     this._optimize();
   }
 
   private _updateCaret() {
     setTimeout(() => {
-      const caret = this.editor.updateCaretPosition();
-      console.log(caret?.start.offset, caret?.end.offset);
+      this.editor.updateCaretPosition();
     });
   }
 
   private _optimize() {
     setTimeout(() => {
-      console.log(this.editor.getCaretPosition());
+      this.editor.optimize();
     });
   }
 }

@@ -25,3 +25,10 @@ export function getBlockId(node: HTMLElement): string | null {
   }
   return getBlockId(node.parentElement);
 }
+
+export function getBlockElementById(blockId: string): HTMLElement | null {
+  if (!blockId) return null;
+  const element = document.querySelector<HTMLElement>('[data-block-id="' + blockId + '"]');
+  if (!element) return null;
+  return element;
+}

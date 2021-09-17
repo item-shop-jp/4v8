@@ -5,6 +5,7 @@ export const KeyCodes = {
   TAB: 'Tab',
   S: 'KeyS',
   SPACE: 'Space',
+  BACKSPACE: 'Backspace',
   DEL: 'Delete',
   ARROW_UP: 'ArrowUp',
   ARROW_LEFT: 'ArrowLeft',

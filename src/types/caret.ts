@@ -1,15 +1,9 @@
-export interface CaretRange {
-  index: number;
-  length: number;
+export interface Caret {
+  blockId: string;
+  offset: number;
 }
 
 export interface CaretPosition {
-  start: {
-    blockId: string;
-    offset: number;
-  };
-  end: {
-    blockId: string;
-    offset: number;
-  };
+  start: Caret;
+  end: Caret;
 }

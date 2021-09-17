@@ -57,7 +57,7 @@ export const Editor: React.VFC<Props> = React.memo(({ readOnly = false, settings
         modules['keyboard'].onKeyDown(event);
       }
     },
-    [modules],
+    [modules, blocks],
   );
 
   const handleClick = React.useCallback(() => {
@@ -88,7 +88,7 @@ export const Editor: React.VFC<Props> = React.memo(({ readOnly = false, settings
       suppressContentEditableWarning={true}
     >
       {blocks.map((block, index) => {
-        return <BlockContainer key={index} formats={formats} block={block} />;
+        return <BlockContainer key={block.id} formats={formats} block={block} />;
       })}
     </Container>
   );

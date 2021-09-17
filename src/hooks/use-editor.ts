@@ -1,7 +1,10 @@
 import * as React from 'react';
+import { Subscription } from 'rxjs';
 import { EventEmitter } from '../utils/event-emitter';
 import { getBlockId } from '../utils/block';
 import { CaretRange, CaretPosition } from '../types/caret';
+import { Block } from '../types/block';
+import { EditorEvents } from '../constants';
 
 interface Props {
   eventEmitter: EventEmitter;
@@ -14,9 +17,12 @@ export interface EditorController {
   updateCaretPosition: () => CaretPosition | null;
 }
 
-export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTMLDivElement | null>, EditorController] {
+export function useEditor({
+  eventEmitter,
+}: Props): [Block[], React.MutableRefObject<HTMLDivElement | null>, EditorController] {
   const editorRef = React.useRef(null);
   const lastCaretPositionRef = React.useRef<CaretPosition | null>();
+  const [blocks, setBlocks] = React.useState<Block[]>([]);
 
   const focus = React.useCallback(() => {
     console.log('focus');
@@ -64,5 +70,16 @@ export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTML
     return range;
   }, []);
 
-  return [editorRef, { focus, blur, getCaretPosition, updateCaretPosition }];
+  React.useEffect(() => {
+    const subs = new Subscription();
+    const sub = eventEmitter.on<Block[]>(EditorEvents.EVENT_EDITOR_UPDATE).subscribe((blocks) => {
+      setBlocks(blocks);
+    });
+    subs.add(sub);
+    return () => {
+      subs.unsubscribe();
+    };
+  }, []);
+
+  return [blocks, editorRef, { focus, blur, getCaretPosition, updateCaretPosition }];
 }

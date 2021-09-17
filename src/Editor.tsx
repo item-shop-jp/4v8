@@ -7,7 +7,6 @@ import { useEditor } from './hooks/use-editor';
 import { useModule } from './hooks/use-module';
 import { useEventEmitter } from './hooks/use-event-emitter';
 import { EditorModule, KeyBoardModule, LoggerModule } from './modules';
-import { EditorEvents } from './constants';
 
 interface Props {
   readOnly?: boolean;
@@ -45,15 +44,12 @@ const Container = styled.div`
 
 export const Editor: React.VFC<Props> = React.memo(({ readOnly = false, settings = {} }: Props) => {
   const [eventEmitter, eventTool] = useEventEmitter();
-  const [editorRef, editor] = useEditor({ eventEmitter });
+  const [blocks, editorRef, editor] = useEditor({ eventEmitter });
   const [modules, moduleTool] = useModule({ eventEmitter, editor });
-  const [blocks, setBlocks] = React.useState<Block[]>([]);
   const [formats] = React.useState<Formats>({
     text: Text,
     header: Header,
   });
-
-  const handleBeforeInput = React.useCallback(() => {}, []);
 
   const handleKeyDown = React.useCallback(
     (event: React.KeyboardEvent) => {
@@ -69,10 +65,6 @@ export const Editor: React.VFC<Props> = React.memo(({ readOnly = false, settings
   }, []);
 
   React.useEffect(() => {
-    eventTool.on(EditorEvents.EVENT_EDITOR_UPDATE, (blocks: Block[]) => {
-      setBlocks(blocks);
-    });
-
     moduleTool.addModules(
       [
         { name: 'logger', module: LoggerModule },
@@ -91,7 +83,6 @@ export const Editor: React.VFC<Props> = React.memo(({ readOnly = false, settings
     <Container
       ref={editorRef}
       contentEditable={!readOnly}
-      onBeforeInput={handleBeforeInput}
       onKeyDown={handleKeyDown}
       onClick={handleClick}
       suppressContentEditableWarning={true}

@@ -38,12 +38,20 @@ export class KeyBoardModule implements Module {
       this.eventEmitter.emit(EditorEvents.EVENT_BLOCK_CREATE, {});
       return;
     }
+
+    this._optimize();
   }
 
   private _updateCaret() {
     setTimeout(() => {
       const caret = this.editor.updateCaretPosition();
       console.log(caret?.start.offset, caret?.end.offset);
+    });
+  }
+
+  private _optimize() {
+    setTimeout(() => {
+      console.log(this.editor.getCaretPosition());
     });
   }
 }

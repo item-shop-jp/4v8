@@ -18,23 +18,25 @@ export interface EditorController {
   getCaretPosition: () => CaretPosition | null;
   getNativeRange: () => Range | null;
   updateCaretPosition: () => CaretPosition | null;
-  optimize: () => void;
+  getAffectedBlocks: () => Block[];
 }
 
 export function useEditor({
   eventEmitter,
 }: Props): [Block[], React.MutableRefObject<HTMLDivElement | null>, EditorController] {
-  const editorRef = React.useRef(null);
+  const editorRef = React.useRef<HTMLDivElement>(null);
   const lastCaretPositionRef = React.useRef<CaretPosition | null>();
   const blocksRef = React.useRef<Block[]>([]);
   const [blocks, setBlocks] = React.useState<Block[]>([]);
 
   const focus = React.useCallback(() => {
     console.log('focus');
+    editorRef.current?.focus();
   }, []);
 
   const blur = React.useCallback(() => {
     console.log('blur');
+    editorRef.current?.blur();
   }, []);
 
   const getBlocks = React.useCallback((): Block[] => {
@@ -65,19 +67,24 @@ export function useEditor({
     const nativeRange = getNativeRange();
     const startElement = getBlockElementById(start.blockId);
     if (!nativeRange || !startElement) return null;
-    nativeRange.setStart(startElement, start.offset);
-    if (end) {
-      const endElement = getBlockElementById(end.blockId);
-      if (endElement) {
-        nativeRange.setEnd(endElement, end.offset);
+    console.log(startElement, start.offset);
+    try {
+      nativeRange.setStart(startElement, start.offset);
+      if (end) {
+        const endElement = getBlockElementById(end.blockId);
+        if (endElement) {
+          nativeRange.setEnd(endElement, end.offset);
+        }
+      } else {
+        nativeRange.setEnd(startElement, start.offset);
       }
-    } else {
-      nativeRange.setEnd(startElement, start.offset);
+    } catch (e) {
+      console.log(e);
     }
   }, []);
 
-  const getAffectedBlocks = React.useCallback((): Block[] => {
-    const postion = getCaretPosition();
+  const getAffectedBlocks = React.useCallback((caretPosition?: CaretPosition): Block[] => {
+    const postion = caretPosition ?? getCaretPosition();
     if (!postion) return [];
     const startIndex = blocksRef.current.findIndex((v) => v.id === postion.start.blockId);
     const endIndex = blocksRef.current.findIndex((v) => v.id === postion.end.blockId);
@@ -87,10 +94,6 @@ export function useEditor({
     } else {
       return [...blocksRef.current.slice(startIndex, endIndex)];
     }
-  }, []);
-
-  const optimize = React.useCallback(() => {
-    console.log(getAffectedBlocks().map((v) => v.id));
   }, []);
 
   const normalizeRange = React.useCallback((nativeRange: Range) => {
@@ -107,6 +110,7 @@ export function useEditor({
         offset: nativeRange.startOffset,
       },
       end: { blockId: endBlockId, offset: nativeRange.endOffset },
+      collapsed: nativeRange.collapsed,
     };
     return range;
   }, []);
@@ -129,6 +133,15 @@ export function useEditor({
   return [
     blocks,
     editorRef,
-    { focus, blur, getBlocks, getCaretPosition, updateCaretPosition, getNativeRange, setCaretPosition, optimize },
+    {
+      focus,
+      blur,
+      getBlocks,
+      getCaretPosition,
+      updateCaretPosition,
+      getNativeRange,
+      setCaretPosition,
+      getAffectedBlocks,
+    },
   ];
 }

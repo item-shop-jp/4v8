@@ -14,15 +14,23 @@ interface Props {
 }
 
 interface Formats {
-  [key: string]: React.FC<{ block: Block }>;
+  [key: string]: React.FC<{
+    block: Block;
+    readOnly: boolean;
+    onClick: (e: React.MouseEvent) => void;
+    onKeyDown: (e: React.KeyboardEvent) => void;
+  }>;
 }
 
 interface BlockProps {
   block: Block;
+  readOnly: boolean;
   formats: Formats;
+  onClick: (e: React.MouseEvent) => void;
+  onKeyDown: (e: React.KeyboardEvent) => void;
 }
 
-const BlockContainer: React.VFC<BlockProps> = React.memo(({ block, formats }) => {
+const BlockContainer: React.VFC<BlockProps> = React.memo(({ block, formats, ...props }) => {
   let Container;
   if (!formats[block.type.toLocaleLowerCase()]) {
     // defalut block format
@@ -31,7 +39,7 @@ const BlockContainer: React.VFC<BlockProps> = React.memo(({ block, formats }) =>
     Container = formats[block.type.toLocaleLowerCase()];
   }
 
-  return <Container block={block} />;
+  return <Container block={block} {...props} />;
 });
 
 const Container = styled.div`
@@ -80,15 +88,18 @@ export const Editor: React.VFC<Props> = React.memo(({ readOnly = false, settings
   }, []);
 
   return (
-    <Container
-      ref={editorRef}
-      contentEditable={!readOnly}
-      onKeyDown={handleKeyDown}
-      onClick={handleClick}
-      suppressContentEditableWarning={true}
-    >
+    <Container ref={editorRef}>
       {blocks.map((block, index) => {
-        return <BlockContainer key={block.id} formats={formats} block={block} />;
+        return (
+          <BlockContainer
+            key={block.id}
+            formats={formats}
+            block={block}
+            readOnly={readOnly}
+            onKeyDown={handleKeyDown}
+            onClick={handleClick}
+          />
+        );
       })}
     </Container>
   );

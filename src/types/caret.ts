@@ -6,4 +6,5 @@ export interface Caret {
 export interface CaretPosition {
   start: Caret;
   end: Caret;
+  collapsed: boolean;
 }

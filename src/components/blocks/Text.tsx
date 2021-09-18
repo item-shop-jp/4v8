@@ -5,6 +5,9 @@ import { convertInlineArrayToHTML } from '../../utils/html';
 
 interface Props {
   block: Block;
+  readOnly: boolean;
+  onClick: (e: React.MouseEvent) => void;
+  onKeyDown: (e: React.KeyboardEvent) => void;
 }
 
 const P = styled.p`
@@ -13,10 +16,11 @@ const P = styled.p`
   font-size: 1rem;
 `;
 
-export const Text = React.memo(({ block }: Props) => {
+export const Text = React.memo(({ block, readOnly = false, ...props }: Props) => {
   const memoInnerHTML = React.useMemo(() => {
     return { __html: convertInlineArrayToHTML(block.contents) };
   }, [block]);
+  console.log(props);
 
-  return <P data-block-id={block.id} dangerouslySetInnerHTML={memoInnerHTML} />;
+  return <P data-block-id={block.id} dangerouslySetInnerHTML={memoInnerHTML} contentEditable={!readOnly} {...props} />;
 });

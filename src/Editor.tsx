@@ -71,7 +71,7 @@ export const Editor: React.VFC<Props> = React.memo(({ readOnly = false, settings
   const handleClick = React.useCallback((e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    console.log(editor.getCaretPosition());
+    editor.updateCaretPosition();
   }, []);
 
   const handleContainerClick = React.useCallback(() => {

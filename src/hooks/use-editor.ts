@@ -10,6 +10,12 @@ interface Props {
   eventEmitter: EventEmitter;
 }
 
+interface PositionParams {
+  caretPosition?: CaretPosition;
+  index?: number;
+  length?: number;
+}
+
 export interface EditorController {
   focus: () => void;
   blur: () => void;
@@ -18,6 +24,7 @@ export interface EditorController {
   getCaretPosition: () => CaretPosition | null;
   getNativeRange: () => Range | null;
   updateCaretPosition: () => CaretPosition | null;
+  next: (params?: PositionParams) => void;
 }
 
 export function useEditor({
@@ -53,6 +60,18 @@ export function useEditor({
     const nativeRange = getNativeRange();
     if (!nativeRange) return;
     (nativeRange.startContainer as HTMLElement).blur();
+  }, []);
+
+  const next = React.useCallback(({ caretPosition, index = 0, length = 0 }: PositionParams = {}) => {
+    const position = caretPosition ?? lastCaretPositionRef.current;
+    const currentIndex = blocksRef.current.findIndex((v) => v.id === position?.blockId);
+    if (currentIndex === -1 || !blocksRef.current[currentIndex + 1]) return;
+
+    setCaretPosition({
+      blockId: blocksRef.current[currentIndex + 1].id,
+      index,
+    });
+    return blocksRef.current;
   }, []);
 
   const getBlocks = React.useCallback((): Block[] => {
@@ -91,13 +110,22 @@ export function useEditor({
     const element = getBlockElementById(blockId);
     if (!element) return null;
     element.focus();
-    const nativeRange = getNativeRange();
-    if (!nativeRange) return null;
-    console.log('set', blockId, index, length);
+    const selection = document.getSelection();
+    if (!selection) return null;
+    const currentRange = selection.getRangeAt(0);
+    if (!currentRange) return null;
     try {
-      nativeRange.setStart(nativeRange.startContainer, index);
-      nativeRange.setEnd(nativeRange.endContainer, index + length);
-      updateCaretPosition();
+      setTimeout(() => {
+        const range = document.createRange();
+        console.log(selection, currentRange.startContainer, currentRange.endContainer);
+        range.setStart(currentRange.startContainer, index);
+        range.setEnd(currentRange.endContainer, index + length);
+
+        selection.removeAllRanges();
+        selection.addRange(range);
+        updateCaretPosition();
+      });
+      element.blur();
     } catch (e) {
       eventEmitter.warning('Invalid Range', e);
     }
@@ -160,6 +188,7 @@ export function useEditor({
       setCaretPosition,
       updateCaretPosition,
       getNativeRange,
+      next,
     },
   ];
 }

@@ -43,6 +43,10 @@ export class KeyBoardModule implements Module {
       return;
     }
     if ([KeyCodes.ARROW_UP, KeyCodes.ARROW_RIGHT, KeyCodes.ARROW_LEFT, KeyCodes.ARROW_DOWN].includes(e.code)) {
+      if (e.code === KeyCodes.ARROW_DOWN) {
+        this.editor.next();
+      }
+
       // update caret position (Used default behavior of contenteditable)
       this._updateCaret();
       return;

@@ -21,7 +21,6 @@ export const Text = React.memo(({ block, readOnly = false, ...props }: Props) =>
   const memoInnerHTML = React.useMemo(() => {
     return { __html: convertInlineArrayToHTML(block.contents) };
   }, [block]);
-  console.log(props);
 
   return <P data-block-id={block.id} dangerouslySetInnerHTML={memoInnerHTML} contentEditable={!readOnly} {...props} />;
 });

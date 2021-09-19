@@ -44,13 +44,13 @@ export class EditorModule implements Module {
     const caretPosition = this.editor.getCaretPosition();
     const appendBlock = createBlock('TEXT');
     const blocks = this.editor.getBlocks();
-    const currentIndex = blocks.findIndex((v) => v.id === caretPosition?.start.blockId);
+    const currentIndex = blocks.findIndex((v) => v.id === caretPosition?.blockId);
     const insertedBlocks =
       currentIndex !== -1
         ? [...blocks.slice(0, currentIndex + 1), appendBlock, ...blocks.slice(currentIndex + 1)]
         : [...blocks, appendBlock];
 
-    setTimeout(() => this.editor.setCaretPosition({ blockId: appendBlock.id, offset: 0 }));
+    setTimeout(() => this.editor.setCaretPosition({ blockId: appendBlock.id }));
     this.eventEmitter.emit(EditorEvents.EVENT_EDITOR_UPDATE, insertedBlocks);
   }
 }

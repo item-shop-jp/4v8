@@ -14,6 +14,7 @@ const P = styled.p`
   margin: 0;
   padding: 0;
   font-size: 1rem;
+  outline: 0;
 `;
 
 export const Text = React.memo(({ block, readOnly = false, ...props }: Props) => {

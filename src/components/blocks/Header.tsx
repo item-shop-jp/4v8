@@ -9,14 +9,17 @@ interface Props {
 
 const Header1 = styled.h1`
   font-size: 24px;
+  outline: 0;
 `;
 
 const Header2 = styled.h2`
   font-size: 20px;
+  outline: 0;
 `;
 
 const Header3 = styled.h3`
   font-size: 16px;
+  outline: 0;
 `;
 
 export const Header = React.memo(({ block }: Props) => {

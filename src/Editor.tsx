@@ -65,11 +65,17 @@ export const Editor: React.VFC<Props> = React.memo(({ readOnly = false, settings
         modules['keyboard'].onKeyDown(event);
       }
     },
-    [modules, blocks],
+    [modules],
   );
 
-  const handleClick = React.useCallback(() => {
+  const handleClick = React.useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     console.log(editor.getCaretPosition());
+  }, []);
+
+  const handleContainerClick = React.useCallback(() => {
+    editor.focus();
   }, []);
 
   React.useEffect(() => {
@@ -88,7 +94,7 @@ export const Editor: React.VFC<Props> = React.memo(({ readOnly = false, settings
   }, []);
 
   return (
-    <Container ref={editorRef}>
+    <Container ref={editorRef} onClick={handleContainerClick}>
       {blocks.map((block, index) => {
         return (
           <BlockContainer

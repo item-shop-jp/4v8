@@ -48,8 +48,6 @@ export class KeyBoardModule implements Module {
       return;
     }
 
-    const caret = this.editor.updateCaretPosition();
-
     if ([KeyCodes.ENTER, KeyCodes.NUMPAD_ENTER].includes(e.code)) {
       e.preventDefault();
       e.stopPropagation();
@@ -57,11 +55,12 @@ export class KeyBoardModule implements Module {
       return;
     }
 
-    // if ([KeyCodes.BACKSPACE].includes(e.code)) {
-    //   e.preventDefault();
-    //   e.stopPropagation();
-    //   return;
-    // }
+    if ([KeyCodes.BACKSPACE].includes(e.code)) {
+      e.preventDefault();
+      e.stopPropagation();
+      this.editor.blur();
+      return;
+    }
 
     // if ([KeyCodes.DEL].includes(e.code)) {
     //   e.preventDefault();

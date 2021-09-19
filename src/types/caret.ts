@@ -1,10 +1,7 @@
-export interface Caret {
-  blockId: string;
-  offset: number;
-}
-
 export interface CaretPosition {
-  start: Caret;
-  end: Caret;
+  blockId: string;
+  index: number;
+  length: number;
+  rect: DOMRect;
   collapsed: boolean;
 }

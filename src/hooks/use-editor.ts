@@ -57,9 +57,9 @@ export function useEditor({
   }, []);
 
   const blur = React.useCallback(() => {
-    const nativeRange = getNativeRange();
-    if (!nativeRange) return;
-    (nativeRange.startContainer as HTMLElement).blur();
+    const selection = document.getSelection();
+    if (!selection) return null;
+    selection.removeAllRanges();
   }, []);
 
   const next = React.useCallback(({ caretPosition, index = 0, length = 0 }: PositionParams = {}) => {

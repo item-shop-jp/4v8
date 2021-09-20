@@ -7,6 +7,7 @@ import { useEditor } from './hooks/use-editor';
 import { useModule } from './hooks/use-module';
 import { useEventEmitter } from './hooks/use-event-emitter';
 import { EditorModule, KeyBoardModule, LoggerModule } from './modules';
+import { getBlockElementById } from './utils/block';
 
 interface Props {
   readOnly?: boolean;
@@ -49,6 +50,9 @@ const Container = styled.div`
   padding: 12px;
   min-height: 300px;
 `;
+const Inner = styled.div`
+  flex: 1;
+`;
 
 export const Editor: React.VFC<Props> = React.memo(({ readOnly = false, settings = {} }: Props) => {
   const [eventEmitter, eventTool] = useEventEmitter();
@@ -75,8 +79,12 @@ export const Editor: React.VFC<Props> = React.memo(({ readOnly = false, settings
   }, []);
 
   const handleContainerClick = React.useCallback(() => {
-    editor.focus();
-  }, []);
+    const lastBlock = blocks[blocks.length - 1];
+    if (!lastBlock) return;
+    const element = getBlockElementById(lastBlock.id);
+    if (!element) return;
+    editor.setCaretPosition({ blockId: lastBlock.id, index: element.innerText.length });
+  }, [blocks.length]);
 
   React.useEffect(() => {
     moduleTool.addModules(
@@ -94,19 +102,21 @@ export const Editor: React.VFC<Props> = React.memo(({ readOnly = false, settings
   }, []);
 
   return (
-    <Container ref={editorRef} onClick={handleContainerClick}>
-      {blocks.map((block, index) => {
-        return (
-          <BlockContainer
-            key={block.id}
-            formats={formats}
-            block={block}
-            readOnly={readOnly}
-            onKeyDown={handleKeyDown}
-            onClick={handleClick}
-          />
-        );
-      })}
+    <Container>
+      <Inner onClick={handleContainerClick} ref={editorRef}>
+        {blocks.map((block, index) => {
+          return (
+            <BlockContainer
+              key={block.id}
+              formats={formats}
+              block={block}
+              readOnly={readOnly}
+              onKeyDown={handleKeyDown}
+              onClick={handleClick}
+            />
+          );
+        })}
+      </Inner>
     </Container>
   );
 });

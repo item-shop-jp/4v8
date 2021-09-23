@@ -3,28 +3,72 @@ import { Module } from '../types/module';
 import { EventEmitter } from '../utils/event-emitter';
 import { KeyCodes, EditorEvents } from '../constants';
 import { EditorController } from '../hooks/use-editor';
+import { CaretPosition } from '../types/caret';
 
 interface Props {
   eventEmitter: EventEmitter;
   editor: EditorController;
 }
 
+interface KeyBindingProps {
+  key: string;
+  collapsed?: boolean;
+  empty?: boolean;
+  formats?: string[];
+  metaKey?: boolean;
+  ctrlKey?: boolean;
+  shiftKey?: boolean;
+  altKey?: boolean;
+  prevented?: boolean;
+  handler: (range: CaretPosition, editor: EditorController) => void;
+}
+
 export class KeyBoardModule implements Module {
   private eventEmitter;
   private editor;
   private composing;
+  private bindings: KeyBindingProps[];
 
   constructor({ eventEmitter, editor }: Props) {
     this.eventEmitter = eventEmitter;
     this.editor = editor;
+    this.bindings = [];
     this.composing = false;
   }
 
   onInit() {
     this.eventEmitter.info('init keyboard module');
+
+    // handle enter
+    this.addBinding({
+      key: KeyCodes.ENTER,
+      handler: this._handleEnter.bind(this),
+    });
+    this.addBinding({
+      key: KeyCodes.ENTER,
+      shiftKey: true,
+      handler: this._handleShiftEnter.bind(this),
+    });
+    this.addBinding({
+      key: KeyCodes.NUMPAD_ENTER,
+      handler: this._handleEnter.bind(this),
+    });
+    this.addBinding({
+      key: KeyCodes.NUMPAD_ENTER,
+      shiftKey: true,
+      handler: this._handleShiftEnter.bind(this),
+    });
+
+    // handle key operation
+    this.addBinding({
+      key: KeyCodes.ARROW_DOWN,
+      collapsed: true,
+      handler: this._handlekeyDown.bind(this),
+    });
   }
 
   onDestroy() {
+    this.bindings = [];
     this.eventEmitter.info('destroy keyboard module');
   }
 
@@ -42,41 +86,87 @@ export class KeyBoardModule implements Module {
     if (e.defaultPrevented || this.composing) {
       return;
     }
-    if ([KeyCodes.ARROW_UP, KeyCodes.ARROW_RIGHT, KeyCodes.ARROW_LEFT, KeyCodes.ARROW_DOWN].includes(e.code)) {
-      if (e.code === KeyCodes.ARROW_DOWN) {
-        this.editor.next();
+
+    let prevented = false;
+
+    this.bindings.forEach((binding) => {
+      if (this._trigger(e, binding)) {
+        prevented = true;
       }
+    });
 
-      // update caret position (Used default behavior of contenteditable)
-      this._updateCaret();
-      return;
-    }
-
-    if ([KeyCodes.ENTER, KeyCodes.NUMPAD_ENTER].includes(e.code)) {
+    if (prevented) {
       e.preventDefault();
       e.stopPropagation();
-      this.eventEmitter.emit(EditorEvents.EVENT_BLOCK_CREATE, {});
-      return;
     }
-
-    // if ([KeyCodes.BACKSPACE].includes(e.code)) {
-    //   e.preventDefault();
-    //   e.stopPropagation();
-    //   return;
-    // }
-
-    // if ([KeyCodes.DEL].includes(e.code)) {
-    //   e.preventDefault();
-    //   e.stopPropagation();
-    //   return;
-    // }
   }
 
   onBeforeInput(e: React.FormEvent) {}
+
+  addBinding(props: KeyBindingProps) {
+    this.bindings.push(props);
+  }
+
+  addBindings(propsArray: KeyBindingProps[] = []) {
+    propsArray.forEach((props) => {
+      this.bindings.push(props);
+    });
+  }
 
   private _updateCaret() {
     setTimeout(() => {
       this.editor.updateCaretPosition();
     });
+  }
+
+  private _trigger(e: React.KeyboardEvent, props: KeyBindingProps): boolean {
+    const {
+      key,
+      collapsed = false,
+      empty = false,
+      formats = [],
+      metaKey = false,
+      ctrlKey = false,
+      shiftKey = false,
+      altKey = false,
+      prevented = true,
+      handler,
+    } = props;
+    const caretPosition = this.editor.getCaretPosition();
+
+    if (!caretPosition) return false;
+    if ((metaKey && !e.metaKey) || (!metaKey && e.metaKey)) return false;
+    if ((ctrlKey && !e.ctrlKey) || (!ctrlKey && e.ctrlKey)) return false;
+    if ((shiftKey && !e.shiftKey) || (!shiftKey && e.shiftKey)) return false;
+    if ((altKey && !e.altKey) || (!altKey && e.altKey)) return false;
+
+    if (collapsed && !caretPosition.collapsed) return false;
+    if (empty && caretPosition.length > 0) return false;
+
+    if (key !== e.code) return false;
+
+    if (formats.length > 0 && formats.includes(caretPosition.blockFormat)) return false;
+
+    handler(caretPosition, this.editor);
+
+    return prevented;
+  }
+
+  private _handleEnter(caretPosition: CaretPosition, editor: EditorController) {
+    if (caretPosition.collapsed) {
+      console.log('key enter');
+      this.eventEmitter.emit(EditorEvents.EVENT_BLOCK_CREATE, {});
+    } else {
+      console.log('key enter(range)');
+    }
+  }
+
+  private _handleShiftEnter(caretPosition: CaretPosition, editor: EditorController) {
+    console.log('key shift enter');
+  }
+
+  private _handlekeyDown(caretPosition: CaretPosition, editor: EditorController) {
+    editor.next();
+    this._updateCaret();
   }
 }

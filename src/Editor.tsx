@@ -33,17 +33,19 @@ interface BlockProps {
 
 const BlockContainer: React.VFC<BlockProps> = React.memo(({ block, formats, ...props }) => {
   let Container;
-  if (!formats[block.type.toLocaleLowerCase()]) {
+  const blockFormat = block.type.toLocaleLowerCase();
+  if (!formats[blockFormat]) {
     // defalut block format
     Container = formats['text'];
   } else {
-    Container = formats[block.type.toLocaleLowerCase()];
+    Container = formats[blockFormat];
   }
 
-  return <Container block={block} {...props} />;
+  return <Container block={block} data-format={blockFormat} {...props} />;
 });
 
 const Container = styled.div`
+  display: flex;
   border: 1px solid #ccc;
   border-radius: 12px;
   margin: 12px;
@@ -65,8 +67,8 @@ export const Editor: React.VFC<Props> = React.memo(({ readOnly = false, settings
 
   const handleKeyDown = React.useCallback(
     (event: React.KeyboardEvent) => {
-      if (modules['keyboard'] && modules['keyboard'] instanceof KeyBoardModule) {
-        modules['keyboard'].onKeyDown(event);
+      if (modules.keyboard && modules.keyboard instanceof KeyBoardModule) {
+        modules.keyboard.onKeyDown(event);
       }
     },
     [modules],

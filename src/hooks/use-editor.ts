@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Subscription } from 'rxjs';
 import { EventEmitter } from '../utils/event-emitter';
-import { getBlockId, getBlockElementById } from '../utils/block';
+import { getBlockId, getBlockElementById, getBlockLength } from '../utils/block';
 import { CaretPosition } from '../types/caret';
 import { Block } from '../types/block';
 import { EditorEvents } from '../constants';
@@ -84,19 +84,16 @@ export function useEditor({
     return normalizeRange(nativeRange);
   }, []);
 
-  const updateCaretPosition = React.useCallback(
-    (caretPosition?: CaretPosition) => {
-      if (caretPosition) {
-        lastCaretPositionRef.current = caretPosition;
-      } else {
-        const nativeRange = getNativeRange();
-        if (!nativeRange) return null;
-        lastCaretPositionRef.current = normalizeRange(nativeRange);
-      }
-      return lastCaretPositionRef.current;
-    },
-    [editorRef.current],
-  );
+  const updateCaretPosition = React.useCallback((caretPosition?: CaretPosition) => {
+    if (caretPosition) {
+      lastCaretPositionRef.current = caretPosition;
+    } else {
+      const nativeRange = getNativeRange();
+      if (!nativeRange) return null;
+      lastCaretPositionRef.current = normalizeRange(nativeRange);
+    }
+    return lastCaretPositionRef.current;
+  }, []);
 
   const getNativeRange = React.useCallback(() => {
     const selection = document.getSelection();
@@ -117,7 +114,6 @@ export function useEditor({
     try {
       setTimeout(() => {
         const range = document.createRange();
-        console.log(selection, currentRange.startContainer, currentRange.endContainer);
         range.setStart(currentRange.startContainer, index);
         range.setEnd(currentRange.endContainer, index + length);
 
@@ -145,8 +141,8 @@ export function useEditor({
   // }, []);
 
   const normalizeRange = React.useCallback((nativeRange: Range) => {
-    const startBlockId = getBlockId(nativeRange.startContainer as HTMLElement);
-    const endBlockId = getBlockId(nativeRange.endContainer as HTMLElement);
+    const [startBlockId, startBlockElement] = getBlockId(nativeRange.startContainer as HTMLElement);
+    const [endBlockId, endBlockElement] = getBlockId(nativeRange.endContainer as HTMLElement);
 
     if (!editorRef.current || !startBlockId || !endBlockId || startBlockId !== endBlockId) {
       return null;
@@ -154,8 +150,9 @@ export function useEditor({
 
     const range: CaretPosition = {
       blockId: startBlockId,
+      blockFormat: startBlockElement?.dataset.format ?? '',
       index: nativeRange.startOffset,
-      length: nativeRange.endOffset - nativeRange.startOffset,
+      length: getBlockLength(startBlockElement?.childNodes),
       collapsed: nativeRange.collapsed,
       rect: nativeRange.getBoundingClientRect(),
     };

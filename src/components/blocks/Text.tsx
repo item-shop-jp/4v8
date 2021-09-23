@@ -11,10 +11,12 @@ interface Props {
 }
 
 const P = styled.p`
-  margin: 0;
+  width: 100%;
   padding: 0;
   font-size: 1rem;
   outline: 0;
+  margin-top: 2px;
+  margin-bottom: 1px;
 `;
 
 export const Text = React.memo(({ block, readOnly = false, ...props }: Props) => {
@@ -22,5 +24,5 @@ export const Text = React.memo(({ block, readOnly = false, ...props }: Props) =>
     return { __html: convertInlineArrayToHTML(block.contents) };
   }, [block]);
 
-  return <P data-block-id={block.id} dangerouslySetInnerHTML={memoInnerHTML} contentEditable={!readOnly} {...props} />;
+  return <P className="notranslate" dangerouslySetInnerHTML={memoInnerHTML} contentEditable={!readOnly} {...props} />;
 });

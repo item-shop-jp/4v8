@@ -4,13 +4,13 @@ import { Block } from './types/block';
 import { ModuleOptions } from './types/module';
 import { Header, Text } from './components/blocks';
 import { useEditor } from './hooks/use-editor';
-
 import { useEventEmitter } from './hooks/use-event-emitter';
 import { EditorModule, KeyBoardModule, LoggerModule } from './modules';
 import { getBlockElementById } from './utils/block';
 
 interface Props {
   readOnly?: boolean;
+  formats?: Formats;
   settings?: ModuleOptions;
 }
 
@@ -41,26 +41,32 @@ const BlockContainer: React.VFC<BlockProps> = React.memo(({ block, formats, ...p
     Container = formats[blockFormat];
   }
 
-  return <Container block={block} data-format={blockFormat} {...props} />;
+  return <Container data-block-id={block.id} block={block} data-format={blockFormat} {...props} />;
 });
 
 const Container = styled.div`
-  display: flex;
   border: 1px solid #ccc;
   border-radius: 12px;
   margin: 12px;
   padding: 12px;
   min-height: 300px;
+  display: flex;
+  flex-direction: column;
 `;
 const Inner = styled.div`
-  flex: 1;
+  flex-shrink: 0;
+  flex-grow: 0;
+`;
+const MarginBottom = styled.div`
+  flex-shrink: 0;
+  flex-grow: 1;
 `;
 
-export const Editor: React.VFC<Props> = React.memo(({ readOnly = false, settings = {} }: Props) => {
+export const Editor: React.VFC<Props> = React.memo(({ readOnly = false, formats, settings = {}, ...props }: Props) => {
   const [eventEmitter, eventTool] = useEventEmitter();
   const [blocks, editorRef, editor] = useEditor({ eventEmitter });
-
-  const [formats] = React.useState<Formats>({
+  const containerRef = React.useRef<HTMLDivElement>(null);
+  const [blockFormats, setBlockFormats] = React.useState<Formats>({
     text: Text,
     header: Header,
   });
@@ -104,14 +110,21 @@ export const Editor: React.VFC<Props> = React.memo(({ readOnly = false, settings
     };
   }, []);
 
+  React.useEffect(() => {
+    const appendFormats = formats ?? {};
+    setBlockFormats((prevFormats) => {
+      return { ...prevFormats, ...appendFormats };
+    });
+  }, [formats]);
+
   return (
-    <Container>
-      <Inner onClick={handleContainerClick} ref={editorRef}>
+    <Container {...props} ref={containerRef}>
+      <Inner ref={editorRef}>
         {blocks.map((block, index) => {
           return (
             <BlockContainer
               key={block.id}
-              formats={formats}
+              formats={blockFormats}
               block={block}
               readOnly={readOnly}
               onKeyDown={handleKeyDown}
@@ -120,6 +133,7 @@ export const Editor: React.VFC<Props> = React.memo(({ readOnly = false, settings
           );
         })}
       </Inner>
+      <MarginBottom onClick={handleContainerClick} />
     </Container>
   );
 });

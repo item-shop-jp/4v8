@@ -126,12 +126,14 @@ export function useEditor({
 
   const setCaretPosition = React.useCallback(({ blockId = '', index = 0, length = 0 }: Partial<CaretPosition>) => {
     const element = getBlockElementById(blockId);
-    if (!element) return null;
+    if (!element) return;
     element.focus();
+    const blockLength = getBlockLength(element?.childNodes);
+    if (blockLength < 1) return;
     const selection = document.getSelection();
-    if (!selection) return null;
+    if (!selection) return;
     const currentRange = selection.getRangeAt(0);
-    if (!currentRange) return null;
+    if (!currentRange) return;
     try {
       setTimeout(() => {
         const range = document.createRange();

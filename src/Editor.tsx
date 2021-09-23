@@ -4,7 +4,7 @@ import { Block } from './types/block';
 import { ModuleOptions } from './types/module';
 import { Header, Text } from './components/blocks';
 import { useEditor } from './hooks/use-editor';
-import { useModule } from './hooks/use-module';
+
 import { useEventEmitter } from './hooks/use-event-emitter';
 import { EditorModule, KeyBoardModule, LoggerModule } from './modules';
 import { getBlockElementById } from './utils/block';
@@ -59,7 +59,7 @@ const Inner = styled.div`
 export const Editor: React.VFC<Props> = React.memo(({ readOnly = false, settings = {} }: Props) => {
   const [eventEmitter, eventTool] = useEventEmitter();
   const [blocks, editorRef, editor] = useEditor({ eventEmitter });
-  const [modules, moduleTool] = useModule({ eventEmitter, editor });
+
   const [formats] = React.useState<Formats>({
     text: Text,
     header: Header,
@@ -67,11 +67,12 @@ export const Editor: React.VFC<Props> = React.memo(({ readOnly = false, settings
 
   const handleKeyDown = React.useCallback(
     (event: React.KeyboardEvent) => {
-      if (modules.keyboard && modules.keyboard instanceof KeyBoardModule) {
-        modules.keyboard.onKeyDown(event);
+      const keyboard = editor.getModule('keyboard');
+      if (keyboard && keyboard instanceof KeyBoardModule) {
+        keyboard.onKeyDown(event);
       }
     },
-    [modules],
+    [editor],
   );
 
   const handleClick = React.useCallback((e: React.MouseEvent) => {
@@ -89,7 +90,7 @@ export const Editor: React.VFC<Props> = React.memo(({ readOnly = false, settings
   }, [blocks.length]);
 
   React.useEffect(() => {
-    moduleTool.addModules(
+    editor.addModules(
       [
         { name: 'logger', module: LoggerModule },
         { name: 'editor', module: EditorModule },
@@ -99,7 +100,7 @@ export const Editor: React.VFC<Props> = React.memo(({ readOnly = false, settings
     );
 
     return () => {
-      moduleTool.removeAll();
+      editor.removeAllModules();
     };
   }, []);
 

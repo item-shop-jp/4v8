@@ -3,6 +3,7 @@ import { Subscription } from 'rxjs';
 import { EventEmitter } from '../utils/event-emitter';
 import { getBlockId, getBlockElementById, getBlockLength } from '../utils/block';
 import { CaretPosition } from '../types/caret';
+import { Modules, ModuleOptions } from '../types/module';
 import { Block } from '../types/block';
 import { EditorEvents } from '../constants';
 
@@ -25,6 +26,24 @@ export interface EditorController {
   getNativeRange: () => Range | null;
   updateCaretPosition: () => CaretPosition | null;
   next: (params?: PositionParams) => void;
+  addModule: (
+    name: string,
+    module: {
+      new (params: { eventEmitter: EventEmitter; options: any }): any;
+    },
+    options?: any,
+  ) => void;
+  addModules: (
+    modules: {
+      name: string;
+      module: {
+        new (params: { eventEmitter: EventEmitter; editor: EditorController; options: any }): any;
+      };
+    }[],
+    options?: ModuleOptions,
+  ) => void;
+  getModule: (name: string) => any;
+  removeAllModules: () => void;
 }
 
 export function useEditor({
@@ -33,7 +52,9 @@ export function useEditor({
   const editorRef = React.useRef<HTMLDivElement>(null);
   const lastCaretPositionRef = React.useRef<CaretPosition | null>();
   const blocksRef = React.useRef<Block[]>([]);
+  const modulesRef = React.useRef<Modules>({});
   const [blocks, setBlocks] = React.useState<Block[]>([]);
+  const [modules, setModules] = React.useState<Modules>({});
 
   const focus = React.useCallback(() => {
     if (lastCaretPositionRef.current) {
@@ -159,6 +180,77 @@ export function useEditor({
     return range;
   }, []);
 
+  const addModule = React.useCallback(
+    (
+      name: string,
+      module: {
+        new (params: { eventEmitter: EventEmitter; editor: EditorController; options: any }): any;
+      },
+      options: any = {},
+    ) => {
+      const moduleInstance = new module({ eventEmitter, editor: getEditorController(), options });
+      setModules((prevModules) => {
+        return { ...prevModules, [name]: moduleInstance };
+      });
+      moduleInstance.onInit();
+    },
+    [],
+  );
+
+  const addModules = React.useCallback(
+    (
+      modules: {
+        name: string;
+        module: {
+          new (params: { eventEmitter: EventEmitter; editor: EditorController; options: any }): any;
+        };
+      }[],
+      options: ModuleOptions = {},
+    ) => {
+      modules.forEach(({ name, module }) => {
+        const moduleInstance = new module({
+          eventEmitter,
+          editor: getEditorController(),
+          options: options[name] ?? {},
+        });
+        setModules((prevModules) => {
+          return { ...prevModules, [name]: moduleInstance };
+        });
+        moduleInstance.onInit();
+      });
+    },
+    [],
+  );
+
+  const getModule = React.useCallback((name: string) => {
+    if (!modulesRef.current[name]) return null;
+    return modulesRef.current[name];
+  }, []);
+
+  const removeAllModules = React.useCallback(() => {
+    Object.keys(modulesRef.current).forEach((key) => {
+      modulesRef.current[key].onDestroy();
+    });
+    setModules({});
+  }, []);
+
+  const getEditorController = React.useCallback(() => {
+    return {
+      focus,
+      blur,
+      getBlocks,
+      getCaretPosition,
+      setCaretPosition,
+      updateCaretPosition,
+      getNativeRange,
+      next,
+      addModule,
+      addModules,
+      getModule,
+      removeAllModules,
+    };
+  }, []);
+
   React.useEffect(() => {
     const subs = new Subscription();
     const sub = eventEmitter.on<Block[]>(EditorEvents.EVENT_EDITOR_UPDATE).subscribe((blocks) => {
@@ -174,18 +266,9 @@ export function useEditor({
     blocksRef.current = blocks;
   }, [blocks]);
 
-  return [
-    blocks,
-    editorRef,
-    {
-      focus,
-      blur,
-      getBlocks,
-      getCaretPosition,
-      setCaretPosition,
-      updateCaretPosition,
-      getNativeRange,
-      next,
-    },
-  ];
+  React.useEffect(() => {
+    modulesRef.current = modules;
+  }, [modules]);
+
+  return [blocks, editorRef, getEditorController()];
 }

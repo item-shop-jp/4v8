@@ -1,11 +1,12 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { Block } from '../../types/block';
-import { convertInlineArrayToHTML } from '../../utils/html';
+import { Formats } from '../../types/format';
+import { InlineContent } from '../../utils/inline';
 
 interface Props {
   block: Block;
-  readOnly: boolean;
+  formats?: Formats;
   onClick: (e: React.MouseEvent) => void;
   onKeyDown: (e: React.KeyboardEvent) => void;
 }
@@ -19,10 +20,10 @@ const P = styled.p`
   margin-bottom: 1px;
 `;
 
-export const Text = React.memo(({ block, readOnly = false, ...props }: Props) => {
-  const memoInnerHTML = React.useMemo(() => {
-    return { __html: convertInlineArrayToHTML(block.contents) };
-  }, [block]);
+export const Text = React.memo(({ block, formats, ...props }: Props) => {
+  const memoContents = React.useMemo(() => {
+    return InlineContent({ contents: block.contents, formats });
+  }, []);
 
-  return <P className="notranslate" dangerouslySetInnerHTML={memoInnerHTML} contentEditable={!readOnly} {...props} />;
+  return <P {...props}>{memoContents}</P>;
 });

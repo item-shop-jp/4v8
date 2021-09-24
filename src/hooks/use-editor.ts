@@ -129,7 +129,10 @@ export function useEditor({
     if (!element) return;
     element.focus();
     const blockLength = getBlockLength(element?.childNodes);
-    if (blockLength < 1) return;
+    if (blockLength < 1) {
+      updateCaretPosition();
+      return;
+    }
     const selection = document.getSelection();
     if (!selection) return;
     const currentRange = selection.getRangeAt(0);

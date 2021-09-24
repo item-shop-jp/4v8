@@ -7,6 +7,7 @@ export interface Block {
   contents: Inline[];
   attributes: BlockAttributes;
   type: BlockType;
+  data?: any;
 }
 
 export interface BlockAttributes {

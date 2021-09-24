@@ -2,7 +2,9 @@ import * as React from 'react';
 import styled from 'styled-components';
 import { Block } from './types/block';
 import { ModuleOptions } from './types/module';
+import { Formats } from './types/format';
 import { Header, Text } from './components/blocks';
+import { InlineText } from './components/inlines';
 import { useEditor } from './hooks/use-editor';
 import { useEventEmitter } from './hooks/use-event-emitter';
 import { EditorModule, KeyBoardModule, LoggerModule } from './modules';
@@ -14,34 +16,37 @@ interface Props {
   settings?: ModuleOptions;
 }
 
-interface Formats {
-  [key: string]: React.FC<{
-    block: Block;
-    readOnly: boolean;
-    onClick: (e: React.MouseEvent) => void;
-    onKeyDown: (e: React.KeyboardEvent) => void;
-  }>;
-}
-
 interface BlockProps {
   block: Block;
   readOnly: boolean;
   formats: Formats;
   onClick: (e: React.MouseEvent) => void;
   onKeyDown: (e: React.KeyboardEvent) => void;
+  onInput: (e: React.KeyboardEvent) => void;
 }
 
-const BlockContainer: React.VFC<BlockProps> = React.memo(({ block, formats, ...props }) => {
+const BlockContainer: React.VFC<BlockProps> = React.memo(({ block, readOnly = false, formats, ...props }) => {
   let Container;
-  const blockFormat = block.type.toLocaleLowerCase();
+  const blockFormat = `block/${block.type.toLocaleLowerCase()}`;
   if (!formats[blockFormat]) {
     // defalut block format
-    Container = formats['text'];
+    Container = formats['block/text'];
   } else {
     Container = formats[blockFormat];
   }
 
-  return <Container data-block-id={block.id} block={block} data-format={blockFormat} {...props} />;
+  return (
+    <Container
+      suppressContentEditableWarning
+      className="notranslate"
+      contentEditable={!readOnly}
+      data-block-id={block.id}
+      block={block}
+      data-format={blockFormat}
+      formats={formats}
+      {...props}
+    />
+  );
 });
 
 const Container = styled.div`
@@ -67,8 +72,9 @@ export const Editor: React.VFC<Props> = React.memo(({ readOnly = false, formats,
   const [blocks, editorRef, editor] = useEditor({ eventEmitter });
   const containerRef = React.useRef<HTMLDivElement>(null);
   const [blockFormats, setBlockFormats] = React.useState<Formats>({
-    text: Text,
-    header: Header,
+    'block/text': Text,
+    'block/header': Header,
+    'inline/text': InlineText,
   });
 
   const handleKeyDown = React.useCallback(
@@ -85,6 +91,10 @@ export const Editor: React.VFC<Props> = React.memo(({ readOnly = false, formats,
     e.preventDefault();
     e.stopPropagation();
     editor.updateCaretPosition();
+  }, []);
+
+  const handleInput = React.useCallback((e: React.KeyboardEvent) => {
+    console.log(e);
   }, []);
 
   const handleContainerClick = React.useCallback(() => {
@@ -128,6 +138,7 @@ export const Editor: React.VFC<Props> = React.memo(({ readOnly = false, formats,
               block={block}
               readOnly={readOnly}
               onKeyDown={handleKeyDown}
+              onInput={handleInput}
               onClick={handleClick}
             />
           );

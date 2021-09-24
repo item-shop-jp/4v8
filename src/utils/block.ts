@@ -6,9 +6,10 @@ export function createBlock(type: BlockType, attributes: BlockAttributes = {}): 
     id: nanoid(),
     contents: [
       {
-        attributes: {},
+        id: nanoid(),
         text: '\n',
         type: 'TEXT',
+        attributes: {},
       },
     ],
     attributes,

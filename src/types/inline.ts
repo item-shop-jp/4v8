@@ -1,8 +1,10 @@
+export type InlineType = 'TEXT' | 'BR';
+
 export interface Inline {
   id: string;
   attributes: InlineAttributes;
   text: string;
-  type: 'TEXT';
+  type: InlineType;
   data?: any;
 }
 

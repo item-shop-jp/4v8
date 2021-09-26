@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Subscription } from 'rxjs';
 import { EventEmitter } from '../utils/event-emitter';
 import { getBlockId, getBlockElementById, getBlockLength } from '../utils/block';
+import { createInline } from '../utils/inline';
 import { CaretPosition } from '../types/caret';
 import { Modules, ModuleOptions } from '../types/module';
 import { Block } from '../types/block';
@@ -21,6 +22,7 @@ export interface EditorController {
   focus: () => void;
   blur: () => void;
   getBlocks: () => Block[];
+  updateBlock: () => void;
   setCaretPosition: (caretPosition: Partial<CaretPosition>) => void;
   getCaretPosition: () => CaretPosition | null;
   getNativeRange: () => Range | null;
@@ -126,9 +128,9 @@ export function useEditor({
 
   const setCaretPosition = React.useCallback(({ blockId = '', index = 0, length = 0 }: Partial<CaretPosition>) => {
     const element = getBlockElementById(blockId);
-    if (!element) return;
+    const blockLength = getBlockLength(blockId);
+    if (!element || !blockLength) return;
     element.focus();
-    const blockLength = getBlockLength(element?.childNodes);
     if (blockLength < 1) {
       updateCaretPosition();
       return;
@@ -178,7 +180,7 @@ export function useEditor({
       blockId: startBlockId,
       blockFormat: startBlockElement?.dataset.format ?? '',
       index: nativeRange.startOffset,
-      length: getBlockLength(startBlockElement?.childNodes),
+      length: getBlockLength(startBlockId) ?? 0,
       collapsed: nativeRange.collapsed,
       rect: nativeRange.getBoundingClientRect(),
     };
@@ -239,11 +241,20 @@ export function useEditor({
     setModules({});
   }, []);
 
+  const updateBlock = React.useCallback(() => {
+    blocksRef.current[0] = {
+      ...blocksRef.current[0],
+      contents: [...blocksRef.current[0].contents, createInline('TEXT', 'test')],
+    };
+    setBlocks([...blocksRef.current]);
+  }, []);
+
   const getEditorController = React.useCallback(() => {
     return {
       focus,
       blur,
       getBlocks,
+      updateBlock,
       getCaretPosition,
       setCaretPosition,
       updateCaretPosition,
@@ -258,10 +269,29 @@ export function useEditor({
 
   React.useEffect(() => {
     const subs = new Subscription();
-    const sub = eventEmitter.on<Block[]>(EditorEvents.EVENT_EDITOR_UPDATE).subscribe((blocks) => {
-      setBlocks(blocks);
-    });
-    subs.add(sub);
+    subs.add(
+      eventEmitter.on<Block[]>(EditorEvents.EVENT_EDITOR_UPDATE).subscribe((blocks) => {
+        console.log(blocks);
+        setBlocks(blocks);
+      }),
+    );
+    subs.add(
+      eventEmitter.on<Block>(EditorEvents.EVENT_BLOCK_UPDATE).subscribe((block) => {
+        console.log(block);
+        setBlocks((prevBlocks) => {
+          const currentIndex = prevBlocks.findIndex((v) => v.id === block.id);
+          if (currentIndex === -1) return prevBlocks;
+          return [
+            ...prevBlocks.slice(0, currentIndex),
+            {
+              ...prevBlocks[currentIndex],
+              ...block,
+            },
+            ...prevBlocks.slice(currentIndex + 1),
+          ];
+        });
+      }),
+    );
     return () => {
       subs.unsubscribe();
     };

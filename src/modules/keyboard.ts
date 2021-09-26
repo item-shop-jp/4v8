@@ -154,15 +154,18 @@ export class KeyBoardModule implements Module {
 
   private _handleEnter(caretPosition: CaretPosition, editor: EditorController) {
     if (caretPosition.collapsed) {
-      console.log('key enter');
-      this.eventEmitter.emit(EditorEvents.EVENT_BLOCK_CREATE, {});
+      this.editor.getModule('editor').createBlock();
     } else {
       console.log('key enter(range)');
     }
   }
 
   private _handleShiftEnter(caretPosition: CaretPosition, editor: EditorController) {
-    console.log('key shift enter');
+    if (caretPosition.collapsed) {
+      this.editor.getModule('editor').lineBreak();
+    } else {
+      console.log('key shift enter(range)');
+    }
   }
 
   private _handlekeyDown(caretPosition: CaretPosition, editor: EditorController) {

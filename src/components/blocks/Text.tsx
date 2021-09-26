@@ -23,7 +23,7 @@ const P = styled.p`
 export const Text = React.memo(({ block, formats, ...props }: Props) => {
   const memoContents = React.useMemo(() => {
     return InlineContent({ contents: block.contents, formats });
-  }, []);
+  }, [block]);
 
   return <P {...props}>{memoContents}</P>;
 });

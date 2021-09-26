@@ -1,10 +1,29 @@
 import * as React from 'react';
-import { Inline } from '../types/inline';
+import { nanoid } from 'nanoid';
+import { Inline, InlineType, InlineAttributes } from '../types/inline';
 import { Formats } from '../types/format';
 
 interface Props {
   contents: Inline[];
   formats?: Formats;
+}
+
+export function createInline(type: InlineType, text: string = '\n', attributes: InlineAttributes = {}): Inline {
+  return {
+    id: nanoid(),
+    text,
+    type,
+    attributes: {},
+  };
+}
+
+export function createlineBreak(attributes: InlineAttributes = {}): Inline {
+  return {
+    id: nanoid(),
+    text: '',
+    type: 'BR',
+    attributes: {},
+  };
 }
 
 export const InlineContent: React.VFC<Props> = ({ contents, formats = {}, ...props }: Props) => {

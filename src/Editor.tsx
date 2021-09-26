@@ -4,7 +4,7 @@ import { Block } from './types/block';
 import { ModuleOptions } from './types/module';
 import { Formats } from './types/format';
 import { Header, Text } from './components/blocks';
-import { InlineText } from './components/inlines';
+import { InlineText, Br } from './components/inlines';
 import { useEditor } from './hooks/use-editor';
 import { useEventEmitter } from './hooks/use-event-emitter';
 import { EditorModule, KeyBoardModule, LoggerModule } from './modules';
@@ -75,6 +75,7 @@ export const Editor: React.VFC<Props> = React.memo(({ readOnly = false, formats,
     'block/text': Text,
     'block/header': Header,
     'inline/text': InlineText,
+    'inline/br': Br,
   });
 
   const handleKeyDown = React.useCallback(
@@ -94,7 +95,7 @@ export const Editor: React.VFC<Props> = React.memo(({ readOnly = false, formats,
   }, []);
 
   const handleInput = React.useCallback((e: React.KeyboardEvent) => {
-    console.log(e);
+    editor.updateBlock();
   }, []);
 
   const handleContainerClick = React.useCallback(() => {

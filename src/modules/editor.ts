@@ -1,6 +1,7 @@
 import { Subscription } from 'rxjs';
 import { EventEmitter } from '../utils/event-emitter';
 import { createBlock } from '../utils/block';
+import { createlineBreak } from '../utils/inline';
 import { EditorEvents } from '../constants';
 import { Module } from '../types/module';
 import { EditorController } from '../hooks/use-editor';
@@ -23,12 +24,6 @@ export class EditorModule implements Module {
 
   onInit() {
     this.eventEmitter.info('init editor module');
-
-    const sub = this.eventEmitter.on(EditorEvents.EVENT_BLOCK_CREATE).subscribe(() => {
-      this.createBlock();
-    });
-    this.subs.add(sub);
-
     const blocks = this.editor.getBlocks();
     if (blocks.length < 1) {
       this.createBlock();
@@ -52,5 +47,16 @@ export class EditorModule implements Module {
 
     setTimeout(() => this.editor.setCaretPosition({ blockId: appendBlock.id }));
     this.eventEmitter.emit(EditorEvents.EVENT_EDITOR_UPDATE, insertedBlocks);
+  }
+
+  lineBreak() {
+    const caretPosition = this.editor.getCaretPosition();
+    const blocks = this.editor.getBlocks();
+    const currentIndex = blocks.findIndex((v) => v.id === caretPosition?.blockId);
+    if (currentIndex === -1) return;
+    this.eventEmitter.emit(EditorEvents.EVENT_BLOCK_UPDATE, {
+      ...blocks[currentIndex],
+      contents: [...blocks[currentIndex].contents, createlineBreak()],
+    });
   }
 }

@@ -62,3 +62,22 @@ export function getInlineContents(block: string | HTMLElement): Inline[] {
 
   return contents;
 }
+
+// convert block index to native index
+export function getNativeIndex(block: string | HTMLElement, index: number): { node: ChildNode; index: number } | null {
+  const element = block instanceof HTMLElement ? block : getBlockElementById(block);
+  if (!element) return null;
+  let cumulativeLength = 0;
+  for (let i = 0; i < element.children.length; i++) {
+    const format = (element.children[i] as HTMLElement).dataset.format?.replace(/^inline\//, '').toUpperCase();
+    if (format === 'TEXT') {
+      const inlineLength = element.children[i].innerHTML.length;
+      const inlineNode = (element.children[i] as HTMLElement).firstChild;
+      if (index <= cumulativeLength + inlineLength && inlineNode) {
+        return { node: inlineNode instanceof Text ? inlineNode : element.children[i], index: index - cumulativeLength };
+      }
+      cumulativeLength += inlineLength;
+    }
+  }
+  return null;
+}

@@ -22,6 +22,8 @@ interface BlockProps {
   formats: Formats;
   onClick: (e: React.MouseEvent) => void;
   onKeyDown: (e: React.KeyboardEvent) => void;
+  onCompositionStart: (e: React.CompositionEvent) => void;
+  onCompositionEnd: (e: React.CompositionEvent) => void;
   onInput: (e: React.KeyboardEvent) => void;
 }
 
@@ -88,6 +90,26 @@ export const Editor: React.VFC<Props> = React.memo(({ readOnly = false, formats,
     [editor],
   );
 
+  const handleCompositionStart = React.useCallback(
+    (event: React.CompositionEvent) => {
+      const keyboard = editor.getModule('keyboard');
+      if (keyboard && keyboard instanceof KeyBoardModule) {
+        keyboard.onCompositionStart(event);
+      }
+    },
+    [editor],
+  );
+
+  const handleCompositionEnd = React.useCallback(
+    (event: React.CompositionEvent) => {
+      const keyboard = editor.getModule('keyboard');
+      if (keyboard && keyboard instanceof KeyBoardModule) {
+        keyboard.onCompositionEnd(event);
+      }
+    },
+    [editor],
+  );
+
   const handleClick = React.useCallback((e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -95,7 +117,8 @@ export const Editor: React.VFC<Props> = React.memo(({ readOnly = false, formats,
   }, []);
 
   const handleInput = React.useCallback((e: React.KeyboardEvent) => {
-    editor.updateBlock();
+    if (e.nativeEvent.isComposing) return;
+    editor.optimize();
   }, []);
 
   const handleContainerClick = React.useCallback(() => {
@@ -140,6 +163,8 @@ export const Editor: React.VFC<Props> = React.memo(({ readOnly = false, formats,
               readOnly={readOnly}
               onKeyDown={handleKeyDown}
               onInput={handleInput}
+              onCompositionStart={handleCompositionStart}
+              onCompositionEnd={handleCompositionEnd}
               onClick={handleClick}
             />
           );

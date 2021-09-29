@@ -9,17 +9,9 @@ interface Props {
 const SPAN = styled.span``;
 
 export const InlineText = ({ inline, ...props }: Props) => {
-  console.log('render');
   const memoInnerHTML = React.useMemo(() => {
     return { __html: inline.text.replace('\n', '<br>') };
   }, [inline]);
-
-  React.useEffect(() => {
-    console.log('render');
-    return () => {
-      console.log('destory');
-    };
-  });
 
   return <SPAN dangerouslySetInnerHTML={memoInnerHTML} {...props} />;
 };

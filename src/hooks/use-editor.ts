@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Subscription } from 'rxjs';
 import { EventEmitter } from '../utils/event-emitter';
-import { getBlockId, getBlockElementById, getBlockLength } from '../utils/block';
+import { getBlockId, getBlockElementById, getBlockLength, getInlineContents, getNativeIndex } from '../utils/block';
 import { createInline } from '../utils/inline';
 import { CaretPosition } from '../types/caret';
 import { Modules, ModuleOptions } from '../types/module';
@@ -22,7 +22,7 @@ export interface EditorController {
   focus: () => void;
   blur: () => void;
   getBlocks: () => Block[];
-  updateBlock: () => void;
+  optimize: () => void;
   setCaretPosition: (caretPosition: Partial<CaretPosition>) => void;
   getCaretPosition: () => CaretPosition | null;
   getNativeRange: () => Range | null;
@@ -137,13 +137,15 @@ export function useEditor({
     }
     const selection = document.getSelection();
     if (!selection) return;
-    const currentRange = selection.getRangeAt(0);
-    if (!currentRange) return;
     try {
       setTimeout(() => {
         const range = document.createRange();
-        range.setStart(currentRange.startContainer, index);
-        range.setEnd(currentRange.endContainer, index + length);
+        const start = getNativeIndex(element, index);
+        const end = getNativeIndex(element, index + length);
+
+        if (!start || !end) return;
+        range.setStart(start.node, start.index);
+        range.setEnd(end.node, end.index);
 
         selection.removeAllRanges();
         selection.addRange(range);
@@ -180,7 +182,7 @@ export function useEditor({
       blockId: startBlockId,
       blockFormat: startBlockElement?.dataset.format ?? '',
       index: nativeRange.startOffset,
-      length: getBlockLength(startBlockId) ?? 0,
+      length: 0,
       collapsed: nativeRange.collapsed,
       rect: nativeRange.getBoundingClientRect(),
     };
@@ -241,12 +243,14 @@ export function useEditor({
     setModules({});
   }, []);
 
-  const updateBlock = React.useCallback(() => {
-    blocksRef.current[0] = {
-      ...blocksRef.current[0],
-      contents: [...blocksRef.current[0].contents, createInline('TEXT', 'test')],
-    };
-    setBlocks([...blocksRef.current]);
+  const optimize = React.useCallback(() => {
+    const nativeRange = getNativeRange();
+    updateCaretPosition();
+    if (!nativeRange) return;
+    const [startBlockId, startBlockElement] = getBlockId(nativeRange.startContainer as HTMLElement);
+    const block = blocksRef.current.find((v) => v.id === startBlockId);
+    if (!block || !startBlockElement) return;
+    eventEmitter.emit(EditorEvents.EVENT_BLOCK_UPDATE, { ...block, contents: getInlineContents(startBlockElement) });
   }, []);
 
   const getEditorController = React.useCallback(() => {
@@ -254,7 +258,7 @@ export function useEditor({
       focus,
       blur,
       getBlocks,
-      updateBlock,
+      optimize,
       getCaretPosition,
       setCaretPosition,
       updateCaretPosition,
@@ -271,7 +275,6 @@ export function useEditor({
     const subs = new Subscription();
     subs.add(
       eventEmitter.on<Block[]>(EditorEvents.EVENT_EDITOR_UPDATE).subscribe((blocks) => {
-        console.log(blocks);
         setBlocks(blocks);
       }),
     );
@@ -290,6 +293,9 @@ export function useEditor({
             ...prevBlocks.slice(currentIndex + 1),
           ];
         });
+        if (lastCaretPositionRef.current) {
+          setCaretPosition(lastCaretPositionRef.current);
+        }
       }),
     );
     return () => {

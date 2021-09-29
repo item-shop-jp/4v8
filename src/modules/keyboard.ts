@@ -20,6 +20,7 @@ interface KeyBindingProps {
   shiftKey?: boolean;
   altKey?: boolean;
   prevented?: boolean;
+  composing?: boolean;
   handler: (range: CaretPosition, editor: EditorController) => void;
 }
 
@@ -42,6 +43,7 @@ export class KeyBoardModule implements Module {
     // handle enter
     this.addBinding({
       key: KeyCodes.ENTER,
+      composing: true,
       handler: this._handleEnter.bind(this),
     });
     this.addBinding({
@@ -51,6 +53,7 @@ export class KeyBoardModule implements Module {
     });
     this.addBinding({
       key: KeyCodes.NUMPAD_ENTER,
+      composing: true,
       handler: this._handleEnter.bind(this),
     });
     this.addBinding({
@@ -65,6 +68,18 @@ export class KeyBoardModule implements Module {
       collapsed: true,
       handler: this._handlekeyDown.bind(this),
     });
+
+    this.addBinding({
+      key: KeyCodes.BACKSPACE,
+      collapsed: true,
+      handler: this._handleBackspace.bind(this),
+    });
+
+    // if ([KeyCodes.DEL].includes(e.code)) {
+    //   e.preventDefault();
+    //   e.stopPropagation();
+    //   return;
+    // }
   }
 
   onDestroy() {
@@ -83,10 +98,6 @@ export class KeyBoardModule implements Module {
   onKeyPress(e: React.KeyboardEvent) {}
 
   onKeyDown(e: React.KeyboardEvent) {
-    if (e.defaultPrevented || this.composing) {
-      return;
-    }
-
     let prevented = false;
 
     this.bindings.forEach((binding) => {
@@ -113,12 +124,6 @@ export class KeyBoardModule implements Module {
     });
   }
 
-  private _updateCaret() {
-    setTimeout(() => {
-      this.editor.updateCaretPosition();
-    });
-  }
-
   private _trigger(e: React.KeyboardEvent, props: KeyBindingProps): boolean {
     const {
       key,
@@ -130,9 +135,11 @@ export class KeyBoardModule implements Module {
       shiftKey = false,
       altKey = false,
       prevented = true,
+      composing = false,
       handler,
     } = props;
     const caretPosition = this.editor.getCaretPosition();
+    if (!composing && this.composing) return false;
 
     if (!caretPosition) return false;
     if ((metaKey && !e.metaKey) || (!metaKey && e.metaKey)) return false;
@@ -153,6 +160,12 @@ export class KeyBoardModule implements Module {
   }
 
   private _handleEnter(caretPosition: CaretPosition, editor: EditorController) {
+    if (this.composing) {
+      // Supports multibyte characters (Japanese)
+      setTimeout(() => this.editor.optimize(), 100);
+      return;
+    }
+
     if (caretPosition.collapsed) {
       this.editor.getModule('editor').createBlock();
     } else {
@@ -170,6 +183,9 @@ export class KeyBoardModule implements Module {
 
   private _handlekeyDown(caretPosition: CaretPosition, editor: EditorController) {
     editor.next();
-    this._updateCaret();
+  }
+
+  private _handleBackspace(caretPosition: CaretPosition, editor: EditorController) {
+    editor.blur();
   }
 }

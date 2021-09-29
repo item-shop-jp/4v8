@@ -20,6 +20,7 @@ interface BlockProps {
   block: Block;
   readOnly: boolean;
   formats: Formats;
+  key: string;
   onClick: (e: React.MouseEvent) => void;
   onKeyDown: (e: React.KeyboardEvent) => void;
   onCompositionStart: (e: React.CompositionEvent) => void;
@@ -28,14 +29,25 @@ interface BlockProps {
 }
 
 const BlockContainer: React.VFC<BlockProps> = React.memo(({ block, readOnly = false, formats, ...props }) => {
-  let Container;
-  const blockFormat = `block/${block.type.toLocaleLowerCase()}`;
-  if (!formats[blockFormat]) {
-    // defalut block format
-    Container = formats['block/text'];
-  } else {
-    Container = formats[blockFormat];
-  }
+  const [blockFormat, setBlockFormat] = React.useState<string>();
+  const [Container, setContainer] = React.useState<React.FC<any>>(formats['block/text']);
+
+  React.useEffect(() => {
+    const newBlockFormat = `block/${block.type.toLocaleLowerCase()}`;
+    setBlockFormat(newBlockFormat);
+    setContainer(() => {
+      if (!formats[newBlockFormat]) {
+        // defalut block format
+        return formats['block/text'];
+      } else {
+        return formats[newBlockFormat];
+      }
+    });
+  }, [block.type]);
+
+  React.useEffect(() => {
+    console.log('update props');
+  }, [props]);
 
   return (
     <Container
@@ -117,8 +129,10 @@ export const Editor: React.VFC<Props> = React.memo(({ readOnly = false, formats,
   }, []);
 
   const handleInput = React.useCallback((e: React.KeyboardEvent) => {
-    if (e.nativeEvent.isComposing) return;
-    editor.optimize();
+    const keyboard = editor.getModule('keyboard');
+    if (keyboard && keyboard instanceof KeyBoardModule) {
+      keyboard.onInput(e);
+    }
   }, []);
 
   const handleContainerClick = React.useCallback(() => {

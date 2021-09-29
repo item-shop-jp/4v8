@@ -75,6 +75,13 @@ export class KeyBoardModule implements Module {
       handler: this._handleBackspace.bind(this),
     });
 
+    this.addBinding({
+      key: KeyCodes.SPACE,
+      collapsed: true,
+      composing: true,
+      handler: this._handleSpace.bind(this),
+    });
+
     // if ([KeyCodes.DEL].includes(e.code)) {
     //   e.preventDefault();
     //   e.stopPropagation();
@@ -93,6 +100,13 @@ export class KeyBoardModule implements Module {
 
   onCompositionEnd(e: React.CompositionEvent) {
     this.composing = false;
+  }
+
+  onInput(e: React.KeyboardEvent) {
+    setTimeout(() => {
+      if (this.composing) return;
+      this.editor.optimize();
+    }, 1);
   }
 
   onKeyPress(e: React.KeyboardEvent) {}
@@ -161,8 +175,6 @@ export class KeyBoardModule implements Module {
 
   private _handleEnter(caretPosition: CaretPosition, editor: EditorController) {
     if (this.composing) {
-      // Supports multibyte characters (Japanese)
-      setTimeout(() => this.editor.optimize(), 100);
       return;
     }
 
@@ -171,6 +183,14 @@ export class KeyBoardModule implements Module {
     } else {
       console.log('key enter(range)');
     }
+  }
+
+  private _handleSpace(caretPosition: CaretPosition, editor: EditorController) {
+    // if (this.composing) {
+    //   this.editor.optimize();
+    //   console.log('変換enter');
+    //   return;
+    // }
   }
 
   private _handleShiftEnter(caretPosition: CaretPosition, editor: EditorController) {

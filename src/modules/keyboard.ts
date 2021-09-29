@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { debounce } from 'throttle-debounce';
 import { Module } from '../types/module';
 import { EventEmitter } from '../utils/event-emitter';
 import { KeyCodes, EditorEvents } from '../constants';
@@ -29,6 +30,9 @@ export class KeyBoardModule implements Module {
   private editor;
   private composing;
   private bindings: KeyBindingProps[];
+  private debouncedOptimize = debounce(500, () => {
+    this.editor.optimize();
+  });
 
   constructor({ eventEmitter, editor }: Props) {
     this.eventEmitter = eventEmitter;
@@ -103,10 +107,7 @@ export class KeyBoardModule implements Module {
   }
 
   onInput(e: React.KeyboardEvent) {
-    setTimeout(() => {
-      if (this.composing) return;
-      this.editor.optimize();
-    }, 1);
+    this.debouncedOptimize();
   }
 
   onKeyPress(e: React.KeyboardEvent) {}

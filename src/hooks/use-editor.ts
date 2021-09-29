@@ -28,6 +28,7 @@ export interface EditorController {
   getNativeRange: () => Range | null;
   updateCaretPosition: () => CaretPosition | null;
   next: (params?: PositionParams) => void;
+  render: () => void;
   addModule: (
     name: string,
     module: {
@@ -253,6 +254,10 @@ export function useEditor({
     eventEmitter.emit(EditorEvents.EVENT_BLOCK_UPDATE, { ...block, contents: getInlineContents(startBlockElement) });
   }, []);
 
+  const render = React.useCallback(() => {
+    eventEmitter.emit(EditorEvents.EVENT_BLOCK_RERENDER);
+  }, []);
+
   const getEditorController = React.useCallback(() => {
     return {
       focus,
@@ -264,6 +269,7 @@ export function useEditor({
       updateCaretPosition,
       getNativeRange,
       next,
+      render,
       addModule,
       addModules,
       getModule,
@@ -275,37 +281,36 @@ export function useEditor({
     const subs = new Subscription();
     subs.add(
       eventEmitter.on<Block[]>(EditorEvents.EVENT_EDITOR_UPDATE).subscribe((blocks) => {
-        setBlocks(blocks);
+        blocksRef.current = blocks;
+      }),
+    );
+    subs.add(
+      eventEmitter.on(EditorEvents.EVENT_BLOCK_RERENDER).subscribe(() => {
+        setBlocks(blocksRef.current);
+        if (lastCaretPositionRef.current) {
+          setCaretPosition(lastCaretPositionRef.current);
+        }
       }),
     );
     subs.add(
       eventEmitter.on<Block>(EditorEvents.EVENT_BLOCK_UPDATE).subscribe((block) => {
-        console.log(block);
-        setBlocks((prevBlocks) => {
-          const currentIndex = prevBlocks.findIndex((v) => v.id === block.id);
-          if (currentIndex === -1) return prevBlocks;
-          return [
-            ...prevBlocks.slice(0, currentIndex),
-            {
-              ...prevBlocks[currentIndex],
-              ...block,
-            },
-            ...prevBlocks.slice(currentIndex + 1),
-          ];
-        });
-        if (lastCaretPositionRef.current) {
-          setCaretPosition(lastCaretPositionRef.current);
-        }
+        eventEmitter.info(block.contents.map((v) => v.text).join(''));
+        const currentIndex = blocksRef.current.findIndex((v) => v.id === block.id);
+        if (currentIndex === -1) return;
+        blocksRef.current = [
+          ...blocksRef.current.slice(0, currentIndex),
+          {
+            ...blocksRef.current[currentIndex],
+            ...block,
+          },
+          ...blocksRef.current.slice(currentIndex + 1),
+        ];
       }),
     );
     return () => {
       subs.unsubscribe();
     };
   }, []);
-
-  React.useEffect(() => {
-    blocksRef.current = blocks;
-  }, [blocks]);
 
   React.useEffect(() => {
     modulesRef.current = modules;

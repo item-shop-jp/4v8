@@ -47,6 +47,7 @@ export class EditorModule implements Module {
 
     setTimeout(() => this.editor.setCaretPosition({ blockId: appendBlock.id }));
     this.eventEmitter.emit(EditorEvents.EVENT_EDITOR_UPDATE, insertedBlocks);
+    this.editor.render();
   }
 
   lineBreak() {

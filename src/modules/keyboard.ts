@@ -107,7 +107,7 @@ export class KeyBoardModule implements Module {
   }
 
   onInput(e: React.KeyboardEvent) {
-    this.debouncedOptimize();
+    this.editor.optimize();
   }
 
   onKeyPress(e: React.KeyboardEvent) {}

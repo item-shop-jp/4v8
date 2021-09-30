@@ -2,7 +2,6 @@ import * as React from 'react';
 import { Subscription } from 'rxjs';
 import { EventEmitter } from '../utils/event-emitter';
 import { getBlockId, getBlockElementById, getBlockLength, getInlineContents, getNativeIndex } from '../utils/block';
-import { createInline } from '../utils/inline';
 import { CaretPosition } from '../types/caret';
 import { Modules, ModuleOptions } from '../types/module';
 import { Block } from '../types/block';
@@ -22,6 +21,7 @@ export interface EditorController {
   focus: () => void;
   blur: () => void;
   getBlocks: () => Block[];
+  getBlock: (blockId: string) => Block | null;
   optimize: () => void;
   setCaretPosition: (caretPosition: Partial<CaretPosition>) => void;
   getCaretPosition: () => CaretPosition | null;
@@ -47,16 +47,14 @@ export interface EditorController {
   ) => void;
   getModule: (name: string) => any;
   removeAllModules: () => void;
+  getEventEmitter: () => EventEmitter;
 }
 
-export function useEditor({
-  eventEmitter,
-}: Props): [Block[], React.MutableRefObject<HTMLDivElement | null>, EditorController] {
+export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTMLDivElement | null>, EditorController] {
   const editorRef = React.useRef<HTMLDivElement>(null);
   const lastCaretPositionRef = React.useRef<CaretPosition | null>();
   const blocksRef = React.useRef<Block[]>([]);
   const modulesRef = React.useRef<Modules>({});
-  const [blocks, setBlocks] = React.useState<Block[]>([]);
   const [modules, setModules] = React.useState<Modules>({});
 
   const focus = React.useCallback(() => {
@@ -100,6 +98,10 @@ export function useEditor({
 
   const getBlocks = React.useCallback((): Block[] => {
     return blocksRef.current;
+  }, []);
+
+  const getBlock = React.useCallback((blockId: string): Block | null => {
+    return blocksRef.current.find((v) => v.id === blockId) ?? null;
   }, []);
 
   const getCaretPosition = React.useCallback(() => {
@@ -158,19 +160,6 @@ export function useEditor({
     }
   }, []);
 
-  // const getAffectedBlocks = React.useCallback((caretPosition?: CaretPosition): Block[] => {
-  //   const postion = caretPosition ?? getCaretPosition();
-  //   if (!postion) return [];
-  //   const startIndex = blocksRef.current.findIndex((v) => v.id === postion.start.blockId);
-  //   const endIndex = blocksRef.current.findIndex((v) => v.id === postion.end.blockId);
-  //   if (startIndex === -1) return [];
-  //   if (startIndex === endIndex) {
-  //     return [blocksRef.current[startIndex]];
-  //   } else {
-  //     return [...blocksRef.current.slice(startIndex, endIndex)];
-  //   }
-  // }, []);
-
   const normalizeRange = React.useCallback((nativeRange: Range) => {
     const [startBlockId, startBlockElement] = getBlockId(nativeRange.startContainer as HTMLElement);
     const [endBlockId, endBlockElement] = getBlockId(nativeRange.endContainer as HTMLElement);
@@ -198,7 +187,7 @@ export function useEditor({
       },
       options: any = {},
     ) => {
-      const moduleInstance = new module({ eventEmitter, editor: getEditorController(), options });
+      const moduleInstance = new module({ eventEmitter, editor: editorController, options });
       setModules((prevModules) => {
         return { ...prevModules, [name]: moduleInstance };
       });
@@ -220,7 +209,7 @@ export function useEditor({
       modules.forEach(({ name, module }) => {
         const moduleInstance = new module({
           eventEmitter,
-          editor: getEditorController(),
+          editor: editorController,
           options: options[name] ?? {},
         });
         setModules((prevModules) => {
@@ -231,6 +220,10 @@ export function useEditor({
     },
     [],
   );
+
+  const getEventEmitter = React.useCallback(() => {
+    return eventEmitter;
+  }, []);
 
   const getModule = React.useCallback((name: string) => {
     if (!modulesRef.current[name]) return null;
@@ -254,15 +247,16 @@ export function useEditor({
     eventEmitter.emit(EditorEvents.EVENT_BLOCK_UPDATE, { ...block, contents: getInlineContents(startBlockElement) });
   }, []);
 
-  const render = React.useCallback(() => {
-    eventEmitter.emit(EditorEvents.EVENT_BLOCK_RERENDER);
+  const render = React.useCallback((affectedIds: string[] = []) => {
+    eventEmitter.emit(EditorEvents.EVENT_BLOCK_RERENDER, affectedIds);
   }, []);
 
-  const getEditorController = React.useCallback(() => {
+  const editorController = React.useMemo(() => {
     return {
       focus,
       blur,
       getBlocks,
+      getBlock,
       optimize,
       getCaretPosition,
       setCaretPosition,
@@ -274,6 +268,7 @@ export function useEditor({
       addModules,
       getModule,
       removeAllModules,
+      getEventEmitter,
     };
   }, []);
 
@@ -285,16 +280,7 @@ export function useEditor({
       }),
     );
     subs.add(
-      eventEmitter.on(EditorEvents.EVENT_BLOCK_RERENDER).subscribe(() => {
-        setBlocks(blocksRef.current);
-        if (lastCaretPositionRef.current) {
-          setCaretPosition(lastCaretPositionRef.current);
-        }
-      }),
-    );
-    subs.add(
       eventEmitter.on<Block>(EditorEvents.EVENT_BLOCK_UPDATE).subscribe((block) => {
-        eventEmitter.info(block.contents.map((v) => v.text).join(''));
         const currentIndex = blocksRef.current.findIndex((v) => v.id === block.id);
         if (currentIndex === -1) return;
         blocksRef.current = [
@@ -313,8 +299,28 @@ export function useEditor({
   }, []);
 
   React.useEffect(() => {
+    const interval = setInterval(() => {
+      blocksRef.current[blocksRef.current.length - 1].contents[0] = {
+        ...blocksRef.current[blocksRef.current.length - 1].contents[0],
+        text: `あ${blocksRef.current[blocksRef.current.length - 1].contents[0].text}`,
+      };
+      blocksRef.current[blocksRef.current.length - 1] = {
+        ...blocksRef.current[blocksRef.current.length - 1],
+      };
+      render([blocksRef.current[blocksRef.current.length - 1].id]);
+      if (
+        lastCaretPositionRef.current &&
+        blocksRef.current[blocksRef.current.length - 1].id === lastCaretPositionRef.current.blockId
+      ) {
+        setCaretPosition({ ...lastCaretPositionRef.current, index: lastCaretPositionRef.current.index + 1 });
+      }
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
+
+  React.useEffect(() => {
     modulesRef.current = modules;
   }, [modules]);
 
-  return [blocks, editorRef, getEditorController()];
+  return [editorRef, editorController];
 }

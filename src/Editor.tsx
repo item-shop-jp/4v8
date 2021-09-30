@@ -155,7 +155,6 @@ export const Editor: React.VFC<Props> = React.memo(({ readOnly = false, formats,
       ],
       settings,
     );
-
     subscriptionRef.current.add(
       eventEmitter.on(EditorEvents.EVENT_BLOCK_RERENDER).subscribe(() => {
         setBlocks(editor.getBlocks());
@@ -165,7 +164,7 @@ export const Editor: React.VFC<Props> = React.memo(({ readOnly = false, formats,
 
     return () => {
       editor.removeAllModules();
-      subscriptionRef.current.unsubscribe();
+      setTimeout(() => subscriptionRef.current.unsubscribe());
     };
   }, []);
 

@@ -154,6 +154,7 @@ export class KeyBoardModule implements Module {
       handler,
     } = props;
     const caretPosition = this.editor.getCaretPosition();
+
     if (!composing && this.composing) return false;
 
     if (!caretPosition) return false;

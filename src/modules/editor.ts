@@ -44,7 +44,6 @@ export class EditorModule implements Module {
       currentIndex !== -1
         ? [...blocks.slice(0, currentIndex + 1), appendBlock, ...blocks.slice(currentIndex + 1)]
         : [...blocks, appendBlock];
-
     setTimeout(() => this.editor.setCaretPosition({ blockId: appendBlock.id }));
     this.eventEmitter.emit(EditorEvents.EVENT_EDITOR_UPDATE, insertedBlocks);
     this.editor.render();

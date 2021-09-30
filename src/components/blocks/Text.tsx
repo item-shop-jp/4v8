@@ -49,7 +49,7 @@ export const Text = React.memo(({ blockId, formats, editor, ...props }: Props) =
     );
 
     return () => {
-      subscriptionRef.current.unsubscribe();
+      setTimeout(() => subscriptionRef.current.unsubscribe());
     };
   }, [blockId]);
 

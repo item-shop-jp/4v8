@@ -1,11 +1,19 @@
 import * as React from 'react';
 import { Subscription } from 'rxjs';
 import { EventEmitter } from '../utils/event-emitter';
-import { getBlockId, getBlockElementById, getBlockLength, getInlineContents, getNativeIndex } from '../utils/block';
+import {
+  getBlockId,
+  getBlockElementById,
+  getBlockLength,
+  getInlineContents,
+  getNativeIndex,
+  createBlock,
+} from '../utils/block';
 import { CaretPosition } from '../types/caret';
-import { Modules, ModuleOptions } from '../types/module';
+import { Modules, Module, ModuleOptions } from '../types/module';
 import { Block } from '../types/block';
 import { EditorEvents } from '../constants';
+import { EditorModule } from '../modules/editor';
 
 interface Props {
   eventEmitter: EventEmitter;
@@ -54,8 +62,8 @@ export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTML
   const editorRef = React.useRef<HTMLDivElement>(null);
   const lastCaretPositionRef = React.useRef<CaretPosition | null>();
   const blocksRef = React.useRef<Block[]>([]);
-  const modulesRef = React.useRef<Modules>({});
-  const [modules, setModules] = React.useState<Modules>({});
+  const modulesRef = React.useRef<any>({});
+  const [modules, setModules] = React.useState<any>({});
 
   const focus = React.useCallback(() => {
     if (lastCaretPositionRef.current) {
@@ -188,7 +196,7 @@ export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTML
       options: any = {},
     ) => {
       const moduleInstance = new module({ eventEmitter, editor: editorController, options });
-      setModules((prevModules) => {
+      setModules((prevModules: any) => {
         return { ...prevModules, [name]: moduleInstance };
       });
       moduleInstance.onInit();
@@ -212,7 +220,7 @@ export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTML
           editor: editorController,
           options: options[name] ?? {},
         });
-        setModules((prevModules) => {
+        setModules((prevModules: any) => {
           return { ...prevModules, [name]: moduleInstance };
         });
         moduleInstance.onInit();
@@ -225,7 +233,7 @@ export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTML
     return eventEmitter;
   }, []);
 
-  const getModule = React.useCallback((name: string) => {
+  const getModule = React.useCallback(<T>(name: string): T | null => {
     if (!modulesRef.current[name]) return null;
     return modulesRef.current[name];
   }, []);
@@ -298,25 +306,17 @@ export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTML
     };
   }, []);
 
-  React.useEffect(() => {
-    const interval = setInterval(() => {
-      blocksRef.current[blocksRef.current.length - 1].contents[0] = {
-        ...blocksRef.current[blocksRef.current.length - 1].contents[0],
-        text: `あ${blocksRef.current[blocksRef.current.length - 1].contents[0].text}`,
-      };
-      blocksRef.current[blocksRef.current.length - 1] = {
-        ...blocksRef.current[blocksRef.current.length - 1],
-      };
-      render([blocksRef.current[blocksRef.current.length - 1].id]);
-      if (
-        lastCaretPositionRef.current &&
-        blocksRef.current[blocksRef.current.length - 1].id === lastCaretPositionRef.current.blockId
-      ) {
-        setCaretPosition({ ...lastCaretPositionRef.current, index: lastCaretPositionRef.current.index + 1 });
-      }
-    }, 3000);
-    return () => clearInterval(interval);
-  }, []);
+  // real-time collaborative test
+  // React.useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     blocksRef.current = [...blocksRef.current, createBlock('TEXT')];
+  //     render();
+  //   }, 2000);
+
+  //   return () => {
+  //     clearInterval(interval);
+  //   };
+  // }, []);
 
   React.useEffect(() => {
     modulesRef.current = modules;

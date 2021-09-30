@@ -85,7 +85,6 @@ const MarginBottom = styled.div`
 export const Editor: React.VFC<Props> = React.memo(({ readOnly = false, formats, settings = {}, ...props }: Props) => {
   const [eventEmitter, eventTool] = useEventEmitter();
   const [editorRef, editor] = useEditor({ eventEmitter });
-  const subscriptionRef = React.useRef<Subscription>(new Subscription());
   const containerRef = React.useRef<HTMLDivElement>(null);
   const [blockFormats, setBlockFormats] = React.useState<Formats>({
     'block/text': Text,
@@ -147,6 +146,7 @@ export const Editor: React.VFC<Props> = React.memo(({ readOnly = false, formats,
   }, [blocks.length]);
 
   React.useEffect(() => {
+    const subs = new Subscription();
     editor.addModules(
       [
         { name: 'logger', module: LoggerModule },
@@ -155,7 +155,7 @@ export const Editor: React.VFC<Props> = React.memo(({ readOnly = false, formats,
       ],
       settings,
     );
-    subscriptionRef.current.add(
+    subs.add(
       eventEmitter.on(EditorEvents.EVENT_BLOCK_RERENDER).subscribe(() => {
         setBlocks(editor.getBlocks());
       }),
@@ -164,7 +164,7 @@ export const Editor: React.VFC<Props> = React.memo(({ readOnly = false, formats,
 
     return () => {
       editor.removeAllModules();
-      setTimeout(() => subscriptionRef.current.unsubscribe());
+      subs.unsubscribe();
     };
   }, []);
 

@@ -4,6 +4,7 @@ import { Module } from '../types/module';
 import { EventEmitter } from '../utils/event-emitter';
 import { KeyCodes, EditorEvents } from '../constants';
 import { EditorController } from '../hooks/use-editor';
+import { deleteInlineContents } from '../utils/block';
 import { CaretPosition } from '../types/caret';
 
 interface Props {
@@ -208,6 +209,13 @@ export class KeyBoardModule implements Module {
   }
 
   private _handleBackspace(caretPosition: CaretPosition, editor: EditorController) {
-    editor.blur();
+    const block = editor.getBlock(caretPosition.blockId);
+    if (!block) return;
+    const startIndex = caretPosition.index - 1;
+    const deletedContents = deleteInlineContents(block.contents, startIndex, 1);
+    console.log(deletedContents);
+    editor.updateBlock({ ...block, contents: deletedContents });
+    editor.render([block.id]);
+    editor.setCaretPosition({ blockId: block.id, index: startIndex });
   }
 }

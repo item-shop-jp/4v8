@@ -27,7 +27,6 @@ const P = styled.p`
 
 export const Text = React.memo(({ blockId, formats, editor, ...props }: Props) => {
   const [contents, setContents] = React.useState<Inline[]>([]);
-  const subscriptionRef = React.useRef<Subscription>(new Subscription());
 
   React.useEffect(() => {
     const block = editor.getBlock(blockId);
@@ -35,21 +34,23 @@ export const Text = React.memo(({ blockId, formats, editor, ...props }: Props) =
     if (block) {
       setContents(block.contents);
     }
-    subscriptionRef.current.add(
+
+    const subs = new Subscription();
+
+    subs.add(
       eventEmitter
         .on<string[]>(EditorEvents.EVENT_BLOCK_RERENDER)
         .pipe(filter((affectedIds) => affectedIds.includes(blockId)))
         .subscribe(() => {
           const block = editor.getBlock(blockId);
           if (block) {
-            console.log('updated', block.id);
             setContents([...block.contents]);
           }
         }),
     );
 
     return () => {
-      setTimeout(() => subscriptionRef.current.unsubscribe());
+      subs.unsubscribe();
     };
   }, [blockId]);
 

@@ -14,6 +14,7 @@ export function createInline(type: InlineType, text: string = '\n', attributes: 
     text,
     type,
     attributes: {},
+    isEmbed: isEmbed(type),
   };
 }
 
@@ -23,7 +24,19 @@ export function createlineBreak(attributes: InlineAttributes = {}): Inline {
     text: '',
     type: 'BR',
     attributes: {},
+    isEmbed: isEmbed('BR'),
   };
+}
+
+export function isEmbed(type: InlineType): boolean {
+  switch (type) {
+    case 'TEXT':
+      return false;
+    case 'BR':
+      return true;
+    default:
+      return false;
+  }
 }
 
 export const InlineContent: React.VFC<Props> = ({ contents, formats = {}, ...props }: Props) => {

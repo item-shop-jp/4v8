@@ -1,5 +1,5 @@
 import { nanoid } from 'nanoid';
-import { createInline, createlineBreak } from './inline';
+import { createInline, isEmbed } from './inline';
 import { Block, BlockType, BlockAttributes } from '../types/block';
 import { Inline } from '../types/inline';
 
@@ -54,6 +54,7 @@ export function getInlineContents(block: string | HTMLElement): Inline[] {
           attributes: {},
           text: inline.innerText,
           type: format as Inline['type'],
+          isEmbed: isEmbed(format as Inline['type']),
         },
       ];
     },
@@ -80,4 +81,28 @@ export function getNativeIndex(block: string | HTMLElement, index: number): { no
     }
   }
   return null;
+}
+
+export function deleteInlineContents(contents: Inline[], index: number, length: number = 0): Inline[] {
+  const startIndex = index;
+  const destContents = [];
+  let cumulativeLength = 0;
+  for (let i = 0; i < contents.length; i++) {
+    const inlineLength = contents[i].isEmbed ? 1 : contents[i].text.length;
+    if (length > 0 && startIndex >= cumulativeLength && startIndex < cumulativeLength + inlineLength) {
+      const deleteIndex = startIndex - cumulativeLength;
+      const textlength = contents[i].text.length - deleteIndex;
+      const deletelength = textlength - length >= 0 ? length : textlength;
+      length -= deletelength;
+      const text = contents[i].text.slice(0, deleteIndex) + contents[i].text.slice(deleteIndex + deletelength);
+      if (text.length > 0) {
+        destContents.push({ ...contents[i], text });
+      }
+    } else {
+      destContents.push(contents[i]);
+    }
+
+    cumulativeLength += inlineLength;
+  }
+  return destContents;
 }

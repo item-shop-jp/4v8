@@ -30,13 +30,14 @@ export interface EditorController {
   blur: () => void;
   getBlocks: () => Block[];
   getBlock: (blockId: string) => Block | null;
+  updateBlock: (block: Block) => void;
   optimize: () => void;
   setCaretPosition: (caretPosition: Partial<CaretPosition>) => void;
   getCaretPosition: () => CaretPosition | null;
   getNativeRange: () => Range | null;
   updateCaretPosition: () => CaretPosition | null;
   next: (params?: PositionParams) => void;
-  render: () => void;
+  render: (affectedIds?: string[]) => void;
   addModule: (
     name: string,
     module: {
@@ -255,6 +256,10 @@ export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTML
     eventEmitter.emit(EditorEvents.EVENT_BLOCK_UPDATE, { ...block, contents: getInlineContents(startBlockElement) });
   }, []);
 
+  const updateBlock = React.useCallback((block: Block) => {
+    eventEmitter.emit(EditorEvents.EVENT_BLOCK_UPDATE, block);
+  }, []);
+
   const render = React.useCallback((affectedIds: string[] = []) => {
     eventEmitter.emit(EditorEvents.EVENT_BLOCK_RERENDER, affectedIds);
   }, []);
@@ -265,6 +270,7 @@ export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTML
       blur,
       getBlocks,
       getBlock,
+      updateBlock,
       optimize,
       getCaretPosition,
       setCaretPosition,

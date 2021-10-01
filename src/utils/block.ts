@@ -90,13 +90,15 @@ export function deleteInlineContents(contents: Inline[], index: number, length: 
   for (let i = 0; i < contents.length; i++) {
     const inlineLength = contents[i].isEmbed ? 1 : contents[i].text.length;
     if (length > 0 && startIndex >= cumulativeLength && startIndex < cumulativeLength + inlineLength) {
-      const deleteIndex = startIndex - cumulativeLength;
-      const textlength = contents[i].text.length - deleteIndex;
-      const deletelength = textlength - length >= 0 ? length : textlength;
-      length -= deletelength;
-      const text = contents[i].text.slice(0, deleteIndex) + contents[i].text.slice(deleteIndex + deletelength);
-      if (text.length > 0) {
-        destContents.push({ ...contents[i], text });
+      if (!contents[i].isEmbed) {
+        const deleteIndex = startIndex - cumulativeLength;
+        const textlength = contents[i].text.length - deleteIndex;
+        const deletelength = textlength - length >= 0 ? length : textlength;
+        length -= deletelength;
+        const text = contents[i].text.slice(0, deleteIndex) + contents[i].text.slice(deleteIndex + deletelength);
+        if (text.length > 0) {
+          destContents.push({ ...contents[i], text });
+        }
       }
     } else {
       destContents.push(contents[i]);

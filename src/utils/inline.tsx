@@ -8,6 +8,16 @@ interface Props {
   formats?: Formats;
 }
 
+export function getInlineId(node: HTMLElement): [string, HTMLElement] | [] {
+  if (node.dataset?.inlineId) {
+    return [node.dataset.inlineId, node];
+  }
+  if (!node.parentElement) {
+    return [];
+  }
+  return getInlineId(node.parentElement);
+}
+
 export function createInline(type: InlineType, text: string = '\n', attributes: InlineAttributes = {}): Inline {
   return {
     id: nanoid(),

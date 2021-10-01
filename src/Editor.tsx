@@ -24,7 +24,6 @@ interface BlockProps {
   readOnly: boolean;
   formats: Formats;
   editor: EditorController;
-  onClick: (e: React.MouseEvent) => void;
   onKeyDown: (e: React.KeyboardEvent) => void;
   onCompositionStart: (e: React.CompositionEvent) => void;
   onCompositionEnd: (e: React.CompositionEvent) => void;
@@ -124,12 +123,6 @@ export const Editor: React.VFC<Props> = React.memo(({ readOnly = false, formats,
     [editor],
   );
 
-  const handleClick = React.useCallback((e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    editor.updateCaretPosition();
-  }, []);
-
   const handleInput = React.useCallback((e: React.KeyboardEvent) => {
     const keyboard = editor.getModule('keyboard');
     if (keyboard && keyboard instanceof KeyBoardModule) {
@@ -201,7 +194,6 @@ export const Editor: React.VFC<Props> = React.memo(({ readOnly = false, formats,
               onInput={handleInput}
               onCompositionStart={handleCompositionStart}
               onCompositionEnd={handleCompositionEnd}
-              onClick={handleClick}
             />
           );
         })}

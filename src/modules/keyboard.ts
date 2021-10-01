@@ -76,7 +76,6 @@ export class KeyBoardModule implements Module {
 
     this.addBinding({
       key: KeyCodes.BACKSPACE,
-      collapsed: true,
       handler: this._handleBackspace.bind(this),
     });
 
@@ -116,8 +115,15 @@ export class KeyBoardModule implements Module {
   onKeyDown(e: React.KeyboardEvent) {
     let prevented = false;
 
+    const caretPosition = this.editor.getCaretPosition();
+
+    if (!caretPosition) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
     this.bindings.forEach((binding) => {
-      if (this._trigger(e, binding)) {
+      if (this._trigger(e, binding, caretPosition)) {
         prevented = true;
       }
     });
@@ -140,7 +146,7 @@ export class KeyBoardModule implements Module {
     });
   }
 
-  private _trigger(e: React.KeyboardEvent, props: KeyBindingProps): boolean {
+  private _trigger(e: React.KeyboardEvent, props: KeyBindingProps, caretPosition: CaretPosition | null): boolean {
     const {
       key,
       collapsed = false,
@@ -154,10 +160,8 @@ export class KeyBoardModule implements Module {
       composing = false,
       handler,
     } = props;
-    const caretPosition = this.editor.getCaretPosition();
 
     if (!composing && this.composing) return false;
-
     if (!caretPosition) return false;
     if ((metaKey && !e.metaKey) || (!metaKey && e.metaKey)) return false;
     if ((ctrlKey && !e.ctrlKey) || (!ctrlKey && e.ctrlKey)) return false;
@@ -210,12 +214,20 @@ export class KeyBoardModule implements Module {
 
   private _handleBackspace(caretPosition: CaretPosition, editor: EditorController) {
     const block = editor.getBlock(caretPosition.blockId);
-    if (!block) return;
-    const startIndex = caretPosition.index - 1;
-    const deletedContents = deleteInlineContents(block.contents, startIndex, 1);
-    console.log(deletedContents);
+    let deletedContents;
+    let caretIndex;
+    if (caretPosition.collapsed) {
+      if (!block || caretPosition.index < 1) return;
+      caretIndex = caretPosition.index - 1;
+      deletedContents = deleteInlineContents(block.contents, caretIndex, 1);
+    } else {
+      if (!block || caretPosition.length < 1) return;
+      caretIndex = caretPosition.index;
+      deletedContents = deleteInlineContents(block.contents, caretPosition.index, caretPosition.length);
+    }
+
     editor.updateBlock({ ...block, contents: deletedContents });
     editor.render([block.id]);
-    editor.setCaretPosition({ blockId: block.id, index: startIndex });
+    editor.setCaretPosition({ blockId: block.id, index: caretIndex });
   }
 }

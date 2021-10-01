@@ -6,9 +6,11 @@ import {
   getBlockElementById,
   getBlockLength,
   getInlineContents,
-  getNativeIndex,
+  getNativeIndexFromBlockIndex,
+  getBlockIndexFromNativeIndex,
   createBlock,
 } from '../utils/block';
+import { getInlineId } from '../utils/inline';
 import { CaretPosition } from '../types/caret';
 import { Modules, Module, ModuleOptions } from '../types/module';
 import { Block } from '../types/block';
@@ -152,8 +154,8 @@ export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTML
     try {
       setTimeout(() => {
         const range = document.createRange();
-        const start = getNativeIndex(element, index);
-        const end = getNativeIndex(element, index + length);
+        const start = getNativeIndexFromBlockIndex(element, index);
+        const end = getNativeIndexFromBlockIndex(element, index + length);
 
         if (!start || !end) return;
         range.setStart(start.node, start.index);
@@ -170,18 +172,24 @@ export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTML
   }, []);
 
   const normalizeRange = React.useCallback((nativeRange: Range) => {
-    const [startBlockId, startBlockElement] = getBlockId(nativeRange.startContainer as HTMLElement);
-    const [endBlockId, endBlockElement] = getBlockId(nativeRange.endContainer as HTMLElement);
+    const [startInlineId, startInlineElement] = getInlineId(nativeRange.startContainer as HTMLElement);
+    const [endInlineId, endInlineElement] = getInlineId(nativeRange.endContainer as HTMLElement);
+    const [blockId, blockElement] = getBlockId(nativeRange.startContainer as HTMLElement);
 
-    if (!editorRef.current || !startBlockId || !endBlockId || startBlockId !== endBlockId) {
+    if (!editorRef.current || !startInlineId || !endInlineId || !blockId) {
       return null;
     }
 
+    const start = getBlockIndexFromNativeIndex(nativeRange.startContainer as HTMLElement, nativeRange.startOffset);
+    const end = getBlockIndexFromNativeIndex(nativeRange.endContainer as HTMLElement, nativeRange.endOffset);
+
+    if (!start || !end) return null;
+
     const range: CaretPosition = {
-      blockId: startBlockId,
-      blockFormat: startBlockElement?.dataset.format ?? '',
-      index: nativeRange.startOffset,
-      length: 0,
+      blockId,
+      blockFormat: blockElement?.dataset.format ?? '',
+      index: start.index,
+      length: end.index - start.index,
       collapsed: nativeRange.collapsed,
       rect: nativeRange.getBoundingClientRect(),
     };
@@ -295,6 +303,7 @@ export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTML
     );
     subs.add(
       eventEmitter.on<Block>(EditorEvents.EVENT_BLOCK_UPDATE).subscribe((block) => {
+        console.log(block);
         const currentIndex = blocksRef.current.findIndex((v) => v.id === block.id);
         if (currentIndex === -1) return;
         blocksRef.current = [
@@ -327,6 +336,17 @@ export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTML
   React.useEffect(() => {
     modulesRef.current = modules;
   }, [modules]);
+
+  React.useEffect(() => {
+    const handleSlectionChange = (e: Event) => {
+      if (!editorRef.current || !editorRef.current.contains(e.target as Node)) return;
+      updateCaretPosition();
+    };
+    document.addEventListener('selectionchange', handleSlectionChange);
+    return () => {
+      document.removeEventListener('selectionchange', handleSlectionChange);
+    };
+  }, []);
 
   return [editorRef, editorController];
 }

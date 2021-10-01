@@ -1,7 +1,7 @@
 import { nanoid } from 'nanoid';
-import { createInline, isEmbed } from './inline';
+import { createInline, isEmbed, getInlineId } from './inline';
 import { Block, BlockType, BlockAttributes } from '../types/block';
-import { Inline } from '../types/inline';
+import { Inline, InlineType } from '../types/inline';
 
 export function createBlock(type: BlockType, attributes: BlockAttributes = {}): Block {
   return {
@@ -65,17 +65,41 @@ export function getInlineContents(block: string | HTMLElement): Inline[] {
 }
 
 // convert block index to native index
-export function getNativeIndex(block: string | HTMLElement, index: number): { node: ChildNode; index: number } | null {
+export function getNativeIndexFromBlockIndex(
+  block: string | HTMLElement,
+  index: number,
+): { node: ChildNode; index: number } | null {
   const element = block instanceof HTMLElement ? block : getBlockElementById(block);
   if (!element) return null;
   let cumulativeLength = 0;
   for (let i = 0; i < element.children.length; i++) {
     const format = (element.children[i] as HTMLElement).dataset.format?.replace(/^inline\//, '').toUpperCase();
-    if (format === 'TEXT') {
-      const inlineLength = element.children[i].innerHTML.length;
+    if (format) {
+      const inlineLength = isEmbed(format as InlineType) ? 1 : element.children[i].innerHTML.length;
       const inlineNode = (element.children[i] as HTMLElement).firstChild;
       if (index <= cumulativeLength + inlineLength && inlineNode) {
         return { node: inlineNode instanceof Text ? inlineNode : element.children[i], index: index - cumulativeLength };
+      }
+      cumulativeLength += inlineLength;
+    }
+  }
+  return null;
+}
+
+export function getBlockIndexFromNativeIndex(
+  ChildNode: HTMLElement,
+  offset: number,
+): { blockId: string; index: number } | null {
+  const [inlineId, inlineElement] = getInlineId(ChildNode);
+  const [blockId, blockElement] = getBlockId(ChildNode);
+  if (!inlineId || !inlineElement || !blockElement || !blockId) return null;
+  let cumulativeLength = 0;
+  for (let i = 0; i < blockElement.children.length; i++) {
+    const format = (blockElement.children[i] as HTMLElement).dataset.format?.replace(/^inline\//, '').toUpperCase();
+    if (format) {
+      const inlineLength = isEmbed(format as InlineType) ? 1 : blockElement.children[i].innerHTML.length;
+      if (blockElement.children[i] === inlineElement) {
+        return { blockId, index: cumulativeLength + offset };
       }
       cumulativeLength += inlineLength;
     }
@@ -105,6 +129,10 @@ export function deleteInlineContents(contents: Inline[], index: number, length: 
     }
 
     cumulativeLength += inlineLength;
+  }
+
+  if (destContents.length < 1) {
+    destContents.push(createInline('TEXT'));
   }
   return destContents;
 }

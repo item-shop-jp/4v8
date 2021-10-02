@@ -10,12 +10,13 @@ import {
   getBlockIndexFromNativeIndex,
   createBlock,
 } from '../utils/block';
-import { getInlineId } from '../utils/inline';
+import { createInline, getInlineId } from '../utils/inline';
 import { CaretPosition } from '../types/caret';
 import { Modules, Module, ModuleOptions } from '../types/module';
 import { Block } from '../types/block';
 import { EditorEvents } from '../constants';
 import { EditorModule } from '../modules/editor';
+import { KeyBoardModule } from '../modules';
 
 interface Props {
   eventEmitter: EventEmitter;
@@ -256,12 +257,23 @@ export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTML
 
   const optimize = React.useCallback(() => {
     const nativeRange = getNativeRange();
-    updateCaretPosition();
     if (!nativeRange) return;
-    const [startBlockId, startBlockElement] = getBlockId(nativeRange.startContainer as HTMLElement);
-    const block = blocksRef.current.find((v) => v.id === startBlockId);
-    if (!block || !startBlockElement) return;
-    eventEmitter.emit(EditorEvents.EVENT_BLOCK_UPDATE, { ...block, contents: getInlineContents(startBlockElement) });
+    const [blockId, blockElement] = getBlockId(nativeRange.startContainer as HTMLElement);
+    const block = blocksRef.current.find((v) => v.id === blockId);
+    const composing = getModule<KeyBoardModule>('keyboard')?.composing;
+    if (!blockId || !block || !blockElement || composing) return;
+    setTimeout(() => {
+      const { contents, affected, affectedLength } = getInlineContents(blockElement);
+      updateCaretPosition();
+      eventEmitter.emit(EditorEvents.EVENT_BLOCK_UPDATE, { ...block, contents });
+
+      if (affected) {
+        render([blockId]);
+        let caretIndex = lastCaretPositionRef.current?.index ?? 0;
+        caretIndex += affectedLength;
+        setCaretPosition({ ...lastCaretPositionRef.current, index: caretIndex >= 0 ? caretIndex : 0 });
+      }
+    }, 10);
   }, []);
 
   const updateBlock = React.useCallback((block: Block) => {
@@ -339,7 +351,12 @@ export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTML
 
   React.useEffect(() => {
     const handleSlectionChange = (e: Event) => {
-      if (!editorRef.current || !editorRef.current.contains(e.target as Node)) return;
+      if (
+        !editorRef.current ||
+        !editorRef.current.contains(e.target as Node) ||
+        !getModule<KeyBoardModule>('keyboard')?.composing
+      )
+        return;
       updateCaretPosition();
     };
     document.addEventListener('selectionchange', handleSlectionChange);

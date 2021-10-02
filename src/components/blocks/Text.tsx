@@ -43,6 +43,7 @@ export const Text = React.memo(({ blockId, formats, editor, ...props }: Props) =
         .pipe(filter((affectedIds) => affectedIds.includes(blockId)))
         .subscribe(() => {
           const block = editor.getBlock(blockId);
+
           if (block) {
             setContents([...block.contents]);
           }

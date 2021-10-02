@@ -18,7 +18,7 @@ export function getInlineId(node: HTMLElement): [string, HTMLElement] | [] {
   return getInlineId(node.parentElement);
 }
 
-export function createInline(type: InlineType, text: string = '\n', attributes: InlineAttributes = {}): Inline {
+export function createInline(type: InlineType, text: string = '\uFEFF', attributes: InlineAttributes = {}): Inline {
   return {
     id: nanoid(),
     text,

@@ -40,19 +40,36 @@ export function getBlockLength(block: string | HTMLElement): number | null {
   return length;
 }
 
-export function getInlineContents(block: string | HTMLElement): Inline[] {
+export function getInlineContents(block: string | HTMLElement): {
+  contents: Inline[];
+  affected: boolean;
+  affectedLength: number;
+} {
   const element = block instanceof HTMLElement ? block : getBlockElementById(block);
-  if (!element) return [];
+  let affectedLength = 0;
+  let affected = false;
+  if (!element) return { contents: [], affected, affectedLength };
+
   const contents: Inline[] = Array.from(element.children as HTMLCollectionOf<HTMLElement>).reduce(
-    (r: Inline[], inline): Inline[] => {
+    (r: Inline[], inline, currentIndex): Inline[] => {
       const format = inline.dataset.format?.replace(/^inline\//, '').toUpperCase();
       if (!format || !inline.dataset.inlineId) return r;
+      if (inline.innerText.match(/\uFEFF$/i)) {
+        affected = true;
+      }
+      if (inline.innerText.match(/^\uFEFF/i)) {
+        affectedLength = -1;
+        affected = true;
+      }
+
+      let text = inline.innerText.replaceAll(/\uFEFF/gi, '');
+      text = currentIndex === 0 && text.length < 1 ? '\uFEFF' : text;
       return [
         ...r,
         {
           id: inline.dataset.inlineId,
           attributes: {},
-          text: inline.innerText,
+          text,
           type: format as Inline['type'],
           isEmbed: isEmbed(format as Inline['type']),
         },
@@ -61,7 +78,7 @@ export function getInlineContents(block: string | HTMLElement): Inline[] {
     [],
   );
 
-  return contents;
+  return { contents, affectedLength, affected };
 }
 
 // convert block index to native index

@@ -27,13 +27,10 @@ interface KeyBindingProps {
 }
 
 export class KeyBoardModule implements Module {
+  public composing;
   private eventEmitter;
   private editor;
-  private composing;
   private bindings: KeyBindingProps[];
-  private debouncedOptimize = debounce(500, () => {
-    this.editor.optimize();
-  });
 
   constructor({ eventEmitter, editor }: Props) {
     this.eventEmitter = eventEmitter;
@@ -100,13 +97,18 @@ export class KeyBoardModule implements Module {
 
   onCompositionStart(e: React.CompositionEvent) {
     this.composing = true;
+    console.log('変換開始');
   }
 
   onCompositionEnd(e: React.CompositionEvent) {
     this.composing = false;
+    setTimeout(() => this.editor.optimize(), 100);
   }
 
   onInput(e: React.KeyboardEvent) {
+    if (this.composing) {
+      return;
+    }
     this.editor.optimize();
   }
 

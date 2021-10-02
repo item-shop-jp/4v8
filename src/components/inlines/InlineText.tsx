@@ -10,7 +10,7 @@ const SPAN = styled.span``;
 
 export const InlineText = ({ inline, ...props }: Props) => {
   const memoInnerHTML = React.useMemo(() => {
-    return { __html: inline.text.replace('\n', '<br>') };
+    return { __html: inline.text };
   }, [inline]);
 
   return <SPAN dangerouslySetInnerHTML={memoInnerHTML} {...props} />;

@@ -27,7 +27,7 @@ interface BlockProps {
   onKeyDown: (e: React.KeyboardEvent) => void;
   onCompositionStart: (e: React.CompositionEvent) => void;
   onCompositionEnd: (e: React.CompositionEvent) => void;
-  onInput: (e: React.KeyboardEvent) => void;
+  onBeforeInput: (e: React.KeyboardEvent) => void;
 }
 
 const BlockContainer: React.VFC<BlockProps> = React.memo(
@@ -191,7 +191,7 @@ export const Editor: React.VFC<Props> = React.memo(({ readOnly = false, formats,
               blockType={block.type}
               readOnly={readOnly}
               onKeyDown={handleKeyDown}
-              onInput={handleInput}
+              onBeforeInput={handleInput}
               onCompositionStart={handleCompositionStart}
               onCompositionEnd={handleCompositionEnd}
             />

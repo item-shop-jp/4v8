@@ -18,7 +18,7 @@ export const Container: React.VFC = React.memo(() => {
     return { logger: { logLevel: LogLevels.INFO } };
   }, []);
   const formats = React.useMemo(() => {
-    return { text: StyledText };
+    return { 'block/text': StyledText };
   }, []);
 
   return (

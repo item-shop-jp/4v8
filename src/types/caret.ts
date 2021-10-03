@@ -3,6 +3,5 @@ export interface CaretPosition {
   blockFormat: string;
   index: number;
   length: number;
-  rect: DOMRect;
   collapsed: boolean;
 }

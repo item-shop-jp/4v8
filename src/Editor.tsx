@@ -24,6 +24,7 @@ interface BlockProps {
   readOnly: boolean;
   formats: Formats;
   editor: EditorController;
+  onClick: (e: React.MouseEvent) => void;
   onKeyDown: (e: React.KeyboardEvent) => void;
   onCompositionStart: (e: React.CompositionEvent) => void;
   onCompositionEnd: (e: React.CompositionEvent) => void;
@@ -130,6 +131,13 @@ export const Editor: React.VFC<Props> = React.memo(({ readOnly = false, formats,
     }
   }, []);
 
+  const handleClick = React.useCallback(
+    (e: React.MouseEvent) => {
+      editor.updateCaretRect();
+    },
+    [editor],
+  );
+
   const handleContainerClick = React.useCallback(() => {
     const lastBlock = blocks[blocks.length - 1];
     if (!lastBlock) return;
@@ -190,6 +198,7 @@ export const Editor: React.VFC<Props> = React.memo(({ readOnly = false, formats,
               blockId={block.id}
               blockType={block.type}
               readOnly={readOnly}
+              onClick={handleClick}
               onKeyDown={handleKeyDown}
               onBeforeInput={handleInput}
               onCompositionStart={handleCompositionStart}

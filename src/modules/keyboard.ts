@@ -23,7 +23,7 @@ interface KeyBindingProps {
   altKey?: boolean;
   prevented?: boolean;
   composing?: boolean;
-  handler: (range: CaretPosition, editor: EditorController) => void;
+  handler: (range: CaretPosition, editor: EditorController, event: React.KeyboardEvent) => void;
 }
 
 export class KeyBoardModule implements Module {
@@ -66,9 +66,28 @@ export class KeyBoardModule implements Module {
 
     // handle key operation
     this.addBinding({
+      key: KeyCodes.ARROW_UP,
+      collapsed: true,
+      prevented: false,
+      handler: this._handlekeyUp.bind(this),
+    });
+    this.addBinding({
       key: KeyCodes.ARROW_DOWN,
       collapsed: true,
+      prevented: false,
       handler: this._handlekeyDown.bind(this),
+    });
+    this.addBinding({
+      key: KeyCodes.ARROW_LEFT,
+      collapsed: true,
+      prevented: false,
+      handler: this._handlekeyLeftRight.bind(this),
+    });
+    this.addBinding({
+      key: KeyCodes.ARROW_RIGHT,
+      collapsed: true,
+      prevented: false,
+      handler: this._handlekeyLeftRight.bind(this),
     });
 
     this.addBinding({
@@ -177,7 +196,7 @@ export class KeyBoardModule implements Module {
 
     if (formats.length > 0 && formats.includes(caretPosition.blockFormat)) return false;
 
-    handler(caretPosition, this.editor);
+    handler(caretPosition, this.editor, e);
 
     return prevented;
   }
@@ -210,8 +229,24 @@ export class KeyBoardModule implements Module {
     }
   }
 
-  private _handlekeyDown(caretPosition: CaretPosition, editor: EditorController) {
-    editor.next();
+  private _handlekeyLeftRight(caretPosition: CaretPosition, editor: EditorController) {
+    setTimeout(() => editor.updateCaretRect(), 10);
+  }
+
+  private _handlekeyUp(caretPosition: CaretPosition, editor: EditorController, event: React.KeyboardEvent) {
+    if (editor.prev()) {
+      event.preventDefault();
+    } else {
+      setTimeout(() => editor.updateCaretRect(), 10);
+    }
+  }
+
+  private _handlekeyDown(caretPosition: CaretPosition, editor: EditorController, event: React.KeyboardEvent) {
+    if (editor.next()) {
+      event.preventDefault();
+    } else {
+      setTimeout(() => editor.updateCaretRect(), 10);
+    }
   }
 
   private _handleBackspace(caretPosition: CaretPosition, editor: EditorController) {

@@ -41,7 +41,8 @@ export interface EditorController {
   getNativeRange: () => Range | null;
   updateCaretPosition: (caretPosition?: CaretPosition) => CaretPosition | null;
   updateCaretRect: (rect?: DOMRect) => DOMRect | null;
-  next: (params?: PositionParams) => void;
+  prev: (params?: PositionParams) => boolean;
+  next: (params?: PositionParams) => boolean;
   render: (affectedIds?: string[]) => void;
   addModule: (
     name: string,
@@ -99,31 +100,58 @@ export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTML
     selection.removeAllRanges();
   }, []);
 
-  const next = React.useCallback(({ caretPosition, index = 0 }: PositionParams = {}) => {
+  const prev = React.useCallback(({ caretPosition, index = 0 }: PositionParams = {}): boolean => {
     const position = caretPosition ?? lastCaretPositionRef.current;
     const currentIndex = blocksRef.current.findIndex((v) => v.id === position?.blockId);
-    if (currentIndex === -1 || !blocksRef.current[currentIndex + 1]) return;
+    if (currentIndex < 1 || !blocksRef.current[currentIndex - 1]) return false;
+    if (!lastCaretRectRef.current) {
+      setCaretPosition({
+        blockId: blocksRef.current[currentIndex - 1].id,
+        index,
+      });
+      return false;
+    }
+    const nextBlock = getBlockElementById(blocksRef.current[currentIndex - 1].id);
+    if (!nextBlock) return false;
+    const nextRect = nextBlock.getBoundingClientRect();
+    const range = caretRangeFromPoint(lastCaretRectRef.current.x, nextRect.y);
+    const selection = document.getSelection();
+    if (!selection || !range) return false;
+    selection.setBaseAndExtent(range.startContainer, range.startOffset, range.startContainer, range.startOffset);
+    const nativeRange = getNativeRange();
+    if (!nativeRange) return false;
+    const newCaretPosition = normalizeRange(nativeRange);
+    if (!newCaretPosition) return false;
+
+    updateCaretPosition();
+    return true;
+  }, []);
+
+  const next = React.useCallback(({ caretPosition, index = 0 }: PositionParams = {}): boolean => {
+    const position = caretPosition ?? lastCaretPositionRef.current;
+    const currentIndex = blocksRef.current.findIndex((v) => v.id === position?.blockId);
+    if (currentIndex === -1 || !blocksRef.current[currentIndex + 1]) return false;
     if (!lastCaretRectRef.current) {
       setCaretPosition({
         blockId: blocksRef.current[currentIndex + 1].id,
         index,
       });
-      return;
+      return false;
     }
     const nextBlock = getBlockElementById(blocksRef.current[currentIndex + 1].id);
-    if (!nextBlock) return;
+    if (!nextBlock) return false;
     const nextRect = nextBlock.getBoundingClientRect();
     const range = caretRangeFromPoint(lastCaretRectRef.current.x, nextRect.y);
     const selection = document.getSelection();
-    if (!selection || !range) return;
+    if (!selection || !range) return false;
     selection.setBaseAndExtent(range.startContainer, range.startOffset, range.startContainer, range.startOffset);
     const nativeRange = getNativeRange();
-    if (!nativeRange) return;
+    if (!nativeRange) return false;
     const newCaretPosition = normalizeRange(nativeRange);
-    if (!newCaretPosition) return;
+    if (!newCaretPosition) return false;
 
     updateCaretPosition();
-    return blocksRef.current;
+    return true;
   }, []);
 
   const getBlocks = React.useCallback((): Block[] => {
@@ -325,6 +353,7 @@ export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTML
       updateCaretPosition,
       updateCaretRect,
       getNativeRange,
+      prev,
       next,
       render,
       addModule,

@@ -322,13 +322,13 @@ export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTML
       const { contents, affected, affectedLength } = getInlineContents(blockElement);
       updateCaretPosition();
       eventEmitter.emit(EditorEvents.EVENT_BLOCK_UPDATE, { ...block, contents });
-
       if (affected) {
         render([blockId]);
         let caretIndex = lastCaretPositionRef.current?.index ?? 0;
         caretIndex += affectedLength;
         setCaretPosition({ ...lastCaretPositionRef.current, index: caretIndex >= 0 ? caretIndex : 0 });
       }
+      setTimeout(() => updateCaretRect(), 10);
     }, 10);
   }, []);
 

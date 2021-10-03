@@ -116,7 +116,6 @@ export class KeyBoardModule implements Module {
 
   onCompositionStart(e: React.CompositionEvent) {
     this.composing = true;
-    console.log('変換開始');
   }
 
   onCompositionEnd(e: React.CompositionEvent) {
@@ -266,5 +265,6 @@ export class KeyBoardModule implements Module {
     editor.updateBlock({ ...block, contents: deletedContents });
     editor.render([block.id]);
     editor.setCaretPosition({ blockId: block.id, index: caretIndex });
+    setTimeout(() => editor.updateCaretRect(), 10);
   }
 }

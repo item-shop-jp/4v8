@@ -4,7 +4,7 @@ import { EventEmitter } from '../utils/event-emitter';
 import {
   getBlockId,
   getBlockElementById,
-  getBlockLength,
+  getBlockText,
   getInlineContents,
   getNativeIndexFromBlockIndex,
   getBlockIndexFromNativeIndex,
@@ -34,6 +34,7 @@ export interface EditorController {
   blur: () => void;
   getBlocks: () => Block[];
   getBlock: (blockId: string) => Block | null;
+  getBlockLength: (blockId: string) => { length: number; text: string } | null;
   updateBlock: (block: Block) => void;
   optimize: () => void;
   setCaretPosition: (caretPosition: Partial<CaretPosition>) => void;
@@ -162,6 +163,14 @@ export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTML
     return blocksRef.current.find((v) => v.id === blockId) ?? null;
   }, []);
 
+  const getBlockLength = React.useCallback((blockId: string): { length: number; text: string } | null => {
+    const element = getBlockElementById(blockId);
+    if (!element) return null;
+    const text = getBlockText(blockId);
+    if (!text) return null;
+    return { length: text.length, text };
+  }, []);
+
   const getCaretPosition = React.useCallback(() => {
     const nativeRange = getNativeRange();
     if (!nativeRange) return null;
@@ -200,10 +209,11 @@ export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTML
 
   const setCaretPosition = React.useCallback(({ blockId = '', index = 0, length = 0 }: Partial<CaretPosition>) => {
     const element = getBlockElementById(blockId);
-    const blockLength = getBlockLength(blockId);
-    if (!element || !blockLength) return;
+    if (!element) return;
+    const blockText = getBlockText(element);
+    if (!blockText) return;
     element.focus();
-    if (blockLength < 1) {
+    if (blockText.length < 1) {
       updateCaretPosition();
       return;
     }
@@ -346,6 +356,7 @@ export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTML
       blur,
       getBlocks,
       getBlock,
+      getBlockLength,
       updateBlock,
       optimize,
       getCaretPosition,

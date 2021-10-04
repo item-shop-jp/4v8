@@ -28,16 +28,16 @@ export function getBlockElementById(blockId: string): HTMLElement | null {
   return element;
 }
 
-export function getBlockLength(block: string | HTMLElement): number | null {
+export function getBlockText(block: string | HTMLElement): string | null {
   const element = block instanceof HTMLElement ? block : getBlockElementById(block);
   if (!element) return null;
-  let length = 0;
+  let text = '';
   for (let i = 0; i < element.children.length; i++) {
     if (element.children[i].tagName === 'SPAN') {
-      length += (element.children[i] as HTMLElement).innerText.length;
+      text += (element.children[i] as HTMLElement).innerText;
     }
   }
-  return length;
+  return text;
 }
 
 export function getInlineContents(block: string | HTMLElement): {

@@ -81,13 +81,13 @@ export class KeyBoardModule implements Module {
       key: KeyCodes.ARROW_LEFT,
       collapsed: true,
       prevented: false,
-      handler: this._handlekeyLeftRight.bind(this),
+      handler: this._handlekeyLeft.bind(this),
     });
     this.addBinding({
       key: KeyCodes.ARROW_RIGHT,
       collapsed: true,
       prevented: false,
-      handler: this._handlekeyLeftRight.bind(this),
+      handler: this._handlekeyRight.bind(this),
     });
 
     this.addBinding({
@@ -228,7 +228,36 @@ export class KeyBoardModule implements Module {
     }
   }
 
-  private _handlekeyLeftRight(caretPosition: CaretPosition, editor: EditorController) {
+  private _handlekeyLeft(caretPosition: CaretPosition, editor: EditorController, event: React.KeyboardEvent) {
+    const caret = editor.getCaretPosition();
+    if (caret) {
+      const blockLength = editor.getBlockLength(caret.blockId);
+      if (blockLength?.text === '\uFEFF' || 0 === caret.index) {
+        event.preventDefault();
+        const blocks = editor.getBlocks();
+        const currentIndex = blocks.findIndex((v) => v.id === caret.blockId);
+        if (currentIndex !== -1 && currentIndex > 0) {
+          const nextBlockLength = editor.getBlockLength(blocks[currentIndex - 1].id);
+          editor.setCaretPosition({ blockId: blocks[currentIndex - 1].id, index: nextBlockLength?.length ?? 0 });
+        }
+      }
+    }
+    setTimeout(() => editor.updateCaretRect(), 10);
+  }
+
+  private _handlekeyRight(caretPosition: CaretPosition, editor: EditorController, event: React.KeyboardEvent) {
+    const caret = editor.getCaretPosition();
+    if (caret) {
+      const blockLength = editor.getBlockLength(caret.blockId);
+      if (blockLength?.text === '\uFEFF' || blockLength?.length === caret.index) {
+        event.preventDefault();
+        const blocks = editor.getBlocks();
+        const currentIndex = blocks.findIndex((v) => v.id === caret.blockId);
+        if (currentIndex !== -1 && currentIndex < blocks.length - 1) {
+          editor.setCaretPosition({ blockId: blocks[currentIndex + 1].id });
+        }
+      }
+    }
     setTimeout(() => editor.updateCaretRect(), 10);
   }
 

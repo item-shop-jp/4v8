@@ -206,7 +206,16 @@ export class KeyBoardModule implements Module {
     }
 
     if (caretPosition.collapsed) {
-      this.editor.getModule('editor').createBlock();
+      const caret = editor.getCaretPosition();
+      if (!caret) return;
+      const length = editor.getBlockLength(caret.blockId);
+      if (length === null) return;
+      if (length < 1 || caret.index === length) {
+        this.editor.getModule('editor').createBlock();
+      } else {
+        console.log(caret.index, caret.length);
+        this.editor.getModule('editor').splitBlock(caret.blockId, caret.index);
+      }
     } else {
       console.log('key enter(range)');
     }

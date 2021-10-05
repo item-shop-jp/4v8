@@ -1,6 +1,6 @@
 import { Subscription } from 'rxjs';
 import { EventEmitter } from '../utils/event-emitter';
-import { createBlock } from '../utils/block';
+import { createBlock, splitInlineContents } from '../utils/block';
 import { createlineBreak } from '../utils/inline';
 import { EditorEvents } from '../constants';
 import { Module } from '../types/module';
@@ -47,6 +47,26 @@ export class EditorModule implements Module {
     setTimeout(() => this.editor.setCaretPosition({ blockId: appendBlock.id }), 10);
     this.eventEmitter.emit(EditorEvents.EVENT_EDITOR_UPDATE, insertedBlocks);
     this.editor.render();
+  }
+
+  splitBlock(blockId: string, index: number, length: number = 0) {
+    const blocks = this.editor.getBlocks();
+    const currentIndex = blocks.findIndex((v) => v.id === blockId);
+    if (currentIndex === -1) return;
+    const [first, last] = splitInlineContents(blocks[currentIndex].contents, index, length);
+    console.log(first, last);
+    const appendBlock = createBlock('TEXT', last, blocks[currentIndex].attributes);
+    const splittedBlock = [
+      ...blocks.slice(0, currentIndex),
+      { ...blocks[currentIndex], contents: first },
+      appendBlock,
+      ...blocks.slice(currentIndex + 1),
+    ];
+    setTimeout(() => {
+      this.editor.render([blocks[currentIndex].id]);
+      setTimeout(() => this.editor.setCaretPosition({ blockId: appendBlock.id }), 10);
+    }, 100);
+    this.eventEmitter.emit(EditorEvents.EVENT_EDITOR_UPDATE, splittedBlock);
   }
 
   lineBreak() {

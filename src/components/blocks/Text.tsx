@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import styled from 'styled-components';
+import isEqual from 'lodash.isequal';
 import { Inline } from '../../types/inline';
 import { Formats } from '../../types/format';
 import { InlineContent } from '../../utils/inline';
@@ -27,7 +28,6 @@ const P = styled.p`
 
 export const Text = React.memo(({ blockId, formats, editor, ...props }: Props) => {
   const [contents, setContents] = React.useState<Inline[]>([]);
-
   React.useEffect(() => {
     const block = editor.getBlock(blockId);
     const eventEmitter = editor.getEventEmitter();
@@ -45,7 +45,13 @@ export const Text = React.memo(({ blockId, formats, editor, ...props }: Props) =
           const block = editor.getBlock(blockId);
 
           if (block) {
-            setContents([...block.contents]);
+            setContents((prev) => {
+              if (isEqual(block.contents, prev)) {
+                setTimeout(() => setContents(block.contents));
+                return [];
+              }
+              return [...block.contents];
+            });
           }
         }),
     );

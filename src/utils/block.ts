@@ -3,11 +3,11 @@ import { createInline, isEmbed, getInlineId } from './inline';
 import { Block, BlockType, BlockAttributes } from '../types/block';
 import { Inline, InlineType } from '../types/inline';
 
-export function createBlock(type: BlockType, attributes: BlockAttributes = {}): Block {
+export function createBlock(type: BlockType, contents?: Inline[], attributes?: BlockAttributes): Block {
   return {
     id: nanoid(),
-    contents: [createInline('TEXT')],
-    attributes,
+    contents: contents ?? [createInline('TEXT')],
+    attributes: attributes ?? {},
     type,
   };
 }
@@ -127,7 +127,8 @@ export function getBlockIndexFromNativeIndex(
   return null;
 }
 
-export function deleteInlineContents(contents: Inline[], index: number, length: number = 0): Inline[] {
+// index is the position to start deleting, and length is the number of characters to delete (default is 1).
+export function deleteInlineContents(contents: Inline[], index: number, length: number = 1): Inline[] {
   const startIndex = index;
   const destContents = [];
   let cumulativeLength = 0;
@@ -143,6 +144,8 @@ export function deleteInlineContents(contents: Inline[], index: number, length: 
         if (text.length > 0) {
           destContents.push({ ...contents[i], text });
         }
+      } else {
+        length--;
       }
     } else {
       destContents.push(contents[i]);
@@ -155,4 +158,44 @@ export function deleteInlineContents(contents: Inline[], index: number, length: 
     destContents.push(createInline('TEXT'));
   }
   return destContents;
+}
+
+// length is the string currently selected by the user and to be deleted when splitting.
+export function splitInlineContents(contents: Inline[], index: number, length: number = 0): [Inline[], Inline[]] {
+  const startIndex = index;
+  const firstContents: Inline[] = [];
+  const lastContents: Inline[] = [];
+  let cumulativeLength = 0;
+  for (let i = 0; i < contents.length; i++) {
+    const inlineLength = contents[i].isEmbed ? 1 : contents[i].text.length;
+    if (startIndex >= cumulativeLength && startIndex < cumulativeLength + inlineLength) {
+      if (!contents[i].isEmbed) {
+        const deleteIndex = startIndex - cumulativeLength;
+        const textlength = contents[i].text.length - deleteIndex;
+        const deletelength = textlength - length >= 0 ? length : textlength;
+        length -= deletelength;
+        const firstText = contents[i].text.slice(0, deleteIndex);
+        const lastText = contents[i].text.slice(deleteIndex + deletelength);
+        if (firstText.length > 0) {
+          firstContents.push({ ...contents[i], text: firstText });
+        }
+        if (lastText.length > 0) {
+          lastContents.push({ ...contents[i], text: lastText });
+        }
+      } else {
+        length--;
+        lastContents.push(contents[i]);
+      }
+    } else {
+      if (length > 0) {
+        firstContents.push(contents[i]);
+      } else {
+        lastContents.push(contents[i]);
+      }
+    }
+
+    cumulativeLength += inlineLength;
+  }
+
+  return [firstContents, lastContents];
 }

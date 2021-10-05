@@ -232,13 +232,14 @@ export class KeyBoardModule implements Module {
     const caret = editor.getCaretPosition();
     if (caret) {
       const blockLength = editor.getBlockLength(caret.blockId);
-      if (blockLength?.text === '\uFEFF' || 0 === caret.index) {
+      if (blockLength === null) return;
+      if (blockLength === 0 || caret.index === 0) {
         event.preventDefault();
         const blocks = editor.getBlocks();
         const currentIndex = blocks.findIndex((v) => v.id === caret.blockId);
         if (currentIndex !== -1 && currentIndex > 0) {
-          const nextBlockLength = editor.getBlockLength(blocks[currentIndex - 1].id);
-          editor.setCaretPosition({ blockId: blocks[currentIndex - 1].id, index: nextBlockLength?.length ?? 0 });
+          const nextBlockLength = editor.getBlockLength(blocks[currentIndex - 1].id) ?? 0;
+          editor.setCaretPosition({ blockId: blocks[currentIndex - 1].id, index: nextBlockLength });
         }
       }
     }
@@ -249,7 +250,8 @@ export class KeyBoardModule implements Module {
     const caret = editor.getCaretPosition();
     if (caret) {
       const blockLength = editor.getBlockLength(caret.blockId);
-      if (blockLength?.text === '\uFEFF' || blockLength?.length === caret.index) {
+      if (blockLength === null) return;
+      if (blockLength === 0 || blockLength === caret.index) {
         event.preventDefault();
         const blocks = editor.getBlocks();
         const currentIndex = blocks.findIndex((v) => v.id === caret.blockId);

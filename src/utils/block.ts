@@ -28,16 +28,17 @@ export function getBlockElementById(blockId: string): HTMLElement | null {
   return element;
 }
 
-export function getBlockText(block: string | HTMLElement): string | null {
+export function getBlockLength(block: string | HTMLElement): number | null {
   const element = block instanceof HTMLElement ? block : getBlockElementById(block);
   if (!element) return null;
-  let text = '';
+  let cumulativeLength = 0;
   for (let i = 0; i < element.children.length; i++) {
-    if (element.children[i].tagName === 'SPAN') {
-      text += (element.children[i] as HTMLElement).innerText;
-    }
+    const targetElement = element.children[i] as HTMLElement;
+    const format = targetElement.dataset.format?.replace(/^inline\//, '').toUpperCase();
+    const inlineLength = isEmbed(format as InlineType) ? 1 : targetElement.innerText.replaceAll(/\uFEFF/gi, '').length;
+    cumulativeLength += inlineLength;
   }
-  return text;
+  return cumulativeLength;
 }
 
 export function getInlineContents(block: string | HTMLElement): {
@@ -90,12 +91,13 @@ export function getNativeIndexFromBlockIndex(
   if (!element) return null;
   let cumulativeLength = 0;
   for (let i = 0; i < element.children.length; i++) {
-    const format = (element.children[i] as HTMLElement).dataset.format?.replace(/^inline\//, '').toUpperCase();
+    const targetElement = element.children[i] as HTMLElement;
+    const format = targetElement.dataset.format?.replace(/^inline\//, '').toUpperCase();
     if (format) {
-      const inlineLength = isEmbed(format as InlineType) ? 1 : element.children[i].innerHTML.length;
-      const inlineNode = (element.children[i] as HTMLElement).firstChild;
+      const inlineLength = isEmbed(format as InlineType) ? 1 : targetElement.innerText.length;
+      const inlineNode = targetElement.firstChild;
       if (index <= cumulativeLength + inlineLength && inlineNode) {
-        return { node: inlineNode instanceof Text ? inlineNode : element.children[i], index: index - cumulativeLength };
+        return { node: inlineNode instanceof Text ? inlineNode : targetElement, index: index - cumulativeLength };
       }
       cumulativeLength += inlineLength;
     }
@@ -112,10 +114,11 @@ export function getBlockIndexFromNativeIndex(
   if (!inlineId || !inlineElement || !blockElement || !blockId) return null;
   let cumulativeLength = 0;
   for (let i = 0; i < blockElement.children.length; i++) {
-    const format = (blockElement.children[i] as HTMLElement).dataset.format?.replace(/^inline\//, '').toUpperCase();
+    const targetElement = blockElement.children[i] as HTMLElement;
+    const format = targetElement.dataset.format?.replace(/^inline\//, '').toUpperCase();
     if (format) {
-      const inlineLength = isEmbed(format as InlineType) ? 1 : blockElement.children[i].innerHTML.length;
-      if (blockElement.children[i] === inlineElement) {
+      const inlineLength = isEmbed(format as InlineType) ? 1 : targetElement.innerText.length;
+      if (targetElement === inlineElement) {
         return { blockId, index: cumulativeLength + offset };
       }
       cumulativeLength += inlineLength;

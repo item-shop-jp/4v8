@@ -213,7 +213,6 @@ export class KeyBoardModule implements Module {
       if (length < 1 || caret.index === length) {
         this.editor.getModule('editor').createBlock();
       } else {
-        console.log(caret.index, caret.length);
         this.editor.getModule('editor').splitBlock(caret.blockId, caret.index);
       }
     } else {

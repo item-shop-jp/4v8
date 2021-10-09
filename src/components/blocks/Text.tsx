@@ -7,6 +7,7 @@ import { Inline } from '../../types/inline';
 import { Formats } from '../../types/format';
 import { InlineContent } from '../../utils/inline';
 import { EditorController } from '../../hooks/use-editor';
+import { useBlockRenderer } from '../../hooks/use-block-renderer';
 import { EditorEvents } from '../../constants';
 
 interface Props {
@@ -27,39 +28,7 @@ const P = styled.p`
 `;
 
 export const Text = React.memo(({ blockId, formats, editor, ...props }: Props) => {
-  const [contents, setContents] = React.useState<Inline[]>([]);
-  React.useEffect(() => {
-    const block = editor.getBlock(blockId);
-    const eventEmitter = editor.getEventEmitter();
-    if (block) {
-      setContents(block.contents);
-    }
-
-    const subs = new Subscription();
-
-    subs.add(
-      eventEmitter
-        .on<string[]>(EditorEvents.EVENT_BLOCK_RERENDER)
-        .pipe(filter((affectedIds) => affectedIds.includes(blockId)))
-        .subscribe(() => {
-          const block = editor.getBlock(blockId);
-
-          if (block) {
-            setContents((prev) => {
-              if (isEqual(block.contents, prev)) {
-                setTimeout(() => setContents(block.contents));
-                return [];
-              }
-              return [...block.contents];
-            });
-          }
-        }),
-    );
-
-    return () => {
-      subs.unsubscribe();
-    };
-  }, [blockId]);
+  const contents = useBlockRenderer({ blockId, editor });
 
   const memoContents = React.useMemo(() => {
     return InlineContent({ contents, formats });

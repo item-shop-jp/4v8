@@ -2,13 +2,12 @@ import * as React from 'react';
 import { Subscription } from 'rxjs';
 import { EventEmitter } from '../utils/event-emitter';
 import * as blockUtils from '../utils/block';
-import { createInline, getInlineId } from '../utils/inline';
+import { getInlineId } from '../utils/inline';
 import { caretRangeFromPoint } from '../utils/range';
 import { CaretPosition } from '../types/caret';
-import { Modules, Module, ModuleOptions } from '../types/module';
+import { ModuleOptions } from '../types/module';
 import { Block } from '../types/block';
 import { EditorEvents } from '../constants';
-import { EditorModule } from '../modules/editor';
 import { KeyBoardModule } from '../modules';
 
 interface Props {

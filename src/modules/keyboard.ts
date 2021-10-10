@@ -236,7 +236,6 @@ export class KeyBoardModule implements Module {
     if (caret) {
       const blockLength = editor.getBlockLength(caret.blockId);
       if (blockLength === null) return;
-      console.log(blockLength, caret.index);
       if (blockLength === 0 || caret.index === 0) {
         event.preventDefault();
         const blocks = editor.getBlocks();
@@ -259,6 +258,7 @@ export class KeyBoardModule implements Module {
         event.preventDefault();
         const blocks = editor.getBlocks();
         const currentIndex = blocks.findIndex((v) => v.id === caret.blockId);
+
         if (currentIndex !== -1 && currentIndex < blocks.length - 1) {
           editor.setCaretPosition({ blockId: blocks[currentIndex + 1].id });
         }

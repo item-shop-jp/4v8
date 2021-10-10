@@ -103,6 +103,7 @@ export function getNativeIndexFromBlockIndex(
           nodeLength = nodeLength > 0 ? nodeLength : 1;
 
           if (index <= cumulativeLength + nodeLength) {
+            console.log(childNodes[j].textContent, index, cumulativeLength);
             return {
               node: childNodes[j] instanceof Text ? childNodes[j] : targetElement,
               index: index - cumulativeLength,
@@ -137,10 +138,15 @@ export function getBlockIndexFromNativeIndex(
             normalizedOffset += offset;
             break;
           }
+          if (ChildNode === inlineElement && j === offset) {
+            normalizedOffset += 1;
+            break;
+          }
           let nodeLength = childNodes[j].textContent?.length ?? 0;
           nodeLength = nodeLength > 0 ? nodeLength : 1;
           normalizedOffset += nodeLength;
         }
+
         return { blockId, index: cumulativeLength + normalizedOffset };
       }
       cumulativeLength += inlineLength;

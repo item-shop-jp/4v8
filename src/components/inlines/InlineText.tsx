@@ -6,12 +6,12 @@ interface Props {
   inline: Inline;
 }
 
-const SPAN = styled.span``;
+const InlineContent = styled.span``;
 
 export const InlineText = ({ inline, ...props }: Props) => {
   const memoInnerHTML = React.useMemo(() => {
     return { __html: inline.text };
   }, [inline]);
 
-  return <SPAN dangerouslySetInnerHTML={memoInnerHTML} {...props} />;
+  return <InlineContent dangerouslySetInnerHTML={memoInnerHTML} {...props} />;
 };

@@ -6,9 +6,10 @@ import { Formats } from './types/format';
 import { Block } from './types/block';
 import { Header, Text } from './components/blocks';
 import { InlineText, Br } from './components/inlines';
+import { GlobalToolbar } from './components/toolbar';
 import { useEditor, EditorController } from './hooks/use-editor';
 import { useEventEmitter } from './hooks/use-event-emitter';
-import { EditorModule, KeyBoardModule, LoggerModule } from './modules';
+import { EditorModule, KeyBoardModule, LoggerModule, ToolbarModule } from './modules';
 import { getBlockElementById } from './utils/block';
 import { EditorEvents } from './constants';
 
@@ -153,6 +154,7 @@ export const Editor: React.VFC<Props> = React.memo(({ readOnly = false, formats,
         { name: 'logger', module: LoggerModule },
         { name: 'editor', module: EditorModule },
         { name: 'keyboard', module: KeyBoardModule },
+        { name: 'toolbar', module: ToolbarModule },
       ],
       settings,
     );
@@ -208,6 +210,7 @@ export const Editor: React.VFC<Props> = React.memo(({ readOnly = false, formats,
         })}
       </Inner>
       <MarginBottom onClick={handleContainerClick} />
+      <GlobalToolbar editor={memoEditor} />
     </Container>
   );
 });

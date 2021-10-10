@@ -49,20 +49,20 @@ export class KeyBoardModule implements Module {
       handler: this._handleEnter.bind(this),
     });
     this.addBinding({
-      key: KeyCodes.ENTER,
-      shiftKey: true,
-      handler: this._handleShiftEnter.bind(this),
-    });
-    this.addBinding({
       key: KeyCodes.NUMPAD_ENTER,
       composing: true,
       handler: this._handleEnter.bind(this),
     });
-    this.addBinding({
-      key: KeyCodes.NUMPAD_ENTER,
-      shiftKey: true,
-      handler: this._handleShiftEnter.bind(this),
-    });
+    // this.addBinding({
+    //   key: KeyCodes.ENTER,
+    //   shiftKey: true,
+    //   handler: this._handleShiftEnter.bind(this),
+    // });
+    // this.addBinding({
+    //   key: KeyCodes.NUMPAD_ENTER,
+    //   shiftKey: true,
+    //   handler: this._handleShiftEnter.bind(this),
+    // });
 
     // handle key operation
     this.addBinding({
@@ -205,18 +205,14 @@ export class KeyBoardModule implements Module {
       return;
     }
 
-    if (caretPosition.collapsed) {
-      const caret = editor.getCaretPosition();
-      if (!caret) return;
-      const length = editor.getBlockLength(caret.blockId);
-      if (length === null) return;
-      if (length < 1 || caret.index === length) {
-        this.editor.getModule('editor').createBlock();
-      } else {
-        this.editor.getModule('editor').splitBlock(caret.blockId, caret.index);
-      }
+    const caret = editor.getCaretPosition();
+    if (!caret) return;
+    const length = editor.getBlockLength(caret.blockId);
+    if (length === null) return;
+    if (caretPosition.collapsed && caret.index === length) {
+      this.editor.getModule('editor').createBlock();
     } else {
-      console.log('key enter(range)');
+      this.editor.getModule('editor').splitBlock(caret.blockId, caret.index, caret.length);
     }
   }
 
@@ -230,7 +226,6 @@ export class KeyBoardModule implements Module {
 
   private _handleShiftEnter(caretPosition: CaretPosition, editor: EditorController) {
     if (caretPosition.collapsed) {
-      this.editor.getModule('editor').lineBreak();
     } else {
       console.log('key shift enter(range)');
     }
@@ -241,6 +236,7 @@ export class KeyBoardModule implements Module {
     if (caret) {
       const blockLength = editor.getBlockLength(caret.blockId);
       if (blockLength === null) return;
+      console.log(blockLength, caret.index);
       if (blockLength === 0 || caret.index === 0) {
         event.preventDefault();
         const blocks = editor.getBlocks();

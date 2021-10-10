@@ -94,12 +94,23 @@ export function getNativeIndexFromBlockIndex(
     const targetElement = element.children[i] as HTMLElement;
     const format = targetElement.dataset.format?.replace(/^inline\//, '').toUpperCase();
     if (format) {
-      const inlineLength = isEmbed(format as InlineType) ? 1 : targetElement.innerText.length;
-      const inlineNode = targetElement.firstChild;
-      if (index <= cumulativeLength + inlineLength && inlineNode) {
-        return { node: inlineNode instanceof Text ? inlineNode : targetElement, index: index - cumulativeLength };
+      if (isEmbed(format as InlineType)) {
+        cumulativeLength += 1;
+      } else {
+        const childNodes = targetElement.childNodes;
+        for (let j = 0; j < childNodes.length; j++) {
+          let nodeLength = childNodes[j].textContent?.length ?? 0;
+          nodeLength = nodeLength > 0 ? nodeLength : 1;
+
+          if (index <= cumulativeLength + nodeLength) {
+            return {
+              node: childNodes[j] instanceof Text ? childNodes[j] : targetElement,
+              index: index - cumulativeLength,
+            };
+          }
+          cumulativeLength += nodeLength;
+        }
       }
-      cumulativeLength += inlineLength;
     }
   }
   return null;
@@ -119,7 +130,18 @@ export function getBlockIndexFromNativeIndex(
     if (format) {
       const inlineLength = isEmbed(format as InlineType) ? 1 : targetElement.innerText.length;
       if (targetElement === inlineElement) {
-        return { blockId, index: cumulativeLength + offset };
+        const childNodes = Array.from(inlineElement.childNodes);
+        let normalizedOffset = 0;
+        for (let j = 0; j < childNodes.length; j++) {
+          if (childNodes[j] === ChildNode) {
+            normalizedOffset += offset;
+            break;
+          }
+          let nodeLength = childNodes[j].textContent?.length ?? 0;
+          nodeLength = nodeLength > 0 ? nodeLength : 1;
+          normalizedOffset += nodeLength;
+        }
+        return { blockId, index: cumulativeLength + normalizedOffset };
       }
       cumulativeLength += inlineLength;
     }
@@ -129,7 +151,7 @@ export function getBlockIndexFromNativeIndex(
 
 // index is the position to start deleting, and length is the number of characters to delete (default is 1).
 export function deleteInlineContents(contents: Inline[], index: number, length: number = 1): Inline[] {
-  const startIndex = index;
+  let startIndex = index;
   const destContents = [];
   let cumulativeLength = 0;
   for (let i = 0; i < contents.length; i++) {
@@ -198,4 +220,8 @@ export function splitInlineContents(contents: Inline[], index: number, length: n
   }
 
   return [firstContents, lastContents];
+}
+
+export function getFormats(contents: Inline[], index: number, length: number = 0) {
+  return;
 }

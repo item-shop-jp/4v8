@@ -54,7 +54,6 @@ export class EditorModule implements Module {
     const currentIndex = blocks.findIndex((v) => v.id === blockId);
     if (currentIndex === -1) return;
     const [first, last] = splitInlineContents(blocks[currentIndex].contents, index, length);
-    console.log(first, last);
     const firstBlock = { ...blocks[currentIndex], contents: first.length < 1 ? [createInline('TEXT')] : first };
     const lastBlock = createBlock('TEXT', last, blocks[currentIndex].attributes);
     const splittedBlock = [...blocks.slice(0, currentIndex), firstBlock, lastBlock, ...blocks.slice(currentIndex + 1)];
@@ -63,16 +62,5 @@ export class EditorModule implements Module {
       setTimeout(() => this.editor.setCaretPosition({ blockId: lastBlock.id }), 10);
     }, 100);
     this.eventEmitter.emit(EditorEvents.EVENT_EDITOR_UPDATE, splittedBlock);
-  }
-
-  lineBreak() {
-    const caretPosition = this.editor.getCaretPosition();
-    const blocks = this.editor.getBlocks();
-    const currentIndex = blocks.findIndex((v) => v.id === caretPosition?.blockId);
-    if (currentIndex === -1) return;
-    this.eventEmitter.emit(EditorEvents.EVENT_BLOCK_UPDATE, {
-      ...blocks[currentIndex],
-      contents: [...blocks[currentIndex].contents, createlineBreak()],
-    });
   }
 }

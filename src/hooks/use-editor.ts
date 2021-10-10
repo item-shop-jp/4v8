@@ -23,6 +23,7 @@ interface PositionParams {
 export interface EditorController {
   focus: () => void;
   blur: () => void;
+  getFormats: (blockId: string, index: number, length?: number) => void;
   getBlocks: () => Block[];
   getBlock: (blockId: string) => Block | null;
   getBlockLength: (blockId: string) => number | null;
@@ -146,6 +147,12 @@ export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTML
     return true;
   }, []);
 
+  const getFormats = React.useCallback((blockId: string, index: number, length: number = 0) => {
+    const block = blocksRef.current.find((v) => v.id === blockId);
+    if (!block) return null;
+    return blockUtils.getFormats(block.contents, index, length);
+  }, []);
+
   const getBlocks = React.useCallback((): Block[] => {
     return blocksRef.current;
   }, []);
@@ -157,7 +164,7 @@ export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTML
   const getBlockLength = React.useCallback((blockId: string): number | null => {
     const element = blockUtils.getBlockElementById(blockId);
     if (!element) return null;
-    return blockUtils.getBlockLength(blockId);
+    return blockUtils.getBlockLength(element);
   }, []);
 
   const getCaretPosition = React.useCallback(() => {
@@ -214,6 +221,7 @@ export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTML
         const start = blockUtils.getNativeIndexFromBlockIndex(element, index);
         const end = blockUtils.getNativeIndexFromBlockIndex(element, index + length);
 
+        //console.log(start, end);
         if (!start || !end) return;
         range.setStart(start.node, start.index);
         range.setEnd(end.node, end.index);
@@ -346,6 +354,7 @@ export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTML
     return {
       focus,
       blur,
+      getFormats,
       getBlocks,
       getBlock,
       getBlockLength,

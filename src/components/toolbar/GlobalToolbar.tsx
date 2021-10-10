@@ -17,9 +17,16 @@ const Container = styled.div`
 `;
 
 export const GlobalToolbar = ({ editor, ...props }: Props) => {
+  const handleBold = React.useCallback(() => {}, []);
+
   React.useEffect(() => {
     console.log(editor);
   }, []);
 
-  return ReactDOM.createPortal(<Container {...props}></Container>, document.body);
+  return ReactDOM.createPortal(
+    <Container {...props}>
+      <button onClick={handleBold}>太字</button>
+    </Container>,
+    document.body,
+  );
 };

@@ -25,9 +25,12 @@ export interface EditorController {
   blur: () => void;
   getFormats: (blockId: string, index: number, length?: number) => void;
   getBlocks: () => Block[];
+  updateBlocks: (blocks: Block[]) => void;
   getBlock: (blockId: string) => Block | null;
   getBlockLength: (blockId: string) => number | null;
+  createBlock: (appendBlock: Block, prevBlockId?: string) => void;
   updateBlock: (block: Block) => void;
+  deleteBlock: (blockId: string) => void;
   optimize: () => void;
   setCaretPosition: (caretPosition: Partial<CaretPosition>) => void;
   getCaretPosition: () => CaretPosition | null;
@@ -155,6 +158,10 @@ export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTML
 
   const getBlocks = React.useCallback((): Block[] => {
     return blocksRef.current;
+  }, []);
+
+  const updateBlocks = React.useCallback((blocks: Block[]) => {
+    blocksRef.current = blocks;
   }, []);
 
   const getBlock = React.useCallback((blockId: string): Block | null => {
@@ -342,8 +349,21 @@ export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTML
     }, 10);
   }, []);
 
+  const createBlock = React.useCallback((appendBlock: Block, prevBlockId?: string) => {
+    const currentIndex = blocksRef.current.findIndex((v) => v.id === prevBlockId);
+    updateBlocks(
+      currentIndex !== -1
+        ? [...blocksRef.current.slice(0, currentIndex + 1), appendBlock, ...blocksRef.current.slice(currentIndex + 1)]
+        : [...blocksRef.current, appendBlock],
+    );
+  }, []);
+
   const updateBlock = React.useCallback((block: Block) => {
     eventEmitter.emit(EditorEvents.EVENT_BLOCK_UPDATE, block);
+  }, []);
+
+  const deleteBlock = React.useCallback((blockId: string) => {
+    updateBlocks(blocksRef.current.filter((v) => v.id !== blockId));
   }, []);
 
   const render = React.useCallback((affectedIds: string[] = []) => {
@@ -356,9 +376,12 @@ export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTML
       blur,
       getFormats,
       getBlocks,
+      updateBlocks,
       getBlock,
       getBlockLength,
+      createBlock,
       updateBlock,
+      deleteBlock,
       optimize,
       getCaretPosition,
       setCaretPosition,
@@ -378,11 +401,6 @@ export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTML
 
   React.useEffect(() => {
     const subs = new Subscription();
-    subs.add(
-      eventEmitter.on<Block[]>(EditorEvents.EVENT_EDITOR_UPDATE).subscribe((blocks) => {
-        blocksRef.current = blocks;
-      }),
-    );
     subs.add(
       eventEmitter.on<Block>(EditorEvents.EVENT_BLOCK_UPDATE).subscribe((block) => {
         console.log(block);

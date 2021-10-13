@@ -38,14 +38,22 @@ export class EditorModule implements Module {
   createBlock() {
     const caretPosition = this.editor.getCaretPosition();
     const appendBlock = createBlock('TEXT');
-    const blocks = this.editor.getBlocks();
-    const currentIndex = blocks.findIndex((v) => v.id === caretPosition?.blockId);
-    const insertedBlocks =
-      currentIndex !== -1
-        ? [...blocks.slice(0, currentIndex + 1), appendBlock, ...blocks.slice(currentIndex + 1)]
-        : [...blocks, appendBlock];
+    this.editor.createBlock(appendBlock, caretPosition?.blockId);
     setTimeout(() => this.editor.setCaretPosition({ blockId: appendBlock.id }), 10);
-    this.eventEmitter.emit(EditorEvents.EVENT_EDITOR_UPDATE, insertedBlocks);
+    this.editor.render();
+  }
+
+  deleteBlock(blockId: string) {
+    const caretPosition = this.editor.getCaretPosition();
+    if (!caretPosition) return;
+    const blocks = this.editor.getBlocks();
+    const currentIndex = blocks.findIndex((v) => v.id === caretPosition.blockId);
+    this.editor.deleteBlock(caretPosition.blockId);
+    const prevBlockLength = this.editor.getBlockLength(blocks[currentIndex - 1].id) ?? 0;
+    setTimeout(
+      () => this.editor.setCaretPosition({ blockId: blocks[currentIndex - 1].id, index: prevBlockLength }),
+      10,
+    );
     this.editor.render();
   }
 
@@ -61,6 +69,6 @@ export class EditorModule implements Module {
       this.editor.render([blocks[currentIndex].id]);
       setTimeout(() => this.editor.setCaretPosition({ blockId: lastBlock.id }), 10);
     }, 100);
-    this.eventEmitter.emit(EditorEvents.EVENT_EDITOR_UPDATE, splittedBlock);
+    this.editor.updateBlocks(splittedBlock);
   }
 }

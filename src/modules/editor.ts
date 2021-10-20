@@ -35,26 +35,40 @@ export class EditorModule implements Module {
     setTimeout(() => this.subs.unsubscribe());
   }
 
-  createBlock() {
+  createBlock(blockId?: string) {
     const caretPosition = this.editor.getCaretPosition();
+    blockId = blockId ?? caretPosition?.blockId;
     const appendBlock = createBlock('TEXT');
-    this.editor.createBlock(appendBlock, caretPosition?.blockId);
+    this.editor.createBlock(appendBlock, blockId);
     setTimeout(() => this.editor.setCaretPosition({ blockId: appendBlock.id }), 10);
     this.editor.render();
   }
 
-  deleteBlock(blockId: string) {
+  deleteBlock(blockId?: string) {
     const caretPosition = this.editor.getCaretPosition();
-    if (!caretPosition) return;
+    blockId = blockId ?? caretPosition?.blockId;
     const blocks = this.editor.getBlocks();
-    const currentIndex = blocks.findIndex((v) => v.id === caretPosition.blockId);
-    this.editor.deleteBlock(caretPosition.blockId);
+    const currentIndex = blocks.findIndex((v) => v.id === blockId);
+    if (!blockId || currentIndex === -1) return;
+    this.editor.deleteBlock(blockId);
     const prevBlockLength = this.editor.getBlockLength(blocks[currentIndex - 1].id) ?? 0;
     setTimeout(
       () => this.editor.setCaretPosition({ blockId: blocks[currentIndex - 1].id, index: prevBlockLength }),
       10,
     );
     this.editor.render();
+  }
+
+  mergeBlock(sourceBlockId: string, otherBlockId: string) {
+    const blocks = this.editor.getBlocks();
+    const source = blocks.find((v) => v.id === sourceBlockId);
+    const other = blocks.find((v) => v.id === otherBlockId);
+    if (!source || !other) return;
+    this.editor.deleteBlock(other.id);
+    const currentSourceLength = this.editor.getBlockLength(source.id) ?? 0;
+    this.editor.updateBlock({ ...source, contents: [...source.contents, ...other.contents] });
+    setTimeout(() => this.editor.setCaretPosition({ blockId: source.id, index: currentSourceLength }), 10);
+    this.editor.render([source.id]);
   }
 
   splitBlock(blockId: string, index: number, length: number = 0) {

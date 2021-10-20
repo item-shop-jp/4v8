@@ -6,6 +6,7 @@ import { KeyCodes, EditorEvents } from '../constants';
 import { EditorController } from '../hooks/use-editor';
 import { deleteInlineContents } from '../utils/block';
 import { CaretPosition } from '../types/caret';
+import { EditorModule } from './editor';
 
 interface Props {
   eventEmitter: EventEmitter;
@@ -292,11 +293,14 @@ export class KeyBoardModule implements Module {
       if (!block) return;
       // Ignored for null characters
       if (textLength === 0) {
-        this.editor.getModule('editor').deleteBlock();
+        this.editor.getModule<EditorModule>('editor')?.deleteBlock();
         return;
       }
       if (caretPosition.index < 1) {
-        console.log('先頭', textLength);
+        const blocks = this.editor.getBlocks();
+        const currentIndex = blocks.findIndex((v) => v.id === caretPosition.blockId);
+        if (currentIndex === -1) return;
+        this.editor.getModule<EditorModule>('editor')?.mergeBlock(blocks[currentIndex - 1].id, blocks[currentIndex].id);
         return;
       }
 

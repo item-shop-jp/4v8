@@ -158,17 +158,20 @@ export function getBlockIndexFromNativeIndex(
 // index is the position to start deleting, and length is the number of characters to delete (default is 1).
 export function deleteInlineContents(contents: Inline[], index: number, length: number = 1): Inline[] {
   let startIndex = index;
+  let endIndex = index + length;
   const destContents = [];
   let cumulativeLength = 0;
   for (let i = 0; i < contents.length; i++) {
     const inlineLength = contents[i].isEmbed ? 1 : contents[i].text.length;
-    if (length > 0 && startIndex >= cumulativeLength && startIndex < cumulativeLength + inlineLength) {
+    if (length > 0 && endIndex >= cumulativeLength && startIndex < cumulativeLength + inlineLength) {
       if (!contents[i].isEmbed) {
-        const deleteIndex = startIndex - cumulativeLength;
+        let deleteIndex = startIndex - cumulativeLength;
+        deleteIndex = deleteIndex > 0 ? deleteIndex : 0;
         const textlength = contents[i].text.length - deleteIndex;
         const deletelength = textlength - length >= 0 ? length : textlength;
         length -= deletelength;
         const text = contents[i].text.slice(0, deleteIndex) + contents[i].text.slice(deleteIndex + deletelength);
+
         if (text.length > 0) {
           destContents.push({ ...contents[i], text });
         }
@@ -208,7 +211,7 @@ export function splitInlineContents(contents: Inline[], index: number, length: n
           firstContents.push({ ...contents[i], text: firstText });
         }
         if (lastText.length > 0) {
-          lastContents.push({ ...contents[i], text: lastText });
+          lastContents.push({ ...contents[i], id: nanoid(), text: lastText });
         }
       } else {
         length--;

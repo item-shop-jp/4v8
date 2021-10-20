@@ -56,7 +56,7 @@ export interface EditorController {
     }[],
     options?: ModuleOptions,
   ) => void;
-  getModule: (name: string) => any;
+  getModule: <T = any>(name: string) => T | null;
   removeAllModules: () => void;
   getEventEmitter: () => EventEmitter;
 }
@@ -316,7 +316,7 @@ export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTML
     return eventEmitter;
   }, []);
 
-  const getModule = React.useCallback(<T>(name: string): T | null => {
+  const getModule = React.useCallback(<T = any>(name: string): T | null => {
     if (!modulesRef.current[name]) return null;
     return modulesRef.current[name];
   }, []);

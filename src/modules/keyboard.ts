@@ -288,7 +288,7 @@ export class KeyBoardModule implements Module {
     const block = editor.getBlock(caretPosition.blockId);
     const textLength = editor.getBlockLength(caretPosition.blockId);
     let deletedContents;
-    let caretIndex;
+    let caretIndex: number;
     if (caretPosition.collapsed) {
       if (!block) return;
       // Ignored for null characters
@@ -314,6 +314,6 @@ export class KeyBoardModule implements Module {
 
     editor.updateBlock({ ...block, contents: deletedContents });
     editor.render([block.id]);
-    editor.setCaretPosition({ blockId: block.id, index: caretIndex });
+    setTimeout(() => editor.setCaretPosition({ blockId: block.id, index: caretIndex }), 10);
   }
 }

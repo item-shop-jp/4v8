@@ -213,13 +213,7 @@ export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTML
   const setCaretPosition = React.useCallback(({ blockId = '', index = 0, length = 0 }: Partial<CaretPosition>) => {
     const element = blockUtils.getBlockElementById(blockId);
     if (!element) return;
-    const blockLength = blockUtils.getBlockLength(element);
-    if (blockLength === null) return;
     element.focus();
-    if (blockLength < 1) {
-      updateCaretPosition();
-      return;
-    }
     const selection = document.getSelection();
     if (!selection) return;
     try {
@@ -227,12 +221,9 @@ export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTML
         const range = document.createRange();
         const start = blockUtils.getNativeIndexFromBlockIndex(element, index);
         const end = blockUtils.getNativeIndexFromBlockIndex(element, index + length);
-
-        //console.log(start, end);
         if (!start || !end) return;
         range.setStart(start.node, start.index);
         range.setEnd(end.node, end.index);
-
         selection.removeAllRanges();
         selection.addRange(range);
         updateCaretPosition();

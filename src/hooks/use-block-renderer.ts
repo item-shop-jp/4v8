@@ -3,7 +3,7 @@ import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import isEqual from 'lodash.isequal';
 import { EditorController } from '../hooks/use-editor';
-import { Inline } from '../types/inline';
+import { Block } from '../types/block';
 import { EditorEvents } from '../constants';
 
 interface Props {
@@ -11,14 +11,14 @@ interface Props {
   editor: EditorController;
 }
 
-export function useBlockRenderer({ blockId, editor }: Props): Inline[] {
-  const [contents, setContents] = React.useState<Inline[]>([]);
+export function useBlockRenderer({ blockId, editor }: Props): Block | null {
+  const [block, setBlock] = React.useState<Block | null>(null);
 
   React.useEffect(() => {
-    const block = editor.getBlock(blockId);
+    const currentBlock = editor.getBlock(blockId);
     const eventEmitter = editor.getEventEmitter();
-    if (block) {
-      setContents(block.contents);
+    if (currentBlock) {
+      setBlock(currentBlock);
     }
 
     const subs = new Subscription();
@@ -28,14 +28,14 @@ export function useBlockRenderer({ blockId, editor }: Props): Inline[] {
         .on<string[]>(EditorEvents.EVENT_BLOCK_RERENDER)
         .pipe(filter((affectedIds) => affectedIds.includes(blockId)))
         .subscribe(() => {
-          const block = editor.getBlock(blockId);
-          if (block) {
-            setContents((prev) => {
-              if (isEqual(block.contents, prev)) {
-                setTimeout(() => setContents(block.contents));
-                return [];
+          const currentBlock = editor.getBlock(blockId);
+          if (currentBlock) {
+            setBlock((prev) => {
+              if (isEqual(currentBlock, prev)) {
+                setTimeout(() => setBlock(currentBlock));
+                return {...currentBlock, contents: []};
               }
-              return [...block.contents];
+              return currentBlock;
             });
           }
         }),
@@ -46,5 +46,5 @@ export function useBlockRenderer({ blockId, editor }: Props): Inline[] {
     };
   }, [blockId]);
 
-  return contents;
+  return block;
 }

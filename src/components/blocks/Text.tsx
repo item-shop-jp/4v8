@@ -1,18 +1,13 @@
 import * as React from 'react';
-import { Subscription } from 'rxjs';
-import { filter } from 'rxjs/operators';
 import styled from 'styled-components';
-import isEqual from 'lodash.isequal';
-import { Inline } from '../../types/inline';
 import { Formats } from '../../types/format';
-import { InlineContent } from '../../utils/inline';
 import { EditorController } from '../../hooks/use-editor';
-import { useBlockRenderer } from '../../hooks/use-block-renderer';
-import { EditorEvents } from '../../constants';
+import { Inline } from '../../types/inline';
 
 interface Props {
   blockId: string;
   formats?: Formats;
+  contents: Inline[];
   editor: EditorController;
   onClick: (e: React.MouseEvent) => void;
   onKeyDown: (e: React.KeyboardEvent) => void;
@@ -27,12 +22,6 @@ const P = styled.p`
   margin-bottom: 1px;
 `;
 
-export const Text = React.memo(({ blockId, formats, editor, ...props }: Props) => {
-  const contents = useBlockRenderer({ blockId, editor });
-
-  const memoContents = React.useMemo(() => {
-    return InlineContent({ contents, formats });
-  }, [contents, formats]);
-
-  return <P {...props}>{memoContents}</P>;
+export const Text = React.memo(({ blockId, formats, editor, contents, ...props }: Props) => {
+  return <P {...props}>{contents}</P>;
 });

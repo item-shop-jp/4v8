@@ -4,7 +4,7 @@ import { Subscription } from 'rxjs';
 import { ModuleOptions } from './types/module';
 import { Formats } from './types/format';
 import { Block } from './types/block';
-import { Header, Text } from './components/blocks';
+import { BlockContainer, Header, Text } from './components/blocks';
 import { InlineText, Br } from './components/inlines';
 import { GlobalToolbar } from './components/toolbar';
 import { useEditor, EditorController } from './hooks/use-editor';
@@ -18,52 +18,6 @@ interface Props {
   formats?: Formats;
   settings?: ModuleOptions;
 }
-
-interface BlockProps {
-  blockId: string;
-  blockType: string;
-  readOnly: boolean;
-  formats: Formats;
-  editor: EditorController;
-  onClick: (e: React.MouseEvent) => void;
-  onKeyDown: (e: React.KeyboardEvent) => void;
-  onCompositionStart: (e: React.CompositionEvent) => void;
-  onCompositionEnd: (e: React.CompositionEvent) => void;
-  onBeforeInput: (e: React.KeyboardEvent) => void;
-}
-
-const BlockContainer: React.VFC<BlockProps> = React.memo(
-  ({ blockId, blockType, readOnly = false, formats, ...props }) => {
-    const [blockFormat, setBlockFormat] = React.useState<string>();
-    const [Container, setContainer] = React.useState<React.FC<any>>(formats['block/text']);
-
-    React.useEffect(() => {
-      const newBlockFormat = `block/${blockType.toLocaleLowerCase()}`;
-      setBlockFormat(newBlockFormat);
-      setContainer(() => {
-        if (!formats[newBlockFormat]) {
-          // defalut block format
-          return formats['block/text'];
-        } else {
-          return formats[newBlockFormat];
-        }
-      });
-    }, [blockType]);
-
-    return (
-      <Container
-        suppressContentEditableWarning
-        className="notranslate"
-        contentEditable={!readOnly}
-        blockId={blockId}
-        data-block-id={blockId}
-        data-format={blockFormat}
-        formats={formats}
-        {...props}
-      />
-    );
-  },
-);
 
 const Container = styled.div`
   border: 1px solid #ccc;
@@ -198,7 +152,6 @@ export const Editor: React.VFC<Props> = React.memo(({ readOnly = false, formats,
               formats={blockFormats}
               editor={memoEditor}
               blockId={block.id}
-              blockType={block.type}
               readOnly={readOnly}
               onClick={handleClick}
               onKeyDown={handleKeyDown}

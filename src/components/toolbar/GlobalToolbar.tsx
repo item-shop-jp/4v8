@@ -31,7 +31,7 @@ export const GlobalToolbar = React.memo(({ editor, ...props }: Props) => {
     if (!caretPosition) return;
     const block = editor.getBlock(caretPosition.blockId);
     if (!block) return;
-    editor.updateBlock({...block, attributes: {header: 1}});
+    editor.updateBlock({...block, type: 'HEADER', attributes: {header: 1}});
     editor.render([block.id]);
   }, []);
 

@@ -192,7 +192,7 @@ export function deleteInlineContents(contents: Inline[], index: number, length: 
 }
 
 // length is the string currently selected by the user and to be deleted when splitting.
-export function splitInlineContents(contents: Inline[], index: number, length: number = 0): [Inline[], Inline[]] {
+export function splitInlineContents(contents: Inline[], index: number): [Inline[], Inline[]] {
   const startIndex = index;
   const firstContents: Inline[] = [];
   const lastContents: Inline[] = [];
@@ -201,12 +201,9 @@ export function splitInlineContents(contents: Inline[], index: number, length: n
     const inlineLength = contents[i].isEmbed ? 1 : contents[i].text.length;
     if (startIndex >= cumulativeLength && startIndex < cumulativeLength + inlineLength) {
       if (!contents[i].isEmbed) {
-        const deleteIndex = startIndex - cumulativeLength;
-        const textlength = contents[i].text.length - deleteIndex;
-        const deletelength = textlength - length >= 0 ? length : textlength;
-        length -= deletelength;
-        const firstText = contents[i].text.slice(0, deleteIndex);
-        const lastText = contents[i].text.slice(deleteIndex + deletelength);
+        const sliceIndex = startIndex - cumulativeLength;
+        const firstText = contents[i].text.slice(0, sliceIndex);
+        const lastText = contents[i].text.slice(sliceIndex);
         if (firstText.length > 0) {
           firstContents.push({ ...contents[i], text: firstText });
         }
@@ -218,7 +215,7 @@ export function splitInlineContents(contents: Inline[], index: number, length: n
         lastContents.push(contents[i]);
       }
     } else {
-      if (length > 0) {
+      if (startIndex > cumulativeLength) {
         firstContents.push(contents[i]);
       } else {
         lastContents.push(contents[i]);

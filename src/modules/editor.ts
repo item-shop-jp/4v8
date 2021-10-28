@@ -1,6 +1,6 @@
 import { Subscription } from 'rxjs';
 import { EventEmitter } from '../utils/event-emitter';
-import { createBlock, splitInlineContents } from '../utils/block';
+import { createBlock, splitInlineContents, deleteInlineContents } from '../utils/block';
 import { createlineBreak, createInline } from '../utils/inline';
 import { EditorEvents } from '../constants';
 import { Module } from '../types/module';
@@ -75,7 +75,11 @@ export class EditorModule implements Module {
     const blocks = this.editor.getBlocks();
     const currentIndex = blocks.findIndex((v) => v.id === blockId);
     if (currentIndex === -1) return;
-    const [first, last] = splitInlineContents(blocks[currentIndex].contents, index, length);
+    let contents = blocks[currentIndex].contents;
+    if (length > 0) {
+      contents = deleteInlineContents(contents, index, length);
+    }
+    const [first, last] = splitInlineContents(contents, index);
     const firstBlock = { ...blocks[currentIndex], contents: first.length < 1 ? [createInline('TEXT')] : first };
     const lastBlock = createBlock('TEXT', last, blocks[currentIndex].attributes);
     const splittedBlock = [...blocks.slice(0, currentIndex), firstBlock, lastBlock, ...blocks.slice(currentIndex + 1)];

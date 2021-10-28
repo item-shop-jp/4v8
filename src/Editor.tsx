@@ -126,8 +126,8 @@ export const Editor: React.VFC<Props> = React.memo(({ readOnly = false, formats,
   );
 
   const handleInput = React.useCallback((e: React.KeyboardEvent) => {
-    const keyboard = editor.getModule('keyboard');
-    if (keyboard && keyboard instanceof KeyBoardModule) {
+    const keyboard = editor.getModule<KeyBoardModule>('keyboard');
+    if (keyboard) {
       keyboard.onInput(e);
     }
   }, []);

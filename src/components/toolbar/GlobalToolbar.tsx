@@ -27,16 +27,15 @@ export const GlobalToolbar = React.memo(({ editor, ...props }: Props) => {
   const handleHeader1 = React.useCallback(() => {
     editor.focus();
     const caretPosition = editor.getCaretPosition();
-    console.log('blick', caretPosition);
     if (!caretPosition) return;
     const block = editor.getBlock(caretPosition.blockId);
     if (!block) return;
-    editor.updateBlock({...block, type: 'HEADER', attributes: {header: 1}});
+    editor.updateBlock({ ...block, type: block.type === 'HEADER' ? 'TEXT' : 'HEADER', attributes: { header: 1 } });
     editor.render([block.id]);
-  }, []);
-
-  React.useEffect(() => {
-    console.log(editor);
+    setTimeout(
+      () => editor.setCaretPosition({ blockId: block.id, index: caretPosition.index, length: caretPosition.length }),
+      10,
+    );
   }, []);
 
   return ReactDOM.createPortal(

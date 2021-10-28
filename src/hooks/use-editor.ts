@@ -186,7 +186,9 @@ export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTML
     } else {
       const nativeRange = getNativeRange();
       if (!nativeRange) return null;
-      lastCaretPositionRef.current = normalizeRange(nativeRange);
+      const range = normalizeRange(nativeRange);
+      if (!range) return null;
+      lastCaretPositionRef.current = range;
     }
     return lastCaretPositionRef.current;
   }, []);
@@ -346,7 +348,10 @@ export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTML
   }, []);
 
   const updateBlock = React.useCallback((block: Block) => {
-    eventEmitter.emit(EditorEvents.EVENT_BLOCK_UPDATE, {...block, contents: blockUtils.optimizeInlineContents(block.contents)});
+    eventEmitter.emit(EditorEvents.EVENT_BLOCK_UPDATE, {
+      ...block,
+      contents: blockUtils.optimizeInlineContents(block.contents),
+    });
   }, []);
 
   const deleteBlock = React.useCallback((blockId: string) => {

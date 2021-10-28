@@ -121,14 +121,14 @@ export class KeyBoardModule implements Module {
 
   onCompositionEnd(e: React.CompositionEvent) {
     this.composing = false;
-    setTimeout(() => this.editor.optimize(), 100);
+    setTimeout(() => this.editor.sync(), 100);
   }
 
   onInput(e: React.KeyboardEvent) {
     if (this.composing) {
       return;
     }
-    this.editor.optimize();
+    this.editor.sync();
   }
 
   onKeyPress(e: React.KeyboardEvent) {}
@@ -219,7 +219,7 @@ export class KeyBoardModule implements Module {
 
   private _handleSpace(caretPosition: CaretPosition, editor: EditorController) {
     // if (this.composing) {
-    //   this.editor.optimize();
+    //   this.editor.sync();
     //   console.log('変換enter');
     //   return;
     // }
@@ -286,6 +286,8 @@ export class KeyBoardModule implements Module {
 
   private _handleBackspace(caretPosition: CaretPosition, editor: EditorController) {
     const block = editor.getBlock(caretPosition.blockId);
+    const blocks = this.editor.getBlocks();
+    const blockIndex = blocks.findIndex((v) => v.id === caretPosition.blockId);
     const textLength = editor.getBlockLength(caretPosition.blockId);
     let deletedContents;
     let caretIndex: number;
@@ -296,11 +298,9 @@ export class KeyBoardModule implements Module {
         this.editor.getModule<EditorModule>('editor')?.deleteBlock();
         return;
       }
-      if (caretPosition.index < 1) {
-        const blocks = this.editor.getBlocks();
-        const currentIndex = blocks.findIndex((v) => v.id === caretPosition.blockId);
-        if (currentIndex === -1) return;
-        this.editor.getModule<EditorModule>('editor')?.mergeBlock(blocks[currentIndex - 1].id, blocks[currentIndex].id);
+      if (caretPosition.index < 1) { 
+        if (blockIndex < 1) return;
+        this.editor.getModule<EditorModule>('editor')?.mergeBlock(blocks[blockIndex - 1].id, blocks[blockIndex].id);
         return;
       }
 
@@ -313,6 +313,7 @@ export class KeyBoardModule implements Module {
     }
 
     editor.updateBlock({ ...block, contents: deletedContents });
+    editor.blur();
     editor.render([block.id]);
     setTimeout(() => editor.setCaretPosition({ blockId: block.id, index: caretIndex }), 10);
   }

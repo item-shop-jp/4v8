@@ -13,11 +13,27 @@ const Container = styled.div`
   left: 50%;
   transform: translate(-50%, -50%);
   padding: 8px;
-  background: #eee;
 `;
 
-export const GlobalToolbar = ({ editor, ...props }: Props) => {
+const Button = styled.a`
+  margin: 8px;
+  border: 1px solid #666;
+  border-radius: 4px;
+  padding: 4px;
+`;
+
+export const GlobalToolbar = React.memo(({ editor, ...props }: Props) => {
   const handleBold = React.useCallback(() => {}, []);
+  const handleHeader1 = React.useCallback(() => {
+    editor.focus();
+    const caretPosition = editor.getCaretPosition();
+    console.log('blick', caretPosition);
+    if (!caretPosition) return;
+    const block = editor.getBlock(caretPosition.blockId);
+    if (!block) return;
+    editor.updateBlock({...block, attributes: {header: 1}});
+    editor.render([block.id]);
+  }, []);
 
   React.useEffect(() => {
     console.log(editor);
@@ -25,8 +41,9 @@ export const GlobalToolbar = ({ editor, ...props }: Props) => {
 
   return ReactDOM.createPortal(
     <Container {...props}>
-      <button onClick={handleBold}>太字</button>
+      <Button onClick={handleHeader1}>header1</Button>
+      <Button onClick={handleBold}>bold</Button>
     </Container>,
     document.body,
   );
-};
+});

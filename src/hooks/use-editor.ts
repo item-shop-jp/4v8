@@ -31,7 +31,7 @@ export interface EditorController {
   createBlock: (appendBlock: Block, prevBlockId?: string) => void;
   updateBlock: (block: Block) => void;
   deleteBlock: (blockId: string) => void;
-  optimize: () => void;
+  sync: () => void;
   setCaretPosition: (caretPosition: Partial<CaretPosition>) => void;
   getCaretPosition: () => CaretPosition | null;
   getNativeRange: () => Range | null;
@@ -213,22 +213,18 @@ export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTML
   const setCaretPosition = React.useCallback(({ blockId = '', index = 0, length = 0 }: Partial<CaretPosition>) => {
     const element = blockUtils.getBlockElementById(blockId);
     if (!element) return;
-    element.focus();
     const selection = document.getSelection();
     if (!selection) return;
     try {
-      setTimeout(() => {
-        const range = document.createRange();
-        const start = blockUtils.getNativeIndexFromBlockIndex(element, index);
-        const end = blockUtils.getNativeIndexFromBlockIndex(element, index + length);
-        if (!start || !end) return;
-        range.setStart(start.node, start.index);
-        range.setEnd(end.node, end.index);
-        selection.removeAllRanges();
-        selection.addRange(range);
-        updateCaretPosition();
-      });
-      element.blur();
+      const range = document.createRange();
+      const start = blockUtils.getNativeIndexFromBlockIndex(element, index);
+      const end = blockUtils.getNativeIndexFromBlockIndex(element, index + length);
+      if (!start || !end) return;
+      range.setStart(start.node, start.index);
+      range.setEnd(end.node, end.index);
+      selection.removeAllRanges();
+      selection.addRange(range);
+      updateCaretPosition();
     } catch (e) {
       eventEmitter.warning('Invalid Range', e);
     }
@@ -319,7 +315,7 @@ export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTML
     setModules({});
   }, []);
 
-  const optimize = React.useCallback(() => {
+  const sync = React.useCallback(() => {
     const nativeRange = getNativeRange();
     if (!nativeRange) return;
     const [blockId, blockElement] = blockUtils.getBlockId(nativeRange.startContainer as HTMLElement);
@@ -350,7 +346,7 @@ export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTML
   }, []);
 
   const updateBlock = React.useCallback((block: Block) => {
-    eventEmitter.emit(EditorEvents.EVENT_BLOCK_UPDATE, block);
+    eventEmitter.emit(EditorEvents.EVENT_BLOCK_UPDATE, {...block, contents: blockUtils.optimizeInlineContents(block.contents)});
   }, []);
 
   const deleteBlock = React.useCallback((blockId: string) => {
@@ -373,7 +369,7 @@ export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTML
       createBlock,
       updateBlock,
       deleteBlock,
-      optimize,
+      sync,
       getCaretPosition,
       setCaretPosition,
       updateCaretPosition,

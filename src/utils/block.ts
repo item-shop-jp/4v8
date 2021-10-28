@@ -1,4 +1,5 @@
 import { nanoid } from 'nanoid';
+import isEqual from 'lodash.isequal';
 import { createInline, isEmbed, getInlineId } from './inline';
 import { Block, BlockType, BlockAttributes } from '../types/block';
 import { Inline, InlineType } from '../types/inline';
@@ -226,6 +227,26 @@ export function splitInlineContents(contents: Inline[], index: number): [Inline[
   }
 
   return [firstContents, lastContents];
+}
+
+export function optimizeInlineContents(contents: Inline[]): Inline[] {
+  let prevAttributes = {};
+  const dest = contents.reduce<Inline[]>((r, v, i) => {
+    if (v.text === '\uFEFF') {
+      return r;
+    }
+    if (r.length > 0 && isEqual(v.attributes, prevAttributes)) {
+      prevAttributes = v.attributes;
+      r[r.length - 1].text += v.text;
+      return [...r];
+    }
+    return [...r, v];
+  }, []);
+
+  if (dest.length < 1) {
+    dest.push(createInline('TEXT'));
+  }
+  return dest;
 }
 
 export function getFormats(contents: Inline[], index: number, length: number = 0) {

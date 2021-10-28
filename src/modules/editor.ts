@@ -49,13 +49,21 @@ export class EditorModule implements Module {
     blockId = blockId ?? caretPosition?.blockId;
     const blocks = this.editor.getBlocks();
     const currentIndex = blocks.findIndex((v) => v.id === blockId);
-    if (!blockId || currentIndex === -1) return;
+    if (!blockId || blocks.length <= 1 || currentIndex === -1) return;
     this.editor.deleteBlock(blockId);
-    const prevBlockLength = this.editor.getBlockLength(blocks[currentIndex - 1].id) ?? 0;
-    setTimeout(
-      () => this.editor.setCaretPosition({ blockId: blocks[currentIndex - 1].id, index: prevBlockLength }),
-      10,
-    );
+    if (currentIndex > 0) {
+      const prevBlockLength = this.editor.getBlockLength(blocks[currentIndex - 1].id) ?? 0;
+      setTimeout(
+        () => this.editor.setCaretPosition({ blockId: blocks[currentIndex - 1].id, index: prevBlockLength }),
+        10,
+      );
+    } else {
+      setTimeout(
+        () => this.editor.setCaretPosition({ blockId: blocks[currentIndex + 1].id, index: 0 }),
+        10,
+      );
+    }
+
     this.editor.render();
   }
 
@@ -85,8 +93,9 @@ export class EditorModule implements Module {
     const splittedBlock = [...blocks.slice(0, currentIndex), firstBlock, lastBlock, ...blocks.slice(currentIndex + 1)];
     setTimeout(() => {
       this.editor.render([blocks[currentIndex].id]);
+      this.editor.blur();
       setTimeout(() => this.editor.setCaretPosition({ blockId: lastBlock.id }), 10);
-    }, 100);
+    }, 10);
     this.editor.updateBlocks(splittedBlock);
   }
 }

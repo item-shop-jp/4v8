@@ -187,7 +187,6 @@ export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTML
       const nativeRange = getNativeRange();
       if (!nativeRange) return null;
       const range = normalizeRange(nativeRange);
-      if (!range) return null;
       lastCaretPositionRef.current = range;
     }
     return lastCaretPositionRef.current;

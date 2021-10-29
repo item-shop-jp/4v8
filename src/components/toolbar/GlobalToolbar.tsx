@@ -24,8 +24,8 @@ const Button = styled.a`
 
 export const GlobalToolbar = React.memo(({ editor, ...props }: Props) => {
   const handleBold = React.useCallback(() => {}, []);
-  const handleHeader1 = React.useCallback(() => {
-    editor.focus();
+  const handleHeader1 = React.useCallback((event: React.MouseEvent) => {
+    event.preventDefault();
     const caretPosition = editor.getCaretPosition();
     if (!caretPosition) return;
     const block = editor.getBlock(caretPosition.blockId);
@@ -40,8 +40,12 @@ export const GlobalToolbar = React.memo(({ editor, ...props }: Props) => {
 
   return ReactDOM.createPortal(
     <Container {...props}>
-      <Button onClick={handleHeader1}>header1</Button>
-      <Button onClick={handleBold}>bold</Button>
+      <Button href="#" onClick={handleHeader1}>
+        header1
+      </Button>
+      <Button href="#" onClick={handleBold}>
+        bold
+      </Button>
     </Container>,
     document.body,
   );

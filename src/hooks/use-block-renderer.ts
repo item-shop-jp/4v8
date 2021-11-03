@@ -5,6 +5,7 @@ import isEqual from 'lodash.isequal';
 import { EditorController } from '../hooks/use-editor';
 import { Block } from '../types/block';
 import { EditorEvents } from '../constants';
+import { copyObject } from '../utils/object';
 
 interface Props {
   blockId: string;
@@ -33,9 +34,9 @@ export function useBlockRenderer({ blockId, editor }: Props): Block | null {
             setBlock((prev) => {
               if (isEqual(currentBlock, prev)) {
                 setTimeout(() => setBlock(currentBlock));
-                return {...currentBlock, contents: []};
+                return { ...currentBlock, contents: [] };
               }
-              return currentBlock;
+              return copyObject(currentBlock);
             });
           }
         }),

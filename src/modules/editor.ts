@@ -58,10 +58,7 @@ export class EditorModule implements Module {
         10,
       );
     } else {
-      setTimeout(
-        () => this.editor.setCaretPosition({ blockId: blocks[currentIndex + 1].id, index: 0 }),
-        10,
-      );
+      setTimeout(() => this.editor.setCaretPosition({ blockId: blocks[currentIndex + 1].id, index: 0 }), 10);
     }
 
     this.editor.render();
@@ -90,12 +87,12 @@ export class EditorModule implements Module {
     const [first, last] = splitInlineContents(contents, index);
     const firstBlock = { ...blocks[currentIndex], contents: first.length < 1 ? [createInline('TEXT')] : first };
     const lastBlock = createBlock('TEXT', last, blocks[currentIndex].attributes);
-    const splittedBlock = [...blocks.slice(0, currentIndex), firstBlock, lastBlock, ...blocks.slice(currentIndex + 1)];
+    const splittedBlocks = [...blocks.slice(0, currentIndex), firstBlock, lastBlock, ...blocks.slice(currentIndex + 1)];
     setTimeout(() => {
       this.editor.render([blocks[currentIndex].id]);
       this.editor.blur();
       setTimeout(() => this.editor.setCaretPosition({ blockId: lastBlock.id }), 10);
     }, 10);
-    this.editor.updateBlocks(splittedBlock);
+    this.editor.updateBlocks(splittedBlocks);
   }
 }

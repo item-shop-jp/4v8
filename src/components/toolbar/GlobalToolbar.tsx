@@ -23,7 +23,10 @@ const Button = styled.a`
 `;
 
 export const GlobalToolbar = React.memo(({ editor, ...props }: Props) => {
-  const handleBold = React.useCallback(() => {}, []);
+  const handleBold = React.useCallback((event: React.MouseEvent) => {
+    event.preventDefault();
+  }, []);
+
   const handleHeader1 = React.useCallback((event: React.MouseEvent) => {
     event.preventDefault();
     const caretPosition = editor.getCaretPosition();

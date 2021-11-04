@@ -5,7 +5,7 @@ import { ModuleOptions } from './types/module';
 import { Formats } from './types/format';
 import { Block } from './types/block';
 import { BlockContainer, Header, Text } from './components/blocks';
-import { InlineText, Br } from './components/inlines';
+import { InlineText } from './components/inlines';
 import { GlobalToolbar } from './components/toolbar';
 import { useEditor, EditorController } from './hooks/use-editor';
 import { useEventEmitter } from './hooks/use-event-emitter';
@@ -45,7 +45,6 @@ export const Editor: React.VFC<Props> = React.memo(({ readOnly = false, formats,
     'block/text': Text,
     'block/header': Header,
     'inline/text': InlineText,
-    'inline/br': Br,
   });
   const [blocks, setBlocks] = React.useState<Block[]>([]);
 

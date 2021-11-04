@@ -4,7 +4,7 @@ import { Subscription } from 'rxjs';
 import { ModuleOptions } from './types/module';
 import { Formats } from './types/format';
 import { Block } from './types/block';
-import { BlockContainer, Header, Text } from './components/blocks';
+import { BlockContainer, Header1, Header2, Header3, Text } from './components/blocks';
 import { InlineText, Br } from './components/inlines';
 import { GlobalToolbar } from './components/toolbar';
 import { useEditor, EditorController } from './hooks/use-editor';
@@ -43,7 +43,9 @@ export const Editor: React.VFC<Props> = React.memo(({ readOnly = false, formats,
   const containerRef = React.useRef<HTMLDivElement>(null);
   const [blockFormats, setBlockFormats] = React.useState<Formats>({
     'block/text': Text,
-    'block/header': Header,
+    'block/header1': Header1,
+    'block/header2': Header2,
+    'block/header3': Header3,
     'inline/text': InlineText,
     'inline/br': Br,
   });

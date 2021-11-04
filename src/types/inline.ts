@@ -10,5 +10,5 @@ export interface Inline {
 }
 
 export interface InlineAttributes {
-  [key: string]: string;
+  [key: string]: any;
 }

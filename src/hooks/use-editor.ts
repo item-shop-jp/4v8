@@ -429,13 +429,13 @@ export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTML
   }, [modules]);
 
   React.useEffect(() => {
-    const handleSlectionChange = (e: Event) => {
+    const handleSelectionChange = (e: Event) => {
       if (!editorRef.current) return;
       updateCaretPosition();
     };
-    document.addEventListener('selectionchange', handleSlectionChange);
+    document.addEventListener('selectionchange', handleSelectionChange);
     return () => {
-      document.removeEventListener('selectionchange', handleSlectionChange);
+      document.removeEventListener('selectionchange', handleSelectionChange);
     };
   }, []);
 

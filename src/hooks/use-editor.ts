@@ -9,6 +9,7 @@ import { ModuleOptions } from '../types/module';
 import { Block } from '../types/block';
 import { EditorEvents } from '../constants';
 import { KeyBoardModule } from '../modules';
+import { InlineAttributes } from '../types/inline';
 
 interface Props {
   eventEmitter: EventEmitter;
@@ -24,6 +25,7 @@ export interface EditorController {
   focus: () => void;
   blur: () => void;
   getFormats: (blockId: string, index: number, length?: number) => void;
+  formatText: (blockId: string, index: number, length: number, attributes: InlineAttributes) => void;
   getBlocks: () => Block[];
   updateBlocks: (blocks: Block[]) => void;
   getBlock: (blockId: string) => Block | null;
@@ -155,6 +157,15 @@ export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTML
     if (!block) return null;
     return blockUtils.getFormats(block.contents, index, length);
   }, []);
+
+  const formatText = React.useCallback(
+    (blockId: string, index: number, length: number, attributes: InlineAttributes = {}) => {
+      const block = blocksRef.current.find((v) => v.id === blockId);
+      if (!block) return null;
+      return blockUtils.setAttributesForInlineContents(block.contents, attributes, index, length);
+    },
+    [],
+  );
 
   const getBlocks = React.useCallback((): Block[] => {
     return blocksRef.current;
@@ -366,6 +377,7 @@ export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTML
       focus,
       blur,
       getFormats,
+      formatText,
       getBlocks,
       updateBlocks,
       getBlock,

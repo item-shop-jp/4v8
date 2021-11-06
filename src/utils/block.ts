@@ -2,7 +2,7 @@ import { nanoid } from 'nanoid';
 import isEqual from 'lodash.isequal';
 import { createInline, isEmbed, getInlineId } from './inline';
 import { Block, BlockType, BlockAttributes } from '../types/block';
-import { Inline, InlineType } from '../types/inline';
+import { Inline, InlineAttributes, InlineType } from '../types/inline';
 
 export function createBlock(type: BlockType, contents?: Inline[], attributes?: BlockAttributes): Block {
   return {
@@ -175,6 +175,58 @@ export function deleteInlineContents(contents: Inline[], index: number, length: 
 
         if (text.length > 0) {
           destContents.push({ ...contents[i], text });
+        }
+      } else {
+        length--;
+      }
+    } else {
+      destContents.push(contents[i]);
+    }
+
+    cumulativeLength += inlineLength;
+  }
+
+  if (destContents.length < 1) {
+    destContents.push(createInline('TEXT'));
+  }
+  return destContents;
+}
+
+export function setAttributesForInlineContents(
+  contents: Inline[],
+  attributes: InlineAttributes,
+  index: number,
+  length: number = 1,
+): Inline[] {
+  let startIndex = index;
+  let endIndex = index + length;
+  const destContents = [];
+  let cumulativeLength = 0;
+  for (let i = 0; i < contents.length; i++) {
+    const inlineLength = contents[i].isEmbed ? 1 : contents[i].text.length;
+    if (length > 0 && endIndex >= cumulativeLength && startIndex < cumulativeLength + inlineLength) {
+      if (!contents[i].isEmbed) {
+        let formatIndex = startIndex - cumulativeLength;
+        formatIndex = formatIndex > 0 ? formatIndex : 0;
+        const textlength = contents[i].text.length - formatIndex;
+        const formatlength = textlength - length >= 0 ? length : textlength;
+        length -= formatlength;
+        const firstText = contents[i].text.slice(0, formatIndex);
+        const middleText = contents[i].text.slice(formatIndex, formatIndex + formatlength);
+        const lastText = contents[i].text.slice(formatIndex + formatlength);
+
+        if (firstText.length > 0) {
+          destContents.push({ ...contents[i], text: firstText });
+        }
+        if (middleText.length > 0) {
+          destContents.push({
+            ...contents[i],
+            text: middleText,
+            attributes: { ...contents[i].attributes, ...attributes },
+          });
+        }
+        if (lastText.length > 0) {
+          destContents.push({ ...contents[i], text: lastText });
         }
       } else {
         length--;

@@ -28,22 +28,10 @@ export function createInline(type: InlineType, text: string = '\uFEFF', attribut
   };
 }
 
-export function createlineBreak(attributes: InlineAttributes = {}): Inline {
-  return {
-    id: nanoid(),
-    text: '',
-    type: 'BR',
-    attributes: {},
-    isEmbed: isEmbed('BR'),
-  };
-}
-
 export function isEmbed(type: InlineType): boolean {
   switch (type) {
     case 'TEXT':
       return false;
-    case 'BR':
-      return true;
     default:
       return false;
   }

@@ -1,7 +1,7 @@
 import { Subscription } from 'rxjs';
 import { EventEmitter } from '../utils/event-emitter';
 import { createBlock, splitInlineContents, deleteInlineContents } from '../utils/block';
-import { createlineBreak, createInline } from '../utils/inline';
+import { createInline } from '../utils/inline';
 import { EditorEvents } from '../constants';
 import { Module } from '../types/module';
 import { EditorController } from '../hooks/use-editor';

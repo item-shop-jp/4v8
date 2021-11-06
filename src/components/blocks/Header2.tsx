@@ -16,7 +16,6 @@ interface Props {
   onKeyDown: (e: React.KeyboardEvent) => void;
 }
 const Header = styled.h2`
-  font-size: 20px;
   outline: 0;
   transition: all 0.3s, color 0.3s;
   ::after {

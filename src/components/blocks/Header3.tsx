@@ -15,8 +15,7 @@ interface Props {
   onClick: (e: React.MouseEvent) => void;
   onKeyDown: (e: React.KeyboardEvent) => void;
 }
-const Header = styled.h1`
-  font-size: 16px;
+const Header = styled.h3`
   outline: 0;
   transition: all 0.3s, color 0.3s;
   ::after {

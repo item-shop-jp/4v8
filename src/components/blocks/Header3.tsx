@@ -27,7 +27,7 @@ const Header = styled.h1`
 
 export const Header3 = React.memo(({ blockId, length, contents, attributes, editor, ...props }: Props) => {
   return (
-    <Header {...props} placeholder={length < 1 ? 'Heading 1' : ''}>
+    <Header {...props} placeholder={length < 1 ? 'Heading 3' : ''}>
       {contents}
     </Header>
   );

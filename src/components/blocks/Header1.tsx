@@ -15,7 +15,7 @@ interface Props {
   onClick: (e: React.MouseEvent) => void;
   onKeyDown: (e: React.KeyboardEvent) => void;
 }
-const Header1 = styled.h1`
+const Header = styled.h1`
   font-size: 24px;
   outline: 0;
   transition: all 0.3s, color 0.3s;
@@ -25,29 +25,20 @@ const Header1 = styled.h1`
   }
 `;
 
-const Header2 = styled.h2`
-  font-size: 20px;
-  outline: 0;
-`;
+// const Header2 = styled.h2`
+//   font-size: 20px;
+//   outline: 0;
+// `;
 
-const Header3 = styled.h3`
-  font-size: 16px;
-  outline: 0;
-`;
+// const Header3 = styled.h3`
+//   font-size: 16px;
+//   outline: 0;
+// `;
 
-export const Header = React.memo(({ blockId, length, contents, attributes, editor, ...props }: Props) => {
-  switch (attributes['header']) {
-    case 1:
-      return (
-        <Header1 {...props} placeholder={length < 1 ? 'Heading 1' : ''}>
-          {contents}
-        </Header1>
-      );
-    case 2:
-      return <Header2 {...props}>{contents}</Header2>;
-    case 3:
-      return <Header3 {...props}>{contents}</Header3>;
-    default:
-      return <Header1 {...props}>{contents}</Header1>;
-  }
+export const Header1 = React.memo(({ blockId, length, contents, attributes, editor, ...props }: Props) => {
+  return (
+    <Header {...props} placeholder={length < 1 ? 'Heading 1' : ''}>
+      {contents}
+    </Header>
+  );
 });

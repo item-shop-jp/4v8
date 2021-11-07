@@ -4,10 +4,10 @@ import { createInline, isEmbed, getInlineId } from './inline';
 import { Block, BlockType, BlockAttributes } from '../types/block';
 import { Inline, InlineAttributes, InlineType } from '../types/inline';
 
-export function createBlock(type: BlockType, contents?: Inline[], attributes?: BlockAttributes): Block {
+export function createBlock(type: BlockType, contents: Inline[] = [], attributes?: BlockAttributes): Block {
   return {
     id: nanoid(),
-    contents: contents ?? [createInline('TEXT')],
+    contents: contents.length < 1 ? [createInline('TEXT')] : contents,
     attributes: attributes ?? {},
     type,
   };

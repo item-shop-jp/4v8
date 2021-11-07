@@ -1,5 +1,7 @@
 import * as React from 'react';
 import { Subscription } from 'rxjs';
+import * as json0diff from 'json0-ot-diff';
+import DiffMatchPatch from 'diff-match-patch';
 import { EventEmitter } from '../utils/event-emitter';
 import * as blockUtils from '../utils/block';
 import { getInlineId } from '../utils/inline';
@@ -406,9 +408,11 @@ export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTML
     const subs = new Subscription();
     subs.add(
       eventEmitter.on<Block>(EditorEvents.EVENT_BLOCK_UPDATE).subscribe((block) => {
-        console.log(block);
         const currentIndex = blocksRef.current.findIndex((v) => v.id === block.id);
         if (currentIndex === -1) return;
+        const diff = json0diff(blocksRef.current[currentIndex], block, DiffMatchPatch);
+
+        console.log(JSON.stringify(diff));
         blocksRef.current = [
           ...blocksRef.current.slice(0, currentIndex),
           {

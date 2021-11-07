@@ -4,12 +4,13 @@ import { EditorController } from '../../hooks/use-editor';
 import { Formats } from '../../types/format';
 import { Inline } from '../../types/inline';
 import { BlockAttributes } from '../../types/block';
+import { useMutationObserver } from '../../hooks/use-mutation-observer';
 
 interface Props {
   blockId: string;
   formats?: Formats;
   contents: Inline[];
-  length: number;
+  placeholder?: string;
   attributes: BlockAttributes;
   editor: EditorController;
   onClick: (e: React.MouseEvent) => void;
@@ -25,20 +26,30 @@ const Header = styled.h1`
   }
 `;
 
-// const Header2 = styled.h2`
-//   font-size: 20px;
-//   outline: 0;
-// `;
+export const Header1 = React.memo(
+  ({ blockId, contents, placeholder = 'Header 1', attributes, editor, ...props }: Props) => {
+    const headerRef = React.useRef(null);
+    const [showPlaceholder, setShowPlaceholder] = React.useState(false);
+    const handleChangeElement = React.useCallback(() => {
+      if (!headerRef.current) return;
+      const innerText = (headerRef.current as HTMLElement).innerText.replaceAll(/\uFEFF/gi, '');
+      setShowPlaceholder(innerText.length < 1);
+    }, []);
+    useMutationObserver(headerRef, handleChangeElement, {
+      childList: true,
+      attributes: true,
+      subtree: true,
+      characterData: true,
+    });
 
-// const Header3 = styled.h3`
-//   font-size: 16px;
-//   outline: 0;
-// `;
+    React.useEffect(() => {
+      handleChangeElement();
+    }, []);
 
-export const Header1 = React.memo(({ blockId, length, contents, attributes, editor, ...props }: Props) => {
-  return (
-    <Header {...props} placeholder={length < 1 ? 'Heading 1' : ''}>
-      {contents}
-    </Header>
-  );
-});
+    return (
+      <Header ref={headerRef} placeholder={showPlaceholder ? placeholder : ''} {...props}>
+        {contents}
+      </Header>
+    );
+  },
+);

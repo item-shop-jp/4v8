@@ -298,7 +298,7 @@ export class KeyBoardModule implements Module {
         this.editor.getModule<EditorModule>('editor')?.deleteBlock();
         return;
       }
-      if (caretPosition.index < 1) { 
+      if (caretPosition.index < 1) {
         if (blockIndex < 1) return;
         this.editor.getModule<EditorModule>('editor')?.mergeBlock(blocks[blockIndex - 1].id, blocks[blockIndex].id);
         return;

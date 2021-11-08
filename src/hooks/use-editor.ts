@@ -6,12 +6,14 @@ import { EventEmitter } from '../utils/event-emitter';
 import * as blockUtils from '../utils/block';
 import { getInlineId } from '../utils/inline';
 import { caretRangeFromPoint } from '../utils/range';
+import { copyObject } from '../utils/object';
 import { CaretPosition } from '../types/caret';
 import { ModuleOptions } from '../types/module';
 import { Block } from '../types/block';
+import { InlineAttributes } from '../types/inline';
+import { Shadow } from '../types/shadow';
 import { EditorEvents } from '../constants';
 import { KeyBoardModule } from '../modules';
-import { InlineAttributes } from '../types/inline';
 
 interface Props {
   eventEmitter: EventEmitter;
@@ -70,6 +72,7 @@ export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTML
   const lastCaretPositionRef = React.useRef<CaretPosition | null>();
   const lastCaretRectRef = React.useRef<DOMRect | null>();
   const blocksRef = React.useRef<Block[]>([]);
+  const shadowBlocksRef = React.useRef<Shadow[]>([]);
   const modulesRef = React.useRef<any>({});
   const [modules, setModules] = React.useState<any>({});
 
@@ -164,7 +167,9 @@ export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTML
     (blockId: string, index: number, length: number, attributes: InlineAttributes = {}) => {
       const block = blocksRef.current.find((v) => v.id === blockId);
       if (!block) return null;
-      return blockUtils.setAttributesForInlineContents(block.contents, attributes, index, length);
+      const contents = blockUtils.setAttributesForInlineContents(block.contents, attributes, index, length);
+      updateBlock({ ...block, contents });
+      render([block.id]);
     },
     [],
   );
@@ -374,6 +379,27 @@ export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTML
     eventEmitter.emit(EditorEvents.EVENT_BLOCK_RERENDER, affectedIds);
   }, []);
 
+  const updateShadow = React.useCallback(() => {
+    const blocks = copyObject(blocksRef.current);
+    const updatedShadow = blocks.map((block) => {
+      return {
+        ...block,
+        contents: block.contents.map((content) => {
+          return {
+            attributes: content.attributes,
+            text: content.text,
+            type: content.type,
+            isEmbed: content.isEmbed,
+            data: content.data,
+          };
+        }),
+      };
+    });
+    const diff = json0diff(shadowBlocksRef.current, updatedShadow, DiffMatchPatch);
+    console.log(JSON.stringify(diff));
+    shadowBlocksRef.current = updatedShadow;
+  }, []);
+
   const editorController = React.useMemo(() => {
     return {
       focus,
@@ -410,9 +436,6 @@ export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTML
       eventEmitter.on<Block>(EditorEvents.EVENT_BLOCK_UPDATE).subscribe((block) => {
         const currentIndex = blocksRef.current.findIndex((v) => v.id === block.id);
         if (currentIndex === -1) return;
-        const diff = json0diff(blocksRef.current[currentIndex], block, DiffMatchPatch);
-
-        console.log(JSON.stringify(diff));
         blocksRef.current = [
           ...blocksRef.current.slice(0, currentIndex),
           {
@@ -421,6 +444,7 @@ export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTML
           },
           ...blocksRef.current.slice(currentIndex + 1),
         ];
+        updateShadow();
       }),
     );
     return () => {

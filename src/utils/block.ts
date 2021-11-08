@@ -221,12 +221,13 @@ export function setAttributesForInlineContents(
         if (middleText.length > 0) {
           destContents.push({
             ...contents[i],
+            id: nanoid(),
             text: middleText,
             attributes: { ...contents[i].attributes, ...attributes },
           });
         }
         if (lastText.length > 0) {
-          destContents.push({ ...contents[i], text: lastText });
+          destContents.push({ ...contents[i], id: nanoid(), text: lastText });
         }
       } else {
         length--;
@@ -285,13 +286,16 @@ export function optimizeInlineContents(contents: Inline[]): Inline[] {
   let prevAttributes = {};
   const dest = contents.reduce<Inline[]>((r, v, i) => {
     if (v.text === '\uFEFF') {
+      prevAttributes = { ...v.attributes };
       return r;
     }
     if (r.length > 0 && isEqual(v.attributes, prevAttributes)) {
-      prevAttributes = v.attributes;
+      prevAttributes = { ...v.attributes };
       r[r.length - 1].text += v.text;
+
       return [...r];
     }
+    prevAttributes = { ...v.attributes };
     return [...r, v];
   }, []);
 

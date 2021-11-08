@@ -29,8 +29,7 @@ export const GlobalToolbar = React.memo(({ editor, ...props }: Props) => {
     if (!caretPosition) return;
     const block = editor.getBlock(caretPosition.blockId);
     if (!block) return;
-    const format = editor.formatText(block.id, caretPosition.index, caretPosition.length, { bold: true });
-    console.log(format);
+    editor.formatText(block.id, caretPosition.index, caretPosition.length, { bold: true });
   }, []);
 
   const handleHeader1 = React.useCallback((event: React.MouseEvent) => {

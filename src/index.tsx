@@ -3,10 +3,14 @@ import ReactDOM from 'react-dom';
 import styled from 'styled-components';
 import { Editor } from './Editor';
 import { LogLevels } from './constants';
-import { Text } from './components/blocks';
+import { Text, Header1 } from './components/blocks';
 
 const StyledText = styled(Text)`
   opacity: 0.8;
+`;
+
+const StyledH1 = styled(Header1)`
+  color: red;
 `;
 
 export const Container: React.VFC = React.memo(() => {
@@ -18,15 +22,13 @@ export const Container: React.VFC = React.memo(() => {
     return { logger: { logLevel: LogLevels.INFO } };
   }, []);
   const formats = React.useMemo(() => {
-    return { 'block/text': StyledText };
+    return {
+      'block/text': StyledText,
+      'block/header1': StyledH1,
+    };
   }, []);
 
-  return (
-    <>
-      {isDisplay && <Editor settings={settings} formats={formats} readOnly={false} />}
-      <button onClick={handleToggleEditor}>toggle display</button>
-    </>
-  );
+  return <Editor settings={settings} formats={formats} readOnly={false} />;
 });
 
 ReactDOM.render(

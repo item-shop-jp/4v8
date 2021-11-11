@@ -178,10 +178,6 @@ export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTML
     return blocksRef.current;
   }, []);
 
-  const updateBlocks = React.useCallback((blocks: Block[]) => {
-    blocksRef.current = blocks;
-  }, []);
-
   const getBlock = React.useCallback((blockId: string): Block | null => {
     return blocksRef.current.find((v) => v.id === blockId) ?? null;
   }, []);
@@ -344,7 +340,7 @@ export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTML
     setTimeout(() => {
       const { contents, affected, affectedLength } = blockUtils.getInlineContents(blockElement);
       updateCaretPosition();
-      eventEmitter.emit(EditorEvents.EVENT_BLOCK_UPDATE, { ...block, contents });
+      updateBlock({ ...block, contents });
       if (affected) {
         render([blockId]);
         let caretIndex = lastCaretPositionRef.current?.index ?? 0;
@@ -364,24 +360,10 @@ export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTML
     );
   }, []);
 
-  const updateBlock = React.useCallback((block: Block) => {
-    eventEmitter.emit(EditorEvents.EVENT_BLOCK_UPDATE, {
-      ...block,
-      contents: blockUtils.optimizeInlineContents(block.contents),
-    });
-  }, []);
-
-  const deleteBlock = React.useCallback((blockId: string) => {
-    updateBlocks(blocksRef.current.filter((v) => v.id !== blockId));
-  }, []);
-
-  const render = React.useCallback((affectedIds: string[] = []) => {
-    eventEmitter.emit(EditorEvents.EVENT_BLOCK_RERENDER, affectedIds);
-  }, []);
-
-  const updateShadow = React.useCallback(() => {
-    const blocks = copyObject(blocksRef.current);
-    const updatedShadow = blocks.map((block) => {
+  const updateBlocks = React.useCallback((blocks: Block[]) => {
+    blocksRef.current = blocks;
+    const shadowBlocks = copyObject(blocks);
+    shadowBlocksRef.current = shadowBlocks.map((block) => {
       return {
         ...block,
         contents: block.contents.map((content) => {
@@ -395,9 +377,52 @@ export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTML
         }),
       };
     });
-    const diff = json0diff(shadowBlocksRef.current, updatedShadow, DiffMatchPatch);
+  }, []);
+
+  const updateBlock = React.useCallback((block: Block) => {
+    const currentIndex = blocksRef.current.findIndex((v) => v.id === block.id);
+    if (currentIndex === -1) return;
+    blocksRef.current = [
+      ...blocksRef.current.slice(0, currentIndex),
+      {
+        ...blocksRef.current[currentIndex],
+        ...{ ...block, contents: blockUtils.optimizeInlineContents(block.contents) },
+      },
+      ...blocksRef.current.slice(currentIndex + 1),
+    ];
+    const copyBlock = copyObject(blocksRef.current[currentIndex]);
+    const shadowBlock = {
+      ...copyBlock,
+      contents: copyBlock.contents.map((content) => {
+        return {
+          attributes: content.attributes,
+          text: content.text,
+          type: content.type,
+          isEmbed: content.isEmbed,
+          data: content.data,
+        };
+      }),
+    };
+    const shadowIndex = shadowBlocksRef.current.findIndex((v) => v.id === shadowBlock.id);
+    if (shadowIndex === -1) return;
+    const diff = json0diff(shadowBlocksRef.current[shadowIndex], shadowBlock, DiffMatchPatch);
     console.log(JSON.stringify(diff));
-    shadowBlocksRef.current = updatedShadow;
+    shadowBlocksRef.current = [
+      ...shadowBlocksRef.current.slice(0, shadowIndex),
+      {
+        ...shadowBlocksRef.current[shadowIndex],
+        ...shadowBlock,
+      },
+      ...shadowBlocksRef.current.slice(shadowIndex + 1),
+    ];
+  }, []);
+
+  const deleteBlock = React.useCallback((blockId: string) => {
+    updateBlocks(blocksRef.current.filter((v) => v.id !== blockId));
+  }, []);
+
+  const render = React.useCallback((affectedIds: string[] = []) => {
+    eventEmitter.emit(EditorEvents.EVENT_BLOCK_RERENDER, affectedIds);
   }, []);
 
   const editorController = React.useMemo(() => {
@@ -427,28 +452,6 @@ export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTML
       getModule,
       removeAllModules,
       getEventEmitter,
-    };
-  }, []);
-
-  React.useEffect(() => {
-    const subs = new Subscription();
-    subs.add(
-      eventEmitter.on<Block>(EditorEvents.EVENT_BLOCK_UPDATE).subscribe((block) => {
-        const currentIndex = blocksRef.current.findIndex((v) => v.id === block.id);
-        if (currentIndex === -1) return;
-        blocksRef.current = [
-          ...blocksRef.current.slice(0, currentIndex),
-          {
-            ...blocksRef.current[currentIndex],
-            ...block,
-          },
-          ...blocksRef.current.slice(currentIndex + 1),
-        ];
-        updateShadow();
-      }),
-    );
-    return () => {
-      subs.unsubscribe();
     };
   }, []);
 

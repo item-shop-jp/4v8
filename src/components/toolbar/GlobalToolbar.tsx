@@ -30,6 +30,10 @@ export const GlobalToolbar = React.memo(({ editor, ...props }: Props) => {
     const block = editor.getBlock(caretPosition.blockId);
     if (!block) return;
     editor.formatText(block.id, caretPosition.index, caretPosition.length, { bold: true });
+    setTimeout(
+      () => editor.setCaretPosition({ blockId: block.id, index: caretPosition.index, length: caretPosition.length }),
+      10,
+    );
   }, []);
 
   const handleHeader1 = React.useCallback((event: React.MouseEvent) => {

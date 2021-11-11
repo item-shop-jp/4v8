@@ -54,6 +54,7 @@ export const InlineContent: React.VFC<Props> = ({ contents, formats = {}, ...pro
             key={content.id}
             data-inline-id={content.id}
             data-format={inlineFormat}
+            data-attributes={JSON.stringify(content.attributes)}
             inline={content}
             {...props}
           />

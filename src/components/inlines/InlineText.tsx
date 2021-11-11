@@ -11,14 +11,13 @@ interface InlineContentProps {
 }
 
 const InlineContent = styled.span<InlineContentProps>`
-  ${({ attributes }) => (attributes?.bold ? 'font-weight: bold' : '')};
+  ${({ attributes: { bold } }) => bold && 'font-weight: bold'};
 `;
 
 export const InlineText = ({ inline, ...props }: Props) => {
   const memoInnerHTML = React.useMemo(() => {
     return { __html: inline.text.replaceAll('\n', '<br>') };
   }, [inline]);
-  console.log(inline);
 
   return <InlineContent dangerouslySetInnerHTML={memoInnerHTML} attributes={inline.attributes} {...props} />;
 };

@@ -70,7 +70,7 @@ export function getInlineContents(block: string | HTMLElement): {
         ...r,
         {
           id: inline.dataset.inlineId,
-          attributes: {},
+          attributes: JSON.parse(inline.dataset.attributes ?? ''),
           text,
           type: format as Inline['type'],
           isEmbed: isEmbed(format as Inline['type']),

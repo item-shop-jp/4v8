@@ -6,12 +6,18 @@ interface Props {
   inline: Inline;
 }
 
-const SPAN = styled.span``;
+interface InlineContentProps {
+  attributes: Inline['attributes'];
+}
+
+const InlineContent = styled.span<InlineContentProps>`
+  ${({ attributes: { bold } }) => bold && 'font-weight: bold'};
+`;
 
 export const InlineText = ({ inline, ...props }: Props) => {
   const memoInnerHTML = React.useMemo(() => {
-    return { __html: inline.text };
+    return { __html: inline.text.replaceAll('\n', '<br>') };
   }, [inline]);
 
-  return <SPAN dangerouslySetInnerHTML={memoInnerHTML} {...props} />;
+  return <InlineContent dangerouslySetInnerHTML={memoInnerHTML} attributes={inline.attributes} {...props} />;
 };

@@ -24,7 +24,7 @@ export const Container: React.VFC = React.memo(() => {
   return (
     <>
       {isDisplay && <Editor settings={settings} formats={formats} readOnly={false} />}
-      <button onClick={handleToggleEditor}>表示・非表示</button>
+      <button onClick={handleToggleEditor}>toggle display</button>
     </>
   );
 });

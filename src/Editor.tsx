@@ -147,7 +147,7 @@ export const Editor: React.VFC<Props> = React.memo(({ readOnly = false, formats,
   }, []);
 
   return (
-    <Container {...props} ref={containerRef}>
+    <Container ref={containerRef} {...props}>
       <Inner ref={editorRef}>
         {memoBlocks.map((block, index) => {
           return (

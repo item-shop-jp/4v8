@@ -216,7 +216,7 @@ export function setAttributesForInlineContents(
         const lastText = contents[i].text.slice(formatIndex + formatlength);
 
         if (firstText.length > 0) {
-          destContents.push({ ...contents[i], text: firstText });
+          destContents.push({ ...contents[i], id: nanoid(), text: firstText });
         }
         if (middleText.length > 0) {
           destContents.push({
@@ -305,6 +305,35 @@ export function optimizeInlineContents(contents: Inline[]): Inline[] {
   return dest;
 }
 
-export function getFormats(contents: Inline[], index: number, length: number = 0) {
-  return;
+export function getFormats(contents: Inline[], index: number, length: number = 0): Inline[] {
+  let startIndex = index;
+  let endIndex = index + length;
+  const destContents = [];
+  let cumulativeLength = 0;
+  for (let i = 0; i < contents.length; i++) {
+    const inlineLength = contents[i].isEmbed ? 1 : contents[i].text.length;
+    if (length < 1) {
+      break;
+    }
+    if (endIndex >= cumulativeLength && startIndex < cumulativeLength + inlineLength) {
+      if (!contents[i].isEmbed) {
+        let deleteIndex = startIndex - cumulativeLength;
+        deleteIndex = deleteIndex > 0 ? deleteIndex : 0;
+        const textlength = contents[i].text.length - deleteIndex;
+        const deletelength = textlength - length >= 0 ? length : textlength;
+        length -= deletelength;
+        const text = contents[i].text.slice(deleteIndex, deleteIndex + deletelength);
+
+        if (text.length > 0) {
+          destContents.push({ ...contents[i], text });
+        }
+      } else {
+        length--;
+      }
+    }
+
+    cumulativeLength += inlineLength;
+  }
+  console.log(destContents);
+  return destContents;
 }

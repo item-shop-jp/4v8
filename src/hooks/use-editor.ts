@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Subscription } from 'rxjs';
+import { debounce } from 'throttle-debounce';
 import * as json0diff from 'json0-ot-diff';
 import DiffMatchPatch from 'diff-match-patch';
 import { EventEmitter } from '../utils/event-emitter';
@@ -163,7 +164,11 @@ export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTML
   const getFormats = React.useCallback((blockId: string, index: number, length: number = 0) => {
     const block = blocksRef.current.find((v) => v.id === blockId);
     if (!block) return null;
-    return blockUtils.getFormats(block.contents, index, length);
+    if (length === 0) {
+      index = index === 0 ? index : index - 1;
+      length = 1;
+    }
+    return blockUtils.getDuplicateAttributes(block.contents, index, length);
   }, []);
 
   const formatText = React.useCallback(
@@ -478,13 +483,14 @@ export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTML
   }, [modules]);
 
   React.useEffect(() => {
-    const handleSelectionChange = (e: Event) => {
+    const debouncedSelectionChange = debounce(200, (e: Event) => {
       if (!editorRef.current) return;
       updateCaretPosition();
-    };
-    document.addEventListener('selectionchange', handleSelectionChange);
+      eventEmitter.emit(EditorEvents.EVENT_SELECTION_CHANGE, e);
+    });
+    document.addEventListener('selectionchange', debouncedSelectionChange);
     return () => {
-      document.removeEventListener('selectionchange', handleSelectionChange);
+      document.removeEventListener('selectionchange', debouncedSelectionChange);
     };
   }, []);
 

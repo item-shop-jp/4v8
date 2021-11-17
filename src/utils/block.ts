@@ -305,7 +305,7 @@ export function optimizeInlineContents(contents: Inline[]): Inline[] {
   return dest;
 }
 
-export function getFormats(contents: Inline[], index: number, length: number = 0): Inline[] {
+export function getDuplicateAttributes(contents: Inline[], index: number, length: number = 0): InlineAttributes {
   let startIndex = index;
   let endIndex = index + length;
   const destContents = [];
@@ -325,7 +325,7 @@ export function getFormats(contents: Inline[], index: number, length: number = 0
         const text = contents[i].text.slice(deleteIndex, deleteIndex + deletelength);
 
         if (text.length > 0) {
-          destContents.push({ ...contents[i], text });
+          destContents.push({ ...contents[i].attributes });
         }
       } else {
         length--;
@@ -334,6 +334,18 @@ export function getFormats(contents: Inline[], index: number, length: number = 0
 
     cumulativeLength += inlineLength;
   }
-  console.log(destContents);
-  return destContents;
+
+  const duplicateAttributes = destContents.reduce((r, v, i) => {
+    if (i === 0) {
+      return { ...v };
+    }
+    const attributes = { ...r };
+    Object.keys(attributes).forEach((attr) => {
+      if (!v.hasOwnProperty(attr)) {
+        delete attributes[attr];
+      }
+    });
+    return attributes;
+  }, {});
+  return duplicateAttributes;
 }

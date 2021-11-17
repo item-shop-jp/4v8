@@ -1,6 +1,7 @@
 import { Module } from '../types/module';
 import { EventEmitter } from '../utils/event-emitter';
 import { EditorController } from '../hooks/use-editor';
+import { BlockType, BlockAttributes } from '../types/block';
 import { InlineAttributes } from '../types/inline';
 
 interface Props {
@@ -30,6 +31,20 @@ export class ToolbarModule implements Module {
     const block = this.editor.getBlock(caretPosition.blockId);
     if (!block) return;
     this.editor.formatText(block.id, caretPosition.index, caretPosition.length, attributes);
+    setTimeout(
+      () =>
+        this.editor.setCaretPosition({ blockId: block.id, index: caretPosition.index, length: caretPosition.length }),
+      10,
+    );
+  }
+
+  formatBlock(type: BlockType, attributes: BlockAttributes = {}) {
+    const caretPosition = this.editor.getCaretPosition();
+    if (!caretPosition) return;
+    const block = this.editor.getBlock(caretPosition.blockId);
+    if (!block) return;
+    this.editor.updateBlock({ ...block, type, attributes });
+    this.editor.render([block.id]);
     setTimeout(
       () =>
         this.editor.setCaretPosition({ blockId: block.id, index: caretPosition.index, length: caretPosition.length }),

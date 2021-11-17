@@ -1,9 +1,9 @@
 import * as React from 'react';
 import ReactDOM from 'react-dom';
 import styled from 'styled-components';
+import { Subscription } from 'rxjs';
+import { EditorEvents } from '../../constants';
 import { EditorController } from '../../hooks/use-editor';
-import { KeyBoardModule } from '../../modules';
-import { ToolbarModule } from '../../modules/toolbar';
 
 interface Props {
   editor: EditorController;
@@ -32,17 +32,23 @@ export const GlobalToolbar = React.memo(({ editor, ...props }: Props) => {
 
   const handleHeader1 = React.useCallback((event: React.MouseEvent) => {
     event.preventDefault();
-    const caretPosition = editor.getCaretPosition();
-    if (!caretPosition) return;
-    const block = editor.getBlock(caretPosition.blockId);
-    if (!block) return;
-    editor.updateBlock({ ...block, type: block.type === 'HEADER1' ? 'TEXT' : 'HEADER1' });
-    editor.render([block.id]);
-    setTimeout(
-      () => editor.setCaretPosition({ blockId: block.id, index: caretPosition.index, length: caretPosition.length }),
-      10,
-    );
+    editor.getModule('toolbar').formatBlock('HEADER1');
   }, []);
+
+  React.useEffect(() => {
+    const subs = new Subscription();
+    const eventEmitter = editor.getEventEmitter();
+    subs.add(
+      eventEmitter.on(EditorEvents.EVENT_SELECTION_CHANGE).subscribe((v) => {
+        const caret = editor.getCaretPosition();
+        if (!caret) return;
+        console.log(editor.getFormats(caret.blockId, caret.index, caret.length));
+      }),
+    );
+    return () => {
+      subs.unsubscribe();
+    };
+  });
 
   return ReactDOM.createPortal(
     <Container {...props}>

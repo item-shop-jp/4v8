@@ -219,11 +219,17 @@ export function setAttributesForInlineContents(
           destContents.push({ ...contents[i], id: nanoid(), text: firstText });
         }
         if (middleText.length > 0) {
+          const mergedAttributes = { ...contents[i].attributes, ...attributes };
+          Object.keys(mergedAttributes).forEach((key) => {
+            if (typeof mergedAttributes[key] === 'boolean' && !mergedAttributes[key]) {
+              delete mergedAttributes[key];
+            }
+          });
           destContents.push({
             ...contents[i],
             id: nanoid(),
             text: middleText,
-            attributes: { ...contents[i].attributes, ...attributes },
+            attributes: mergedAttributes,
           });
         }
         if (lastText.length > 0) {

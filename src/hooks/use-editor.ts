@@ -29,7 +29,7 @@ interface PositionParams {
 export interface EditorController {
   focus: () => void;
   blur: () => void;
-  getFormats: (blockId: string, index: number, length?: number) => void;
+  getFormats: (blockId: string, index: number, length?: number) => InlineAttributes;
   formatText: (blockId: string, index: number, length: number, attributes: InlineAttributes) => void;
   getBlocks: () => Block[];
   updateBlocks: (blocks: Block[]) => void;
@@ -163,7 +163,7 @@ export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTML
 
   const getFormats = React.useCallback((blockId: string, index: number, length: number = 0) => {
     const block = blocksRef.current.find((v) => v.id === blockId);
-    if (!block) return null;
+    if (!block) return {};
     if (length === 0) {
       index = index === 0 ? index : index - 1;
       length = 1;

@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { Subscription } from 'rxjs';
 import { EditorEvents } from '../../constants';
 import { EditorController } from '../../hooks/use-editor';
+import { InlineAttributes } from '../../types/inline';
 
 interface Props {
   editor: EditorController;
@@ -25,15 +26,22 @@ const Button = styled.a`
 `;
 
 export const GlobalToolbar = React.memo(({ editor, ...props }: Props) => {
-  const handleBold = React.useCallback((event: React.MouseEvent) => {
-    event.preventDefault();
-    editor.getModule('toolbar').formatInline({ bold: true });
-  }, []);
+  const [formats, setFormats] = React.useState<InlineAttributes>({});
+  const handleBold = React.useCallback(
+    (event: React.MouseEvent) => {
+      event.preventDefault();
+      editor.getModule('toolbar').formatInline({ bold: !formats?.bold });
+    },
+    [formats],
+  );
 
-  const handleHeader1 = React.useCallback((event: React.MouseEvent) => {
-    event.preventDefault();
-    editor.getModule('toolbar').formatBlock('HEADER1');
-  }, []);
+  const handleHeader1 = React.useCallback(
+    (event: React.MouseEvent) => {
+      event.preventDefault();
+      editor.getModule('toolbar').formatBlock('HEADER1');
+    },
+    [formats],
+  );
 
   React.useEffect(() => {
     const subs = new Subscription();
@@ -42,7 +50,7 @@ export const GlobalToolbar = React.memo(({ editor, ...props }: Props) => {
       eventEmitter.on(EditorEvents.EVENT_SELECTION_CHANGE).subscribe((v) => {
         const caret = editor.getCaretPosition();
         if (!caret) return;
-        console.log(editor.getFormats(caret.blockId, caret.index, caret.length));
+        setFormats(editor.getFormats(caret.blockId, caret.index, caret.length));
       }),
     );
     return () => {

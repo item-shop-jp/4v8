@@ -13,6 +13,7 @@ interface InlineContentProps {
 const InlineContent = styled.span<InlineContentProps>`
   ${({ attributes: { bold } }) => bold && 'font-weight: bold'};
   ${({ attributes: { underline } }) => underline && 'border-bottom: 0.05em solid'};
+  ${({ attributes: { strike } }) => strike && 'text-decoration: line-through'};
 `;
 
 export const InlineText = ({ inline, ...props }: Props) => {

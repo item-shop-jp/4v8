@@ -43,6 +43,14 @@ export const GlobalToolbar = React.memo(({ editor, ...props }: Props) => {
     [formats],
   );
 
+  const handleStrike = React.useCallback(
+    (event: React.MouseEvent) => {
+      event.preventDefault();
+      editor.getModule('toolbar').formatInline({ strike: !formats?.strike });
+    },
+    [formats],
+  );
+
   const handleHeader1 = React.useCallback(
     (event: React.MouseEvent) => {
       event.preventDefault();
@@ -76,6 +84,9 @@ export const GlobalToolbar = React.memo(({ editor, ...props }: Props) => {
       </Button>
       <Button href="#" onClick={handleUnderline}>
         underline
+      </Button>
+      <Button href="#" onClick={handleStrike}>
+        strike
       </Button>
     </Container>,
     document.body,

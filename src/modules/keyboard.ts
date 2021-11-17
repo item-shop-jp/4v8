@@ -295,12 +295,12 @@ export class KeyBoardModule implements Module {
       if (!block) return;
       // Ignored for null characters
       if (textLength === 0) {
-        this.editor.getModule<EditorModule>('editor')?.deleteBlock();
+        this.editor.getModule('editor').deleteBlock();
         return;
       }
       if (caretPosition.index < 1) {
         if (blockIndex < 1) return;
-        this.editor.getModule<EditorModule>('editor')?.mergeBlock(blocks[blockIndex - 1].id, blocks[blockIndex].id);
+        this.editor.getModule('editor').mergeBlock(blocks[blockIndex - 1].id, blocks[blockIndex].id);
         return;
       }
 

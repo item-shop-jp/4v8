@@ -13,7 +13,7 @@ import { Block } from '../types/block';
 import { InlineAttributes } from '../types/inline';
 import { Shadow } from '../types/shadow';
 import { EditorEvents } from '../constants';
-import { KeyBoardModule } from '../modules';
+import { EditorModule, KeyBoardModule, ToolbarModule } from '../modules';
 
 interface Props {
   eventEmitter: EventEmitter;
@@ -62,7 +62,10 @@ export interface EditorController {
     }[],
     options?: ModuleOptions,
   ) => void;
-  getModule: <T = any>(name: string) => T | null;
+  getModule(name: 'editor'): EditorModule;
+  getModule(name: 'keyboard'): KeyBoardModule;
+  getModule(name: 'toolbar'): ToolbarModule;
+  getModule<T = any>(name: string): T | null;
   removeAllModules: () => void;
   getEventEmitter: () => EventEmitter;
 }
@@ -318,10 +321,13 @@ export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTML
     return eventEmitter;
   }, []);
 
-  const getModule = React.useCallback(<T = any>(name: string): T | null => {
-    if (!modulesRef.current[name]) return null;
-    return modulesRef.current[name];
-  }, []);
+  const getModule = React.useCallback(
+    <T = any>(name: string): T | EditorModule | KeyBoardModule | ToolbarModule | null => {
+      if (!modulesRef.current[name]) return null;
+      return modulesRef.current[name];
+    },
+    [],
+  );
 
   const removeAllModules = React.useCallback(() => {
     Object.keys(modulesRef.current).forEach((key) => {
@@ -335,7 +341,7 @@ export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTML
     if (!nativeRange) return;
     const [blockId, blockElement] = blockUtils.getBlockId(nativeRange.startContainer as HTMLElement);
     const block = blocksRef.current.find((v) => v.id === blockId);
-    const composing = getModule<KeyBoardModule>('keyboard')?.composing;
+    const composing = getModule('keyboard').composing;
     if (!blockId || !block || !blockElement || composing) return;
     setTimeout(() => {
       const { contents, affected, affectedLength } = blockUtils.getInlineContents(blockElement);

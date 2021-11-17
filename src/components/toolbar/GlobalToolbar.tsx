@@ -2,6 +2,7 @@ import * as React from 'react';
 import ReactDOM from 'react-dom';
 import styled from 'styled-components';
 import { EditorController } from '../../hooks/use-editor';
+import { KeyBoardModule } from '../../modules';
 import { ToolbarModule } from '../../modules/toolbar';
 
 interface Props {
@@ -26,7 +27,7 @@ const Button = styled.a`
 export const GlobalToolbar = React.memo(({ editor, ...props }: Props) => {
   const handleBold = React.useCallback((event: React.MouseEvent) => {
     event.preventDefault();
-    editor.getModule<ToolbarModule>('toolbar')?.formatInline({ bold: true });
+    editor.getModule('toolbar').formatInline({ bold: true });
   }, []);
 
   const handleHeader1 = React.useCallback((event: React.MouseEvent) => {

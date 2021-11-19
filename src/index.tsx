@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { Editor } from './Editor';
 import { LogLevels } from './constants';
 import { Text, Header1 } from './components/blocks';
@@ -11,6 +11,10 @@ const StyledText = styled(Text)`
 
 const StyledH1 = styled(Header1)`
   color: red;
+`;
+
+const StyledUnderline = css`
+  border-bottom: green 0.05em solid;
 `;
 
 export const Container: React.VFC = React.memo(() => {
@@ -25,6 +29,7 @@ export const Container: React.VFC = React.memo(() => {
     return {
       'block/text': StyledText,
       'block/header1': StyledH1,
+      'style/underline': StyledUnderline,
     };
   }, []);
 

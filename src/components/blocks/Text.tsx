@@ -4,7 +4,7 @@ import { Formats } from '../../types/format';
 import { EditorController } from '../../hooks/use-editor';
 import { Inline } from '../../types/inline';
 
-interface Props {
+export interface TextProps {
   blockId: string;
   formats?: Formats;
   contents: Inline[];
@@ -22,6 +22,6 @@ const P = styled.p`
   margin-bottom: 1px;
 `;
 
-export const Text = React.memo(({ blockId, formats, editor, contents, ...props }: Props) => {
+export const Text = React.memo(({ blockId, formats, editor, contents, ...props }: TextProps) => {
   return <P {...props}>{contents}</P>;
 });

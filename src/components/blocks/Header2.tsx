@@ -5,7 +5,7 @@ import { Formats } from '../../types/format';
 import { Inline } from '../../types/inline';
 import { BlockAttributes } from '../../types/block';
 
-interface Props {
+export interface Header2Props {
   blockId: string;
   formats?: Formats;
   contents: Inline[];
@@ -24,7 +24,7 @@ const Header = styled.h2`
   }
 `;
 
-export const Header2 = React.memo(({ blockId, length, contents, attributes, editor, ...props }: Props) => {
+export const Header2 = React.memo(({ blockId, length, contents, attributes, editor, ...props }: Header2Props) => {
   return (
     <Header {...props} placeholder={length < 1 ? 'Heading 2' : ''}>
       {contents}

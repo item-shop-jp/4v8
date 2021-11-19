@@ -6,7 +6,7 @@ import { Inline } from '../../types/inline';
 import { BlockAttributes } from '../../types/block';
 import { useMutationObserver } from '../../hooks/use-mutation-observer';
 
-interface Props {
+export interface Header1Props {
   blockId: string;
   formats?: Formats;
   contents: Inline[];
@@ -27,7 +27,7 @@ const Header = styled.h1`
 `;
 
 export const Header1 = React.memo(
-  ({ blockId, contents, placeholder = 'Header 1', attributes, editor, ...props }: Props) => {
+  ({ blockId, contents, placeholder = 'Header 1', attributes, editor, ...props }: Header1Props) => {
     const headerRef = React.useRef(null);
     const [showPlaceholder, setShowPlaceholder] = React.useState(false);
     const handleChangeElement = React.useCallback(() => {

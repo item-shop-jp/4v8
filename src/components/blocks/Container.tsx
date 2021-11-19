@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Formats } from '../../types/format';
 import { EditorController } from '../../hooks/use-editor';
 import { useBlockRenderer } from '../../hooks/use-block-renderer';
-import { InlineContent } from '../../utils/inline';
+import { InlineContainer } from '../inlines/Container';
 
 interface BlockProps {
   blockId: string;
@@ -24,7 +24,7 @@ export const BlockContainer: React.VFC<BlockProps> = React.memo(
     const block = useBlockRenderer({ blockId, editor });
 
     const memoContents = React.useMemo(() => {
-      return InlineContent({ contents: block?.contents ?? [], formats });
+      return InlineContainer({ contents: block?.contents ?? [], formats });
     }, [block?.contents, formats]);
 
     React.useEffect(() => {

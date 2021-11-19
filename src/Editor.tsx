@@ -6,8 +6,9 @@ import { Formats } from './types/format';
 import { Block } from './types/block';
 import { BlockContainer, Header1, Header2, Header3, Header4, Header5, Header6, Text } from './components/blocks';
 import { InlineText } from './components/inlines';
+import { Bold, Strike, Underline } from './components/styles';
 import { GlobalToolbar } from './components/toolbar';
-import { useEditor, EditorController } from './hooks/use-editor';
+import { useEditor } from './hooks/use-editor';
 import { useEventEmitter } from './hooks/use-event-emitter';
 import { EditorModule, KeyBoardModule, LoggerModule, ToolbarModule } from './modules';
 import { getBlockElementById } from './utils/block';
@@ -15,7 +16,7 @@ import { EditorEvents } from './constants';
 
 interface Props {
   readOnly?: boolean;
-  formats?: Formats;
+  formats?: { [key: string]: any };
   settings?: ModuleOptions;
 }
 
@@ -50,6 +51,9 @@ export const Editor: React.VFC<Props> = React.memo(({ readOnly = false, formats,
     'block/header5': Header5,
     'block/header6': Header6,
     'inline/text': InlineText,
+    'style/bold': Bold,
+    'style/underline': Underline,
+    'style/strike': Strike,
   });
   const [blocks, setBlocks] = React.useState<Block[]>([]);
 

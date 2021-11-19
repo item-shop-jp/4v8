@@ -1,9 +1,14 @@
+export type InlineType = 'TEXT';
+
 export interface Inline {
+  id: string;
   attributes: InlineAttributes;
   text: string;
-  type: 'TEXT';
+  type: InlineType;
+  isEmbed: boolean;
+  data?: any;
 }
 
 export interface InlineAttributes {
-  [key: string]: string;
+  [key: string]: any;
 }

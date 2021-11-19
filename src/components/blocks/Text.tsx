@@ -1,26 +1,27 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { Block } from '../../types/block';
-import { convertInlineArrayToHTML } from '../../utils/html';
+import { Formats } from '../../types/format';
+import { EditorController } from '../../hooks/use-editor';
+import { Inline } from '../../types/inline';
 
-interface Props {
-  block: Block;
-  readOnly: boolean;
+export interface TextProps {
+  blockId: string;
+  formats?: Formats;
+  contents: Inline[];
+  editor: EditorController;
   onClick: (e: React.MouseEvent) => void;
   onKeyDown: (e: React.KeyboardEvent) => void;
 }
 
 const P = styled.p`
-  margin: 0;
+  width: 100%;
   padding: 0;
   font-size: 1rem;
   outline: 0;
+  margin-top: 2px;
+  margin-bottom: 1px;
 `;
 
-export const Text = React.memo(({ block, readOnly = false, ...props }: Props) => {
-  const memoInnerHTML = React.useMemo(() => {
-    return { __html: convertInlineArrayToHTML(block.contents) };
-  }, [block]);
-
-  return <P data-block-id={block.id} dangerouslySetInnerHTML={memoInnerHTML} contentEditable={!readOnly} {...props} />;
+export const Text = React.memo(({ blockId, formats, editor, contents, ...props }: TextProps) => {
+  return <P {...props}>{contents}</P>;
 });

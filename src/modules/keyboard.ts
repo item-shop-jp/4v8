@@ -6,6 +6,7 @@ import { KeyCodes, EditorEvents } from '../constants';
 import { EditorController } from '../hooks/use-editor';
 import { deleteInlineContents } from '../utils/block';
 import { CaretPosition } from '../types/caret';
+import { EditorModule } from './editor';
 
 interface Props {
   eventEmitter: EventEmitter;
@@ -23,7 +24,7 @@ interface KeyBindingProps {
   altKey?: boolean;
   prevented?: boolean;
   composing?: boolean;
-  handler: (range: CaretPosition, editor: EditorController) => void;
+  handler: (range: CaretPosition, editor: EditorController, event: React.KeyboardEvent) => void;
 }
 
 export class KeyBoardModule implements Module {
@@ -49,26 +50,45 @@ export class KeyBoardModule implements Module {
       handler: this._handleEnter.bind(this),
     });
     this.addBinding({
-      key: KeyCodes.ENTER,
-      shiftKey: true,
-      handler: this._handleShiftEnter.bind(this),
-    });
-    this.addBinding({
       key: KeyCodes.NUMPAD_ENTER,
       composing: true,
       handler: this._handleEnter.bind(this),
     });
-    this.addBinding({
-      key: KeyCodes.NUMPAD_ENTER,
-      shiftKey: true,
-      handler: this._handleShiftEnter.bind(this),
-    });
+    // this.addBinding({
+    //   key: KeyCodes.ENTER,
+    //   shiftKey: true,
+    //   handler: this._handleShiftEnter.bind(this),
+    // });
+    // this.addBinding({
+    //   key: KeyCodes.NUMPAD_ENTER,
+    //   shiftKey: true,
+    //   handler: this._handleShiftEnter.bind(this),
+    // });
 
     // handle key operation
     this.addBinding({
+      key: KeyCodes.ARROW_UP,
+      collapsed: true,
+      prevented: false,
+      handler: this._handlekeyUp.bind(this),
+    });
+    this.addBinding({
       key: KeyCodes.ARROW_DOWN,
       collapsed: true,
+      prevented: false,
       handler: this._handlekeyDown.bind(this),
+    });
+    this.addBinding({
+      key: KeyCodes.ARROW_LEFT,
+      collapsed: true,
+      prevented: false,
+      handler: this._handlekeyLeft.bind(this),
+    });
+    this.addBinding({
+      key: KeyCodes.ARROW_RIGHT,
+      collapsed: true,
+      prevented: false,
+      handler: this._handlekeyRight.bind(this),
     });
 
     this.addBinding({
@@ -97,19 +117,18 @@ export class KeyBoardModule implements Module {
 
   onCompositionStart(e: React.CompositionEvent) {
     this.composing = true;
-    console.log('変換開始');
   }
 
   onCompositionEnd(e: React.CompositionEvent) {
     this.composing = false;
-    setTimeout(() => this.editor.optimize(), 100);
+    setTimeout(() => this.editor.sync(), 100);
   }
 
   onInput(e: React.KeyboardEvent) {
     if (this.composing) {
       return;
     }
-    this.editor.optimize();
+    this.editor.sync();
   }
 
   onKeyPress(e: React.KeyboardEvent) {}
@@ -177,7 +196,7 @@ export class KeyBoardModule implements Module {
 
     if (formats.length > 0 && formats.includes(caretPosition.blockFormat)) return false;
 
-    handler(caretPosition, this.editor);
+    handler(caretPosition, this.editor, e);
 
     return prevented;
   }
@@ -187,16 +206,20 @@ export class KeyBoardModule implements Module {
       return;
     }
 
-    if (caretPosition.collapsed) {
+    const caret = editor.getCaretPosition();
+    if (!caret) return;
+    const length = editor.getBlockLength(caret.blockId);
+    if (length === null) return;
+    if (caretPosition.collapsed && caret.index === length) {
       this.editor.getModule('editor').createBlock();
     } else {
-      console.log('key enter(range)');
+      this.editor.getModule('editor').splitBlock(caret.blockId, caret.index, caret.length);
     }
   }
 
   private _handleSpace(caretPosition: CaretPosition, editor: EditorController) {
     // if (this.composing) {
-    //   this.editor.optimize();
+    //   this.editor.sync();
     //   console.log('変換enter');
     //   return;
     // }
@@ -204,22 +227,83 @@ export class KeyBoardModule implements Module {
 
   private _handleShiftEnter(caretPosition: CaretPosition, editor: EditorController) {
     if (caretPosition.collapsed) {
-      this.editor.getModule('editor').lineBreak();
     } else {
       console.log('key shift enter(range)');
     }
   }
 
-  private _handlekeyDown(caretPosition: CaretPosition, editor: EditorController) {
-    editor.next();
+  private _handlekeyLeft(caretPosition: CaretPosition, editor: EditorController, event: React.KeyboardEvent) {
+    const caret = editor.getCaretPosition();
+    if (caret) {
+      const blockLength = editor.getBlockLength(caret.blockId);
+      if (blockLength === null) return;
+      if (blockLength === 0 || caret.index === 0) {
+        event.preventDefault();
+        const blocks = editor.getBlocks();
+        const currentIndex = blocks.findIndex((v) => v.id === caret.blockId);
+        if (currentIndex !== -1 && currentIndex > 0) {
+          const nextBlockLength = editor.getBlockLength(blocks[currentIndex - 1].id) ?? 0;
+          editor.setCaretPosition({ blockId: blocks[currentIndex - 1].id, index: nextBlockLength });
+        }
+      }
+    }
+    setTimeout(() => editor.updateCaretRect(), 10);
+  }
+
+  private _handlekeyRight(caretPosition: CaretPosition, editor: EditorController, event: React.KeyboardEvent) {
+    const caret = editor.getCaretPosition();
+    if (caret) {
+      const blockLength = editor.getBlockLength(caret.blockId);
+      if (blockLength === null) return;
+      if (blockLength === 0 || blockLength === caret.index) {
+        event.preventDefault();
+        const blocks = editor.getBlocks();
+        const currentIndex = blocks.findIndex((v) => v.id === caret.blockId);
+
+        if (currentIndex !== -1 && currentIndex < blocks.length - 1) {
+          editor.setCaretPosition({ blockId: blocks[currentIndex + 1].id });
+        }
+      }
+    }
+    setTimeout(() => editor.updateCaretRect(), 10);
+  }
+
+  private _handlekeyUp(caretPosition: CaretPosition, editor: EditorController, event: React.KeyboardEvent) {
+    if (editor.prev()) {
+      event.preventDefault();
+    } else {
+      setTimeout(() => editor.updateCaretRect(), 10);
+    }
+  }
+
+  private _handlekeyDown(caretPosition: CaretPosition, editor: EditorController, event: React.KeyboardEvent) {
+    if (editor.next()) {
+      event.preventDefault();
+    } else {
+      setTimeout(() => editor.updateCaretRect(), 10);
+    }
   }
 
   private _handleBackspace(caretPosition: CaretPosition, editor: EditorController) {
     const block = editor.getBlock(caretPosition.blockId);
+    const blocks = this.editor.getBlocks();
+    const blockIndex = blocks.findIndex((v) => v.id === caretPosition.blockId);
+    const textLength = editor.getBlockLength(caretPosition.blockId);
     let deletedContents;
-    let caretIndex;
+    let caretIndex: number;
     if (caretPosition.collapsed) {
-      if (!block || caretPosition.index < 1) return;
+      if (!block) return;
+      // Ignored for null characters
+      if (textLength === 0) {
+        this.editor.getModule('editor').deleteBlock();
+        return;
+      }
+      if (caretPosition.index < 1) {
+        if (blockIndex < 1) return;
+        this.editor.getModule('editor').mergeBlock(blocks[blockIndex - 1].id, blocks[blockIndex].id);
+        return;
+      }
+
       caretIndex = caretPosition.index - 1;
       deletedContents = deleteInlineContents(block.contents, caretIndex, 1);
     } else {
@@ -229,7 +313,8 @@ export class KeyBoardModule implements Module {
     }
 
     editor.updateBlock({ ...block, contents: deletedContents });
+    editor.blur();
     editor.render([block.id]);
-    editor.setCaretPosition({ blockId: block.id, index: caretIndex });
+    setTimeout(() => editor.setCaretPosition({ blockId: block.id, index: caretIndex }), 10);
   }
 }

@@ -1,4 +1,4 @@
-export type InlineType = 'TEXT' | 'BR';
+export type InlineType = 'TEXT';
 
 export interface Inline {
   id: string;
@@ -10,5 +10,5 @@ export interface Inline {
 }
 
 export interface InlineAttributes {
-  [key: string]: string;
+  [key: string]: any;
 }

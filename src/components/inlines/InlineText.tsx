@@ -1,17 +1,41 @@
 import * as React from 'react';
 import styled from 'styled-components';
+import { Formats } from '../../types/format';
 import { Inline } from '../../types/inline';
 
-interface Props {
+export interface InlineTextProps {
   inline: Inline;
+  formats: Formats;
 }
 
-const SPAN = styled.span``;
+interface InlineContentProps {
+  attributes: Inline['attributes'];
+  formats: Formats;
+}
 
-export const InlineText = ({ inline, ...props }: Props) => {
+const InlineContent = styled.span<InlineContentProps>`
+  ${({ attributes, formats }) => {
+    return Object.keys(attributes).map((key: string) => {
+      const styleFormat = `style/${key}`;
+      if (attributes[key] && formats[styleFormat]) {
+        return formats[styleFormat];
+      }
+      return undefined;
+    });
+  }}
+`;
+
+export const InlineText = ({ inline, formats, ...props }: InlineTextProps) => {
   const memoInnerHTML = React.useMemo(() => {
-    return { __html: inline.text };
+    return { __html: inline.text.replaceAll('\n', '<br>') };
   }, [inline]);
 
-  return <SPAN dangerouslySetInnerHTML={memoInnerHTML} {...props} />;
+  return (
+    <InlineContent
+      dangerouslySetInnerHTML={memoInnerHTML}
+      formats={formats}
+      attributes={inline.attributes}
+      {...props}
+    />
+  );
 };

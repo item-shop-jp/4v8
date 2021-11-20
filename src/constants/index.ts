@@ -15,11 +15,8 @@ export const KeyCodes = {
 
 export const EditorEvents = {
   EVENT_EDITOR_CREATE: 'event:editor-create',
-  EVENT_EDITOR_UPDATE: 'event:editor-update',
-  EVENT_BLOCK_CREATE: 'event:block-create',
   EVENT_BLOCK_UPDATE: 'event:block-update',
-  EVENT_BLOCK_DELETE: 'event:block-delete',
-  EVENT_BLOCK_SWAP: 'event:block-swap',
+  EVENT_BLOCK_RERENDER: 'event:block-rerender',
   EVENT_SELECTION_CHANGE: 'event:selection-change',
   EVENT_LOG_INFO: 'event:log-info',
   EVENT_LOG_WARNING: 'event:log-warning',

@@ -1,53 +1,24 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { Block } from './types/block';
+import { Subscription } from 'rxjs';
 import { ModuleOptions } from './types/module';
 import { Formats } from './types/format';
-import { Header, Text } from './components/blocks';
+import { Block } from './types/block';
+import { BlockContainer, Header1, Header2, Header3, Header4, Header5, Header6, Text } from './components/blocks';
 import { InlineText } from './components/inlines';
+import { Bold, Strike, Underline } from './components/styles';
+import { GlobalToolbar } from './components/toolbar';
 import { useEditor } from './hooks/use-editor';
 import { useEventEmitter } from './hooks/use-event-emitter';
-import { EditorModule, KeyBoardModule, LoggerModule } from './modules';
+import { EditorModule, KeyBoardModule, LoggerModule, ToolbarModule } from './modules';
 import { getBlockElementById } from './utils/block';
+import { EditorEvents } from './constants';
 
 interface Props {
   readOnly?: boolean;
-  formats?: Formats;
+  formats?: { [key: string]: any };
   settings?: ModuleOptions;
 }
-
-interface BlockProps {
-  block: Block;
-  readOnly: boolean;
-  formats: Formats;
-  onClick: (e: React.MouseEvent) => void;
-  onKeyDown: (e: React.KeyboardEvent) => void;
-  onInput: (e: React.KeyboardEvent) => void;
-}
-
-const BlockContainer: React.VFC<BlockProps> = React.memo(({ block, readOnly = false, formats, ...props }) => {
-  let Container;
-  const blockFormat = `block/${block.type.toLocaleLowerCase()}`;
-  if (!formats[blockFormat]) {
-    // defalut block format
-    Container = formats['block/text'];
-  } else {
-    Container = formats[blockFormat];
-  }
-
-  return (
-    <Container
-      suppressContentEditableWarning
-      className="notranslate"
-      contentEditable={!readOnly}
-      data-block-id={block.id}
-      block={block}
-      data-format={blockFormat}
-      formats={formats}
-      {...props}
-    />
-  );
-});
 
 const Container = styled.div`
   border: 1px solid #ccc;
@@ -69,13 +40,22 @@ const MarginBottom = styled.div`
 
 export const Editor: React.VFC<Props> = React.memo(({ readOnly = false, formats, settings = {}, ...props }: Props) => {
   const [eventEmitter, eventTool] = useEventEmitter();
-  const [blocks, editorRef, editor] = useEditor({ eventEmitter });
+  const [editorRef, editor] = useEditor({ eventEmitter });
   const containerRef = React.useRef<HTMLDivElement>(null);
   const [blockFormats, setBlockFormats] = React.useState<Formats>({
     'block/text': Text,
-    'block/header': Header,
+    'block/header1': Header1,
+    'block/header2': Header2,
+    'block/header3': Header3,
+    'block/header4': Header4,
+    'block/header5': Header5,
+    'block/header6': Header6,
     'inline/text': InlineText,
+    'style/bold': Bold,
+    'style/underline': Underline,
+    'style/strike': Strike,
   });
+  const [blocks, setBlocks] = React.useState<Block[]>([]);
 
   const handleKeyDown = React.useCallback(
     (event: React.KeyboardEvent) => {
@@ -87,15 +67,39 @@ export const Editor: React.VFC<Props> = React.memo(({ readOnly = false, formats,
     [editor],
   );
 
-  const handleClick = React.useCallback((e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    editor.updateCaretPosition();
-  }, []);
+  const handleCompositionStart = React.useCallback(
+    (event: React.CompositionEvent) => {
+      const keyboard = editor.getModule('keyboard');
+      if (keyboard && keyboard instanceof KeyBoardModule) {
+        keyboard.onCompositionStart(event);
+      }
+    },
+    [editor],
+  );
+
+  const handleCompositionEnd = React.useCallback(
+    (event: React.CompositionEvent) => {
+      const keyboard = editor.getModule('keyboard');
+      if (keyboard && keyboard instanceof KeyBoardModule) {
+        keyboard.onCompositionEnd(event);
+      }
+    },
+    [editor],
+  );
 
   const handleInput = React.useCallback((e: React.KeyboardEvent) => {
-    console.log(e);
+    const keyboard = editor.getModule('keyboard');
+    if (keyboard) {
+      keyboard.onInput(e);
+    }
   }, []);
+
+  const handleClick = React.useCallback(
+    (e: React.MouseEvent) => {
+      editor.updateCaretRect();
+    },
+    [editor],
+  );
 
   const handleContainerClick = React.useCallback(() => {
     const lastBlock = blocks[blocks.length - 1];
@@ -106,17 +110,26 @@ export const Editor: React.VFC<Props> = React.memo(({ readOnly = false, formats,
   }, [blocks.length]);
 
   React.useEffect(() => {
+    const subs = new Subscription();
     editor.addModules(
       [
         { name: 'logger', module: LoggerModule },
         { name: 'editor', module: EditorModule },
         { name: 'keyboard', module: KeyBoardModule },
+        { name: 'toolbar', module: ToolbarModule },
       ],
       settings,
     );
+    subs.add(
+      eventEmitter.on(EditorEvents.EVENT_BLOCK_RERENDER).subscribe(() => {
+        setBlocks(editor.getBlocks());
+      }),
+    );
+    editor.render();
 
     return () => {
       editor.removeAllModules();
+      subs.unsubscribe();
     };
   }, []);
 
@@ -127,24 +140,38 @@ export const Editor: React.VFC<Props> = React.memo(({ readOnly = false, formats,
     });
   }, [formats]);
 
+  const memoBlocks = React.useMemo(() => {
+    return blocks.map((v) => {
+      return { id: v.id, type: v.type };
+    });
+  }, [blocks.length]);
+
+  const memoEditor = React.useMemo(() => {
+    return editor;
+  }, []);
+
   return (
-    <Container {...props} ref={containerRef}>
+    <Container ref={containerRef} {...props}>
       <Inner ref={editorRef}>
-        {blocks.map((block, index) => {
+        {memoBlocks.map((block, index) => {
           return (
             <BlockContainer
               key={block.id}
               formats={blockFormats}
-              block={block}
+              editor={memoEditor}
+              blockId={block.id}
               readOnly={readOnly}
-              onKeyDown={handleKeyDown}
-              onInput={handleInput}
               onClick={handleClick}
+              onKeyDown={handleKeyDown}
+              onBeforeInput={handleInput}
+              onCompositionStart={handleCompositionStart}
+              onCompositionEnd={handleCompositionEnd}
             />
           );
         })}
       </Inner>
       <MarginBottom onClick={handleContainerClick} />
+      <GlobalToolbar editor={memoEditor} />
     </Container>
   );
 });

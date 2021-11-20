@@ -1,12 +1,14 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { Block } from '../../types/block';
 import { Formats } from '../../types/format';
-import { InlineContent } from '../../utils/inline';
+import { EditorController } from '../../hooks/use-editor';
+import { Inline } from '../../types/inline';
 
-interface Props {
-  block: Block;
+export interface TextProps {
+  blockId: string;
   formats?: Formats;
+  contents: Inline[];
+  editor: EditorController;
   onClick: (e: React.MouseEvent) => void;
   onKeyDown: (e: React.KeyboardEvent) => void;
 }
@@ -20,10 +22,6 @@ const P = styled.p`
   margin-bottom: 1px;
 `;
 
-export const Text = React.memo(({ block, formats, ...props }: Props) => {
-  const memoContents = React.useMemo(() => {
-    return InlineContent({ contents: block.contents, formats });
-  }, []);
-
-  return <P {...props}>{memoContents}</P>;
+export const Text = React.memo(({ blockId, formats, editor, contents, ...props }: TextProps) => {
+  return <P {...props}>{contents}</P>;
 });

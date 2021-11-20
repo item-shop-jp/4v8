@@ -1,34 +1,32 @@
 import * as React from 'react';
-import { Inline } from '../types/inline';
-import { Formats } from '../types/format';
+import { nanoid } from 'nanoid';
+import { Inline, InlineType, InlineAttributes } from '../types/inline';
 
-interface Props {
-  contents: Inline[];
-  formats?: Formats;
+export function getInlineId(node: HTMLElement): [string, HTMLElement] | [] {
+  if (node.dataset?.inlineId) {
+    return [node.dataset.inlineId, node];
+  }
+  if (!node.parentElement) {
+    return [];
+  }
+  return getInlineId(node.parentElement);
 }
 
-export const InlineContent: React.VFC<Props> = ({ contents, formats = {}, ...props }: Props) => {
-  return (
-    <>
-      {contents.map((content) => {
-        let Container;
-        const inlineFormat = `inline/${content.type.toLocaleLowerCase()}`;
-        if (!formats[inlineFormat]) {
-          // defalut block format
-          Container = formats['inline/text'];
-        } else {
-          Container = formats[inlineFormat];
-        }
-        return (
-          <Container
-            key={content.id}
-            data-inline-id={content.id}
-            data-format={inlineFormat}
-            inline={content}
-            {...props}
-          />
-        );
-      })}
-    </>
-  );
-};
+export function createInline(type: InlineType, text: string = '\uFEFF', attributes: InlineAttributes = {}): Inline {
+  return {
+    id: nanoid(),
+    text,
+    type,
+    attributes: {},
+    isEmbed: isEmbed(type),
+  };
+}
+
+export function isEmbed(type: InlineType): boolean {
+  switch (type) {
+    case 'TEXT':
+      return false;
+    default:
+      return false;
+  }
+}

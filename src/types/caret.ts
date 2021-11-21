@@ -4,4 +4,6 @@ export interface CaretPosition {
   index: number;
   length: number;
   collapsed: boolean;
+  isTop: boolean;
+  isBottom: boolean;
 }

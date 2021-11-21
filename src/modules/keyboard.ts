@@ -269,6 +269,7 @@ export class KeyBoardModule implements Module {
   }
 
   private _handlekeyUp(caretPosition: CaretPosition, editor: EditorController, event: React.KeyboardEvent) {
+    if (!caretPosition.isTop) return;
     if (editor.prev()) {
       event.preventDefault();
     } else {
@@ -277,6 +278,7 @@ export class KeyBoardModule implements Module {
   }
 
   private _handlekeyDown(caretPosition: CaretPosition, editor: EditorController, event: React.KeyboardEvent) {
+    if (!caretPosition.isBottom) return;
     if (editor.next()) {
       event.preventDefault();
     } else {

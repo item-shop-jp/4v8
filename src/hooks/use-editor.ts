@@ -24,6 +24,7 @@ interface PositionParams {
   caretPosition?: CaretPosition;
   index?: number;
   length?: number;
+  margin?: number;
 }
 
 export interface EditorController {
@@ -107,7 +108,7 @@ export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTML
     selection.removeAllRanges();
   }, []);
 
-  const prev = React.useCallback(({ caretPosition, index = 0 }: PositionParams = {}): boolean => {
+  const prev = React.useCallback(({ caretPosition, index = 0, margin = 10 }: PositionParams = {}): boolean => {
     const position = caretPosition ?? lastCaretPositionRef.current;
     const currentIndex = blocksRef.current.findIndex((v) => v.id === position?.blockId);
     if (currentIndex < 1 || !blocksRef.current[currentIndex - 1]) return false;
@@ -121,7 +122,7 @@ export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTML
     const nextBlock = blockUtils.getBlockElementById(blocksRef.current[currentIndex - 1].id);
     if (!nextBlock) return false;
     const nextRect = nextBlock.getBoundingClientRect();
-    const range = caretRangeFromPoint(lastCaretRectRef.current.x, nextRect.y);
+    const range = caretRangeFromPoint(lastCaretRectRef.current.x, nextRect.y + nextRect.height - margin);
     const selection = document.getSelection();
     if (!selection || !range) return false;
     selection.setBaseAndExtent(range.startContainer, range.startOffset, range.startContainer, range.startOffset);
@@ -134,7 +135,7 @@ export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTML
     return true;
   }, []);
 
-  const next = React.useCallback(({ caretPosition, index = 0 }: PositionParams = {}): boolean => {
+  const next = React.useCallback(({ caretPosition, index = 0, margin = 10 }: PositionParams = {}): boolean => {
     const position = caretPosition ?? lastCaretPositionRef.current;
     const currentIndex = blocksRef.current.findIndex((v) => v.id === position?.blockId);
     if (currentIndex === -1 || !blocksRef.current[currentIndex + 1]) return false;
@@ -148,7 +149,7 @@ export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTML
     const nextBlock = blockUtils.getBlockElementById(blocksRef.current[currentIndex + 1].id);
     if (!nextBlock) return false;
     const nextRect = nextBlock.getBoundingClientRect();
-    const range = caretRangeFromPoint(lastCaretRectRef.current.x, nextRect.y);
+    const range = caretRangeFromPoint(lastCaretRectRef.current.x, nextRect.y + margin);
     const selection = document.getSelection();
     if (!selection || !range) return false;
     selection.setBaseAndExtent(range.startContainer, range.startOffset, range.startContainer, range.startOffset);
@@ -258,7 +259,7 @@ export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTML
     const [endInlineId, endInlineElement] = getInlineId(nativeRange.endContainer as HTMLElement);
     const [blockId, blockElement] = blockUtils.getBlockId(nativeRange.startContainer as HTMLElement);
 
-    if (!editorRef.current || !startInlineId || !endInlineId || !blockId) {
+    if (!editorRef.current || !startInlineId || !endInlineId || !blockId || !blockElement) {
       return null;
     }
 
@@ -268,6 +269,9 @@ export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTML
     );
     const end = blockUtils.getBlockIndexFromNativeIndex(nativeRange.endContainer as HTMLElement, nativeRange.endOffset);
 
+    const caretRect = nativeRange.getBoundingClientRect();
+    const blockRect = blockElement.getBoundingClientRect();
+
     if (!start || !end) return null;
 
     const range: CaretPosition = {
@@ -276,6 +280,8 @@ export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTML
       index: start.index,
       length: end.index - start.index,
       collapsed: nativeRange.collapsed,
+      isTop: caretRect.y - blockRect.y === 0,
+      isBottom: blockRect.y + blockRect.height - (caretRect.y + caretRect.height) === 0,
     };
     return range;
   }, []);

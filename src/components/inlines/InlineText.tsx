@@ -20,7 +20,7 @@ const InlineContent = styled.span<InlineContentProps>`
       if (attributes[key] && formats[styleFormat]) {
         return formats[styleFormat];
       }
-      return undefined;
+      return;
     });
   }}
 `;

@@ -5,6 +5,11 @@ import { Editor } from './Editor';
 import { LogLevels } from './constants';
 import { Text, Header1 } from './components/blocks';
 
+const StyledEditor = styled(Editor)`
+  margin-top: 50px;
+  max-width: 600px;
+`;
+
 const StyledText = styled(Text)`
   opacity: 0.8;
 `;
@@ -33,7 +38,7 @@ export const Container: React.VFC = React.memo(() => {
     };
   }, []);
 
-  return <Editor settings={settings} formats={formats} readOnly={false} />;
+  return <StyledEditor settings={settings} formats={formats} readOnly={false} />;
 });
 
 ReactDOM.render(

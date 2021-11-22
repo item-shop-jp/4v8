@@ -6,7 +6,7 @@ import { EditorEvents } from '../../constants';
 import { EditorController } from '../../hooks/use-editor';
 import { InlineAttributes } from '../../types/inline';
 
-export interface GlobalToolbarProps {
+export interface BubbleToolbarProps {
   editor: EditorController;
 }
 
@@ -25,8 +25,32 @@ const Button = styled.a`
   padding: 4px;
 `;
 
-export const GlobalToolbar = React.memo(({ editor, ...props }: GlobalToolbarProps) => {
+export const BubbleToolbar = React.memo(({ editor, ...props }: BubbleToolbarProps) => {
   const [formats, setFormats] = React.useState<InlineAttributes>({});
+  const handleBold = React.useCallback(
+    (event: React.MouseEvent) => {
+      event.preventDefault();
+      editor.getModule('toolbar').formatInline({ bold: !formats?.bold });
+    },
+    [formats],
+  );
+
+  const handleUnderline = React.useCallback(
+    (event: React.MouseEvent) => {
+      event.preventDefault();
+      editor.getModule('toolbar').formatInline({ underline: !formats?.underline });
+    },
+    [formats],
+  );
+
+  const handleStrike = React.useCallback(
+    (event: React.MouseEvent) => {
+      event.preventDefault();
+      editor.getModule('toolbar').formatInline({ strike: !formats?.strike });
+    },
+    [formats],
+  );
+
   const handleHeader1 = React.useCallback(
     (event: React.MouseEvent) => {
       event.preventDefault();
@@ -53,7 +77,16 @@ export const GlobalToolbar = React.memo(({ editor, ...props }: GlobalToolbarProp
   return ReactDOM.createPortal(
     <Container {...props}>
       <Button href="#" onClick={handleHeader1}>
-        header1
+        H1
+      </Button>
+      <Button href="#" onClick={handleBold}>
+        B
+      </Button>
+      <Button href="#" onClick={handleUnderline}>
+        U
+      </Button>
+      <Button href="#" onClick={handleStrike}>
+        S
       </Button>
     </Container>,
     document.body,

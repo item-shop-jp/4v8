@@ -10,8 +10,11 @@ import {
   TextProps,
 } from '../components/blocks';
 import { InlineTextProps } from '../components/inlines';
+import { BubbleToolbarProps, GlobalToolbarProps } from '../components/toolbar';
 
 export interface Formats {
+  'toolbar/global': React.FC<GlobalToolbarProps>;
+  'toolbar/bubble': React.FC<BubbleToolbarProps>;
   'block/text': React.FC<TextProps>;
   'block/header1': React.FC<Header1Props>;
   'block/header2': React.FC<Header2Props>;

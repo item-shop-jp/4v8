@@ -7,7 +7,7 @@ import { Block } from './types/block';
 import { BlockContainer, Header1, Header2, Header3, Header4, Header5, Header6, Text } from './components/blocks';
 import { InlineText } from './components/inlines';
 import { Bold, Strike, Underline } from './components/styles';
-import { GlobalToolbar } from './components/toolbar';
+import { GlobalToolbar, BubbleToolbar } from './components/toolbar';
 import { useEditor } from './hooks/use-editor';
 import { useEventEmitter } from './hooks/use-event-emitter';
 import { EditorModule, KeyBoardModule, LoggerModule, ToolbarModule } from './modules';
@@ -43,6 +43,8 @@ export const Editor: React.VFC<Props> = React.memo(({ readOnly = false, formats,
   const [editorRef, editor] = useEditor({ eventEmitter });
   const containerRef = React.useRef<HTMLDivElement>(null);
   const [blockFormats, setBlockFormats] = React.useState<Formats>({
+    'toolbar/global': GlobalToolbar,
+    'toolbar/bubble': BubbleToolbar,
     'block/text': Text,
     'block/header1': Header1,
     'block/header2': Header2,
@@ -150,6 +152,14 @@ export const Editor: React.VFC<Props> = React.memo(({ readOnly = false, formats,
     return editor;
   }, []);
 
+  const MemoGlobalToolbar = React.useMemo(() => {
+    return blockFormats['toolbar/global'];
+  }, [blockFormats]);
+
+  const MemoBubbleToolbar = React.useMemo(() => {
+    return blockFormats['toolbar/bubble'];
+  }, [blockFormats]);
+
   return (
     <Container ref={containerRef} {...props}>
       <Inner ref={editorRef}>
@@ -171,7 +181,8 @@ export const Editor: React.VFC<Props> = React.memo(({ readOnly = false, formats,
         })}
       </Inner>
       <MarginBottom onClick={handleContainerClick} />
-      <GlobalToolbar editor={memoEditor} />
+      <MemoGlobalToolbar editor={memoEditor} />
+      <MemoBubbleToolbar editor={memoEditor} />
     </Container>
   );
 });

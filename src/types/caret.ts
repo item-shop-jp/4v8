@@ -6,4 +6,5 @@ export interface CaretPosition {
   collapsed: boolean;
   isTop: boolean;
   isBottom: boolean;
+  rect: DOMRect;
 }

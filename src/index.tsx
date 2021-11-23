@@ -5,10 +5,15 @@ import { Editor } from './Editor';
 import { LogLevels } from './constants';
 import { Text, Header1 } from './components/blocks';
 
-const StyledEditor = styled(Editor)`
-  margin-top: 50px;
+const ScrollContainer = styled.div`
+  margin: 50px auto;
   max-width: 600px;
+  height: 600px;
+  overflow: auto;
+  position: relative;
 `;
+
+const StyledEditor = styled(Editor)``;
 
 const StyledText = styled(Text)`
   opacity: 0.8;
@@ -23,10 +28,6 @@ const StyledUnderline = css`
 `;
 
 export const Container: React.VFC = React.memo(() => {
-  const [isDisplay, setDisplay] = React.useState(true);
-  const handleToggleEditor = React.useCallback(() => {
-    setDisplay((prev) => !prev);
-  }, []);
   const settings = React.useMemo(() => {
     return { logger: { logLevel: LogLevels.INFO } };
   }, []);

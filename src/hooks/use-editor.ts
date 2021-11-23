@@ -282,6 +282,7 @@ export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTML
       collapsed: nativeRange.collapsed,
       isTop: caretRect.y - blockRect.y === 0,
       isBottom: blockRect.y + blockRect.height - (caretRect.y + caretRect.height) === 0,
+      rect: caretRect,
     };
     return range;
   }, []);

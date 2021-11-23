@@ -8,25 +8,59 @@ import { InlineAttributes } from '../../types/inline';
 
 export interface BubbleToolbarProps {
   editor: EditorController;
+  scrollContainer?: HTMLElement | string;
 }
 
-const Container = styled.div`
-  position: fixed;
-  bottom: 12px;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  padding: 8px;
+interface ContainerProps {
+  top: number;
+  left: number;
+  collapsed: boolean;
+}
+
+interface ToolbarPosition {
+  top: number;
+  left: number;
+}
+
+const Container = styled.div<ContainerProps>`
+  position: absolute;
+  display: ${({ collapsed }) => (collapsed ? 'none' : 'block')};
+  top: ${({ top }) => `${top}px`};
+  left: ${({ left }) => `${left}px`};
+  transform: translateY(-100%);
+  background-color: #fff;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  padding: 4px;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  z-index: 1;
 `;
 
 const Button = styled.a`
-  margin: 8px;
-  border: 1px solid #666;
-  border-radius: 4px;
-  padding: 4px;
+  display: inline-block;
+  padding: 2px 8px;
+  text-decoration: none;
+  &:hover {
+    background-color: #e3def3;
+    border-radius: 8px;
+  }
 `;
 
-export const BubbleToolbar = React.memo(({ editor, ...props }: BubbleToolbarProps) => {
+function getScrollContainer(scrollContainer?: HTMLElement | string) {
+  if (!scrollContainer) {
+    return null;
+  }
+  if (typeof scrollContainer === 'string') {
+    return document.querySelector<HTMLElement>(scrollContainer);
+  }
+  return scrollContainer ?? null;
+}
+
+export const BubbleToolbar = React.memo(({ editor, scrollContainer, ...props }: BubbleToolbarProps) => {
   const [formats, setFormats] = React.useState<InlineAttributes>({});
+  const [position, setPosition] = React.useState<ToolbarPosition>();
+  const [collapsed, setCollapsed] = React.useState<boolean>(true);
+
   const handleBold = React.useCallback(
     (event: React.MouseEvent) => {
       event.preventDefault();
@@ -65,17 +99,35 @@ export const BubbleToolbar = React.memo(({ editor, ...props }: BubbleToolbarProp
     subs.add(
       eventEmitter.on(EditorEvents.EVENT_SELECTION_CHANGE).subscribe((v) => {
         const caret = editor.getCaretPosition();
-        if (!caret) return;
+        if (!caret) {
+          setPosition(undefined);
+          setCollapsed(true);
+          return;
+        }
+        const container = getScrollContainer(scrollContainer);
+        if (container) {
+          const containerRect = container.getBoundingClientRect();
+          const top = (container?.scrollTop ?? 0) + caret.rect.top - containerRect.top;
+          const left = caret.rect.left - containerRect.left;
+          setPosition({ top, left });
+        } else {
+          const scrollEl = document.scrollingElement as HTMLElement;
+          const top = scrollEl.scrollTop + caret.rect.top;
+          const left = caret.rect.left;
+          setPosition({ top, left });
+        }
+
+        setCollapsed(caret.collapsed);
         setFormats(editor.getFormats(caret.blockId, caret.index, caret.length));
       }),
     );
     return () => {
       subs.unsubscribe();
     };
-  });
+  }, [editor, scrollContainer]);
 
   return ReactDOM.createPortal(
-    <Container {...props}>
+    <Container collapsed={collapsed} top={position?.top ?? 0} left={position?.left ?? 0} {...props}>
       <Button href="#" onClick={handleHeader1}>
         H1
       </Button>
@@ -89,6 +141,6 @@ export const BubbleToolbar = React.memo(({ editor, ...props }: BubbleToolbarProp
         S
       </Button>
     </Container>,
-    document.body,
+    getScrollContainer(scrollContainer) ?? document.body,
   );
 });

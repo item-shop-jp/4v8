@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs';
 import { EditorEvents } from '../../constants';
 import { EditorController } from '../../hooks/use-editor';
 import { InlineAttributes } from '../../types/inline';
+import { getScrollContainer } from '../../utils/dom';
 
 export interface BubbleToolbarProps {
   editor: EditorController;
@@ -45,16 +46,6 @@ const Button = styled.a`
     border-radius: 8px;
   }
 `;
-
-function getScrollContainer(scrollContainer?: HTMLElement | string) {
-  if (!scrollContainer) {
-    return null;
-  }
-  if (typeof scrollContainer === 'string') {
-    return document.querySelector<HTMLElement>(scrollContainer);
-  }
-  return scrollContainer ?? null;
-}
 
 export const BubbleToolbar = React.memo(({ editor, scrollContainer, ...props }: BubbleToolbarProps) => {
   const [formats, setFormats] = React.useState<InlineAttributes>({});

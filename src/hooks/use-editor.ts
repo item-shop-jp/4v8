@@ -8,6 +8,7 @@ import * as blockUtils from '../utils/block';
 import { getInlineId } from '../utils/inline';
 import { caretRangeFromPoint } from '../utils/range';
 import { copyObject } from '../utils/object';
+import { getScrollContainer } from '../utils/dom';
 import { CaretPosition } from '../types/caret';
 import { ModuleOptions } from '../types/module';
 import { Block } from '../types/block';
@@ -18,6 +19,7 @@ import { EditorModule, KeyBoardModule, ToolbarModule } from '../modules';
 
 interface Props {
   eventEmitter: EventEmitter;
+  scrollContainer?: HTMLElement | string;
 }
 
 interface PositionParams {
@@ -72,7 +74,10 @@ export interface EditorController {
   getEventEmitter: () => EventEmitter;
 }
 
-export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTMLDivElement | null>, EditorController] {
+export function useEditor({
+  eventEmitter,
+  scrollContainer,
+}: Props): [React.MutableRefObject<HTMLDivElement | null>, EditorController] {
   const editorRef = React.useRef<HTMLDivElement>(null);
   const lastCaretPositionRef = React.useRef<CaretPosition | null>();
   const lastCaretRectRef = React.useRef<DOMRect | null>();
@@ -121,7 +126,21 @@ export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTML
     }
     const prevBlock = blockUtils.getBlockElementById(blocksRef.current[currentIndex - 1].id);
     if (!prevBlock) return false;
-    const prevRect = prevBlock.getBoundingClientRect();
+    let prevRect = prevBlock.getBoundingClientRect();
+    const container = getScrollContainer(scrollContainer);
+    const containerOffsetTop = container ? container.getBoundingClientRect().top : 0;
+
+    if (prevRect.top <= containerOffsetTop) {
+      if (container) {
+        container.scrollTop = currentIndex - 1 < 1 ? 0 : prevBlock.offsetTop;
+      } else {
+        if (document.scrollingElement) {
+          const editorScrollTop = (editorRef.current?.parentElement?.offsetTop ?? 0) - 30;
+          document.scrollingElement.scrollTop = currentIndex - 1 < 1 ? editorScrollTop : prevBlock.offsetTop;
+        }
+      }
+      prevRect = prevBlock.getBoundingClientRect();
+    }
     const range = caretRangeFromPoint(lastCaretRectRef.current.x, prevRect.y + prevRect.height - margin);
     const selection = document.getSelection();
     if (!selection || !range) return false;
@@ -148,7 +167,19 @@ export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTML
     }
     const nextBlock = blockUtils.getBlockElementById(blocksRef.current[currentIndex + 1].id);
     if (!nextBlock) return false;
-    const nextRect = nextBlock.getBoundingClientRect();
+    let nextRect = nextBlock.getBoundingClientRect();
+    const container = getScrollContainer(scrollContainer);
+    const scrollHeight = container?.clientHeight ?? window.innerHeight;
+    if (nextRect.top + nextRect.height >= scrollHeight) {
+      if (container) {
+        container.scrollTop = nextBlock.offsetTop - container.clientHeight + 100;
+      } else {
+        if (document.scrollingElement) {
+          document.scrollingElement.scrollTop = nextBlock.offsetTop - window.innerHeight + 50;
+        }
+      }
+      nextRect = nextBlock.getBoundingClientRect();
+    }
     const range = caretRangeFromPoint(lastCaretRectRef.current.x, nextRect.y + margin);
     const selection = document.getSelection();
     if (!selection || !range) return false;
@@ -284,7 +315,6 @@ export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTML
       isBottom: blockRect.y + blockRect.height - (caretRect.y + caretRect.height) < 10,
       rect: caretRect,
     };
-    console.log(caretRect.y, blockRect.y);
     return range;
   }, []);
 

@@ -42,7 +42,7 @@ const MarginBottom = styled.div`
 export const Editor: React.VFC<Props> = React.memo(
   ({ readOnly = false, formats, settings = {}, scrollContainer, ...props }: Props) => {
     const [eventEmitter, eventTool] = useEventEmitter();
-    const [editorRef, editor] = useEditor({ eventEmitter });
+    const [editorRef, editor] = useEditor({ eventEmitter, scrollContainer });
     const containerRef = React.useRef<HTMLDivElement>(null);
     const [blockFormats, setBlockFormats] = React.useState<Formats>({
       'toolbar/global': GlobalToolbar,

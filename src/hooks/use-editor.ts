@@ -119,10 +119,10 @@ export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTML
       });
       return false;
     }
-    const nextBlock = blockUtils.getBlockElementById(blocksRef.current[currentIndex - 1].id);
-    if (!nextBlock) return false;
-    const nextRect = nextBlock.getBoundingClientRect();
-    const range = caretRangeFromPoint(lastCaretRectRef.current.x, nextRect.y + nextRect.height - margin);
+    const prevBlock = blockUtils.getBlockElementById(blocksRef.current[currentIndex - 1].id);
+    if (!prevBlock) return false;
+    const prevRect = prevBlock.getBoundingClientRect();
+    const range = caretRangeFromPoint(lastCaretRectRef.current.x, prevRect.y + prevRect.height - margin);
     const selection = document.getSelection();
     if (!selection || !range) return false;
     selection.setBaseAndExtent(range.startContainer, range.startOffset, range.startContainer, range.startOffset);
@@ -280,10 +280,11 @@ export function useEditor({ eventEmitter }: Props): [React.MutableRefObject<HTML
       index: start.index,
       length: end.index - start.index,
       collapsed: nativeRange.collapsed,
-      isTop: caretRect.y - blockRect.y === 0,
-      isBottom: blockRect.y + blockRect.height - (caretRect.y + caretRect.height) === 0,
+      isTop: caretRect.y - blockRect.y < 10,
+      isBottom: blockRect.y + blockRect.height - (caretRect.y + caretRect.height) < 10,
       rect: caretRect,
     };
+    console.log(caretRect.y, blockRect.y);
     return range;
   }, []);
 

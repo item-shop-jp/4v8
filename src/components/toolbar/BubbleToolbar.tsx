@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs';
 import { EditorEvents } from '../../constants';
 import { EditorController } from '../../hooks/use-editor';
 import { InlineAttributes } from '../../types/inline';
+import { BlockType } from '../../types/block';
 import { getScrollContainer } from '../../utils/dom';
 
 export interface BubbleToolbarProps {
@@ -22,6 +23,10 @@ interface ToolbarPosition {
   left: number;
 }
 
+interface ButtonProps {
+  active: boolean;
+}
+
 const Container = styled.div<ContainerProps>`
   position: absolute;
   top: ${({ top }) => `${top}px`};
@@ -35,19 +40,22 @@ const Container = styled.div<ContainerProps>`
   z-index: 1;
 `;
 
-const Button = styled.a`
+const Button = styled.a<ButtonProps>`
   display: inline-block;
   padding: 2px 8px;
   text-decoration: none;
+  border-radius: 8px;
+  margin: 0 4px;
+  ${({ active }) => active && 'background-color: #e3def3'};
   &:hover {
     background-color: #e3def3;
-    border-radius: 8px;
   }
 `;
 
 export const BubbleToolbar = React.memo(({ editor, scrollContainer, ...props }: BubbleToolbarProps) => {
   const [formats, setFormats] = React.useState<InlineAttributes>({});
   const [position, setPosition] = React.useState<ToolbarPosition>();
+  const [blockType, setBlockType] = React.useState<BlockType>();
   const [collapsed, setCollapsed] = React.useState<boolean>(true);
 
   const handleBold = React.useCallback(
@@ -108,6 +116,7 @@ export const BubbleToolbar = React.memo(({ editor, scrollContainer, ...props }: 
 
         setCollapsed(caret.collapsed);
         setFormats(editor.getFormats(caret.blockId, caret.index, caret.length));
+        setBlockType(editor.getBlock(caret.blockId)?.type);
       }),
     );
     return () => {
@@ -119,16 +128,16 @@ export const BubbleToolbar = React.memo(({ editor, scrollContainer, ...props }: 
     <>
       {!collapsed && (
         <Container top={position?.top ?? 0} left={position?.left ?? 0} {...props}>
-          <Button href="#" onClick={handleHeader1}>
+          <Button href="#" onClick={handleHeader1} active={blockType === 'HEADER1'}>
             H1
           </Button>
-          <Button href="#" onClick={handleBold}>
+          <Button href="#" onClick={handleBold} active={!!formats?.bold}>
             B
           </Button>
-          <Button href="#" onClick={handleUnderline}>
+          <Button href="#" onClick={handleUnderline} active={!!formats?.underline}>
             U
           </Button>
-          <Button href="#" onClick={handleStrike}>
+          <Button href="#" onClick={handleStrike} active={!!formats?.strike}>
             S
           </Button>
         </Container>

@@ -14,7 +14,7 @@ const ScrollContainer = styled.div`
 `;
 
 const BasicContainer = styled.div`
-  margin: 250px auto 300px;
+  margin: 50px auto 300px;
   max-width: 600px;
   position: relative;
 `;

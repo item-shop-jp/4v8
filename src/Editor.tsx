@@ -4,7 +4,7 @@ import { Subscription } from 'rxjs';
 import { ModuleOptions } from './types/module';
 import { Formats } from './types/format';
 import { Block } from './types/block';
-import { BlockContainer, Header1, Header2, Header3, Header4, Header5, Header6, Text } from './components/blocks';
+import { BlockContainer, Header1, Header2, Header3, Header4, Header5, Header6, Paragraph } from './components/blocks';
 import { InlineText } from './components/inlines';
 import { Bold, Strike, Underline } from './components/styles';
 import { GlobalToolbar, BubbleToolbar } from './components/toolbar';
@@ -47,7 +47,7 @@ export const Editor: React.VFC<Props> = React.memo(
     const [blockFormats, setBlockFormats] = React.useState<Formats>({
       'toolbar/global': GlobalToolbar,
       'toolbar/bubble': BubbleToolbar,
-      'block/text': Text,
+      'block/paragraph': Paragraph,
       'block/header1': Header1,
       'block/header2': Header2,
       'block/header3': Header3,

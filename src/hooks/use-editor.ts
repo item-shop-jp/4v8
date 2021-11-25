@@ -507,7 +507,7 @@ export function useEditor({
   // real-time collaborative test
   // React.useEffect(() => {
   //   const interval = setInterval(() => {
-  //     blocksRef.current = [...blocksRef.current, createBlock('TEXT')];
+  //     blocksRef.current = [...blocksRef.current, createBlock('PARAGRAPH')];
   //     render();
   //   }, 2000);
 

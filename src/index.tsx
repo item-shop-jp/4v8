@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import styled, { css } from 'styled-components';
 import { Editor } from './Editor';
 import { LogLevels } from './constants';
-import { Text, Header1 } from './components/blocks';
+import { Paragraph, Header1 } from './components/blocks';
 
 const ScrollContainer = styled.div`
   margin: 50px auto;
@@ -15,7 +15,7 @@ const ScrollContainer = styled.div`
 
 const StyledEditor = styled(Editor)``;
 
-const StyledText = styled(Text)`
+const StyledParagraph = styled(Paragraph)`
   opacity: 0.8;
 `;
 

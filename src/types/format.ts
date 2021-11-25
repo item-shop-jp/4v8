@@ -7,7 +7,7 @@ import {
   Header4Props,
   Header5Props,
   Header6Props,
-  TextProps,
+  ParagraphProps,
 } from '../components/blocks';
 import { InlineTextProps } from '../components/inlines';
 import { BubbleToolbarProps, GlobalToolbarProps } from '../components/toolbar';
@@ -15,7 +15,7 @@ import { BubbleToolbarProps, GlobalToolbarProps } from '../components/toolbar';
 export interface Formats {
   'toolbar/global': React.FC<GlobalToolbarProps>;
   'toolbar/bubble': React.FC<BubbleToolbarProps>;
-  'block/text': React.FC<TextProps>;
+  'block/paragraph': React.FC<ParagraphProps>;
   'block/header1': React.FC<Header1Props>;
   'block/header2': React.FC<Header2Props>;
   'block/header3': React.FC<Header3Props>;

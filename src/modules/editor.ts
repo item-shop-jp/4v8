@@ -38,7 +38,7 @@ export class EditorModule implements Module {
   createBlock(blockId?: string) {
     const caretPosition = this.editor.getCaretPosition();
     blockId = blockId ?? caretPosition?.blockId;
-    const appendBlock = createBlock('TEXT');
+    const appendBlock = createBlock('PARAGRAPH');
     this.editor.createBlock(appendBlock, blockId);
     setTimeout(() => this.editor.setCaretPosition({ blockId: appendBlock.id }), 10);
     this.editor.render();
@@ -86,7 +86,7 @@ export class EditorModule implements Module {
     }
     const [first, last] = splitInlineContents(contents, index);
     const firstBlock = { ...blocks[currentIndex], contents: first.length < 1 ? [createInline('TEXT')] : first };
-    const lastBlock = createBlock('TEXT', last, blocks[currentIndex].attributes);
+    const lastBlock = createBlock('PARAGRAPH', last, blocks[currentIndex].attributes);
     const splittedBlocks = [...blocks.slice(0, currentIndex), firstBlock, lastBlock, ...blocks.slice(currentIndex + 1)];
     setTimeout(() => {
       this.editor.render([blocks[currentIndex].id]);

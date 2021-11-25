@@ -20,7 +20,7 @@ interface BlockProps {
 export const BlockContainer: React.VFC<BlockProps> = React.memo(
   ({ blockId, editor, readOnly = false, formats, ...props }) => {
     const [blockFormat, setBlockFormat] = React.useState<string>();
-    const [Container, setContainer] = React.useState<React.FC<any>>(formats['block/text']);
+    const [Container, setContainer] = React.useState<React.FC<any>>(formats['block/paragraph']);
     const block = useBlockRenderer({ blockId, editor });
 
     const memoContents = React.useMemo(() => {
@@ -33,7 +33,7 @@ export const BlockContainer: React.VFC<BlockProps> = React.memo(
       setContainer(() => {
         if (!formats[newBlockFormat]) {
           // defalut block format
-          return formats['block/text'];
+          return formats['block/paragraph'];
         } else {
           return formats[newBlockFormat];
         }

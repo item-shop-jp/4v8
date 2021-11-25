@@ -15,7 +15,6 @@ export interface BubbleToolbarProps {
 interface ContainerProps {
   top: number;
   left: number;
-  collapsed: boolean;
 }
 
 interface ToolbarPosition {
@@ -25,7 +24,6 @@ interface ToolbarPosition {
 
 const Container = styled.div<ContainerProps>`
   position: absolute;
-  display: ${({ collapsed }) => (collapsed ? 'none' : 'block')};
   top: ${({ top }) => `${top}px`};
   left: ${({ left }) => `${left}px`};
   transform: translateY(-100%);
@@ -118,20 +116,24 @@ export const BubbleToolbar = React.memo(({ editor, scrollContainer, ...props }: 
   }, [editor, scrollContainer]);
 
   return ReactDOM.createPortal(
-    <Container collapsed={collapsed} top={position?.top ?? 0} left={position?.left ?? 0} {...props}>
-      <Button href="#" onClick={handleHeader1}>
-        H1
-      </Button>
-      <Button href="#" onClick={handleBold}>
-        B
-      </Button>
-      <Button href="#" onClick={handleUnderline}>
-        U
-      </Button>
-      <Button href="#" onClick={handleStrike}>
-        S
-      </Button>
-    </Container>,
+    <>
+      {!collapsed && (
+        <Container top={position?.top ?? 0} left={position?.left ?? 0} {...props}>
+          <Button href="#" onClick={handleHeader1}>
+            H1
+          </Button>
+          <Button href="#" onClick={handleBold}>
+            B
+          </Button>
+          <Button href="#" onClick={handleUnderline}>
+            U
+          </Button>
+          <Button href="#" onClick={handleStrike}>
+            S
+          </Button>
+        </Container>
+      )}
+    </>,
     getScrollContainer(scrollContainer) ?? document.body,
   );
 });

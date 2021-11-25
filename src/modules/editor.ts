@@ -1,8 +1,7 @@
 import { Subscription } from 'rxjs';
 import { EventEmitter } from '../utils/event-emitter';
-import { createBlock, splitInlineContents, deleteInlineContents } from '../utils/block';
+import { createBlock, splitInlineContents, deleteInlineContents, getBlockElementById } from '../utils/block';
 import { createInline } from '../utils/inline';
-import { EditorEvents } from '../constants';
 import { Module } from '../types/module';
 import { EditorController } from '../hooks/use-editor';
 
@@ -40,8 +39,10 @@ export class EditorModule implements Module {
     blockId = blockId ?? caretPosition?.blockId;
     const appendBlock = createBlock('PARAGRAPH');
     this.editor.createBlock(appendBlock, blockId);
-    setTimeout(() => this.editor.setCaretPosition({ blockId: appendBlock.id }), 10);
-    this.editor.render();
+    setTimeout(() => {
+      this.editor.next();
+    }, 10);
+    this.editor.render([]);
   }
 
   deleteBlock(blockId?: string) {
@@ -49,18 +50,10 @@ export class EditorModule implements Module {
     blockId = blockId ?? caretPosition?.blockId;
     const blocks = this.editor.getBlocks();
     const currentIndex = blocks.findIndex((v) => v.id === blockId);
-    if (!blockId || blocks.length <= 1 || currentIndex === -1) return;
+    if (!blockId || blocks.length <= 1 || currentIndex < 1) return;
+    const prevBlockLength = this.editor.getBlockLength(blocks[currentIndex - 1].id) ?? 0;
+    this.editor.prev({ index: prevBlockLength });
     this.editor.deleteBlock(blockId);
-    if (currentIndex > 0) {
-      const prevBlockLength = this.editor.getBlockLength(blocks[currentIndex - 1].id) ?? 0;
-      setTimeout(
-        () => this.editor.setCaretPosition({ blockId: blocks[currentIndex - 1].id, index: prevBlockLength }),
-        10,
-      );
-    } else {
-      setTimeout(() => this.editor.setCaretPosition({ blockId: blocks[currentIndex + 1].id, index: 0 }), 10);
-    }
-
     this.editor.render();
   }
 

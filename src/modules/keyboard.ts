@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { debounce } from 'throttle-debounce';
 import { Module } from '../types/module';
 import { EventEmitter } from '../utils/event-emitter';
 import { KeyCodes, EditorEvents } from '../constants';
@@ -210,7 +209,7 @@ export class KeyBoardModule implements Module {
     if (!caret) return;
     const length = editor.getBlockLength(caret.blockId);
     if (length === null) return;
-    if (caretPosition.collapsed && caret.index === length) {
+    if (caretPosition.collapsed && (caret.index === length || length === 0)) {
       this.editor.getModule('editor').createBlock();
     } else {
       this.editor.getModule('editor').splitBlock(caret.blockId, caret.index, caret.length);

@@ -23,10 +23,6 @@ const StyledParagraph = styled(Paragraph)`
   opacity: 0.8;
 `;
 
-const StyledH1 = styled(Header1)`
-  color: red;
-`;
-
 const StyledUnderline = css`
   border-bottom: green 0.05em solid;
 `;
@@ -37,7 +33,7 @@ const settings = {
       logLevel: LogLevels.INFO,
     },
   },
-  scrollMarginBottom: 250,
+  scrollMarginBottom: 150,
   scrollMarginTop: 50,
   allowAttributes: ['bold', 'strike'],
   allowFormats: [],
@@ -47,7 +43,6 @@ export const Container: React.VFC = React.memo(() => {
   const formats = React.useMemo(() => {
     return {
       'block/paragraph': StyledParagraph,
-      'block/header1': StyledH1,
       'style/underline': StyledUnderline,
     };
   }, []);

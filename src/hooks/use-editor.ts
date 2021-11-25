@@ -116,14 +116,14 @@ export function useEditor({
     selection.removeAllRanges();
   }, []);
 
-  const prev = React.useCallback(({ caretPosition, index = 0, margin = 10 }: PositionParams = {}): boolean => {
+  const prev = React.useCallback(({ caretPosition, index, margin = 10 }: PositionParams = {}): boolean => {
     const position = caretPosition ?? lastCaretPositionRef.current;
     const currentIndex = blocksRef.current.findIndex((v) => v.id === position?.blockId);
     if (currentIndex < 1 || !blocksRef.current[currentIndex - 1]) return false;
     if (!lastCaretRectRef.current) {
       setCaretPosition({
         blockId: blocksRef.current[currentIndex - 1].id,
-        index,
+        index: 0,
       });
       return false;
     }
@@ -147,6 +147,15 @@ export function useEditor({
       }
       prevRect = prevBlock.getBoundingClientRect();
     }
+
+    if (typeof index === 'number' && index >= 0) {
+      setCaretPosition({
+        blockId: blocksRef.current[currentIndex - 1].id,
+        index,
+      });
+      return true;
+    }
+
     const range = caretRangeFromPoint(lastCaretRectRef.current.x, prevRect.y + prevRect.height - margin);
     const selection = document.getSelection();
     if (!selection || !range) return false;
@@ -185,7 +194,6 @@ export function useEditor({
           const p = nextTop - window.innerHeight + scrollMarginBottom;
           document.scrollingElement.scrollTop = p;
         }
-        //nextBlock.scrollIntoView({ behavior: 'auto', block: 'center' });
       }
       nextRect = nextBlock.getBoundingClientRect();
     }

@@ -13,7 +13,11 @@ const ScrollContainer = styled.div`
   position: relative;
 `;
 
-const StyledEditor = styled(Editor)``;
+const BasicContainer = styled.div`
+  margin: 250px auto 300px;
+  max-width: 600px;
+  position: relative;
+`;
 
 const StyledParagraph = styled(Paragraph)`
   opacity: 0.8;
@@ -27,19 +31,32 @@ const StyledUnderline = css`
   border-bottom: green 0.05em solid;
 `;
 
+const settings = {
+  modules: {
+    logger: {
+      logLevel: LogLevels.INFO,
+    },
+  },
+  scrollMarginBottom: 250,
+  scrollMarginTop: 50,
+  allowAttributes: ['bold', 'strike'],
+  allowFormats: [],
+};
+
 export const Container: React.VFC = React.memo(() => {
-  const settings = React.useMemo(() => {
-    return { logger: { logLevel: LogLevels.INFO } };
-  }, []);
   const formats = React.useMemo(() => {
     return {
-      'block/text': StyledText,
+      'block/paragraph': StyledParagraph,
       'block/header1': StyledH1,
       'style/underline': StyledUnderline,
     };
   }, []);
 
-  return <StyledEditor settings={settings} formats={formats} readOnly={false} />;
+  return (
+    <BasicContainer id="scroll">
+      <Editor settings={settings} formats={formats} readOnly={false} />
+    </BasicContainer>
+  );
 });
 
 ReactDOM.render(

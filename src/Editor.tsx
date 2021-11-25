@@ -1,9 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { Subscription } from 'rxjs';
-import { ModuleOptions } from './types/module';
-import { Formats } from './types/format';
-import { Block } from './types/block';
 import { BlockContainer, Header1, Header2, Header3, Header4, Header5, Header6, Paragraph } from './components/blocks';
 import { InlineText } from './components/inlines';
 import { Bold, Strike, Underline } from './components/styles';
@@ -13,12 +10,16 @@ import { useEventEmitter } from './hooks/use-event-emitter';
 import { EditorModule, KeyBoardModule, LoggerModule, ToolbarModule } from './modules';
 import { getBlockElementById } from './utils/block';
 import { EditorEvents } from './constants';
+import { ModuleOptions } from './types/module';
+import { Formats } from './types/format';
+import { Block } from './types/block';
+import { Settings } from './types/editor';
 
 interface Props {
   scrollContainer?: HTMLElement | string;
   readOnly?: boolean;
   formats?: { [key: string]: any };
-  settings?: ModuleOptions;
+  settings?: Settings;
 }
 
 const Container = styled.div`
@@ -42,7 +43,7 @@ const MarginBottom = styled.div`
 export const Editor: React.VFC<Props> = React.memo(
   ({ readOnly = false, formats, settings = {}, scrollContainer, ...props }: Props) => {
     const [eventEmitter, eventTool] = useEventEmitter();
-    const [editorRef, editor] = useEditor({ eventEmitter, scrollContainer });
+    const [editorRef, editor] = useEditor({ settings, eventEmitter, scrollContainer });
     const containerRef = React.useRef<HTMLDivElement>(null);
     const [blockFormats, setBlockFormats] = React.useState<Formats>({
       'toolbar/global': GlobalToolbar,
@@ -122,7 +123,7 @@ export const Editor: React.VFC<Props> = React.memo(
           { name: 'keyboard', module: KeyBoardModule },
           { name: 'toolbar', module: ToolbarModule },
         ],
-        settings,
+        settings?.modules ?? {},
       );
       subs.add(
         eventEmitter.on(EditorEvents.EVENT_BLOCK_RERENDER).subscribe(() => {

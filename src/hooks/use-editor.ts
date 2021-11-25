@@ -13,11 +13,13 @@ import { CaretPosition } from '../types/caret';
 import { ModuleOptions } from '../types/module';
 import { Block } from '../types/block';
 import { InlineAttributes } from '../types/inline';
+import { Settings } from '../types/editor';
 import { Shadow } from '../types/shadow';
 import { EditorEvents } from '../constants';
 import { EditorModule, KeyBoardModule, ToolbarModule } from '../modules';
 
 interface Props {
+  settings: Settings;
   eventEmitter: EventEmitter;
   scrollContainer?: HTMLElement | string;
 }
@@ -75,6 +77,7 @@ export interface EditorController {
 }
 
 export function useEditor({
+  settings: { scrollMarginTop = 100, scrollMarginBottom = 250 },
   eventEmitter,
   scrollContainer,
 }: Props): [React.MutableRefObject<HTMLDivElement | null>, EditorController] {
@@ -130,13 +133,16 @@ export function useEditor({
     const container = getScrollContainer(scrollContainer);
     const containerOffsetTop = container ? container.getBoundingClientRect().top : 0;
 
-    if (prevRect.top <= containerOffsetTop) {
+    if (prevRect.top <= (container ? containerOffsetTop : containerOffsetTop + scrollMarginTop)) {
       if (container) {
         container.scrollTop = currentIndex - 1 < 1 ? 0 : prevBlock.offsetTop;
       } else {
         if (document.scrollingElement) {
-          const editorScrollTop = (editorRef.current?.parentElement?.offsetTop ?? 0) - 30;
-          document.scrollingElement.scrollTop = currentIndex - 1 < 1 ? editorScrollTop : prevBlock.offsetTop;
+          let editorScrollTop = document.scrollingElement.scrollTop + prevRect.top - scrollMarginTop;
+          if (currentIndex - 1 < 1) {
+            editorScrollTop -= 30;
+          }
+          document.scrollingElement.scrollTop = editorScrollTop;
         }
       }
       prevRect = prevBlock.getBoundingClientRect();
@@ -170,13 +176,16 @@ export function useEditor({
     let nextRect = nextBlock.getBoundingClientRect();
     const container = getScrollContainer(scrollContainer);
     const scrollHeight = container?.clientHeight ?? window.innerHeight;
-    if (nextRect.top + nextRect.height >= scrollHeight) {
+    if (nextRect.top + nextRect.height >= (container ? scrollHeight : scrollHeight - scrollMarginBottom)) {
       if (container) {
-        container.scrollTop = nextBlock.offsetTop - container.clientHeight + 100;
+        container.scrollTop = nextBlock.offsetTop - container.clientHeight + scrollMarginBottom;
       } else {
         if (document.scrollingElement) {
-          document.scrollingElement.scrollTop = nextBlock.offsetTop - window.innerHeight + 50;
+          const nextTop = document.scrollingElement.scrollTop + nextRect.top;
+          const p = nextTop - window.innerHeight + scrollMarginBottom;
+          document.scrollingElement.scrollTop = p;
         }
+        //nextBlock.scrollIntoView({ behavior: 'auto', block: 'center' });
       }
       nextRect = nextBlock.getBoundingClientRect();
     }

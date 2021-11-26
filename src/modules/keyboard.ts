@@ -287,7 +287,7 @@ export class KeyBoardModule implements Module {
 
   private _handleBackspace(caretPosition: CaretPosition, editor: EditorController) {
     const block = editor.getBlock(caretPosition.blockId);
-    const blocks = this.editor.getBlocks();
+    const blocks = editor.getBlocks();
     const blockIndex = blocks.findIndex((v) => v.id === caretPosition.blockId);
     const textLength = editor.getBlockLength(caretPosition.blockId);
     let deletedContents;
@@ -296,12 +296,12 @@ export class KeyBoardModule implements Module {
       if (!block) return;
       // Ignored for null characters
       if (textLength === 0) {
-        this.editor.getModule('editor').deleteBlock();
+        editor.getModule('editor').deleteBlock();
         return;
       }
       if (caretPosition.index < 1) {
         if (blockIndex < 1) return;
-        this.editor.getModule('editor').mergeBlock(blocks[blockIndex - 1].id, blocks[blockIndex].id);
+        editor.getModule('editor').mergeBlock(blocks[blockIndex - 1].id, blocks[blockIndex].id);
         return;
       }
 
@@ -316,6 +316,9 @@ export class KeyBoardModule implements Module {
     editor.updateBlock({ ...block, contents: deletedContents });
     editor.blur();
     editor.render([block.id]);
-    setTimeout(() => editor.setCaretPosition({ blockId: block.id, index: caretIndex }), 10);
+    setTimeout(() => {
+      editor.setCaretPosition({ blockId: block.id, index: caretIndex });
+      editor.updateCaretRect();
+    }, 10);
   }
 }

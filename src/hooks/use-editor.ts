@@ -409,9 +409,20 @@ export function useEditor({
       updateBlock({ ...block, contents });
       if (affected) {
         render([blockId]);
-        let caretIndex = lastCaretPositionRef.current?.index ?? 0;
+        let newCaretPosition = lastCaretPositionRef.current;
+        if (!newCaretPosition) {
+          if (!lastCaretRectRef.current) return;
+          const range = caretRangeFromPoint(lastCaretRectRef.current.x, lastCaretRectRef.current.y);
+          const selection = document.getSelection();
+          if (!selection || !range) return;
+          selection.setBaseAndExtent(range.startContainer, range.startOffset, range.startContainer, range.startOffset);
+          const nativeRange = getNativeRange();
+          if (!nativeRange) return;
+          newCaretPosition = normalizeRange(nativeRange);
+        }
+        let caretIndex = newCaretPosition?.index ?? 0;
         caretIndex += affectedLength;
-        setCaretPosition({ ...lastCaretPositionRef.current, index: caretIndex >= 0 ? caretIndex : 0 });
+        setCaretPosition({ ...newCaretPosition, index: caretIndex >= 0 ? caretIndex : 0 });
       }
       setTimeout(() => updateCaretRect(), 10);
     }, 10);
@@ -472,7 +483,6 @@ export function useEditor({
     const shadowIndex = shadowBlocksRef.current.findIndex((v) => v.id === shadowBlock.id);
     if (shadowIndex === -1) return;
     const diff = json0diff(shadowBlocksRef.current[shadowIndex], shadowBlock, DiffMatchPatch);
-    console.log(JSON.stringify(diff));
     shadowBlocksRef.current = [
       ...shadowBlocksRef.current.slice(0, shadowIndex),
       {

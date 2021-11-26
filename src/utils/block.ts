@@ -52,15 +52,22 @@ export function getInlineContents(block: string | HTMLElement): {
   let affected = false;
   if (!element) return { contents: [], affected, affectedLength };
 
-  const contents: Inline[] = Array.from(element.children as HTMLCollectionOf<HTMLElement>).reduce(
+  const contents: Inline[] = Array.from(element.childNodes as NodeListOf<HTMLElement | Text>).reduce(
     (r: Inline[], inline, currentIndex): Inline[] => {
+      if (inline instanceof Text) {
+        element.removeChild(inline);
+        if (!inline?.textContent) return r;
+        affected = true;
+        affectedLength += inline.length;
+        return [...r, createInline('TEXT', inline.textContent)];
+      }
       const format = inline.dataset.format?.replace(/^inline\//, '').toUpperCase();
       if (!format || !inline.dataset.inlineId) return r;
       if (inline.innerText.match(/\uFEFF$/i)) {
         affected = true;
       }
       if (inline.innerText.match(/^\uFEFF/i)) {
-        affectedLength = -1;
+        affectedLength -= 1;
         affected = true;
       }
 

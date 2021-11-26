@@ -13,7 +13,19 @@ interface InlineContentProps {
   formats: Formats;
 }
 
-const InlineContent = styled.span<InlineContentProps>`
+const Text = styled.span<InlineContentProps>`
+  ${({ attributes, formats }) => {
+    return Object.keys(attributes).map((key: string) => {
+      const styleFormat = `style/${key}`;
+      if (attributes[key] && formats[styleFormat]) {
+        return formats[styleFormat];
+      }
+      return;
+    });
+  }}
+`;
+
+const Link = styled.a<InlineContentProps>`
   ${({ attributes, formats }) => {
     return Object.keys(attributes).map((key: string) => {
       const styleFormat = `style/${key}`;
@@ -31,11 +43,19 @@ export const InlineText = ({ inline, formats, ...props }: InlineTextProps) => {
   }, [inline]);
 
   return (
-    <InlineContent
-      dangerouslySetInnerHTML={memoInnerHTML}
-      formats={formats}
-      attributes={inline.attributes}
-      {...props}
-    />
+    <>
+      {inline.attributes['link'] ? (
+        <Link
+          href={inline.attributes['link']}
+          target="_blank"
+          dangerouslySetInnerHTML={memoInnerHTML}
+          formats={formats}
+          attributes={inline.attributes}
+          {...props}
+        />
+      ) : (
+        <Text dangerouslySetInnerHTML={memoInnerHTML} formats={formats} attributes={inline.attributes} {...props} />
+      )}
+    </>
   );
 };

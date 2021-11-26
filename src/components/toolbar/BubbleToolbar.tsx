@@ -82,6 +82,14 @@ export const BubbleToolbar = React.memo(({ editor, scrollContainer, ...props }: 
     [formats],
   );
 
+  const handleLink = React.useCallback(
+    (event: React.MouseEvent) => {
+      event.preventDefault();
+      editor.getModule('toolbar').formatInline({ link: 'https://google.com' });
+    },
+    [formats],
+  );
+
   const handleHeader1 = React.useCallback(
     (event: React.MouseEvent) => {
       event.preventDefault();
@@ -139,6 +147,9 @@ export const BubbleToolbar = React.memo(({ editor, scrollContainer, ...props }: 
           </Button>
           <Button href="#" onClick={handleStrike} active={!!formats?.strike}>
             S
+          </Button>
+          <Button href="#" onClick={handleLink} active={!!formats?.link}>
+            L
           </Button>
         </Container>
       )}

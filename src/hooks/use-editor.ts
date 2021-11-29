@@ -483,6 +483,7 @@ export function useEditor({
     const shadowIndex = shadowBlocksRef.current.findIndex((v) => v.id === shadowBlock.id);
     if (shadowIndex === -1) return;
     const diff = json0diff(shadowBlocksRef.current[shadowIndex], shadowBlock, DiffMatchPatch);
+    console.log(JSON.stringify(diff));
     shadowBlocksRef.current = [
       ...shadowBlocksRef.current.slice(0, shadowIndex),
       {

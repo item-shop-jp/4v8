@@ -17,6 +17,7 @@ export const EditorEvents = {
   EVENT_EDITOR_CREATE: 'event:editor-create',
   EVENT_BLOCK_UPDATE: 'event:block-update',
   EVENT_BLOCK_RERENDER: 'event:block-rerender',
+  EVENT_BLOCK_SELECTED: 'event:block-selected',
   EVENT_SELECTION_CHANGE: 'event:selection-change',
   EVENT_LOG_INFO: 'event:log-info',
   EVENT_LOG_WARNING: 'event:log-warning',

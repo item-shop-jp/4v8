@@ -131,6 +131,11 @@ export const Editor: React.VFC<Props> = React.memo(
           setBlocks(editor.getBlocks());
         }),
       );
+      subs.add(
+        eventEmitter.on(EditorEvents.EVENT_BLOCK_SELECTED).subscribe((blockIds) => {
+          console.log(blockIds);
+        }),
+      );
       editor.render();
 
       return () => {

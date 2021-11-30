@@ -20,17 +20,19 @@ export class SelectorModule implements Module {
   private editor;
   private position: Position = { start: null, end: null };
   private enabled = false;
+  private mousePressed = false;
 
-  mouseMove = throttle(200, (e: MouseEvent) => {
-    if (!this.enabled) return;
+  mouseMove = throttle(100, (e: MouseEvent) => {
+    if (!this.mousePressed) return;
     const blocks = this.editor.getBlocks();
     const startIndex = blocks.findIndex((v) => v.id === this.position.start);
     const [blockId] = getBlockId(e.target as HTMLElement);
+    let blockIds = [];
     if (!blockId) {
       const startEl = getBlockElementById(blocks[startIndex].id);
       const startTop = startEl?.getBoundingClientRect()?.top ?? 0;
       const isUpward = startTop > e.clientY;
-      let blockIds = [];
+
       if (isUpward) {
         for (let i = startIndex; i >= 0; i--) {
           const blockEl = getBlockElementById(blocks[i].id);
@@ -53,19 +55,23 @@ export class SelectorModule implements Module {
           }
         }
       }
-
-      this.sendBlockSelectedEvent(blockIds);
-      return;
+    } else {
+      this.position.end = blockId;
+      const endIndex = blocks.findIndex((v) => v.id === this.position.end);
+      if (startIndex > endIndex) {
+        blockIds = blocks.slice(endIndex, startIndex + 1).map((v) => v.id);
+      } else {
+        blockIds = blocks.slice(startIndex, endIndex + 1).map((v) => v.id);
+      }
     }
 
-    this.position.end = blockId;
+    if (!this.enabled && blockIds.length > 1) {
+      this.enabled = true;
+      this.editor.blur();
+    }
 
-    const endIndex = blocks.findIndex((v) => v.id === this.position.end);
-
-    if (startIndex > endIndex) {
-      this.sendBlockSelectedEvent(blocks.slice(endIndex, startIndex + 1).map((v) => v.id));
-    } else {
-      this.sendBlockSelectedEvent(blocks.slice(startIndex, endIndex + 1).map((v) => v.id));
+    if (this.enabled) {
+      this.sendBlockSelectedEvent(blockIds);
     }
   });
 
@@ -89,16 +95,18 @@ export class SelectorModule implements Module {
   mouseDown(e: MouseEvent) {
     const [blockId] = getBlockId(e.target as HTMLElement);
     if (!blockId) return;
-    this.enabled = true;
+    this.mousePressed = true;
     this.position.start = blockId;
   }
 
   mouseUp(e: MouseEvent) {
-    this.enabled = false;
+    this.mousePressed = false;
   }
 
   reset() {
+    this.mousePressed = false;
     this.enabled = false;
     this.position = { start: null, end: null };
+    this.sendBlockSelectedEvent([]);
   }
 }

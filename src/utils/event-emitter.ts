@@ -17,7 +17,7 @@ export class EventEmitter {
     this._eventBus.next({ key, data });
   }
 
-  on<T>(key: string): Observable<T> {
+  on<T = any>(key: string): Observable<T> {
     return this._eventBus.asObservable().pipe(
       filter((event) => event.key === key),
       map((event) => event.data),

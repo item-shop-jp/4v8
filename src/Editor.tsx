@@ -60,6 +60,7 @@ export const Editor: React.VFC<Props> = React.memo(
       'style/strike': Strike,
     });
     const [blocks, setBlocks] = React.useState<Block[]>([]);
+    const [selectedIds, setSelectedIds] = React.useState<string[]>([]);
 
     const handleKeyDown = React.useCallback(
       (event: React.KeyboardEvent) => {
@@ -132,8 +133,8 @@ export const Editor: React.VFC<Props> = React.memo(
         }),
       );
       subs.add(
-        eventEmitter.on(EditorEvents.EVENT_BLOCK_SELECTED).subscribe((blockIds) => {
-          console.log(blockIds);
+        eventEmitter.on(EditorEvents.EVENT_BLOCK_SELECTED).subscribe((blockIds: string[]) => {
+          setSelectedIds(blockIds);
         }),
       );
       editor.render();
@@ -177,9 +178,9 @@ export const Editor: React.VFC<Props> = React.memo(
 
     const memoBlocks = React.useMemo(() => {
       return blocks.map((v) => {
-        return { id: v.id, type: v.type };
+        return { id: v.id, type: v.type, selected: selectedIds.includes(v.id) };
       });
-    }, [blocks.length]);
+    }, [blocks.length, selectedIds]);
 
     const memoEditor = React.useMemo(() => {
       return editor;
@@ -204,6 +205,7 @@ export const Editor: React.VFC<Props> = React.memo(
                 editor={memoEditor}
                 blockId={block.id}
                 readOnly={readOnly}
+                selected={block.selected}
                 onClick={handleClick}
                 onKeyDown={handleKeyDown}
                 onBeforeInput={handleInput}

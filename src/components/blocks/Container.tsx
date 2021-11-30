@@ -8,6 +8,7 @@ import { InlineContainer } from '../inlines/Container';
 interface BlockProps {
   blockId: string;
   readOnly: boolean;
+  selected: boolean;
   formats: Formats;
   editor: EditorController;
   onClick: (e: React.MouseEvent) => void;
@@ -18,7 +19,7 @@ interface BlockProps {
 }
 
 export const BlockContainer: React.VFC<BlockProps> = React.memo(
-  ({ blockId, editor, readOnly = false, formats, ...props }) => {
+  ({ blockId, editor, selected, readOnly = false, formats, ...props }) => {
     const [blockFormat, setBlockFormat] = React.useState<string>();
     const [Container, setContainer] = React.useState<React.FC<any>>(formats['block/paragraph']);
     const block = useBlockRenderer({ blockId, editor });
@@ -51,6 +52,7 @@ export const BlockContainer: React.VFC<BlockProps> = React.memo(
         formats={formats}
         attributes={block?.attributes}
         contents={memoContents}
+        selected={selected}
         {...props}
       />
     );

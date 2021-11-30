@@ -7,10 +7,9 @@ import { Bold, Strike, Underline } from './components/styles';
 import { GlobalToolbar, BubbleToolbar } from './components/toolbar';
 import { useEditor } from './hooks/use-editor';
 import { useEventEmitter } from './hooks/use-event-emitter';
-import { EditorModule, KeyBoardModule, LoggerModule, ToolbarModule } from './modules';
-import { getBlockElementById } from './utils/block';
+import { EditorModule, KeyBoardModule, LoggerModule, ToolbarModule, SelectorModule } from './modules';
+import { getBlockElementById, getBlockId } from './utils/block';
 import { EditorEvents } from './constants';
-import { ModuleOptions } from './types/module';
 import { Formats } from './types/format';
 import { Block } from './types/block';
 import { Settings } from './types/editor';
@@ -101,6 +100,7 @@ export const Editor: React.VFC<Props> = React.memo(
 
     const handleClick = React.useCallback(
       (e: React.MouseEvent) => {
+        editor.getModule('selector').reset();
         editor.updateCaretRect();
       },
       [editor],
@@ -122,6 +122,7 @@ export const Editor: React.VFC<Props> = React.memo(
           { name: 'editor', module: EditorModule },
           { name: 'keyboard', module: KeyBoardModule },
           { name: 'toolbar', module: ToolbarModule },
+          { name: 'selector', module: SelectorModule },
         ],
         settings?.modules ?? {},
       );
@@ -135,6 +136,30 @@ export const Editor: React.VFC<Props> = React.memo(
       return () => {
         editor.removeAllModules();
         subs.unsubscribe();
+      };
+    }, []);
+
+    React.useEffect(() => {
+      const handleMouseDown = (e: MouseEvent) => {
+        editor.getModule('selector').mouseDown(e);
+      };
+
+      const handleMouseMove = (e: MouseEvent) => {
+        editor.getModule('selector').mouseMove(e);
+      };
+
+      const handleMouseUp = (e: MouseEvent) => {
+        editor.getModule('selector').mouseUp(e);
+      };
+
+      document.addEventListener('mousedown', handleMouseDown);
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+
+      return () => {
+        document.removeEventListener('mousedown', handleMouseDown);
+        document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('mouseup', handleMouseUp);
       };
     }, []);
 

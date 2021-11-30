@@ -16,7 +16,7 @@ import { InlineAttributes } from '../types/inline';
 import { Settings } from '../types/editor';
 import { Shadow } from '../types/shadow';
 import { EditorEvents } from '../constants';
-import { EditorModule, KeyBoardModule, ToolbarModule } from '../modules';
+import { EditorModule, KeyBoardModule, ToolbarModule, SelectorModule } from '../modules';
 
 interface Props {
   settings: Settings;
@@ -71,6 +71,7 @@ export interface EditorController {
   getModule(name: 'editor'): EditorModule;
   getModule(name: 'keyboard'): KeyBoardModule;
   getModule(name: 'toolbar'): ToolbarModule;
+  getModule(name: 'selector'): SelectorModule;
   getModule<T = any>(name: string): T | null;
   removeAllModules: () => void;
   getEventEmitter: () => EventEmitter;

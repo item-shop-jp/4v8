@@ -21,6 +21,7 @@ export class SelectorModule implements Module {
   private position: Position = { start: null, end: null };
   private enabled = false;
   private mousePressed = false;
+  private changed = false;
 
   mouseMove = throttle(100, (e: MouseEvent) => {
     if (!this.mousePressed) return;
@@ -67,6 +68,7 @@ export class SelectorModule implements Module {
 
     if (!this.enabled && blockIds.length > 1) {
       this.enabled = true;
+      this.changed = true;
       this.editor.blur();
     }
 
@@ -93,6 +95,7 @@ export class SelectorModule implements Module {
   }
 
   mouseDown(e: MouseEvent) {
+    this.reset();
     const [blockId] = getBlockId(e.target as HTMLElement);
     if (!blockId) return;
     this.mousePressed = true;
@@ -101,9 +104,14 @@ export class SelectorModule implements Module {
 
   mouseUp(e: MouseEvent) {
     this.mousePressed = false;
+
+    setTimeout(() => {
+      this.changed = false;
+    });
   }
 
   reset() {
+    if (this.changed) return;
     this.mousePressed = false;
     this.enabled = false;
     this.position = { start: null, end: null };

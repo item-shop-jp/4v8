@@ -101,7 +101,6 @@ export const Editor: React.VFC<Props> = React.memo(
 
     const handleClick = React.useCallback(
       (e: React.MouseEvent) => {
-        editor.getModule('selector').reset();
         editor.updateCaretRect();
       },
       [editor],
@@ -158,14 +157,23 @@ export const Editor: React.VFC<Props> = React.memo(
         editor.getModule('selector').mouseUp(e);
       };
 
+      const handleOutsideClick = (e: MouseEvent) => {
+        if (!editorRef.current || editorRef.current.contains(e.target as Node)) {
+          return;
+        }
+        editor.getModule('selector').reset();
+      };
+
       document.addEventListener('mousedown', handleMouseDown);
       document.addEventListener('mousemove', handleMouseMove);
       document.addEventListener('mouseup', handleMouseUp);
+      document.addEventListener('click', handleOutsideClick);
 
       return () => {
         document.removeEventListener('mousedown', handleMouseDown);
         document.removeEventListener('mousemove', handleMouseMove);
         document.removeEventListener('mouseup', handleMouseUp);
+        document.removeEventListener('click', handleOutsideClick);
       };
     }, []);
 

@@ -2,6 +2,8 @@ import * as React from 'react';
 import { Subscription } from 'rxjs';
 import { debounce } from 'throttle-debounce';
 import * as json0diff from 'json0-ot-diff';
+import * as json1 from 'ot-json1';
+import * as textUnicode from 'ot-text-unicode';
 import DiffMatchPatch from 'diff-match-patch';
 import { EventEmitter } from '../utils/event-emitter';
 import * as blockUtils from '../utils/block';
@@ -493,7 +495,7 @@ export function useEditor({
     };
     const shadowIndex = shadowBlocksRef.current.findIndex((v) => v.id === shadowBlock.id);
     if (shadowIndex === -1) return;
-    const diff = json0diff(shadowBlocksRef.current[shadowIndex], shadowBlock, DiffMatchPatch);
+    const diff = json0diff(shadowBlocksRef.current[shadowIndex], shadowBlock, DiffMatchPatch, json1, textUnicode);
     console.log(JSON.stringify(diff));
     shadowBlocksRef.current = [
       ...shadowBlocksRef.current.slice(0, shadowIndex),

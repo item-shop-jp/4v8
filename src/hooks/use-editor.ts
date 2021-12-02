@@ -43,7 +43,7 @@ export interface EditorController {
   createBlock: (appendBlock: Block, prevBlockId?: string) => void;
   updateBlock: (block: Block) => void;
   deleteBlock: (blockId: string) => void;
-  sync: () => void;
+  sync: (blockId?: string, blockElement?: HTMLElement) => void;
   setCaretPosition: (caretPosition: Partial<CaretPosition>) => void;
   getCaretPosition: () => CaretPosition | null;
   getNativeRange: () => Range | null;
@@ -397,14 +397,24 @@ export function useEditor({
     setModules({});
   }, []);
 
-  const sync = React.useCallback(() => {
-    const nativeRange = getNativeRange();
-    if (!nativeRange) return;
-    const [blockId, blockElement] = blockUtils.getBlockId(nativeRange.startContainer as HTMLElement);
+  const sync = React.useCallback((blockId?: string, blockElement?: HTMLElement) => {
+    if (!blockId) {
+      const nativeRange = getNativeRange();
+      if (!nativeRange) return;
+      [blockId, blockElement] = blockUtils.getBlockId(nativeRange.startContainer as HTMLElement);
+    }
+    if (!blockElement && blockId) {
+      const el = blockUtils.getBlockElementById(blockId);
+      if (el) {
+        blockElement = el;
+      }
+    }
+
     const block = blocksRef.current.find((v) => v.id === blockId);
     const composing = getModule('keyboard').composing;
-    if (!blockId || !block || !blockElement || composing) return;
+
     setTimeout(() => {
+      if (!blockId || !block || !blockElement || composing) return;
       const { contents, affected, affectedLength } = blockUtils.getInlineContents(blockElement);
       updateCaretPosition();
       updateBlock({ ...block, contents });

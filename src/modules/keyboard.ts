@@ -4,7 +4,7 @@ import { Module } from '../types/module';
 import { EventEmitter } from '../utils/event-emitter';
 import { KeyCodes, EditorEvents } from '../constants';
 import { EditorController } from '../hooks/use-editor';
-import { deleteInlineContents } from '../utils/block';
+import { deleteInlineContents, getBlockId } from '../utils/block';
 import { CaretPosition } from '../types/caret';
 import { EditorModule } from './editor';
 
@@ -32,7 +32,9 @@ export class KeyBoardModule implements Module {
   private eventEmitter;
   private editor;
   private bindings: KeyBindingProps[];
-  private sync = debounce(100, () => this.editor.sync());
+  private sync = debounce(100, (blockId?: string, blockElement?: HTMLElement) =>
+    this.editor.sync(blockId, blockElement),
+  );
 
   constructor({ eventEmitter, editor }: Props) {
     this.eventEmitter = eventEmitter;
@@ -122,14 +124,21 @@ export class KeyBoardModule implements Module {
 
   onCompositionEnd(e: React.CompositionEvent) {
     this.composing = false;
-    this.sync();
+    const nativeRange = this.editor.getNativeRange();
+    const [blockId, blockElement] = getBlockId(nativeRange?.startContainer as HTMLElement);
+    if (!blockId || !blockElement) {
+      return;
+    }
+    this.sync(blockId, blockElement);
   }
 
   onInput(e: React.KeyboardEvent) {
-    if (this.composing) {
+    const nativeRange = this.editor.getNativeRange();
+    const [blockId, blockElement] = getBlockId(nativeRange?.startContainer as HTMLElement);
+    if (this.composing || !blockId || !blockElement) {
       return;
     }
-    this.sync();
+    this.sync(blockId, blockElement);
   }
 
   onKeyPress(e: React.KeyboardEvent) {}

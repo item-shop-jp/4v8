@@ -5,6 +5,7 @@ import * as json0diff from 'json0-ot-diff';
 import * as json1 from 'ot-json1';
 import * as textUnicode from 'ot-text-unicode';
 import DiffMatchPatch from 'diff-match-patch';
+import * as arrayDiff from 'fast-array-diff';
 import { EventEmitter } from '../utils/event-emitter';
 import * as blockUtils from '../utils/block';
 import { getInlineId } from '../utils/inline';
@@ -16,7 +17,6 @@ import { ModuleOptions } from '../types/module';
 import { Block } from '../types/block';
 import { InlineAttributes } from '../types/inline';
 import { Settings } from '../types/editor';
-import { Shadow } from '../types/shadow';
 import { EditorEvents } from '../constants';
 import { EditorModule, KeyBoardModule, ToolbarModule, SelectorModule } from '../modules';
 
@@ -39,7 +39,6 @@ export interface EditorController {
   getFormats: (blockId: string, index: number, length?: number) => InlineAttributes;
   formatText: (blockId: string, index: number, length: number, attributes: InlineAttributes) => void;
   getBlocks: () => Block[];
-  updateBlocks: (blocks: Block[]) => void;
   getBlock: (blockId: string) => Block | null;
   getBlockLength: (blockId: string) => number | null;
   createBlock: (appendBlock: Block, prevBlockId?: string) => void;
@@ -88,7 +87,6 @@ export function useEditor({
   const lastCaretPositionRef = React.useRef<CaretPosition | null>();
   const lastCaretRectRef = React.useRef<DOMRect | null>();
   const blocksRef = React.useRef<Block[]>([]);
-  const shadowBlocksRef = React.useRef<Shadow[]>([]);
   const modulesRef = React.useRef<any>({});
   const [modules, setModules] = React.useState<any>({});
 
@@ -452,58 +450,47 @@ export function useEditor({
 
   const updateBlocks = React.useCallback((blocks: Block[]) => {
     blocksRef.current = blocks;
-    const shadowBlocks = copyObject(blocks);
-    shadowBlocksRef.current = shadowBlocks.map((block) => {
-      return {
-        ...block,
-        contents: block.contents.map((content) => {
-          return {
-            attributes: content.attributes,
-            text: content.text,
-            type: content.type,
-            isEmbed: content.isEmbed,
-            data: content.data,
-          };
-        }),
-      };
-    });
+    console.log(blocks.length);
+    // const diff = arrayDiff.getPatch(shadowBlocksRef.current, shadowBlocks, (prev, next) => {
+    //   return prev.id === next.id;
+    // });
+    // console.log(diff);
   }, []);
 
   const updateBlock = React.useCallback((block: Block) => {
     const currentIndex = blocksRef.current.findIndex((v) => v.id === block.id);
     if (currentIndex === -1) return;
+    const contents = blockUtils.optimizeInlineContents(block.contents);
+    const prevContents = blocksRef.current[currentIndex].contents.map((content) => {
+      return {
+        attributes: content.attributes,
+        text: content.text,
+        type: content.type,
+        isEmbed: content.isEmbed,
+        data: content.data,
+      };
+    });
+    const currentContents = contents.map((content) => {
+      return {
+        attributes: content.attributes,
+        text: content.text,
+        type: content.type,
+        isEmbed: content.isEmbed,
+        data: content.data,
+      };
+    });
+    const diff = json0diff(prevContents, currentContents, DiffMatchPatch, json1, textUnicode);
+    console.log(JSON.stringify(diff));
+    console.log('undo', JSON.stringify(json1.type.invert(diff)));
+
     blocksRef.current = [
       ...blocksRef.current.slice(0, currentIndex),
       {
         ...blocksRef.current[currentIndex],
-        ...{ ...block, contents: blockUtils.optimizeInlineContents(block.contents) },
+        ...block,
+        contents,
       },
       ...blocksRef.current.slice(currentIndex + 1),
-    ];
-    const copyBlock = copyObject(blocksRef.current[currentIndex]);
-    const shadowBlock = {
-      ...copyBlock,
-      contents: copyBlock.contents.map((content) => {
-        return {
-          attributes: content.attributes,
-          text: content.text,
-          type: content.type,
-          isEmbed: content.isEmbed,
-          data: content.data,
-        };
-      }),
-    };
-    const shadowIndex = shadowBlocksRef.current.findIndex((v) => v.id === shadowBlock.id);
-    if (shadowIndex === -1) return;
-    const diff = json0diff(shadowBlocksRef.current[shadowIndex], shadowBlock, DiffMatchPatch, json1, textUnicode);
-    console.log(JSON.stringify(diff));
-    shadowBlocksRef.current = [
-      ...shadowBlocksRef.current.slice(0, shadowIndex),
-      {
-        ...shadowBlocksRef.current[shadowIndex],
-        ...shadowBlock,
-      },
-      ...shadowBlocksRef.current.slice(shadowIndex + 1),
     ];
   }, []);
 
@@ -522,7 +509,6 @@ export function useEditor({
       getFormats,
       formatText,
       getBlocks,
-      updateBlocks,
       getBlock,
       getBlockLength,
       createBlock,

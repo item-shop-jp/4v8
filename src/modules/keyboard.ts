@@ -3,7 +3,7 @@ import { debounce } from 'throttle-debounce';
 import { Module } from '../types/module';
 import { EventEmitter } from '../utils/event-emitter';
 import { KeyCodes, EditorEvents } from '../constants';
-import { EditorController } from '../hooks/use-editor';
+import { EditorController } from '../types/editor';
 import { deleteInlineContents, getBlockId } from '../utils/block';
 import { CaretPosition } from '../types/caret';
 import { EditorModule } from './editor';

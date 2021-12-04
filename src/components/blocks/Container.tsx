@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled, { keyframes } from 'styled-components';
 import { Formats } from '../../types/format';
-import { EditorController } from '../../hooks/use-editor';
+import { EditorController } from '../../types/editor';
 import { useBlockRenderer } from '../../hooks/use-block-renderer';
 import { InlineContainer } from '../inlines/Container';
 

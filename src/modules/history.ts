@@ -1,7 +1,7 @@
 import { throttle } from 'throttle-debounce';
 import { Module } from '../types/module';
 import { EventEmitter } from '../utils/event-emitter';
-import { EditorController } from '../hooks/use-editor';
+import { EditorController } from '../types/editor';
 import { getBlockId, getBlockElementById } from '../utils/block';
 import { EditorEvents } from '../constants';
 

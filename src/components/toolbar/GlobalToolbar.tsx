@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import styled from 'styled-components';
 import { Subscription } from 'rxjs';
 import { EditorEvents } from '../../constants';
-import { EditorController } from '../../hooks/use-editor';
+import { EditorController } from '../../types/editor';
 import { InlineAttributes } from '../../types/inline';
 
 export interface GlobalToolbarProps {

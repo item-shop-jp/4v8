@@ -1,6 +1,6 @@
 import { Module } from '../types/module';
 import { EventEmitter } from '../utils/event-emitter';
-import { EditorController } from '../hooks/use-editor';
+import { EditorController } from '../types/editor';
 import { BlockType, BlockAttributes } from '../types/block';
 import { InlineAttributes } from '../types/inline';
 

@@ -2,7 +2,7 @@ import { Subscription } from 'rxjs';
 import { Module } from '../types/module';
 import { EventEmitter } from '../utils/event-emitter';
 import { EditorEvents, LogLevels } from '../constants';
-import { EditorController } from '../hooks/use-editor';
+import { EditorController } from '../types/editor';
 
 interface Props {
   eventEmitter: EventEmitter;

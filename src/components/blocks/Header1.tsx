@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { EditorController } from '../../hooks/use-editor';
+import { EditorController } from '../../types/editor';
 import { Formats } from '../../types/format';
 import { Inline } from '../../types/inline';
 import { BlockAttributes } from '../../types/block';

@@ -3,7 +3,7 @@ import { EventEmitter } from '../utils/event-emitter';
 import { createBlock, splitInlineContents, deleteInlineContents, getBlockElementById } from '../utils/block';
 import { createInline } from '../utils/inline';
 import { Module } from '../types/module';
-import { EditorController } from '../hooks/use-editor';
+import { EditorController } from '../types/editor';
 
 interface Props {
   eventEmitter: EventEmitter;

@@ -5,18 +5,16 @@ import * as json0diff from 'json0-ot-diff';
 import * as json1 from 'ot-json1';
 import * as textUnicode from 'ot-text-unicode';
 import DiffMatchPatch from 'diff-match-patch';
-import * as arrayDiff from 'fast-array-diff';
 import { EventEmitter } from '../utils/event-emitter';
 import * as blockUtils from '../utils/block';
 import { getInlineId } from '../utils/inline';
 import { caretRangeFromPoint } from '../utils/range';
-import { copyObject } from '../utils/object';
 import { getScrollContainer } from '../utils/dom';
 import { CaretPosition } from '../types/caret';
 import { ModuleOptions } from '../types/module';
 import { Block } from '../types/block';
 import { InlineAttributes } from '../types/inline';
-import { Settings } from '../types/editor';
+import { Settings, PositionParams, EditorController } from '../types/editor';
 import { EditorEvents } from '../constants';
 import { EditorModule, KeyBoardModule, ToolbarModule, SelectorModule } from '../modules';
 
@@ -24,58 +22,6 @@ interface Props {
   settings: Settings;
   eventEmitter: EventEmitter;
   scrollContainer?: HTMLElement | string;
-}
-
-interface PositionParams {
-  caretPosition?: CaretPosition;
-  index?: number;
-  length?: number;
-  margin?: number;
-}
-
-export interface EditorController {
-  focus: () => void;
-  blur: () => void;
-  getFormats: (blockId: string, index: number, length?: number) => InlineAttributes;
-  formatText: (blockId: string, index: number, length: number, attributes: InlineAttributes) => void;
-  getBlocks: () => Block[];
-  getBlock: (blockId: string) => Block | null;
-  getBlockLength: (blockId: string) => number | null;
-  createBlock: (appendBlock: Block, prevBlockId?: string) => void;
-  updateBlock: (block: Block) => void;
-  deleteBlock: (blockId: string) => void;
-  sync: (blockId?: string, blockElement?: HTMLElement) => void;
-  setCaretPosition: (caretPosition: Partial<CaretPosition>) => void;
-  getCaretPosition: () => CaretPosition | null;
-  getNativeRange: () => Range | null;
-  updateCaretPosition: (caretPosition?: CaretPosition) => CaretPosition | null;
-  updateCaretRect: (rect?: DOMRect) => DOMRect | null;
-  prev: (params?: PositionParams) => boolean;
-  next: (params?: PositionParams) => boolean;
-  render: (affectedIds?: string[]) => void;
-  addModule: (
-    name: string,
-    module: {
-      new (params: { eventEmitter: EventEmitter; options: any }): any;
-    },
-    options?: any,
-  ) => void;
-  addModules: (
-    modules: {
-      name: string;
-      module: {
-        new (params: { eventEmitter: EventEmitter; editor: EditorController; options: any }): any;
-      };
-    }[],
-    options?: ModuleOptions,
-  ) => void;
-  getModule(name: 'editor'): EditorModule;
-  getModule(name: 'keyboard'): KeyBoardModule;
-  getModule(name: 'toolbar'): ToolbarModule;
-  getModule(name: 'selector'): SelectorModule;
-  getModule<T = any>(name: string): T | null;
-  removeAllModules: () => void;
-  getEventEmitter: () => EventEmitter;
 }
 
 export function useEditor({
@@ -450,11 +396,6 @@ export function useEditor({
 
   const updateBlocks = React.useCallback((blocks: Block[]) => {
     blocksRef.current = blocks;
-    console.log(blocks.length);
-    // const diff = arrayDiff.getPatch(shadowBlocksRef.current, shadowBlocks, (prev, next) => {
-    //   return prev.id === next.id;
-    // });
-    // console.log(diff);
   }, []);
 
   const updateBlock = React.useCallback((block: Block) => {

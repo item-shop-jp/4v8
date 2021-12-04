@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled, { css } from 'styled-components';
 import { Formats } from '../../types/format';
-import { EditorController } from '../../hooks/use-editor';
+import { EditorController } from '../../types/editor';
 import { Inline } from '../../types/inline';
 
 export interface ParagraphProps {

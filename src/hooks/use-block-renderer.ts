@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import isEqual from 'lodash.isequal';
-import { EditorController } from '../hooks/use-editor';
+import { EditorController } from '../types/editor';
 import { Block } from '../types/block';
 import { EditorEvents } from '../constants';
 import { copyObject } from '../utils/object';

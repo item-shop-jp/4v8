@@ -25,10 +25,11 @@ const Container = styled.div`
   border: 1px solid #ccc;
   border-radius: 12px;
   margin: 12px;
-  padding: 12px;
+  padding: 12px 0;
   min-height: 300px;
   display: flex;
   flex-direction: column;
+  cursor: text;
 `;
 const Inner = styled.div`
   flex-shrink: 0;
@@ -150,7 +151,7 @@ export const Editor: React.VFC<Props> = React.memo(
       };
 
       const handleMouseMove = (e: MouseEvent) => {
-        editor.getModule('selector').mouseMove(e);
+        editor.getModule('selector')?.mouseMove(e);
       };
 
       const handleMouseUp = (e: MouseEvent) => {

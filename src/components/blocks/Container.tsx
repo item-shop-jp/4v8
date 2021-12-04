@@ -1,5 +1,5 @@
 import * as React from 'react';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { Formats } from '../../types/format';
 import { EditorController } from '../../hooks/use-editor';
 import { useBlockRenderer } from '../../hooks/use-block-renderer';
@@ -17,6 +17,28 @@ interface BlockProps {
   onCompositionEnd: (e: React.CompositionEvent) => void;
   onBeforeInput: (e: React.KeyboardEvent) => void;
 }
+
+const FadeIn = keyframes`
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+`;
+
+const Outer = styled.div`
+  position: relative;
+`;
+
+const Overlay = styled.div`
+  position: absolute;
+  inset: 0;
+  opacity: 1;
+  pointer-events: none;
+  background-color: rgba(46, 170, 220, 0.2);
+  animation: ${FadeIn} 0.1s ease;
+`;
 
 export const BlockContainer: React.VFC<BlockProps> = React.memo(
   ({ blockId, editor, selected, readOnly = false, formats, ...props }) => {
@@ -42,19 +64,22 @@ export const BlockContainer: React.VFC<BlockProps> = React.memo(
     }, [block?.type]);
 
     return (
-      <Container
-        suppressContentEditableWarning
-        className="notranslate"
-        contentEditable={!readOnly}
-        blockId={blockId}
-        data-block-id={blockId}
-        data-format={blockFormat}
-        formats={formats}
-        attributes={block?.attributes}
-        contents={memoContents}
-        selected={selected}
-        {...props}
-      />
+      <Outer>
+        <Container
+          suppressContentEditableWarning
+          className="notranslate"
+          contentEditable={!readOnly}
+          blockId={blockId}
+          data-block-id={blockId}
+          data-format={blockFormat}
+          formats={formats}
+          attributes={block?.attributes}
+          contents={memoContents}
+          selected={selected}
+          {...props}
+        />
+        {selected && <Overlay />}
+      </Outer>
     );
   },
 );

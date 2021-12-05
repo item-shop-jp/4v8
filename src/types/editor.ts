@@ -35,7 +35,6 @@ export interface EditorController {
   setCaretPosition: (caretPosition: Partial<CaretPosition>) => void;
   getCaretPosition: () => CaretPosition | null;
   getNativeRange: () => Range | null;
-  updateCaretPosition: (caretPosition?: CaretPosition) => CaretPosition | null;
   updateCaretRect: (rect?: DOMRect) => DOMRect | null;
   prev: (params?: PositionParams) => boolean;
   next: (params?: PositionParams) => boolean;

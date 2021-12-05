@@ -54,7 +54,7 @@ export function useEditor({
       });
     }
 
-    updateCaretPosition();
+    updateCaretPositionRef();
   }, []);
 
   const blur = React.useCallback(() => {
@@ -112,7 +112,7 @@ export function useEditor({
     const newCaretPosition = normalizeRange(nativeRange);
     if (!newCaretPosition) return false;
 
-    updateCaretPosition();
+    updateCaretPositionRef();
     return true;
   }, []);
 
@@ -153,7 +153,7 @@ export function useEditor({
     const newCaretPosition = normalizeRange(nativeRange);
     if (!newCaretPosition) return false;
 
-    updateCaretPosition();
+    updateCaretPositionRef();
     return true;
   }, []);
 
@@ -198,7 +198,7 @@ export function useEditor({
     return normalizeRange(nativeRange);
   }, []);
 
-  const updateCaretPosition = React.useCallback((caretPosition?: CaretPosition) => {
+  const updateCaretPositionRef = React.useCallback((caretPosition?: CaretPosition) => {
     if (caretPosition) {
       lastCaretPositionRef.current = caretPosition;
     } else {
@@ -243,7 +243,7 @@ export function useEditor({
       range.setEnd(end.node, end.index);
       selection.removeAllRanges();
       selection.addRange(range);
-      updateCaretPosition();
+      updateCaretPositionRef();
     } catch (e) {
       eventEmitter.warning('Invalid Range', e);
     }
@@ -362,7 +362,7 @@ export function useEditor({
     setTimeout(() => {
       if (!blockId || !block || !blockElement || composing) return;
       const { contents, affected, affectedLength } = blockUtils.getInlineContents(blockElement);
-      updateCaretPosition();
+      updateCaretPositionRef();
       updateBlock({ ...block, contents });
       if (affected) {
         render([blockId]);
@@ -458,7 +458,6 @@ export function useEditor({
       sync,
       getCaretPosition,
       setCaretPosition,
-      updateCaretPosition,
       updateCaretRect,
       getNativeRange,
       prev,
@@ -491,7 +490,7 @@ export function useEditor({
   React.useEffect(() => {
     const debouncedSelectionChange = debounce(200, (e: Event) => {
       if (!editorRef.current) return;
-      updateCaretPosition();
+      updateCaretPositionRef();
       eventEmitter.emit(EditorEvents.EVENT_SELECTION_CHANGE, e);
     });
     document.addEventListener('selectionchange', debouncedSelectionChange);

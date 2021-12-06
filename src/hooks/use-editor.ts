@@ -15,8 +15,8 @@ import { ModuleOptions } from '../types/module';
 import { Block } from '../types/block';
 import { InlineAttributes } from '../types/inline';
 import { Settings, PositionParams, EditorController } from '../types/editor';
-import { EditorEvents } from '../constants';
-import { EditorModule, KeyBoardModule, ToolbarModule, SelectorModule } from '../modules';
+import { EditorEvents, HistoryType } from '../constants';
+import { EditorModule, KeyBoardModule, ToolbarModule, SelectorModule, HistoryModule } from '../modules';
 
 interface Props {
   settings: Settings;
@@ -329,7 +329,9 @@ export function useEditor({
   }, []);
 
   const getModule = React.useCallback(
-    <T = any>(name: string): T | EditorModule | KeyBoardModule | ToolbarModule | null => {
+    <T = any>(
+      name: string,
+    ): T | EditorModule | KeyBoardModule | ToolbarModule | SelectorModule | HistoryModule | null => {
       if (!modulesRef.current[name]) return null;
       return modulesRef.current[name];
     },
@@ -402,27 +404,37 @@ export function useEditor({
     const currentIndex = blocksRef.current.findIndex((v) => v.id === block.id);
     if (currentIndex === -1) return;
     const contents = blockUtils.optimizeInlineContents(block.contents);
-    const prevContents = blocksRef.current[currentIndex].contents.map((content) => {
-      return {
-        attributes: content.attributes,
-        text: content.text,
-        type: content.type,
-        isEmbed: content.isEmbed,
-        data: content.data,
-      };
+    const prevBlock = {
+      ...blocksRef.current[currentIndex],
+      contents: blocksRef.current[currentIndex].contents.map((content) => {
+        return {
+          attributes: content.attributes,
+          text: content.text,
+          type: content.type,
+          isEmbed: content.isEmbed,
+          data: content.data,
+        };
+      }),
+    };
+    const currentBlock = {
+      ...block,
+      contents: contents.map((content) => {
+        return {
+          attributes: content.attributes,
+          text: content.text,
+          type: content.type,
+          isEmbed: content.isEmbed,
+          data: content.data,
+        };
+      }),
+    };
+
+    const diff = json0diff(prevBlock, currentBlock, DiffMatchPatch, json1, textUnicode);
+    eventEmitter.emit(EditorEvents.EVENT_EDITOR_CHANGE, {
+      type: HistoryType.UPDATE_CONTENTS,
+      blockId: block.id,
+      ops: diff,
     });
-    const currentContents = contents.map((content) => {
-      return {
-        attributes: content.attributes,
-        text: content.text,
-        type: content.type,
-        isEmbed: content.isEmbed,
-        data: content.data,
-      };
-    });
-    const diff = json0diff(prevContents, currentContents, DiffMatchPatch, json1, textUnicode);
-    console.log(JSON.stringify(diff));
-    console.log('undo', JSON.stringify(json1.type.invert(diff)));
 
     blocksRef.current = [
       ...blocksRef.current.slice(0, currentIndex),

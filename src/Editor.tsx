@@ -7,7 +7,7 @@ import { Bold, Strike, Underline } from './components/styles';
 import { GlobalToolbar, BubbleToolbar } from './components/toolbar';
 import { useEditor } from './hooks/use-editor';
 import { useEventEmitter } from './hooks/use-event-emitter';
-import { EditorModule, KeyBoardModule, LoggerModule, ToolbarModule, SelectorModule } from './modules';
+import { EditorModule, KeyBoardModule, LoggerModule, ToolbarModule, SelectorModule, HistoryModule } from './modules';
 import { getBlockElementById, getBlockId } from './utils/block';
 import { EditorEvents } from './constants';
 import { Formats } from './types/format';
@@ -124,6 +124,7 @@ export const Editor: React.VFC<Props> = React.memo(
           { name: 'keyboard', module: KeyBoardModule },
           { name: 'toolbar', module: ToolbarModule },
           { name: 'selector', module: SelectorModule },
+          { name: 'history', module: HistoryModule },
         ],
         settings?.modules ?? {},
       );

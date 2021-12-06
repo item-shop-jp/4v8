@@ -24,6 +24,12 @@ export const EditorEvents = {
   EVENT_LOG_ERROR: 'event:log-error',
 };
 
+export const HistoryType = {
+  UPDATE_CONTENTS: 'update_contents',
+  ADD_BLOCK: 'add_block',
+  REMOVE_BLOCK: 'remove_block',
+};
+
 export const EventSources = {
   API: 'api',
   SILENT: 'silent',

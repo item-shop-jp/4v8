@@ -3,7 +3,7 @@ import { InlineAttributes } from '../types/inline';
 import { Block } from '../types/block';
 import { CaretPosition } from '../types/caret';
 import { EventEmitter } from '../utils/event-emitter';
-import { EditorModule, KeyBoardModule, ToolbarModule, SelectorModule } from '../modules';
+import { EditorModule, KeyBoardModule, ToolbarModule, SelectorModule, HistoryModule } from '../modules';
 
 export interface Settings {
   scrollMarginBottom?: number;
@@ -59,6 +59,7 @@ export interface EditorController {
   getModule(name: 'keyboard'): KeyBoardModule;
   getModule(name: 'toolbar'): ToolbarModule;
   getModule(name: 'selector'): SelectorModule;
+  getModule(name: 'history'): HistoryModule;
   getModule<T = any>(name: string): T | null;
   removeAllModules: () => void;
   getEventEmitter: () => EventEmitter;

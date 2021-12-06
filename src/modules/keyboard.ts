@@ -8,6 +8,8 @@ import { deleteInlineContents, getBlockId } from '../utils/block';
 import { CaretPosition } from '../types/caret';
 import { EditorModule } from './editor';
 
+const ShortKey = /Mac/i.test(navigator.platform) ? 'metaKey' : 'ctrlKey';
+
 interface Props {
   eventEmitter: EventEmitter;
   editor: EditorController;
@@ -18,6 +20,7 @@ interface KeyBindingProps {
   collapsed?: boolean;
   empty?: boolean;
   formats?: string[];
+  shortKey?: boolean;
   metaKey?: boolean;
   ctrlKey?: boolean;
   shiftKey?: boolean;
@@ -50,11 +53,13 @@ export class KeyBoardModule implements Module {
     this.addBinding({
       key: KeyCodes.ENTER,
       composing: true,
+      prevented: true,
       handler: this._handleEnter.bind(this),
     });
     this.addBinding({
       key: KeyCodes.NUMPAD_ENTER,
       composing: true,
+      prevented: true,
       handler: this._handleEnter.bind(this),
     });
     // this.addBinding({
@@ -72,30 +77,27 @@ export class KeyBoardModule implements Module {
     this.addBinding({
       key: KeyCodes.ARROW_UP,
       collapsed: true,
-      prevented: false,
       handler: this._handlekeyUp.bind(this),
     });
     this.addBinding({
       key: KeyCodes.ARROW_DOWN,
       collapsed: true,
-      prevented: false,
       handler: this._handlekeyDown.bind(this),
     });
     this.addBinding({
       key: KeyCodes.ARROW_LEFT,
       collapsed: true,
-      prevented: false,
       handler: this._handlekeyLeft.bind(this),
     });
     this.addBinding({
       key: KeyCodes.ARROW_RIGHT,
       collapsed: true,
-      prevented: false,
       handler: this._handlekeyRight.bind(this),
     });
 
     this.addBinding({
       key: KeyCodes.BACKSPACE,
+      prevented: true,
       handler: this._handleBackspace.bind(this),
     });
 
@@ -103,6 +105,7 @@ export class KeyBoardModule implements Module {
       key: KeyCodes.SPACE,
       collapsed: true,
       composing: true,
+      prevented: true,
       handler: this._handleSpace.bind(this),
     });
 
@@ -111,6 +114,21 @@ export class KeyBoardModule implements Module {
     //   e.stopPropagation();
     //   return;
     // }
+
+    this.addBinding({
+      key: KeyCodes.Z,
+      prevented: true,
+      shortKey: true,
+      handler: this._handleUndo.bind(this),
+    });
+
+    this.addBinding({
+      key: KeyCodes.Z,
+      prevented: true,
+      shortKey: true,
+      shiftKey: true,
+      handler: this._handleRedo.bind(this),
+    });
   }
 
   onDestroy() {
@@ -186,16 +204,25 @@ export class KeyBoardModule implements Module {
       metaKey = false,
       ctrlKey = false,
       shiftKey = false,
+      shortKey = false,
       altKey = false,
-      prevented = true,
+      prevented = false,
       composing = false,
       handler,
     } = props;
 
     if (!composing && this.composing) return false;
     if (!caretPosition) return false;
-    if ((metaKey && !e.metaKey) || (!metaKey && e.metaKey)) return false;
-    if ((ctrlKey && !e.ctrlKey) || (!ctrlKey && e.ctrlKey)) return false;
+
+    if (shortKey && !e[ShortKey]) return false;
+    if (!shortKey) {
+      if ((metaKey && !e.metaKey) || (!metaKey && e.metaKey)) return false;
+      if ((ctrlKey && !e.ctrlKey) || (!ctrlKey && e.ctrlKey)) return false;
+    } else {
+      if (metaKey && !e.metaKey) return false;
+      if (ctrlKey && !e.ctrlKey) return false;
+    }
+
     if ((shiftKey && !e.shiftKey) || (!shiftKey && e.shiftKey)) return false;
     if ((altKey && !e.altKey) || (!altKey && e.altKey)) return false;
 
@@ -331,5 +358,13 @@ export class KeyBoardModule implements Module {
       editor.setCaretPosition({ blockId: block.id, index: caretIndex });
       editor.updateCaretRect();
     }, 10);
+  }
+
+  private _handleUndo(caretPosition: CaretPosition, editor: EditorController, event: React.KeyboardEvent) {
+    editor.getModule('history').undo();
+  }
+
+  private _handleRedo(caretPosition: CaretPosition, editor: EditorController, event: React.KeyboardEvent) {
+    editor.getModule('history').redo();
   }
 }

@@ -1,9 +1,12 @@
+import { Source } from '../types/editor';
+
 export const KeyCodes = {
   ESC: 'Escape',
   ENTER: 'Enter',
   NUMPAD_ENTER: 'NumpadEnter',
   TAB: 'Tab',
   S: 'KeyS',
+  Z: 'KeyZ',
   SPACE: 'Space',
   BACKSPACE: 'Backspace',
   DEL: 'Delete',
@@ -30,7 +33,9 @@ export const HistoryType = {
   REMOVE_BLOCK: 'remove_block',
 };
 
-export const EventSources = {
+export const EventSources: {
+  [key: string]: Source;
+} = {
   API: 'api',
   SILENT: 'silent',
   USER: 'user',

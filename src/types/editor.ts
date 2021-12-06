@@ -20,33 +20,36 @@ export interface PositionParams {
   margin?: number;
 }
 
+export type Source = 'user' | 'silent' | 'api';
+
 export interface EditorController {
-  focus: () => void;
-  blur: () => void;
-  getFormats: (blockId: string, index: number, length?: number) => InlineAttributes;
-  formatText: (blockId: string, index: number, length: number, attributes: InlineAttributes) => void;
-  getBlocks: () => Block[];
-  getBlock: (blockId: string) => Block | null;
-  getBlockLength: (blockId: string) => number | null;
-  createBlock: (appendBlock: Block, prevBlockId?: string) => void;
-  updateBlock: (block: Block) => void;
-  deleteBlock: (blockId: string) => void;
-  sync: (blockId?: string, blockElement?: HTMLElement) => void;
-  setCaretPosition: (caretPosition: Partial<CaretPosition>) => void;
-  getCaretPosition: () => CaretPosition | null;
-  getNativeRange: () => Range | null;
-  updateCaretRect: (rect?: DOMRect) => DOMRect | null;
-  prev: (params?: PositionParams) => boolean;
-  next: (params?: PositionParams) => boolean;
-  render: (affectedIds?: string[]) => void;
-  addModule: (
+  focus(): void;
+  blur(): void;
+  getFormats(blockId: string, index: number, length?: number): InlineAttributes;
+  formatText(blockId: string, index: number, length: number, attributes: InlineAttributes): void;
+  getBlocks(): Block[];
+  getBlock(blockId: string): Block | null;
+  getBlockLength(blockId: string): number | null;
+  createBlock(appendBlock: Block, prevBlockId?: string): void;
+  updateBlock(block: Block): void;
+  updateBlock(block: Block, source: Source): void;
+  deleteBlock(blockId: string): void;
+  sync(blockId?: string, blockElement?: HTMLElement): void;
+  setCaretPosition(caretPosition: Partial<CaretPosition>): void;
+  getCaretPosition(): CaretPosition | null;
+  getNativeRange(): Range | null;
+  updateCaretRect(rect?: DOMRect): DOMRect | null;
+  prev(params?: PositionParams): boolean;
+  next(params?: PositionParams): boolean;
+  render(affectedIds?: string[]): void;
+  addModule(
     name: string,
     module: {
       new (params: { eventEmitter: EventEmitter; options: any }): any;
     },
     options?: any,
-  ) => void;
-  addModules: (
+  ): void;
+  addModules(
     modules: {
       name: string;
       module: {
@@ -54,7 +57,7 @@ export interface EditorController {
       };
     }[],
     options?: ModuleOptions,
-  ) => void;
+  ): void;
   getModule(name: 'editor'): EditorModule;
   getModule(name: 'keyboard'): KeyBoardModule;
   getModule(name: 'toolbar'): ToolbarModule;

@@ -14,8 +14,8 @@ import { CaretPosition } from '../types/caret';
 import { ModuleOptions } from '../types/module';
 import { Block } from '../types/block';
 import { InlineAttributes } from '../types/inline';
-import { Settings, PositionParams, EditorController } from '../types/editor';
-import { EditorEvents, HistoryType } from '../constants';
+import { Settings, PositionParams, EditorController, Source } from '../types/editor';
+import { EditorEvents, HistoryType, EventSources } from '../constants';
 import { EditorModule, KeyBoardModule, ToolbarModule, SelectorModule, HistoryModule } from '../modules';
 
 interface Props {
@@ -400,7 +400,7 @@ export function useEditor({
     blocksRef.current = blocks;
   }, []);
 
-  const updateBlock = React.useCallback((block: Block) => {
+  const updateBlock = React.useCallback((block: Block, source: Source = EventSources.USER) => {
     const currentIndex = blocksRef.current.findIndex((v) => v.id === block.id);
     if (currentIndex === -1) return;
     const contents = blockUtils.optimizeInlineContents(block.contents);
@@ -434,6 +434,7 @@ export function useEditor({
       type: HistoryType.UPDATE_CONTENTS,
       blockId: block.id,
       ops: diff,
+      source,
     });
 
     blocksRef.current = [

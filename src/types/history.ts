@@ -1,6 +1,6 @@
 import { TextOp } from 'ot-text-unicode';
 import { Block } from './block';
-import { HistoryType } from '../constants';
+import { Source } from './editor';
 
 export type OperationType = 'update_contents' | 'add_block' | 'remove_block';
 
@@ -22,4 +22,5 @@ export interface Op {
   blockId: string;
   ops?: JSONOpList;
   block?: Block;
+  source: Source;
 }

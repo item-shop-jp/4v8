@@ -4,7 +4,7 @@ import { debounce } from 'throttle-debounce';
 import { Module } from '../types/module';
 import { EventEmitter } from '../utils/event-emitter';
 import { Block } from '../types/block';
-import { EditorController } from '../types/editor';
+import { EditorController, Source } from '../types/editor';
 import { Op, JSONOpComponent, JSONOpList } from '../types/history';
 import { EditorEvents, EventSources } from '../constants';
 import { nanoid } from 'nanoid';
@@ -39,6 +39,7 @@ export class HistoryModule implements Module {
   };
   private tmpUndo: Op[] = [];
   private debouncedOptimizeOp = () => {};
+  private isUpdating = false;
 
   constructor({ eventEmitter, editor, options }: Props) {
     this.subs = new Subscription();
@@ -50,10 +51,12 @@ export class HistoryModule implements Module {
   onInit() {
     this.eventEmitter.info('init history module');
 
-    const sub = this.eventEmitter.on<Op>(EditorEvents.EVENT_EDITOR_CHANGE).subscribe((op) => {
-      if (op.source !== EventSources.USER) return;
-      this.record(op);
-    });
+    const sub = this.eventEmitter
+      .on<{ payload: Op; source: Source }>(EditorEvents.EVENT_EDITOR_CHANGE)
+      .subscribe(({ payload, source }) => {
+        if (source !== EventSources.USER || this.isUpdating) return;
+        this.record(payload);
+      });
     this.subs.add(sub);
 
     this.debouncedOptimizeOp = debounce(this.options.delay, () => {
@@ -133,6 +136,7 @@ export class HistoryModule implements Module {
     if (!block) return;
     const updatedBlock: Block = json1.type.apply(block, ops);
 
+    this.isUpdating = true;
     this.editor.updateBlock(
       {
         ...updatedBlock,
@@ -146,11 +150,11 @@ export class HistoryModule implements Module {
           };
         }),
       },
-      EventSources.API,
+      EventSources.USER,
     );
     this.editor.render([block.id]);
-
     this.editor.blur();
+    this.isUpdating = false;
     setTimeout(() => {
       const caretIndex = this.getCaretIndex(block, ops);
       this.editor.setCaretPosition({ blockId: block.id, index: caretIndex });

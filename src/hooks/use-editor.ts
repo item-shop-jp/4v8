@@ -434,10 +434,12 @@ export function useEditor({
 
     if (redo && undo) {
       eventEmitter.emit(EditorEvents.EVENT_EDITOR_CHANGE, {
-        type: HistoryType.UPDATE_CONTENTS,
-        blockId: block.id,
-        undo,
-        redo,
+        payload: {
+          type: HistoryType.UPDATE_CONTENTS,
+          blockId: block.id,
+          undo,
+          redo,
+        },
         source,
       });
     }

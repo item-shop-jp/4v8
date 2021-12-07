@@ -36,7 +36,6 @@ export const HistoryType = {
 export const EventSources: {
   [key: string]: Source;
 } = {
-  API: 'api',
   SILENT: 'silent',
   USER: 'user',
 };

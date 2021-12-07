@@ -23,5 +23,4 @@ export interface Op {
   undo?: JSONOpList;
   redo?: JSONOpList;
   block?: Block;
-  source: Source;
 }

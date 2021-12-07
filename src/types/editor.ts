@@ -20,7 +20,11 @@ export interface PositionParams {
   margin?: number;
 }
 
-export type Source = 'user' | 'silent' | 'api';
+/*
+ * user       => Update your blocks and then save the operation
+ * silent     => Update your blocks, then don't save the operation
+ */
+export type Source = 'user' | 'silent';
 
 export interface EditorController {
   focus(): void;

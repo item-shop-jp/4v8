@@ -71,16 +71,20 @@ export class HistoryModule implements Module {
     this.tmpUndo = [];
   }
 
-  record(op: Op) {
+  record(op: Op, force = false) {
     this.stack.redo = [];
     this.tmpUndo.push(op);
-    this.debouncedOptimizeOp();
+    if (force) {
+      this.optimizeOp();
+    } else {
+      this.debouncedOptimizeOp();
+    }
   }
 
   optimizeOp() {
     if (this.tmpUndo.length < 1) return;
     let optimizedUndo: Op[] = [];
-    this.tmpUndo.forEach((tmp) => {
+    this.tmpUndo.reverse().forEach((tmp) => {
       const index = optimizedUndo.findIndex((v) => v.blockId === tmp.blockId);
       if (index === -1) {
         optimizedUndo.push(tmp);
@@ -95,7 +99,7 @@ export class HistoryModule implements Module {
       if (optimizedUndo[index].redo && tmp.redo) {
         optimizedUndo[index] = {
           ...optimizedUndo[index],
-          redo: json1.type.compose(optimizedUndo[index].redo, tmp.redo),
+          redo: json1.type.compose(tmp.redo, optimizedUndo[index].redo),
         };
       }
     });

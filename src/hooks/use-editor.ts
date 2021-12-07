@@ -431,13 +431,16 @@ export function useEditor({
 
     const redo = json0diff(prevBlock, currentBlock, DiffMatchPatch, json1, textUnicode);
     const undo = json0diff(currentBlock, prevBlock, DiffMatchPatch, json1, textUnicode);
-    eventEmitter.emit(EditorEvents.EVENT_EDITOR_CHANGE, {
-      type: HistoryType.UPDATE_CONTENTS,
-      blockId: block.id,
-      undo,
-      redo,
-      source,
-    });
+
+    if (redo && undo) {
+      eventEmitter.emit(EditorEvents.EVENT_EDITOR_CHANGE, {
+        type: HistoryType.UPDATE_CONTENTS,
+        blockId: block.id,
+        undo,
+        redo,
+        source,
+      });
+    }
 
     blocksRef.current = [
       ...blocksRef.current.slice(0, currentIndex),

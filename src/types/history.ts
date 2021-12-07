@@ -20,7 +20,8 @@ export type JSONOpList = (number | string | JSONOpComponent | JSONOpList)[];
 export interface Op {
   type: OperationType;
   blockId: string;
-  ops?: JSONOpList;
+  undo?: JSONOpList;
+  redo?: JSONOpList;
   block?: Block;
   source: Source;
 }

@@ -429,11 +429,13 @@ export function useEditor({
       }),
     };
 
-    const diff = json0diff(prevBlock, currentBlock, DiffMatchPatch, json1, textUnicode);
+    const redo = json0diff(prevBlock, currentBlock, DiffMatchPatch, json1, textUnicode);
+    const undo = json0diff(currentBlock, prevBlock, DiffMatchPatch, json1, textUnicode);
     eventEmitter.emit(EditorEvents.EVENT_EDITOR_CHANGE, {
       type: HistoryType.UPDATE_CONTENTS,
       blockId: block.id,
-      ops: diff,
+      undo,
+      redo,
       source,
     });
 

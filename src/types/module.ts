@@ -3,7 +3,6 @@ export interface Modules {
 }
 
 export interface Module {
-  options?: any;
   onInit(): void;
   onDestroy(): void;
 }

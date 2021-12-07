@@ -32,6 +32,10 @@ const settings = {
     logger: {
       logLevel: LogLevels.INFO,
     },
+    history: {
+      maxStack: 50,
+      delay: 200,
+    },
   },
   scrollMarginBottom: 150,
   scrollMarginTop: 50,

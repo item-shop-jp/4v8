@@ -3,7 +3,14 @@ import { InlineAttributes } from '../types/inline';
 import { Block } from '../types/block';
 import { CaretPosition } from '../types/caret';
 import { EventEmitter } from '../utils/event-emitter';
-import { EditorModule, KeyBoardModule, ToolbarModule, SelectorModule, HistoryModule } from '../modules';
+import {
+  EditorModule,
+  KeyBoardModule,
+  ToolbarModule,
+  SelectorModule,
+  HistoryModule,
+  LoggerModule,
+} from '../modules';
 
 export interface Settings {
   scrollMarginBottom?: number;
@@ -30,7 +37,12 @@ export interface EditorController {
   focus(): void;
   blur(): void;
   getFormats(blockId: string, index: number, length?: number): InlineAttributes;
-  formatText(blockId: string, index: number, length: number, attributes: InlineAttributes): void;
+  formatText(
+    blockId: string,
+    index: number,
+    length: number,
+    attributes: InlineAttributes,
+  ): void;
   getBlocks(): Block[];
   getBlock(blockId: string): Block | null;
   getBlockLength(blockId: string): number | null;
@@ -57,7 +69,11 @@ export interface EditorController {
     modules: {
       name: string;
       module: {
-        new (params: { eventEmitter: EventEmitter; editor: EditorController; options: any }): any;
+        new (params: {
+          eventEmitter: EventEmitter;
+          editor: EditorController;
+          options: any;
+        }): any;
       };
     }[],
     options?: ModuleOptions,
@@ -67,6 +83,7 @@ export interface EditorController {
   getModule(name: 'toolbar'): ToolbarModule;
   getModule(name: 'selector'): SelectorModule;
   getModule(name: 'history'): HistoryModule;
+  getModule(name: 'logger'): LoggerModule;
   getModule<T = any>(name: string): T | null;
   removeAllModules: () => void;
   getEventEmitter: () => EventEmitter;

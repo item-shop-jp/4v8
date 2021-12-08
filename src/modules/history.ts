@@ -19,8 +19,8 @@ interface Props {
 }
 
 interface Stack {
-  undo: Op[];
-  redo: Op[];
+  undo: Op[][];
+  redo: Op[][];
 }
 
 const defaultOptions = {
@@ -54,8 +54,12 @@ export class HistoryModule implements Module {
     const sub = this.eventEmitter
       .on<{ payload: Op; source: Source }>(EditorEvents.EVENT_EDITOR_CHANGE)
       .subscribe(({ payload, source }) => {
-        if (source !== EventSources.USER || this.isUpdating) return;
-        this.record(payload);
+        if (this.isUpdating) return;
+        if (source === EventSources.USER) {
+          this.record(payload);
+        } else {
+          this.transform(payload);
+        }
       });
     this.subs.add(sub);
 
@@ -84,6 +88,51 @@ export class HistoryModule implements Module {
     }
   }
 
+  transform(transformOp: Op) {
+    this.stack.undo = this.stack.undo
+      .map((ops) => {
+        return ops.filter((op) => {
+          return transformOp.blockId !== op.blockId;
+        });
+      })
+      .filter((ops) => ops.length > 0);
+    this.stack.redo = this.stack.redo
+      .map((ops) => {
+        return ops.filter((op) => {
+          return transformOp.blockId !== op.blockId;
+        });
+      })
+      .filter((ops) => ops.length > 0);
+
+    const caret = this.editor.getCaretPosition();
+    if (caret && caret.blockId === transformOp.blockId) {
+      if (
+        transformOp.redo &&
+        transformOp.redo[0] === 'contents' &&
+        transformOp.redo[2] == 'text' &&
+        typeof transformOp.redo[3] === 'object'
+      ) {
+        const es = (transformOp.redo[3] as JSONOpComponent).es;
+        if (!es) return;
+        const opLength =
+          es.length === 1
+            ? (es[0] as string).length
+            : es.length === 2
+            ? (es[1] as string).length
+            : 0;
+        const opIndex = es.length === 1 ? 0 : es.length === 2 ? es[0] : 0;
+        const index = caret.index < opIndex ? caret.index : caret.index + opLength;
+        this.editor.blur();
+        setTimeout(() => {
+          this.editor.setCaretPosition({
+            ...caret,
+            index,
+          });
+        }, 10);
+      }
+    }
+  }
+
   optimizeOp() {
     if (this.tmpUndo.length < 1) return;
     let optimizedUndo: Op[] = [];
@@ -107,27 +156,33 @@ export class HistoryModule implements Module {
       }
     });
     this.tmpUndo = [];
-    this.stack.undo.push(...optimizedUndo);
+    this.stack.undo.push(optimizedUndo);
     if (this.stack.undo.length > this.options.maxStack) {
       this.stack.undo.shift();
     }
   }
 
   undo() {
-    const op = this.stack.undo.pop();
-    if (!op) return;
-    if (op.undo) {
-      this.executeJson1(op.blockId, op.undo);
-      this.stack.redo.push(op);
+    const ops = this.stack.undo.pop();
+    if (ops && ops.length > 0) {
+      ops.forEach((op) => {
+        if (!op.undo) return;
+        this.executeJson1(op.blockId, op.undo);
+      });
+
+      this.stack.redo.push(ops);
     }
   }
 
   redo() {
-    const op = this.stack.redo.pop();
-    if (!op) return;
-    if (op.redo) {
-      this.executeJson1(op.blockId, op.redo);
-      this.stack.undo.push(op);
+    const ops = this.stack.redo.pop();
+    if (ops && ops.length > 0) {
+      ops.forEach((op) => {
+        if (!op.redo) return;
+        this.executeJson1(op.blockId, op.redo);
+      });
+
+      this.stack.undo.push(ops);
     }
   }
 

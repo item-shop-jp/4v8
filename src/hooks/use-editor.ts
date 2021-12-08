@@ -16,7 +16,13 @@ import { Block } from '../types/block';
 import { InlineAttributes } from '../types/inline';
 import { Settings, PositionParams, EditorController, Source } from '../types/editor';
 import { EditorEvents, HistoryType, EventSources } from '../constants';
-import { EditorModule, KeyBoardModule, ToolbarModule, SelectorModule, HistoryModule } from '../modules';
+import {
+  EditorModule,
+  KeyBoardModule,
+  ToolbarModule,
+  SelectorModule,
+  HistoryModule,
+} from '../modules';
 
 interface Props {
   settings: Settings;
@@ -63,99 +69,122 @@ export function useEditor({
     selection.removeAllRanges();
   }, []);
 
-  const prev = React.useCallback(({ caretPosition, index, margin = 10 }: PositionParams = {}): boolean => {
-    const position = caretPosition ?? lastCaretPositionRef.current;
-    const currentIndex = blocksRef.current.findIndex((v) => v.id === position?.blockId);
-    if (currentIndex < 1 || !blocksRef.current[currentIndex - 1]) return false;
-    if (!lastCaretRectRef.current) {
-      setCaretPosition({
-        blockId: blocksRef.current[currentIndex - 1].id,
-        index: 0,
-      });
-      return false;
-    }
-    const prevBlock = blockUtils.getBlockElementById(blocksRef.current[currentIndex - 1].id);
-    if (!prevBlock) return false;
-    let prevRect = prevBlock.getBoundingClientRect();
-    const container = getScrollContainer(scrollContainer);
-    const containerOffsetTop = container ? container.getBoundingClientRect().top : 0;
+  const prev = React.useCallback(
+    ({ caretPosition, index, margin = 10 }: PositionParams = {}): boolean => {
+      const position = caretPosition ?? lastCaretPositionRef.current;
+      const currentIndex = blocksRef.current.findIndex((v) => v.id === position?.blockId);
+      if (currentIndex < 1 || !blocksRef.current[currentIndex - 1]) return false;
+      if (!lastCaretRectRef.current) {
+        setCaretPosition({
+          blockId: blocksRef.current[currentIndex - 1].id,
+          index: 0,
+        });
+        return false;
+      }
+      const prevBlock = blockUtils.getBlockElementById(blocksRef.current[currentIndex - 1].id);
+      if (!prevBlock) return false;
+      let prevRect = prevBlock.getBoundingClientRect();
+      const container = getScrollContainer(scrollContainer);
+      const containerOffsetTop = container ? container.getBoundingClientRect().top : 0;
 
-    if (prevRect.top <= (container ? containerOffsetTop : containerOffsetTop + scrollMarginTop)) {
-      if (container) {
-        container.scrollTop = currentIndex - 1 < 1 ? 0 : prevBlock.offsetTop;
-      } else {
-        if (document.scrollingElement) {
-          let editorScrollTop = document.scrollingElement.scrollTop + prevRect.top - scrollMarginTop;
-          if (currentIndex - 1 < 1) {
-            editorScrollTop -= 30;
+      if (prevRect.top <= (container ? containerOffsetTop : containerOffsetTop + scrollMarginTop)) {
+        if (container) {
+          container.scrollTop = currentIndex - 1 < 1 ? 0 : prevBlock.offsetTop;
+        } else {
+          if (document.scrollingElement) {
+            let editorScrollTop =
+              document.scrollingElement.scrollTop + prevRect.top - scrollMarginTop;
+            if (currentIndex - 1 < 1) {
+              editorScrollTop -= 30;
+            }
+            document.scrollingElement.scrollTop = editorScrollTop;
           }
-          document.scrollingElement.scrollTop = editorScrollTop;
         }
+        prevRect = prevBlock.getBoundingClientRect();
       }
-      prevRect = prevBlock.getBoundingClientRect();
-    }
 
-    if (typeof index === 'number' && index >= 0) {
-      setCaretPosition({
-        blockId: blocksRef.current[currentIndex - 1].id,
-        index,
-      });
+      if (typeof index === 'number' && index >= 0) {
+        setCaretPosition({
+          blockId: blocksRef.current[currentIndex - 1].id,
+          index,
+        });
+        return true;
+      }
+
+      const range = caretRangeFromPoint(
+        lastCaretRectRef.current.x,
+        prevRect.y + prevRect.height - margin,
+      );
+      const selection = document.getSelection();
+      if (!selection || !range) return false;
+      selection.setBaseAndExtent(
+        range.startContainer,
+        range.startOffset,
+        range.startContainer,
+        range.startOffset,
+      );
+      const nativeRange = getNativeRange();
+      if (!nativeRange) return false;
+      const newCaretPosition = normalizeRange(nativeRange);
+      if (!newCaretPosition) return false;
+
+      updateCaretPositionRef();
       return true;
-    }
+    },
+    [],
+  );
 
-    const range = caretRangeFromPoint(lastCaretRectRef.current.x, prevRect.y + prevRect.height - margin);
-    const selection = document.getSelection();
-    if (!selection || !range) return false;
-    selection.setBaseAndExtent(range.startContainer, range.startOffset, range.startContainer, range.startOffset);
-    const nativeRange = getNativeRange();
-    if (!nativeRange) return false;
-    const newCaretPosition = normalizeRange(nativeRange);
-    if (!newCaretPosition) return false;
-
-    updateCaretPositionRef();
-    return true;
-  }, []);
-
-  const next = React.useCallback(({ caretPosition, index = 0, margin = 10 }: PositionParams = {}): boolean => {
-    const position = caretPosition ?? lastCaretPositionRef.current;
-    const currentIndex = blocksRef.current.findIndex((v) => v.id === position?.blockId);
-    if (currentIndex === -1 || !blocksRef.current[currentIndex + 1]) return false;
-    if (!lastCaretRectRef.current) {
-      setCaretPosition({
-        blockId: blocksRef.current[currentIndex + 1].id,
-        index,
-      });
-      return false;
-    }
-    const nextBlock = blockUtils.getBlockElementById(blocksRef.current[currentIndex + 1].id);
-    if (!nextBlock) return false;
-    let nextRect = nextBlock.getBoundingClientRect();
-    const container = getScrollContainer(scrollContainer);
-    const scrollHeight = container?.clientHeight ?? window.innerHeight;
-    if (nextRect.top + nextRect.height >= (container ? scrollHeight : scrollHeight - scrollMarginBottom)) {
-      if (container) {
-        container.scrollTop = nextBlock.offsetTop - container.clientHeight + scrollMarginBottom;
-      } else {
-        if (document.scrollingElement) {
-          const nextTop = document.scrollingElement.scrollTop + nextRect.top;
-          const p = nextTop - window.innerHeight + scrollMarginBottom;
-          document.scrollingElement.scrollTop = p;
-        }
+  const next = React.useCallback(
+    ({ caretPosition, index = 0, margin = 10 }: PositionParams = {}): boolean => {
+      const position = caretPosition ?? lastCaretPositionRef.current;
+      const currentIndex = blocksRef.current.findIndex((v) => v.id === position?.blockId);
+      if (currentIndex === -1 || !blocksRef.current[currentIndex + 1]) return false;
+      if (!lastCaretRectRef.current) {
+        setCaretPosition({
+          blockId: blocksRef.current[currentIndex + 1].id,
+          index,
+        });
+        return false;
       }
-      nextRect = nextBlock.getBoundingClientRect();
-    }
-    const range = caretRangeFromPoint(lastCaretRectRef.current.x, nextRect.y + margin);
-    const selection = document.getSelection();
-    if (!selection || !range) return false;
-    selection.setBaseAndExtent(range.startContainer, range.startOffset, range.startContainer, range.startOffset);
-    const nativeRange = getNativeRange();
-    if (!nativeRange) return false;
-    const newCaretPosition = normalizeRange(nativeRange);
-    if (!newCaretPosition) return false;
+      const nextBlock = blockUtils.getBlockElementById(blocksRef.current[currentIndex + 1].id);
+      if (!nextBlock) return false;
+      let nextRect = nextBlock.getBoundingClientRect();
+      const container = getScrollContainer(scrollContainer);
+      const scrollHeight = container?.clientHeight ?? window.innerHeight;
+      if (
+        nextRect.top + nextRect.height >=
+        (container ? scrollHeight : scrollHeight - scrollMarginBottom)
+      ) {
+        if (container) {
+          container.scrollTop = nextBlock.offsetTop - container.clientHeight + scrollMarginBottom;
+        } else {
+          if (document.scrollingElement) {
+            const nextTop = document.scrollingElement.scrollTop + nextRect.top;
+            const p = nextTop - window.innerHeight + scrollMarginBottom;
+            document.scrollingElement.scrollTop = p;
+          }
+        }
+        nextRect = nextBlock.getBoundingClientRect();
+      }
+      const range = caretRangeFromPoint(lastCaretRectRef.current.x, nextRect.y + margin);
+      const selection = document.getSelection();
+      if (!selection || !range) return false;
+      selection.setBaseAndExtent(
+        range.startContainer,
+        range.startOffset,
+        range.startContainer,
+        range.startOffset,
+      );
+      const nativeRange = getNativeRange();
+      if (!nativeRange) return false;
+      const newCaretPosition = normalizeRange(nativeRange);
+      if (!newCaretPosition) return false;
 
-    updateCaretPositionRef();
-    return true;
-  }, []);
+      updateCaretPositionRef();
+      return true;
+    },
+    [],
+  );
 
   const getFormats = React.useCallback((blockId: string, index: number, length: number = 0) => {
     const block = blocksRef.current.find((v) => v.id === blockId);
@@ -171,7 +200,12 @@ export function useEditor({
     (blockId: string, index: number, length: number, attributes: InlineAttributes = {}) => {
       const block = blocksRef.current.find((v) => v.id === blockId);
       if (!block) return null;
-      const contents = blockUtils.setAttributesForInlineContents(block.contents, attributes, index, length);
+      const contents = blockUtils.setAttributesForInlineContents(
+        block.contents,
+        attributes,
+        index,
+        length,
+      );
       updateBlock({ ...block, contents });
       render([block.id]);
     },
@@ -229,30 +263,37 @@ export function useEditor({
     return range;
   }, []);
 
-  const setCaretPosition = React.useCallback(({ blockId = '', index = 0, length = 0 }: Partial<CaretPosition>) => {
-    const element = blockUtils.getBlockElementById(blockId);
-    if (!element) return;
-    const selection = document.getSelection();
-    if (!selection) return;
-    try {
-      const range = document.createRange();
-      const start = blockUtils.getNativeIndexFromBlockIndex(element, index);
-      const end = blockUtils.getNativeIndexFromBlockIndex(element, index + length);
-      if (!start || !end) return;
-      range.setStart(start.node, start.index);
-      range.setEnd(end.node, end.index);
-      selection.removeAllRanges();
-      selection.addRange(range);
-      updateCaretPositionRef();
-    } catch (e) {
-      eventEmitter.warning('Invalid Range', e);
-    }
-  }, []);
+  const setCaretPosition = React.useCallback(
+    ({ blockId = '', index = 0, length = 0 }: Partial<CaretPosition>) => {
+      const element = blockUtils.getBlockElementById(blockId);
+      if (!element) return;
+      const selection = document.getSelection();
+      if (!selection) return;
+      try {
+        const range = document.createRange();
+        const start = blockUtils.getNativeIndexFromBlockIndex(element, index);
+        const end = blockUtils.getNativeIndexFromBlockIndex(element, index + length);
+        if (!start || !end) return;
+        range.setStart(start.node, start.index);
+        range.setEnd(end.node, end.index);
+        selection.removeAllRanges();
+        selection.addRange(range);
+        updateCaretPositionRef();
+      } catch (e) {
+        eventEmitter.warning('Invalid Range', e);
+      }
+    },
+    [],
+  );
 
   const normalizeRange = React.useCallback((nativeRange: Range) => {
-    const [startInlineId, startInlineElement] = getInlineId(nativeRange.startContainer as HTMLElement);
+    const [startInlineId, startInlineElement] = getInlineId(
+      nativeRange.startContainer as HTMLElement,
+    );
     const [endInlineId, endInlineElement] = getInlineId(nativeRange.endContainer as HTMLElement);
-    const [blockId, blockElement] = blockUtils.getBlockId(nativeRange.startContainer as HTMLElement);
+    const [blockId, blockElement] = blockUtils.getBlockId(
+      nativeRange.startContainer as HTMLElement,
+    );
 
     if (!editorRef.current || !startInlineId || !endInlineId || !blockId || !blockElement) {
       return null;
@@ -262,7 +303,10 @@ export function useEditor({
       nativeRange.startContainer as HTMLElement,
       nativeRange.startOffset,
     );
-    const end = blockUtils.getBlockIndexFromNativeIndex(nativeRange.endContainer as HTMLElement, nativeRange.endOffset);
+    const end = blockUtils.getBlockIndexFromNativeIndex(
+      nativeRange.endContainer as HTMLElement,
+      nativeRange.endOffset,
+    );
 
     const caretRect = nativeRange.getBoundingClientRect();
     const blockRect = blockElement.getBoundingClientRect();
@@ -290,7 +334,11 @@ export function useEditor({
       },
       options: any = {},
     ) => {
-      const moduleInstance = new module({ eventEmitter, editor: editorController, options });
+      const moduleInstance = new module({
+        eventEmitter,
+        editor: editorController,
+        options,
+      });
       setModules((prevModules: any) => {
         return { ...prevModules, [name]: moduleInstance };
       });
@@ -331,7 +379,14 @@ export function useEditor({
   const getModule = React.useCallback(
     <T = any>(
       name: string,
-    ): T | EditorModule | KeyBoardModule | ToolbarModule | SelectorModule | HistoryModule | null => {
+    ):
+      | T
+      | EditorModule
+      | KeyBoardModule
+      | ToolbarModule
+      | SelectorModule
+      | HistoryModule
+      | null => {
       if (!modulesRef.current[name]) return null;
       return modulesRef.current[name];
     },
@@ -374,14 +429,22 @@ export function useEditor({
           const range = caretRangeFromPoint(lastCaretRectRef.current.x, lastCaretRectRef.current.y);
           const selection = document.getSelection();
           if (!selection || !range) return;
-          selection.setBaseAndExtent(range.startContainer, range.startOffset, range.startContainer, range.startOffset);
+          selection.setBaseAndExtent(
+            range.startContainer,
+            range.startOffset,
+            range.startContainer,
+            range.startOffset,
+          );
           const nativeRange = getNativeRange();
           if (!nativeRange) return;
           newCaretPosition = normalizeRange(nativeRange);
         }
         let caretIndex = newCaretPosition?.index ?? 0;
         caretIndex += affectedLength;
-        setCaretPosition({ ...newCaretPosition, index: caretIndex >= 0 ? caretIndex : 0 });
+        setCaretPosition({
+          ...newCaretPosition,
+          index: caretIndex >= 0 ? caretIndex : 0,
+        });
       }
       setTimeout(() => updateCaretRect(), 10);
     }, 10);
@@ -391,7 +454,11 @@ export function useEditor({
     const currentIndex = blocksRef.current.findIndex((v) => v.id === prevBlockId);
     updateBlocks(
       currentIndex !== -1
-        ? [...blocksRef.current.slice(0, currentIndex + 1), appendBlock, ...blocksRef.current.slice(currentIndex + 1)]
+        ? [
+            ...blocksRef.current.slice(0, currentIndex + 1),
+            appendBlock,
+            ...blocksRef.current.slice(currentIndex + 1),
+          ]
         : [...blocksRef.current, appendBlock],
     );
   }, []);
@@ -494,9 +561,19 @@ export function useEditor({
   // real-time collaborative test
   // React.useEffect(() => {
   //   const interval = setInterval(() => {
-  //     blocksRef.current = [...blocksRef.current, createBlock('PARAGRAPH')];
-  //     render();
-  //   }, 2000);
+  //     const block = getBlock(blocksRef.current[0].id);
+  //     if (!block) return;
+  //     const contents = [
+  //       ...block.contents.slice(0, block.contents.length - 1),
+  //       {
+  //         ...block.contents[block.contents.length - 1],
+  //         text: block.contents[block.contents.length - 1].text + 'a',
+  //       },
+  //     ];
+  //     console.log(JSON.stringify(contents));
+  //     updateBlock({ ...block, contents }, EventSources.SILENT);
+  //     render([block.id]);
+  //   }, 4000);
 
   //   return () => {
   //     clearInterval(interval);

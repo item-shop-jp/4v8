@@ -57,7 +57,8 @@ export class HistoryModule implements Module {
         if (this.isUpdating) return;
         if (source === EventSources.USER) {
           this.record(payload);
-        } else {
+        }
+        if (source === EventSources.COLLABORATOR) {
           this.transform(payload);
         }
       });

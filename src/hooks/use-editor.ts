@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Subscription } from 'rxjs';
+import isEqual from 'lodash.isequal';
 import { debounce } from 'throttle-debounce';
 import * as json0diff from 'json0-ot-diff';
 import * as json1 from 'ot-json1';
@@ -29,6 +30,10 @@ interface Props {
   eventEmitter: EventEmitter;
   scrollContainer?: HTMLElement | string;
 }
+
+const test = json0diff(['Hello'], ['aHello🤗'], DiffMatchPatch, json1, textUnicode);
+console.log(JSON.stringify(test));
+console.log(json1.type.apply(['Hello'], JSON.parse('[0,{"es":["🤗",5,"🤗"]}]')));
 
 export function useEditor({
   settings: { scrollMarginTop = 100, scrollMarginBottom = 250 },
@@ -265,6 +270,7 @@ export function useEditor({
 
   const setCaretPosition = React.useCallback(
     ({ blockId = '', index = 0, length = 0 }: Partial<CaretPosition>) => {
+      console.log(blockId, index);
       const element = blockUtils.getBlockElementById(blockId);
       if (!element) return;
       const selection = document.getSelection();
@@ -400,55 +406,72 @@ export function useEditor({
     setModules({});
   }, []);
 
-  const sync = React.useCallback((blockId?: string, blockElement?: HTMLElement) => {
-    if (!blockId) {
-      const nativeRange = getNativeRange();
-      if (!nativeRange) return;
-      [blockId, blockElement] = blockUtils.getBlockId(nativeRange.startContainer as HTMLElement);
-    }
-    if (!blockElement && blockId) {
-      const el = blockUtils.getBlockElementById(blockId);
-      if (el) {
-        blockElement = el;
+  const sync = React.useCallback(
+    (blockId?: string, blockElement?: HTMLElement, forceUpdate = false) => {
+      console.log('sync');
+      if (!blockId) {
+        const nativeRange = getNativeRange();
+        if (!nativeRange) return;
+        [blockId, blockElement] = blockUtils.getBlockId(nativeRange.startContainer as HTMLElement);
       }
-    }
-
-    const block = blocksRef.current.find((v) => v.id === blockId);
-    const composing = getModule('keyboard').composing;
-
-    setTimeout(() => {
-      if (!blockId || !block || !blockElement || composing) return;
-      const { contents, affected, affectedLength } = blockUtils.getInlineContents(blockElement);
-      updateCaretPositionRef();
-      updateBlock({ ...block, contents });
-      if (affected) {
-        render([blockId]);
-        let newCaretPosition = lastCaretPositionRef.current;
-        if (!newCaretPosition) {
-          if (!lastCaretRectRef.current) return;
-          const range = caretRangeFromPoint(lastCaretRectRef.current.x, lastCaretRectRef.current.y);
-          const selection = document.getSelection();
-          if (!selection || !range) return;
-          selection.setBaseAndExtent(
-            range.startContainer,
-            range.startOffset,
-            range.startContainer,
-            range.startOffset,
-          );
-          const nativeRange = getNativeRange();
-          if (!nativeRange) return;
-          newCaretPosition = normalizeRange(nativeRange);
+      if (!blockElement && blockId) {
+        const el = blockUtils.getBlockElementById(blockId);
+        if (el) {
+          blockElement = el;
         }
-        let caretIndex = newCaretPosition?.index ?? 0;
-        caretIndex += affectedLength;
-        setCaretPosition({
-          ...newCaretPosition,
-          index: caretIndex >= 0 ? caretIndex : 0,
-        });
       }
-      setTimeout(() => updateCaretRect(), 10);
-    }, 10);
-  }, []);
+
+      const block = blocksRef.current.find((v) => v.id === blockId);
+      const composing = getModule('keyboard').composing;
+
+      setTimeout(() => {
+        if (!blockId || !block || !blockElement || composing) return;
+        const { contents, affected, affectedLength } = blockUtils.getInlineContents(blockElement);
+        updateCaretPositionRef();
+        if (isEqual(block.contents, contents)) return;
+        updateBlock({ ...block, contents });
+        blocksRef.current;
+        if (affected || forceUpdate) {
+          render([blockId]);
+          let newCaretPosition = lastCaretPositionRef.current;
+          if (!newCaretPosition) {
+            if (!lastCaretRectRef.current) return;
+            const range = caretRangeFromPoint(
+              lastCaretRectRef.current.x,
+              lastCaretRectRef.current.y,
+            );
+            const selection = document.getSelection();
+            if (!selection || !range) return;
+            selection.setBaseAndExtent(
+              range.startContainer,
+              range.startOffset,
+              range.startContainer,
+              range.startOffset,
+            );
+            const nativeRange = getNativeRange();
+            if (!nativeRange) return;
+            newCaretPosition = normalizeRange(nativeRange);
+          }
+          const blockLength = blockUtils.getBlockLength(blockElement) ?? 0;
+          let caretIndex = newCaretPosition?.index ?? 0;
+          caretIndex += affectedLength;
+          if (blockLength < caretIndex) {
+            caretIndex = blockLength;
+          }
+          blur();
+
+          setTimeout(() => {
+            setCaretPosition({
+              ...newCaretPosition,
+              index: caretIndex >= 0 ? caretIndex : 0,
+            });
+            updateCaretRect();
+          }, 10);
+        }
+      }, 10);
+    },
+    [],
+  );
 
   const createBlock = React.useCallback((appendBlock: Block, prevBlockId?: string) => {
     const currentIndex = blocksRef.current.findIndex((v) => v.id === prevBlockId);
@@ -510,6 +533,7 @@ export function useEditor({
         source,
       });
     }
+    console.log(blocksRef.current[currentIndex].contents.map((v) => v.text));
 
     blocksRef.current = [
       ...blocksRef.current.slice(0, currentIndex),

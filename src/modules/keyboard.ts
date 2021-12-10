@@ -35,8 +35,11 @@ export class KeyBoardModule implements Module {
   private eventEmitter;
   private editor;
   private bindings: KeyBindingProps[];
-  private sync = debounce(100, (blockId?: string, blockElement?: HTMLElement) =>
-    this.editor.sync(blockId, blockElement),
+  private sync = debounce(
+    100,
+    (blockId?: string, blockElement?: HTMLElement, forceUpdate = false) => {
+      this.editor.sync(blockId, blockElement, forceUpdate);
+    },
   );
 
   constructor({ eventEmitter, editor }: Props) {
@@ -147,7 +150,7 @@ export class KeyBoardModule implements Module {
     if (!blockId || !blockElement) {
       return;
     }
-    this.sync(blockId, blockElement);
+    this.sync(blockId, blockElement, true);
   }
 
   onInput(e: React.KeyboardEvent) {
@@ -195,7 +198,11 @@ export class KeyBoardModule implements Module {
     });
   }
 
-  private _trigger(e: React.KeyboardEvent, props: KeyBindingProps, caretPosition: CaretPosition | null): boolean {
+  private _trigger(
+    e: React.KeyboardEvent,
+    props: KeyBindingProps,
+    caretPosition: CaretPosition | null,
+  ): boolean {
     const {
       key,
       collapsed = false,
@@ -269,7 +276,11 @@ export class KeyBoardModule implements Module {
     }
   }
 
-  private _handlekeyLeft(caretPosition: CaretPosition, editor: EditorController, event: React.KeyboardEvent) {
+  private _handlekeyLeft(
+    caretPosition: CaretPosition,
+    editor: EditorController,
+    event: React.KeyboardEvent,
+  ) {
     const caret = editor.getCaretPosition();
     if (caret) {
       const blockLength = editor.getBlockLength(caret.blockId);
@@ -287,7 +298,11 @@ export class KeyBoardModule implements Module {
     setTimeout(() => editor.updateCaretRect(), 10);
   }
 
-  private _handlekeyRight(caretPosition: CaretPosition, editor: EditorController, event: React.KeyboardEvent) {
+  private _handlekeyRight(
+    caretPosition: CaretPosition,
+    editor: EditorController,
+    event: React.KeyboardEvent,
+  ) {
     const caret = editor.getCaretPosition();
     if (caret) {
       const blockLength = editor.getBlockLength(caret.blockId);
@@ -305,7 +320,11 @@ export class KeyBoardModule implements Module {
     setTimeout(() => editor.updateCaretRect(), 10);
   }
 
-  private _handlekeyUp(caretPosition: CaretPosition, editor: EditorController, event: React.KeyboardEvent) {
+  private _handlekeyUp(
+    caretPosition: CaretPosition,
+    editor: EditorController,
+    event: React.KeyboardEvent,
+  ) {
     if (!caretPosition.isTop) return;
     if (editor.prev()) {
       event.preventDefault();
@@ -314,7 +333,11 @@ export class KeyBoardModule implements Module {
     }
   }
 
-  private _handlekeyDown(caretPosition: CaretPosition, editor: EditorController, event: React.KeyboardEvent) {
+  private _handlekeyDown(
+    caretPosition: CaretPosition,
+    editor: EditorController,
+    event: React.KeyboardEvent,
+  ) {
     if (!caretPosition.isBottom) return;
     if (editor.next()) {
       event.preventDefault();
@@ -348,7 +371,11 @@ export class KeyBoardModule implements Module {
     } else {
       if (!block || caretPosition.length < 1) return;
       caretIndex = caretPosition.index;
-      deletedContents = deleteInlineContents(block.contents, caretPosition.index, caretPosition.length);
+      deletedContents = deleteInlineContents(
+        block.contents,
+        caretPosition.index,
+        caretPosition.length,
+      );
     }
 
     editor.updateBlock({ ...block, contents: deletedContents });
@@ -360,11 +387,19 @@ export class KeyBoardModule implements Module {
     }, 10);
   }
 
-  private _handleUndo(caretPosition: CaretPosition, editor: EditorController, event: React.KeyboardEvent) {
+  private _handleUndo(
+    caretPosition: CaretPosition,
+    editor: EditorController,
+    event: React.KeyboardEvent,
+  ) {
     editor.getModule('history').undo();
   }
 
-  private _handleRedo(caretPosition: CaretPosition, editor: EditorController, event: React.KeyboardEvent) {
+  private _handleRedo(
+    caretPosition: CaretPosition,
+    editor: EditorController,
+    event: React.KeyboardEvent,
+  ) {
     editor.getModule('history').redo();
   }
 }

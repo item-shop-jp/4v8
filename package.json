@@ -14,6 +14,7 @@
     "@types/react-dom": "17.0.11",
     "@types/styled-components": "5.1.17",
     "@types/throttle-debounce": "2.1.0",
+    "@types/twemoji": "^12.1.2",
     "diff-match-patch": "1.0.5",
     "json0-ot-diff": "1.1.0",
     "lodash.isequal": "4.5.0",
@@ -24,8 +25,10 @@
     "react-dom": "17.0.2",
     "react-scripts": "4.0.3",
     "rxjs": "7.4.0",
+    "string-length": "^5.0.1",
     "styled-components": "5.3.3",
     "throttle-debounce": "3.0.1",
+    "twemoji": "^13.1.0",
     "typescript": "4.5.2",
     "web-vitals": "2.1.2"
   },

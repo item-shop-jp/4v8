@@ -12,7 +12,11 @@ export function getInlineId(node: HTMLElement): [string, HTMLElement] | [] {
   return getInlineId(node.parentElement);
 }
 
-export function createInline(type: InlineType, text: string = '\uFEFF', attributes: InlineAttributes = {}): Inline {
+export function createInline(
+  type: InlineType,
+  text: string = '\uFEFF',
+  attributes: InlineAttributes = {},
+): Inline {
   return {
     id: nanoid(),
     text,
@@ -29,4 +33,22 @@ export function isEmbed(type: InlineType): boolean {
     default:
       return false;
   }
+}
+
+export function getInlineText(inline: HTMLElement): string {
+  if (!inline) return '';
+  let text = '';
+  for (let i = 0; i < inline.childNodes.length; i++) {
+    const el = inline.childNodes[i] as HTMLElement;
+    if (el instanceof Text) {
+      text += inline.childNodes[i].textContent;
+    }
+    if (el instanceof Image) {
+      text += el.alt;
+    }
+    if (el.tagName === 'BR') {
+      text += '\n';
+    }
+  }
+  return text;
 }

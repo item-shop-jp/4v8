@@ -1,13 +1,29 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { Subscription } from 'rxjs';
-import { BlockContainer, Header1, Header2, Header3, Header4, Header5, Header6, Paragraph } from './components/blocks';
+import {
+  BlockContainer,
+  Header1,
+  Header2,
+  Header3,
+  Header4,
+  Header5,
+  Header6,
+  Paragraph,
+} from './components/blocks';
 import { InlineText } from './components/inlines';
 import { Bold, Strike, Underline } from './components/styles';
 import { GlobalToolbar, BubbleToolbar } from './components/toolbar';
 import { useEditor } from './hooks/use-editor';
 import { useEventEmitter } from './hooks/use-event-emitter';
-import { EditorModule, KeyBoardModule, LoggerModule, ToolbarModule, SelectorModule, HistoryModule } from './modules';
+import {
+  EditorModule,
+  KeyBoardModule,
+  LoggerModule,
+  ToolbarModule,
+  SelectorModule,
+  HistoryModule,
+} from './modules';
 import { getBlockElementById, getBlockId } from './utils/block';
 import { EditorEvents } from './constants';
 import { Formats } from './types/format';
@@ -30,6 +46,12 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   cursor: text;
+  img.emoji {
+    height: 1em;
+    width: 1em;
+    margin: 0 0.05em 0 0.1em;
+    vertical-align: -0.1em;
+  }
 `;
 const Inner = styled.div`
   flex-shrink: 0;

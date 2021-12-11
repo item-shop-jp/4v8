@@ -3,8 +3,7 @@ import { Subscription } from 'rxjs';
 import isEqual from 'lodash.isequal';
 import { debounce } from 'throttle-debounce';
 import * as json0diff from 'json0-ot-diff';
-import * as json1 from 'ot-json1';
-import * as textUnicode from 'ot-text-unicode';
+import * as json0 from 'ot-json0';
 import DiffMatchPatch from 'diff-match-patch';
 import { EventEmitter } from '../utils/event-emitter';
 import * as blockUtils from '../utils/block';
@@ -24,16 +23,13 @@ import {
   SelectorModule,
   HistoryModule,
 } from '../modules';
+import { copyObject } from '../utils/object';
 
 interface Props {
   settings: Settings;
   eventEmitter: EventEmitter;
   scrollContainer?: HTMLElement | string;
 }
-
-const test = json0diff(['Hello'], ['aHello🤗'], DiffMatchPatch, json1, textUnicode);
-console.log(JSON.stringify(test));
-console.log(json1.type.apply(['Hello'], JSON.parse('[0,{"es":["🤗",5,"🤗"]}]')));
 
 export function useEditor({
   settings: { scrollMarginTop = 100, scrollMarginBottom = 250 },
@@ -206,7 +202,7 @@ export function useEditor({
       const block = blocksRef.current.find((v) => v.id === blockId);
       if (!block) return null;
       const contents = blockUtils.setAttributesForInlineContents(
-        block.contents,
+        copyObject(block.contents),
         attributes,
         index,
         length,
@@ -270,7 +266,6 @@ export function useEditor({
 
   const setCaretPosition = React.useCallback(
     ({ blockId = '', index = 0, length = 0 }: Partial<CaretPosition>) => {
-      console.log(blockId, index);
       const element = blockUtils.getBlockElementById(blockId);
       if (!element) return;
       const selection = document.getSelection();
@@ -408,7 +403,6 @@ export function useEditor({
 
   const sync = React.useCallback(
     (blockId?: string, blockElement?: HTMLElement, forceUpdate = false) => {
-      console.log('sync');
       if (!blockId) {
         const nativeRange = getNativeRange();
         if (!nativeRange) return;
@@ -430,7 +424,6 @@ export function useEditor({
         updateCaretPositionRef();
         if (isEqual(block.contents, contents)) return;
         updateBlock({ ...block, contents });
-        blocksRef.current;
         if (affected || forceUpdate) {
           render([blockId]);
           let newCaretPosition = lastCaretPositionRef.current;
@@ -518,9 +511,8 @@ export function useEditor({
         };
       }),
     };
-
-    const redo = json0diff(prevBlock, currentBlock, DiffMatchPatch, json1, textUnicode);
-    const undo = json0diff(currentBlock, prevBlock, DiffMatchPatch, json1, textUnicode);
+    const redo = json0diff(prevBlock, currentBlock, DiffMatchPatch);
+    const undo = json0diff(currentBlock, prevBlock, DiffMatchPatch);
 
     if (redo && undo) {
       eventEmitter.emit(EditorEvents.EVENT_EDITOR_CHANGE, {
@@ -533,7 +525,6 @@ export function useEditor({
         source,
       });
     }
-    console.log(blocksRef.current[currentIndex].contents.map((v) => v.text));
 
     blocksRef.current = [
       ...blocksRef.current.slice(0, currentIndex),

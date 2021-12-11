@@ -1,26 +1,19 @@
-import { TextOp } from 'ot-text-unicode';
 import { Block } from './block';
-import { Source } from './editor';
 
 export type OperationType = 'update_contents' | 'add_block' | 'remove_block';
 
-export interface JSONOpComponent {
-  i?: any;
-  r?: any;
-  p?: number;
-  d?: number;
-  es?: TextOp;
-  ena?: number;
-  e?: any;
-  et?: string;
+export interface JSON0 {
+  p: number | string[];
+  li: any;
+  ld: any;
+  si: string;
+  sd: string;
 }
-
-export type JSONOpList = (number | string | JSONOpComponent | JSONOpList)[];
 
 export interface Op {
   type: OperationType;
   blockId: string;
-  undo?: JSONOpList;
-  redo?: JSONOpList;
+  undo?: JSON0[];
+  redo?: JSON0[];
   block?: Block;
 }

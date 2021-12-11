@@ -1,13 +1,14 @@
 import { Subscription } from 'rxjs';
-import * as json1 from 'ot-json1';
+import * as json0 from 'ot-json0';
+import { nanoid } from 'nanoid';
 import { debounce } from 'throttle-debounce';
 import { Module } from '../types/module';
 import { EventEmitter } from '../utils/event-emitter';
+import { getTextLength } from '../utils/json0';
 import { Block } from '../types/block';
 import { EditorController, Source } from '../types/editor';
-import { Op, JSONOpComponent, JSONOpList } from '../types/history';
+import { Op, JSON0 } from '../types/history';
 import { EditorEvents, EventSources } from '../constants';
-import { nanoid } from 'nanoid';
 
 interface Props {
   eventEmitter: EventEmitter;
@@ -105,33 +106,33 @@ export class HistoryModule implements Module {
       })
       .filter((ops) => ops.length > 0);
 
-    const caret = this.editor.getCaretPosition();
-    if (caret && caret.blockId === transformOp.blockId) {
-      if (
-        transformOp.redo &&
-        transformOp.redo[0] === 'contents' &&
-        transformOp.redo[2] == 'text' &&
-        typeof transformOp.redo[3] === 'object'
-      ) {
-        const es = (transformOp.redo[3] as JSONOpComponent).es;
-        if (!es) return;
-        const opLength =
-          es.length === 1
-            ? (es[0] as string).length
-            : es.length === 2
-            ? (es[1] as string).length
-            : 0;
-        const opIndex = es.length === 1 ? 0 : es.length === 2 ? es[0] : 0;
-        const index = caret.index < opIndex ? caret.index : caret.index + opLength;
-        this.editor.blur();
-        setTimeout(() => {
-          this.editor.setCaretPosition({
-            ...caret,
-            index,
-          });
-        }, 10);
-      }
-    }
+    // const caret = this.editor.getCaretPosition();
+    // if (caret && caret.blockId === transformOp.blockId) {
+    //   if (
+    //     transformOp.redo &&
+    //     transformOp.redo[0] === 'contents' &&
+    //     transformOp.redo[2] == 'text' &&
+    //     typeof transformOp.redo[3] === 'object'
+    //   ) {
+    //     const es = (transformOp.redo[3] as JSONOpComponent).es;
+    //     if (!es) return;
+    //     const opLength =
+    //       es.length === 1
+    //         ? (es[0] as string).length
+    //         : es.length === 2
+    //         ? (es[1] as string).length
+    //         : 0;
+    //     const opIndex = es.length === 1 ? 0 : es.length === 2 ? es[0] : 0;
+    //     const index = caret.index < opIndex ? caret.index : caret.index + opLength;
+    //     this.editor.blur();
+    //     setTimeout(() => {
+    //       this.editor.setCaretPosition({
+    //         ...caret,
+    //         index,
+    //       });
+    //     }, 10);
+    //   }
+    // }
   }
 
   optimizeOp() {
@@ -146,13 +147,13 @@ export class HistoryModule implements Module {
       if (optimizedUndo[index].undo && tmp.undo) {
         optimizedUndo[index] = {
           ...optimizedUndo[index],
-          undo: json1.type.compose(optimizedUndo[index].undo, tmp.undo),
+          undo: json0.type.compose(optimizedUndo[index].undo, tmp.undo),
         };
       }
       if (optimizedUndo[index].redo && tmp.redo) {
         optimizedUndo[index] = {
           ...optimizedUndo[index],
-          redo: json1.type.compose(tmp.redo, optimizedUndo[index].redo),
+          redo: json0.type.compose(tmp.redo, optimizedUndo[index].redo),
         };
       }
     });
@@ -166,33 +167,37 @@ export class HistoryModule implements Module {
   undo() {
     const ops = this.stack.undo.pop();
     if (ops && ops.length > 0) {
+      this.isUpdating = true;
       ops.forEach((op) => {
         if (!op.undo) return;
-        this.executeJson1(op.blockId, op.undo);
-      });
 
+        this.executeJson0(op.blockId, op.undo);
+        this.transformCaret(op.blockId, op.undo);
+      });
       this.stack.redo.push(ops);
+      this.isUpdating = false;
     }
   }
 
   redo() {
     const ops = this.stack.redo.pop();
     if (ops && ops.length > 0) {
+      this.isUpdating = true;
       ops.forEach((op) => {
         if (!op.redo) return;
-        this.executeJson1(op.blockId, op.redo);
+        this.executeJson0(op.blockId, op.redo);
+        this.transformCaret(op.blockId, op.redo);
       });
-
       this.stack.undo.push(ops);
+      this.isUpdating = false;
     }
   }
 
-  executeJson1(blockId: string, ops: JSONOpList) {
+  executeJson0(blockId: string, ops: JSON0[]) {
     const block = this.editor.getBlock(blockId);
     if (!block) return;
-    const updatedBlock: Block = json1.type.apply(block, ops);
+    const updatedBlock: Block = json0.type.apply(block, ops);
 
-    this.isUpdating = true;
     this.editor.updateBlock(
       {
         ...updatedBlock,
@@ -209,45 +214,16 @@ export class HistoryModule implements Module {
       EventSources.USER,
     );
     this.editor.render([block.id]);
-    this.editor.blur();
-    this.isUpdating = false;
-    setTimeout(() => {
-      const caretIndex = this.getCaretIndex(block, ops);
-      this.editor.setCaretPosition({ blockId: block.id, index: caretIndex });
-      this.editor.updateCaretRect();
-    }, 10);
   }
 
-  getCaretIndex(block: Block, ops: JSONOpList = []): number {
-    let caretIndex = 0;
-    let [blockKey, index, inlineKey, op] = ops;
-    if (blockKey !== 'contents') return caretIndex;
-
-    if (Array.isArray(ops[ops.length - 1])) {
-      [index, inlineKey, op] = ops[ops.length - 1] as JSONOpList;
-    }
-
-    for (let i = 0; i < block.contents.length; i++) {
-      if (index === i) {
-        const es = (op as JSONOpComponent)?.es;
-        if (es && es.length > 0) {
-          es.forEach((v) => {
-            if (typeof v === 'number') {
-              caretIndex += v;
-            }
-            if (typeof v === 'string') {
-              caretIndex += v.length;
-            }
-          });
-        }
-        break;
-      }
-      if (block.contents[i].isEmbed) {
-        caretIndex++;
-      } else {
-        caretIndex += block.contents[i].text.length;
-      }
-    }
-    return caretIndex;
+  transformCaret(blockId: string, ops: JSON0[]) {
+    const caret = this.editor.getCaretPosition();
+    if (!caret || blockId !== caret.blockId) return;
+    this.editor.blur();
+    setTimeout(() => {
+      const affectedLength = getTextLength(ops);
+      this.editor.setCaretPosition({ ...caret, index: caret.index + affectedLength });
+      this.editor.updateCaretRect();
+    }, 10);
   }
 }

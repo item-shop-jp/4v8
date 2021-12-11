@@ -582,11 +582,11 @@ export function useEditor({
   //       ...block.contents.slice(0, block.contents.length - 1),
   //       {
   //         ...block.contents[block.contents.length - 1],
-  //         text: block.contents[block.contents.length - 1].text + 'a',
+  //         text: block.contents[block.contents.length - 1].text + 'あ',
   //       },
   //     ];
   //     console.log(JSON.stringify(contents));
-  //     updateBlock({ ...block, contents }, EventSources.SILENT);
+  //     updateBlock({ ...block, contents }, EventSources.COLLABORATOR);
   //     render([block.id]);
   //   }, 4000);
 

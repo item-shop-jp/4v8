@@ -4,7 +4,7 @@ import { nanoid } from 'nanoid';
 import { debounce } from 'throttle-debounce';
 import { Module } from '../types/module';
 import { EventEmitter } from '../utils/event-emitter';
-import { getTextLength } from '../utils/json0';
+import { getTextLength, getStartIndex } from '../utils/json0';
 import { Block } from '../types/block';
 import { EditorController, Source } from '../types/editor';
 import { Op, JSON0 } from '../types/history';
@@ -106,33 +106,25 @@ export class HistoryModule implements Module {
       })
       .filter((ops) => ops.length > 0);
 
-    // const caret = this.editor.getCaretPosition();
-    // if (caret && caret.blockId === transformOp.blockId) {
-    //   if (
-    //     transformOp.redo &&
-    //     transformOp.redo[0] === 'contents' &&
-    //     transformOp.redo[2] == 'text' &&
-    //     typeof transformOp.redo[3] === 'object'
-    //   ) {
-    //     const es = (transformOp.redo[3] as JSONOpComponent).es;
-    //     if (!es) return;
-    //     const opLength =
-    //       es.length === 1
-    //         ? (es[0] as string).length
-    //         : es.length === 2
-    //         ? (es[1] as string).length
-    //         : 0;
-    //     const opIndex = es.length === 1 ? 0 : es.length === 2 ? es[0] : 0;
-    //     const index = caret.index < opIndex ? caret.index : caret.index + opLength;
-    //     this.editor.blur();
-    //     setTimeout(() => {
-    //       this.editor.setCaretPosition({
-    //         ...caret,
-    //         index,
-    //       });
-    //     }, 10);
-    //   }
-    // }
+    const caret = this.editor.getCaretPosition();
+    if (caret && caret.blockId === transformOp.blockId) {
+      if (transformOp.redo) {
+        this.editor.blur();
+        const block = this.editor.getBlock(caret.blockId);
+        const affectedLength = getTextLength(transformOp.redo);
+        const startIndex = block ? getStartIndex(block.contents, transformOp.redo) : 0;
+        console.log(startIndex, caret.index);
+
+        setTimeout(() => {
+          if (startIndex > caret.index) {
+            this.editor.setCaretPosition({ ...caret });
+          } else {
+            this.editor.setCaretPosition({ ...caret, index: caret.index + affectedLength });
+            this.editor.updateCaretRect();
+          }
+        }, 10);
+      }
+    }
   }
 
   optimizeOp() {

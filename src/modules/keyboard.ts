@@ -35,13 +35,11 @@ export class KeyBoardModule implements Module {
   private eventEmitter;
   private editor;
   private bindings: KeyBindingProps[];
-  private sync = debounce(
-    100,
-    (blockId?: string, blockElement?: HTMLElement, forceUpdate = false) => {
-      this.editor.sync(blockId, blockElement, forceUpdate);
-    },
-  );
-
+  private sync = debounce(100, (blockId?: string, blockElement?: HTMLElement) => {
+    this.editor.sync(blockId, blockElement, this.forceUpdate);
+    this.forceUpdate = false;
+  });
+  private forceUpdate = false;
   constructor({ eventEmitter, editor }: Props) {
     this.eventEmitter = eventEmitter;
     this.editor = editor;
@@ -145,12 +143,13 @@ export class KeyBoardModule implements Module {
 
   onCompositionEnd(e: React.CompositionEvent) {
     this.composing = false;
+    this.forceUpdate = true;
     const nativeRange = this.editor.getNativeRange();
     const [blockId, blockElement] = getBlockId(nativeRange?.startContainer as HTMLElement);
     if (!blockId || !blockElement) {
       return;
     }
-    this.sync(blockId, blockElement, true);
+    this.sync(blockId, blockElement);
   }
 
   onInput(e: React.KeyboardEvent) {
@@ -367,6 +366,7 @@ export class KeyBoardModule implements Module {
       }
 
       caretIndex = caretPosition.index - 1;
+
       deletedContents = deleteInlineContents(block.contents, caretIndex, 1);
     } else {
       if (!block || caretPosition.length < 1) return;

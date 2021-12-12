@@ -118,7 +118,6 @@ export function getNativeIndexFromBlockIndex(
           const node = childNodes[j] as HTMLElement;
           let nodeLength = node.textContent?.length ?? 0;
           nodeLength = nodeLength > 0 ? nodeLength : 1;
-
           if (index <= cumulativeLength + nodeLength) {
             if (node instanceof Image) {
               return {
@@ -127,7 +126,6 @@ export function getNativeIndexFromBlockIndex(
               };
             }
             if (node.tagName === 'BR') {
-              console.log(targetElement, j + 1);
               return {
                 node: targetElement,
                 index: j,
@@ -170,6 +168,9 @@ export function getBlockIndexFromNativeIndex(
             normalizedOffset += offset;
             break;
           }
+          if (ChildNode.contains(childNodes[j]) && j === offset) {
+            break;
+          }
           // <br> only line support
           if (ChildNode === inlineElement && j === offset) {
             normalizedOffset += 1;
@@ -179,6 +180,7 @@ export function getBlockIndexFromNativeIndex(
           nodeLength = nodeLength > 0 ? nodeLength : 1;
           normalizedOffset += nodeLength;
         }
+
         return { blockId, index: cumulativeLength + normalizedOffset };
       }
       cumulativeLength += inlineLength;
@@ -210,7 +212,6 @@ export function deleteInlineContents(
         const textlength = stringLength(contents[i].text) - deleteIndex;
         const deletelength = textlength - length >= 0 ? length : textlength;
         length -= deletelength;
-        console.log(otText);
         const removeOp = otText.remove(deleteIndex, deletelength);
         const text = otText.type.apply(contents[i].text, removeOp);
 
@@ -244,7 +245,7 @@ export function setAttributesForInlineContents(
   const destContents = [];
   let cumulativeLength = 0;
   for (let i = 0; i < contents.length; i++) {
-    const inlineLength = contents[i].isEmbed ? 1 : contents[i].text.length;
+    const inlineLength = contents[i].isEmbed ? 1 : stringLength(contents[i].text);
     if (
       length > 0 &&
       endIndex >= cumulativeLength &&
@@ -253,12 +254,27 @@ export function setAttributesForInlineContents(
       if (!contents[i].isEmbed) {
         let formatIndex = startIndex - cumulativeLength;
         formatIndex = formatIndex > 0 ? formatIndex : 0;
-        const textlength = contents[i].text.length - formatIndex;
+        const textlength = stringLength(contents[i].text) - formatIndex;
         const formatlength = textlength - length >= 0 ? length : textlength;
         length -= formatlength;
-        const firstText = contents[i].text.slice(0, formatIndex);
-        const middleText = contents[i].text.slice(formatIndex, formatIndex + formatlength);
-        const lastText = contents[i].text.slice(formatIndex + formatlength);
+        const firstText = otText.type.apply(
+          contents[i].text,
+          otText.remove(formatIndex, textlength),
+        );
+        const middleText = otText.type.apply(
+          contents[i].text,
+          otText.type.compose(
+            otText.remove(0, formatIndex),
+            otText.remove(
+              formatlength,
+              stringLength(contents[i].text) - (formatIndex + formatlength),
+            ),
+          ),
+        );
+        const lastText = otText.type.apply(
+          contents[i].text,
+          otText.remove(0, formatIndex + formatlength),
+        );
 
         if (firstText.length > 0) {
           destContents.push({ ...contents[i], id: nanoid(), text: firstText });
@@ -303,12 +319,15 @@ export function splitInlineContents(contents: Inline[], index: number): [Inline[
   const lastContents: Inline[] = [];
   let cumulativeLength = 0;
   for (let i = 0; i < contents.length; i++) {
-    const inlineLength = contents[i].isEmbed ? 1 : contents[i].text.length;
+    const inlineLength = contents[i].isEmbed ? 1 : stringLength(contents[i].text);
     if (startIndex >= cumulativeLength && startIndex < cumulativeLength + inlineLength) {
       if (!contents[i].isEmbed) {
         const sliceIndex = startIndex - cumulativeLength;
-        const firstText = contents[i].text.slice(0, sliceIndex);
-        const lastText = contents[i].text.slice(sliceIndex);
+        const firstText = otText.type.apply(
+          contents[i].text,
+          otText.remove(sliceIndex, stringLength(contents[i].text) - sliceIndex),
+        );
+        const lastText = otText.type.apply(contents[i].text, otText.remove(0, sliceIndex));
         if (firstText.length > 0) {
           firstContents.push({ ...contents[i], text: firstText });
         }

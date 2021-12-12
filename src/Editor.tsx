@@ -134,7 +134,10 @@ export const Editor: React.VFC<Props> = React.memo(
       if (!lastBlock) return;
       const element = getBlockElementById(lastBlock.id);
       if (!element) return;
-      editor.setCaretPosition({ blockId: lastBlock.id, index: element.innerText.length });
+      editor.setCaretPosition({
+        blockId: lastBlock.id,
+        index: editor.getBlockLength(lastBlock.id) ?? 0,
+      });
     }, [blocks.length]);
 
     React.useEffect(() => {

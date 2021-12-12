@@ -1,6 +1,7 @@
 import { nanoid } from 'nanoid';
 import isEqual from 'lodash.isequal';
 import stringLength from 'string-length';
+import * as otText from 'ot-text-unicode';
 import { createInline, isEmbed, getInlineId, getInlineText } from './inline';
 import { Block, BlockType, BlockAttributes } from '../types/block';
 import { Inline, InlineAttributes, InlineType } from '../types/inline';
@@ -197,7 +198,7 @@ export function deleteInlineContents(
   const destContents = [];
   let cumulativeLength = 0;
   for (let i = 0; i < contents.length; i++) {
-    const inlineLength = contents[i].isEmbed ? 1 : contents[i].text.length;
+    const inlineLength = contents[i].isEmbed ? 1 : stringLength(contents[i].text);
     if (
       length > 0 &&
       endIndex >= cumulativeLength &&
@@ -206,14 +207,14 @@ export function deleteInlineContents(
       if (!contents[i].isEmbed) {
         let deleteIndex = startIndex - cumulativeLength;
         deleteIndex = deleteIndex > 0 ? deleteIndex : 0;
-        const textlength = contents[i].text.length - deleteIndex;
+        const textlength = stringLength(contents[i].text) - deleteIndex;
         const deletelength = textlength - length >= 0 ? length : textlength;
         length -= deletelength;
-        const text =
-          contents[i].text.slice(0, deleteIndex) +
-          contents[i].text.slice(deleteIndex + deletelength);
+        console.log(otText);
+        const removeOp = otText.remove(deleteIndex, deletelength);
+        const text = otText.type.apply(contents[i].text, removeOp);
 
-        if (text.length > 0) {
+        if (stringLength(text) > 0) {
           destContents.push({ ...contents[i], text });
         }
       } else {

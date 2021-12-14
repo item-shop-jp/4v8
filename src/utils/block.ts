@@ -116,13 +116,19 @@ export function getNativeIndexFromBlockIndex(
         const childNodes = targetElement.childNodes;
         for (let j = 0; j < childNodes.length; j++) {
           const node = childNodes[j] as HTMLElement;
-          let nodeLength = node.textContent?.length ?? 0;
+          let nodeLength = stringLength(node.textContent ?? '');
           nodeLength = nodeLength > 0 ? nodeLength : 1;
           if (index <= cumulativeLength + nodeLength) {
             if (node instanceof Image) {
+              if (index === cumulativeLength + nodeLength) {
+                return {
+                  node: targetElement,
+                  index: j + 1,
+                };
+              }
               return {
                 node: targetElement,
-                index: j + 1,
+                index: j,
               };
             }
             if (node.tagName === 'BR') {

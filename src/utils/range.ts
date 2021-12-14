@@ -14,3 +14,28 @@ export function caretRangeFromPoint(x: number, y: number): Range | null {
   }
   return null;
 }
+
+export function getRectByRange(range: Range): DOMRect | null {
+  let clientRect = null;
+
+  if (range.endContainer instanceof Text) {
+    clientRect = range.getBoundingClientRect();
+  } else {
+    const index =
+      range.endOffset > range.endContainer.childNodes.length - 1
+        ? range.endContainer.childNodes.length - 1
+        : range.endOffset;
+    const currentNode = range.endContainer.childNodes[index];
+    if (!currentNode) return null;
+    if (currentNode instanceof Text) {
+      const currentNodeRange = document.createRange();
+      currentNodeRange.selectNode(currentNode);
+      clientRect = currentNodeRange.getBoundingClientRect();
+    } else {
+      if (!(currentNode instanceof Image) && (currentNode as HTMLElement)?.tagName !== 'BR')
+        return null;
+      clientRect = (currentNode as HTMLElement).getBoundingClientRect();
+    }
+  }
+  return clientRect;
+}

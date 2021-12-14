@@ -8,7 +8,7 @@ import DiffMatchPatch from 'diff-match-patch';
 import { EventEmitter } from '../utils/event-emitter';
 import * as blockUtils from '../utils/block';
 import { getInlineId } from '../utils/inline';
-import { caretRangeFromPoint } from '../utils/range';
+import { caretRangeFromPoint, getRectByRange } from '../utils/range';
 import { getScrollContainer } from '../utils/dom';
 import { CaretPosition } from '../types/caret';
 import { ModuleOptions } from '../types/module';
@@ -251,7 +251,9 @@ export function useEditor({
     } else {
       const nativeRange = getNativeRange();
       if (!nativeRange) return null;
-      lastCaretRectRef.current = nativeRange.getBoundingClientRect();
+      const clientRect = getRectByRange(nativeRange);
+      if (!clientRect) return null;
+      lastCaretRectRef.current = clientRect;
     }
     return lastCaretRectRef.current;
   }, []);
@@ -309,7 +311,8 @@ export function useEditor({
       nativeRange.endOffset,
     );
 
-    const caretRect = nativeRange.getBoundingClientRect();
+    const caretRect = getRectByRange(nativeRange);
+    if (!caretRect) return null;
     const blockRect = blockElement.getBoundingClientRect();
 
     if (!start || !end) return null;
@@ -324,6 +327,7 @@ export function useEditor({
       isBottom: blockRect.y + blockRect.height - (caretRect.y + caretRect.height) < 10,
       rect: caretRect,
     };
+
     return range;
   }, []);
 

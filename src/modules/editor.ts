@@ -1,9 +1,15 @@
 import { Subscription } from 'rxjs';
 import { EventEmitter } from '../utils/event-emitter';
-import { createBlock, splitInlineContents, deleteInlineContents, getBlockElementById } from '../utils/block';
+import {
+  createBlock,
+  splitInlineContents,
+  deleteInlineContents,
+  getBlockElementById,
+} from '../utils/block';
 import { createInline } from '../utils/inline';
 import { Module } from '../types/module';
 import { EditorController } from '../types/editor';
+import { copyObject } from '../utils/object';
 
 interface Props {
   eventEmitter: EventEmitter;
@@ -64,8 +70,14 @@ export class EditorModule implements Module {
     if (!source || !other) return;
     this.editor.deleteBlock(other.id);
     const currentSourceLength = this.editor.getBlockLength(source.id) ?? 0;
-    this.editor.updateBlock({ ...source, contents: [...source.contents, ...other.contents] });
-    setTimeout(() => this.editor.setCaretPosition({ blockId: source.id, index: currentSourceLength }), 10);
+    this.editor.updateBlock({
+      ...source,
+      contents: copyObject([...source.contents, ...other.contents]),
+    });
+    setTimeout(
+      () => this.editor.setCaretPosition({ blockId: source.id, index: currentSourceLength }),
+      10,
+    );
     this.editor.render([source.id]);
   }
 
@@ -78,7 +90,10 @@ export class EditorModule implements Module {
       contents = deleteInlineContents(contents, index, length);
     }
     const [first, last] = splitInlineContents(contents, index);
-    const firstBlock = { ...blocks[currentIndex], contents: first.length < 1 ? [createInline('TEXT')] : first };
+    const firstBlock = {
+      ...blocks[currentIndex],
+      contents: first.length < 1 ? [createInline('TEXT')] : first,
+    };
     const lastBlock = createBlock('PARAGRAPH', last, blocks[currentIndex].attributes);
     setTimeout(() => {
       this.editor.render([blocks[currentIndex].id]);

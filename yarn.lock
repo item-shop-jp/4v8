@@ -6984,10 +6984,10 @@ json-stringify-safe@~5.0.1:
   resolved "https://registry.yarnpkg.com/json-stringify-safe/-/json-stringify-safe-5.0.1.tgz#1296a2d58fd45f19a0f6ce01d65701e2c735b6eb"
   integrity sha1-Epai1Y/UXxmg9s4B1lcB4sc1tus=
 
-json0-ot-diff@1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/json0-ot-diff/-/json0-ot-diff-1.1.0.tgz#9226109e10574ccfe40244ff6f965920c3ac5174"
-  integrity sha512-en/P6aySxshDWxDs4KVJL3dOd8FzO+gpf6FvOwldp+6xA6ZAJ7OVr/eiGvftVvEs5nx/17EOacJdNasTftwKWw==
+json0-ot-diff@1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/json0-ot-diff/-/json0-ot-diff-1.1.2.tgz#3565b8b016992b750c364558f5b5ffd56a0749c2"
+  integrity sha512-je6cDbmPc+BkbfyvKo7y1jgQLTrX81L8fkKEIPXRUGFSxK4HTSF6u44ELR35i12tEIWh5+8KfIJH2aJgzKrFww==
   dependencies:
     deep-equal "^1.0.1"
 

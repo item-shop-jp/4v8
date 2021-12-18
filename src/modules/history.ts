@@ -113,7 +113,6 @@ export class HistoryModule implements Module {
         const block = this.editor.getBlock(caret.blockId);
         const affectedLength = getTextLength(transformOp.redo);
         const startIndex = block ? getStartIndex(block.contents, transformOp.redo) : 0;
-        console.log(startIndex, caret.index);
 
         setTimeout(() => {
           if (startIndex > caret.index) {
@@ -210,11 +209,18 @@ export class HistoryModule implements Module {
 
   transformCaret(blockId: string, ops: JSON0[]) {
     const caret = this.editor.getCaretPosition();
-    if (!caret || blockId !== caret.blockId) return;
+    const block = this.editor.getBlock(blockId);
+    if (!caret || !block) return;
     this.editor.blur();
     setTimeout(() => {
       const affectedLength = getTextLength(ops);
-      this.editor.setCaretPosition({ ...caret, index: caret.index + affectedLength });
+      const startIndex = block ? getStartIndex(block.contents, ops) : 0;
+      this.editor.setCaretPosition({
+        blockId: block.id,
+        index: affectedLength > 0 ? startIndex + affectedLength : startIndex,
+        length: 0,
+      });
+
       this.editor.updateCaretRect();
     }, 10);
   }

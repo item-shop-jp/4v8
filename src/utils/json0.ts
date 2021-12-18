@@ -39,13 +39,17 @@ export function getStartIndex(contents: Inline[], ops: JSON0[] = []): number {
   });
 
   let index = 0;
+
   for (let i = 0; i < contents.length; i++) {
     if (arrayIndex === i) {
-      index += textIndex;
+      const currentTextIndex = stringLength(contents[i].text.slice(0, textIndex));
+      index += currentTextIndex;
       break;
     }
     index += stringLength(contents[i].text);
   }
+
+  if (index < 1) index = 1;
 
   return index;
 }

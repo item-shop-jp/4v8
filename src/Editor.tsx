@@ -60,6 +60,7 @@ const Inner = styled.div`
 const MarginBottom = styled.div`
   flex-shrink: 0;
   flex-grow: 1;
+  user-select: none;
 `;
 
 export const Editor: React.VFC<Props> = React.memo(
@@ -129,16 +130,20 @@ export const Editor: React.VFC<Props> = React.memo(
       [editor],
     );
 
-    const handleContainerClick = React.useCallback(() => {
-      const lastBlock = blocks[blocks.length - 1];
-      if (!lastBlock) return;
-      const element = getBlockElementById(lastBlock.id);
-      if (!element) return;
-      editor.setCaretPosition({
-        blockId: lastBlock.id,
-        index: editor.getBlockLength(lastBlock.id) ?? 0,
-      });
-    }, [blocks.length]);
+    const handleContainerClick = React.useCallback(
+      (e: React.MouseEvent) => {
+        const lastBlock = blocks[blocks.length - 1];
+        if (!lastBlock) return;
+        const element = getBlockElementById(lastBlock.id);
+        if (!element) return;
+        e.preventDefault();
+        editor.setCaretPosition({
+          blockId: lastBlock.id,
+          index: editor.getBlockLength(lastBlock.id) ?? 0,
+        });
+      },
+      [blocks.length],
+    );
 
     React.useEffect(() => {
       const subs = new Subscription();

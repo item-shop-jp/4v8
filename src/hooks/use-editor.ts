@@ -586,7 +586,7 @@ export function useEditor({
   //       ...block.contents.slice(0, block.contents.length - 1),
   //       {
   //         ...block.contents[block.contents.length - 1],
-  //         text: block.contents[block.contents.length - 1].text + 'あ',
+  //         text: 'あ' + block.contents[block.contents.length - 1].text,
   //       },
   //     ];
   //     console.log(JSON.stringify(contents));

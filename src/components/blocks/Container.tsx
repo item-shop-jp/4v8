@@ -13,6 +13,9 @@ interface BlockProps {
   editor: EditorController;
   onClick: (e: React.MouseEvent) => void;
   onKeyDown: (e: React.KeyboardEvent) => void;
+  onPaste: (e: React.ClipboardEvent) => void;
+  onDrop: (e: React.DragEvent) => void;
+  onDrag: (e: React.DragEvent) => void;
   onCompositionStart: (e: React.CompositionEvent) => void;
   onCompositionEnd: (e: React.CompositionEvent) => void;
   onBeforeInput: (e: React.KeyboardEvent) => void;

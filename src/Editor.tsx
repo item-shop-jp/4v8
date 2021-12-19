@@ -130,6 +130,27 @@ export const Editor: React.VFC<Props> = React.memo(
       [editor],
     );
 
+    const handlePaste = React.useCallback(
+      (e: React.ClipboardEvent) => {
+        console.log('paste', e);
+        e.preventDefault();
+      },
+      [editor],
+    );
+
+    const handleDrop = React.useCallback(
+      (e: React.DragEvent) => {
+        e.preventDefault();
+      },
+      [editor],
+    );
+    const handleDrag = React.useCallback(
+      (e: React.DragEvent) => {
+        e.preventDefault();
+      },
+      [editor],
+    );
+
     const handleContainerClick = React.useCallback(
       (e: React.MouseEvent) => {
         const lastBlock = blocks[blocks.length - 1];
@@ -248,6 +269,9 @@ export const Editor: React.VFC<Props> = React.memo(
                 selected={block.selected}
                 onClick={handleClick}
                 onKeyDown={handleKeyDown}
+                onPaste={handlePaste}
+                onDrop={handleDrop}
+                onDrag={handleDrag}
                 onBeforeInput={handleInput}
                 onCompositionStart={handleCompositionStart}
                 onCompositionEnd={handleCompositionEnd}

@@ -42,6 +42,7 @@ export function getStartIndex(contents: Inline[], ops: JSON0[] = []): number {
 
   for (let i = 0; i < contents.length; i++) {
     if (arrayIndex === i) {
+      // emoji support
       const currentTextIndex = stringLength(contents[i].text.slice(0, textIndex));
       index += currentTextIndex;
       break;

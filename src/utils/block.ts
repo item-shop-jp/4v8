@@ -171,7 +171,10 @@ export function getBlockIndexFromNativeIndex(
         let normalizedOffset = 0;
         for (let j = 0; j < childNodes.length; j++) {
           if (childNodes[j] === ChildNode) {
-            normalizedOffset += offset;
+            const offestText = childNodes[j].textContent ?? '';
+            // emoji support
+            const offsetTextIndex = stringLength(offestText.slice(0, offset));
+            normalizedOffset += offsetTextIndex;
             break;
           }
           if (ChildNode.contains(childNodes[j]) && j === offset) {

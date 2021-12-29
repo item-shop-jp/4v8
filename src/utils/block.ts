@@ -132,7 +132,10 @@ export function getNativeIndexFromBlockIndex(
               };
             }
             if (node.tagName === 'BR') {
-              return {
+              return targetElement.nextSibling ? {
+                node: targetElement.nextSibling,
+                index: 0,
+              }: {
                 node: targetElement,
                 index: j,
               };

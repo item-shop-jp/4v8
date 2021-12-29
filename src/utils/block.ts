@@ -132,13 +132,15 @@ export function getNativeIndexFromBlockIndex(
               };
             }
             if (node.tagName === 'BR') {
-              return targetElement.nextSibling ? {
-                node: targetElement.nextSibling,
-                index: 0,
-              }: {
-                node: targetElement,
-                index: j,
-              };
+              return targetElement.nextSibling
+                ? {
+                    node: targetElement.nextSibling,
+                    index: 0,
+                  }
+                : {
+                    node: targetElement,
+                    index: j,
+                  };
             }
             return {
               node: node instanceof Text ? node : targetElement,
@@ -397,20 +399,25 @@ export function getDuplicateAttributes(
   const destContents = [];
   let cumulativeLength = 0;
   for (let i = 0; i < contents.length; i++) {
-    const inlineLength = contents[i].isEmbed ? 1 : contents[i].text.length;
+    const inlineLength = contents[i].isEmbed ? 1 : stringLength(contents[i].text);
     if (length < 1) {
       break;
     }
     if (endIndex >= cumulativeLength && startIndex < cumulativeLength + inlineLength) {
       if (!contents[i].isEmbed) {
-        let deleteIndex = startIndex - cumulativeLength;
-        deleteIndex = deleteIndex > 0 ? deleteIndex : 0;
-        const textlength = contents[i].text.length - deleteIndex;
-        const deletelength = textlength - length >= 0 ? length : textlength;
-        length -= deletelength;
-        const text = contents[i].text.slice(deleteIndex, deleteIndex + deletelength);
-
-        if (text.length > 0) {
+        let selectedIndex = startIndex - cumulativeLength;
+        selectedIndex = selectedIndex > 0 ? selectedIndex : 0;
+        const textlength = stringLength(contents[i].text) - selectedIndex;
+        const selectedlength = textlength - length >= 0 ? length : textlength;
+        length -= selectedlength;
+        const text = otText.type.apply(
+          contents[i].text,
+          otText.remove(
+            selectedIndex + selectedlength,
+            stringLength(contents[i].text) - (selectedIndex + selectedlength),
+          ),
+        );
+        if (stringLength(text) > 0) {
           destContents.push({ ...contents[i].attributes });
         }
       } else {
@@ -420,7 +427,6 @@ export function getDuplicateAttributes(
 
     cumulativeLength += inlineLength;
   }
-
   const duplicateAttributes = destContents.reduce((r, v, i) => {
     if (i === 0) {
       return { ...v };

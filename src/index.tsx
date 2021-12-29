@@ -33,7 +33,7 @@ const settings = {
       logLevel: LogLevels.INFO,
     },
     history: {
-      maxStack: 10,
+      maxStack: 50,
       delay: 200,
     },
   },

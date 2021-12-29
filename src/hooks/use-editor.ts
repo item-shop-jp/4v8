@@ -1,14 +1,14 @@
 import * as React from 'react';
 import { Subscription } from 'rxjs';
+import isEqual from 'lodash.isequal';
 import { debounce } from 'throttle-debounce';
 import * as json0diff from 'json0-ot-diff';
-import * as json1 from 'ot-json1';
-import * as textUnicode from 'ot-text-unicode';
+import * as json0 from 'ot-json0';
 import DiffMatchPatch from 'diff-match-patch';
 import { EventEmitter } from '../utils/event-emitter';
 import * as blockUtils from '../utils/block';
 import { getInlineId } from '../utils/inline';
-import { caretRangeFromPoint } from '../utils/range';
+import { caretRangeFromPoint, getRectByRange } from '../utils/range';
 import { getScrollContainer } from '../utils/dom';
 import { CaretPosition } from '../types/caret';
 import { ModuleOptions } from '../types/module';
@@ -23,6 +23,7 @@ import {
   SelectorModule,
   HistoryModule,
 } from '../modules';
+import { copyObject } from '../utils/object';
 
 interface Props {
   settings: Settings;
@@ -201,7 +202,7 @@ export function useEditor({
       const block = blocksRef.current.find((v) => v.id === blockId);
       if (!block) return null;
       const contents = blockUtils.setAttributesForInlineContents(
-        block.contents,
+        copyObject(block.contents),
         attributes,
         index,
         length,
@@ -250,7 +251,9 @@ export function useEditor({
     } else {
       const nativeRange = getNativeRange();
       if (!nativeRange) return null;
-      lastCaretRectRef.current = nativeRange.getBoundingClientRect();
+      const clientRect = getRectByRange(nativeRange);
+      if (!clientRect) return null;
+      lastCaretRectRef.current = clientRect;
     }
     return lastCaretRectRef.current;
   }, []);
@@ -308,7 +311,8 @@ export function useEditor({
       nativeRange.endOffset,
     );
 
-    const caretRect = nativeRange.getBoundingClientRect();
+    const caretRect = getRectByRange(nativeRange);
+    if (!caretRect) return null;
     const blockRect = blockElement.getBoundingClientRect();
 
     if (!start || !end) return null;
@@ -323,6 +327,7 @@ export function useEditor({
       isBottom: blockRect.y + blockRect.height - (caretRect.y + caretRect.height) < 10,
       rect: caretRect,
     };
+
     return range;
   }, []);
 
@@ -400,55 +405,70 @@ export function useEditor({
     setModules({});
   }, []);
 
-  const sync = React.useCallback((blockId?: string, blockElement?: HTMLElement) => {
-    if (!blockId) {
-      const nativeRange = getNativeRange();
-      if (!nativeRange) return;
-      [blockId, blockElement] = blockUtils.getBlockId(nativeRange.startContainer as HTMLElement);
-    }
-    if (!blockElement && blockId) {
-      const el = blockUtils.getBlockElementById(blockId);
-      if (el) {
-        blockElement = el;
+  const sync = React.useCallback(
+    (blockId?: string, blockElement?: HTMLElement, forceUpdate = false) => {
+      if (!blockId) {
+        const nativeRange = getNativeRange();
+        if (!nativeRange) return;
+        [blockId, blockElement] = blockUtils.getBlockId(nativeRange.startContainer as HTMLElement);
       }
-    }
-
-    const block = blocksRef.current.find((v) => v.id === blockId);
-    const composing = getModule('keyboard').composing;
-
-    setTimeout(() => {
-      if (!blockId || !block || !blockElement || composing) return;
-      const { contents, affected, affectedLength } = blockUtils.getInlineContents(blockElement);
-      updateCaretPositionRef();
-      updateBlock({ ...block, contents });
-      if (affected) {
-        render([blockId]);
-        let newCaretPosition = lastCaretPositionRef.current;
-        if (!newCaretPosition) {
-          if (!lastCaretRectRef.current) return;
-          const range = caretRangeFromPoint(lastCaretRectRef.current.x, lastCaretRectRef.current.y);
-          const selection = document.getSelection();
-          if (!selection || !range) return;
-          selection.setBaseAndExtent(
-            range.startContainer,
-            range.startOffset,
-            range.startContainer,
-            range.startOffset,
-          );
-          const nativeRange = getNativeRange();
-          if (!nativeRange) return;
-          newCaretPosition = normalizeRange(nativeRange);
+      if (!blockElement && blockId) {
+        const el = blockUtils.getBlockElementById(blockId);
+        if (el) {
+          blockElement = el;
         }
-        let caretIndex = newCaretPosition?.index ?? 0;
-        caretIndex += affectedLength;
-        setCaretPosition({
-          ...newCaretPosition,
-          index: caretIndex >= 0 ? caretIndex : 0,
-        });
       }
-      setTimeout(() => updateCaretRect(), 10);
-    }, 10);
-  }, []);
+
+      const block = blocksRef.current.find((v) => v.id === blockId);
+      const composing = getModule('keyboard').composing;
+
+      setTimeout(() => {
+        if (!blockId || !block || !blockElement || composing) return;
+        const { contents, affected, affectedLength } = blockUtils.getInlineContents(blockElement);
+        updateCaretPositionRef();
+        if (isEqual(block.contents, contents)) return;
+        updateBlock({ ...block, contents });
+        if (affected || forceUpdate) {
+          render([blockId]);
+          let newCaretPosition = lastCaretPositionRef.current;
+          if (!newCaretPosition) {
+            if (!lastCaretRectRef.current) return;
+            const range = caretRangeFromPoint(
+              lastCaretRectRef.current.x,
+              lastCaretRectRef.current.y,
+            );
+            const selection = document.getSelection();
+            if (!selection || !range) return;
+            selection.setBaseAndExtent(
+              range.startContainer,
+              range.startOffset,
+              range.startContainer,
+              range.startOffset,
+            );
+            const nativeRange = getNativeRange();
+            if (!nativeRange) return;
+            newCaretPosition = normalizeRange(nativeRange);
+          }
+          const blockLength = blockUtils.getBlockLength(blockElement) ?? 0;
+          let caretIndex = newCaretPosition?.index ?? 0;
+          caretIndex += affectedLength;
+          if (blockLength < caretIndex) {
+            caretIndex = blockLength;
+          }
+          blur();
+
+          setTimeout(() => {
+            setCaretPosition({
+              ...newCaretPosition,
+              index: caretIndex >= 0 ? caretIndex : 0,
+            });
+            updateCaretRect();
+          }, 10);
+        }
+      }, 10);
+    },
+    [],
+  );
 
   const createBlock = React.useCallback((appendBlock: Block, prevBlockId?: string) => {
     const currentIndex = blocksRef.current.findIndex((v) => v.id === prevBlockId);
@@ -495,9 +515,8 @@ export function useEditor({
         };
       }),
     };
-
-    const redo = json0diff(prevBlock, currentBlock, DiffMatchPatch, json1, textUnicode);
-    const undo = json0diff(currentBlock, prevBlock, DiffMatchPatch, json1, textUnicode);
+    const redo = json0diff(prevBlock, currentBlock, DiffMatchPatch);
+    const undo = json0diff(currentBlock, prevBlock, DiffMatchPatch);
 
     if (redo && undo) {
       eventEmitter.emit(EditorEvents.EVENT_EDITOR_CHANGE, {
@@ -567,11 +586,11 @@ export function useEditor({
   //       ...block.contents.slice(0, block.contents.length - 1),
   //       {
   //         ...block.contents[block.contents.length - 1],
-  //         text: block.contents[block.contents.length - 1].text + 'a',
+  //         text: 'あ' + block.contents[block.contents.length - 1].text,
   //       },
   //     ];
   //     console.log(JSON.stringify(contents));
-  //     updateBlock({ ...block, contents }, EventSources.SILENT);
+  //     updateBlock({ ...block, contents }, EventSources.COLLABORATOR);
   //     render([block.id]);
   //   }, 4000);
 

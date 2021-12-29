@@ -15,12 +15,13 @@ export interface ParagraphProps {
 
 const P = styled.p`
   width: 100%;
-  padding: 2px 12px;
   font-size: 1rem;
   outline: 0;
   margin: 0;
 `;
 
-export const Paragraph = React.memo(({ blockId, formats, editor, contents, ...props }: ParagraphProps) => {
-  return <P {...props}>{contents}</P>;
-});
+export const Paragraph = React.memo(
+  ({ blockId, formats, editor, contents, ...props }: ParagraphProps) => {
+    return <P {...props}>{contents}</P>;
+  },
+);

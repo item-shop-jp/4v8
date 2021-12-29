@@ -31,18 +31,13 @@ export interface PositionParams {
  * user       => Update your blocks and then save the operation
  * silent     => Update your blocks, then don't save the operation
  */
-export type Source = 'user' | 'silent';
+export type Source = 'user' | 'silent' | 'collaborator';
 
 export interface EditorController {
   focus(): void;
   blur(): void;
   getFormats(blockId: string, index: number, length?: number): InlineAttributes;
-  formatText(
-    blockId: string,
-    index: number,
-    length: number,
-    attributes: InlineAttributes,
-  ): void;
+  formatText(blockId: string, index: number, length: number, attributes: InlineAttributes): void;
   getBlocks(): Block[];
   getBlock(blockId: string): Block | null;
   getBlockLength(blockId: string): number | null;
@@ -50,7 +45,7 @@ export interface EditorController {
   updateBlock(block: Block): void;
   updateBlock(block: Block, source: Source): void;
   deleteBlock(blockId: string): void;
-  sync(blockId?: string, blockElement?: HTMLElement): void;
+  sync(blockId?: string, blockElement?: HTMLElement, forceUpdate?: boolean): void;
   setCaretPosition(caretPosition: Partial<CaretPosition>): void;
   getCaretPosition(): CaretPosition | null;
   getNativeRange(): Range | null;
@@ -69,11 +64,7 @@ export interface EditorController {
     modules: {
       name: string;
       module: {
-        new (params: {
-          eventEmitter: EventEmitter;
-          editor: EditorController;
-          options: any;
-        }): any;
+        new (params: { eventEmitter: EventEmitter; editor: EditorController; options: any }): any;
       };
     }[],
     options?: ModuleOptions,

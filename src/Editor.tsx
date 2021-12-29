@@ -1,13 +1,29 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { Subscription } from 'rxjs';
-import { BlockContainer, Header1, Header2, Header3, Header4, Header5, Header6, Paragraph } from './components/blocks';
+import {
+  BlockContainer,
+  Header1,
+  Header2,
+  Header3,
+  Header4,
+  Header5,
+  Header6,
+  Paragraph,
+} from './components/blocks';
 import { InlineText } from './components/inlines';
 import { Bold, Strike, Underline } from './components/styles';
 import { GlobalToolbar, BubbleToolbar } from './components/toolbar';
 import { useEditor } from './hooks/use-editor';
 import { useEventEmitter } from './hooks/use-event-emitter';
-import { EditorModule, KeyBoardModule, LoggerModule, ToolbarModule, SelectorModule, HistoryModule } from './modules';
+import {
+  EditorModule,
+  KeyBoardModule,
+  LoggerModule,
+  ToolbarModule,
+  SelectorModule,
+  HistoryModule,
+} from './modules';
 import { getBlockElementById, getBlockId } from './utils/block';
 import { EditorEvents } from './constants';
 import { Formats } from './types/format';
@@ -30,6 +46,12 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   cursor: text;
+  img.emoji {
+    height: 1em;
+    width: 1em;
+    margin: 0 0.05em 0 0.1em;
+    vertical-align: -0.1em;
+  }
 `;
 const Inner = styled.div`
   flex-shrink: 0;
@@ -38,6 +60,7 @@ const Inner = styled.div`
 const MarginBottom = styled.div`
   flex-shrink: 0;
   flex-grow: 1;
+  user-select: none;
 `;
 
 export const Editor: React.VFC<Props> = React.memo(
@@ -107,13 +130,41 @@ export const Editor: React.VFC<Props> = React.memo(
       [editor],
     );
 
-    const handleContainerClick = React.useCallback(() => {
-      const lastBlock = blocks[blocks.length - 1];
-      if (!lastBlock) return;
-      const element = getBlockElementById(lastBlock.id);
-      if (!element) return;
-      editor.setCaretPosition({ blockId: lastBlock.id, index: element.innerText.length });
-    }, [blocks.length]);
+    const handlePaste = React.useCallback(
+      (e: React.ClipboardEvent) => {
+        console.log('paste', e);
+        e.preventDefault();
+      },
+      [editor],
+    );
+
+    const handleDrop = React.useCallback(
+      (e: React.DragEvent) => {
+        e.preventDefault();
+      },
+      [editor],
+    );
+    const handleDrag = React.useCallback(
+      (e: React.DragEvent) => {
+        e.preventDefault();
+      },
+      [editor],
+    );
+
+    const handleContainerClick = React.useCallback(
+      (e: React.MouseEvent) => {
+        const lastBlock = blocks[blocks.length - 1];
+        if (!lastBlock) return;
+        const element = getBlockElementById(lastBlock.id);
+        if (!element) return;
+        e.preventDefault();
+        editor.setCaretPosition({
+          blockId: lastBlock.id,
+          index: editor.getBlockLength(lastBlock.id) ?? 0,
+        });
+      },
+      [blocks.length],
+    );
 
     React.useEffect(() => {
       const subs = new Subscription();
@@ -218,6 +269,9 @@ export const Editor: React.VFC<Props> = React.memo(
                 selected={block.selected}
                 onClick={handleClick}
                 onKeyDown={handleKeyDown}
+                onPaste={handlePaste}
+                onDrop={handleDrop}
+                onDrag={handleDrag}
                 onBeforeInput={handleInput}
                 onCompositionStart={handleCompositionStart}
                 onCompositionEnd={handleCompositionEnd}

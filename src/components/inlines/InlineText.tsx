@@ -1,5 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
+import twemoji from 'twemoji';
 import { Formats } from '../../types/format';
 import { Inline } from '../../types/inline';
 
@@ -39,7 +40,13 @@ const Link = styled.a<InlineContentProps>`
 
 export const InlineText = ({ inline, formats, ...props }: InlineTextProps) => {
   const memoInnerHTML = React.useMemo(() => {
-    return { __html: inline.text.replaceAll('\n', '<br>') };
+    const text = inline.text.replaceAll('\n', '<br>');
+    return {
+      __html: twemoji.parse(text, {
+        folder: 'svg',
+        ext: '.svg',
+      }),
+    };
   }, [inline]);
 
   return (
@@ -54,7 +61,12 @@ export const InlineText = ({ inline, formats, ...props }: InlineTextProps) => {
           {...props}
         />
       ) : (
-        <Text dangerouslySetInnerHTML={memoInnerHTML} formats={formats} attributes={inline.attributes} {...props} />
+        <Text
+          dangerouslySetInnerHTML={memoInnerHTML}
+          formats={formats}
+          attributes={inline.attributes}
+          {...props}
+        />
       )}
     </>
   );

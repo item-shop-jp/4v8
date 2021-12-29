@@ -38,6 +38,7 @@ export const EventSources: {
 } = {
   SILENT: 'silent',
   USER: 'user',
+  COLLABORATOR: 'collaborator',
 };
 
 export const LogLevels = {

@@ -32,7 +32,7 @@ interface Props {
 }
 
 export function useEditor({
-  settings: { scrollMarginTop = 100, scrollMarginBottom = 250 },
+  settings: { scrollMarginTop = 100, scrollMarginBottom = 250, collaborationLevel = 'inline' },
   eventEmitter,
   scrollContainer,
 }: Props): [React.MutableRefObject<HTMLDivElement | null>, EditorController] {
@@ -470,18 +470,31 @@ export function useEditor({
     [],
   );
 
-  const createBlock = React.useCallback((appendBlock: Block, prevBlockId?: string) => {
-    const currentIndex = blocksRef.current.findIndex((v) => v.id === prevBlockId);
-    updateBlocks(
-      currentIndex !== -1
-        ? [
-            ...blocksRef.current.slice(0, currentIndex + 1),
-            appendBlock,
-            ...blocksRef.current.slice(currentIndex + 1),
-          ]
-        : [...blocksRef.current, appendBlock],
-    );
-  }, []);
+  const createBlock = React.useCallback(
+    (appendBlock: Block, prevBlockId?: string, source: Source = EventSources.USER) => {
+      const currentIndex = blocksRef.current.findIndex((v) => v.id === prevBlockId);
+
+      // eventEmitter.emit(EditorEvents.EVENT_EDITOR_CHANGE, {
+      //   payload: {
+      //     type: HistoryType.ADD_BLOCK,
+      //     blockId: appendBlock.id,
+      //     block: appendBlock,
+      //   },
+      //   source,
+      // });
+
+      updateBlocks(
+        currentIndex !== -1
+          ? [
+              ...blocksRef.current.slice(0, currentIndex + 1),
+              appendBlock,
+              ...blocksRef.current.slice(currentIndex + 1),
+            ]
+          : [...blocksRef.current, appendBlock],
+      );
+    },
+    [],
+  );
 
   const updateBlocks = React.useCallback((blocks: Block[]) => {
     blocksRef.current = blocks;

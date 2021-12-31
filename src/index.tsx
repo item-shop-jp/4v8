@@ -34,13 +34,14 @@ const settings = {
     },
     history: {
       maxStack: 50,
-      delay: 200,
+      delay: 1000,
     },
   },
   scrollMarginBottom: 150,
   scrollMarginTop: 50,
   allowAttributes: ['bold', 'strike'],
   allowFormats: [],
+  exclusiveLockMode: true,
 };
 
 export const Container: React.VFC = React.memo(() => {

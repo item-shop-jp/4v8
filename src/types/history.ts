@@ -1,7 +1,6 @@
 import { Block } from './block';
 import { Inline } from './inline';
-
-export type OperationType = 'update_contents' | 'add_block' | 'remove_block';
+import { HistoryType } from '../constants';
 
 export interface JSON0 {
   p: [keyof Block, number, keyof Inline, number];
@@ -11,10 +10,25 @@ export interface JSON0 {
   sd: string;
 }
 
-export interface Op {
-  type: OperationType;
+export interface UpdateOp {
+  type: 'update_contents';
   blockId: string;
-  undo?: JSON0[];
-  redo?: JSON0[];
-  block?: Block;
+  undo: JSON0[];
+  redo: JSON0[];
 }
+
+export interface AddOp {
+  type: 'add_block';
+  blockId: string;
+  block: Block;
+  prevBlockId: string;
+}
+
+export interface RemoveOp {
+  type: 'remove_block';
+  blockId: string;
+  block: Block;
+  prevBlockId: string;
+}
+
+export type Op = UpdateOp | AddOp | RemoveOp;

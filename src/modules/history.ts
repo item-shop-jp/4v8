@@ -7,8 +7,8 @@ import { EventEmitter } from '../utils/event-emitter';
 import { getTextLength, getStartIndex } from '../utils/json0';
 import { Block } from '../types/block';
 import { EditorController, Source } from '../types/editor';
-import { Op, JSON0 } from '../types/history';
-import { EditorEvents, EventSources } from '../constants';
+import { Op, JSON0, UpdateOp } from '../types/history';
+import { EditorEvents, EventSources, HistoryType } from '../constants';
 
 interface Props {
   eventEmitter: EventEmitter;
@@ -108,7 +108,7 @@ export class HistoryModule implements Module {
 
     const caret = this.editor.getCaretPosition();
     if (caret && caret.blockId === transformOp.blockId) {
-      if (transformOp.redo) {
+      if (transformOp.type === HistoryType.UPDATE_CONTENTS && transformOp.redo) {
         this.editor.blur();
         const block = this.editor.getBlock(caret.blockId);
         const affectedLength = getTextLength(transformOp.redo);
@@ -135,35 +135,48 @@ export class HistoryModule implements Module {
         optimizedUndo.push(tmp);
         return;
       }
-      if (optimizedUndo[index].undo && tmp.undo) {
-        optimizedUndo[index] = {
-          ...optimizedUndo[index],
-          undo: json0.type.compose(optimizedUndo[index].undo, tmp.undo),
-        };
-      }
-      if (optimizedUndo[index].redo && tmp.redo) {
-        optimizedUndo[index] = {
-          ...optimizedUndo[index],
-          redo: json0.type.compose(tmp.redo, optimizedUndo[index].redo),
-        };
+      if (
+        tmp.type === HistoryType.UPDATE_CONTENTS &&
+        optimizedUndo[index].type === HistoryType.UPDATE_CONTENTS
+      ) {
+        if ((optimizedUndo[index] as UpdateOp).undo && tmp.undo) {
+          (optimizedUndo[index] as UpdateOp).undo = json0.type.compose(
+            (optimizedUndo[index] as UpdateOp).undo,
+            tmp.undo,
+          );
+        }
+        //@ts-ignore
+        if ((optimizedUndo[index] as UpdateOp).redo && tmp.redo) {
+          (optimizedUndo[index] as UpdateOp).redo = json0.type.compose(
+            tmp.redo,
+            (optimizedUndo[index] as UpdateOp).redo,
+          );
+        }
       }
     });
     this.tmpUndo = [];
     this.stack.undo.push(optimizedUndo);
+
     if (this.stack.undo.length > this.options.maxStack) {
       this.stack.undo.shift();
     }
   }
 
   undo() {
+    if (this.tmpUndo.length > 0) {
+      this.optimizeOp();
+    }
     const ops = this.stack.undo.pop();
     if (ops && ops.length > 0) {
       this.isUpdating = true;
       ops.forEach((op) => {
-        if (!op.undo) return;
-
-        this.executeJson0(op.blockId, op.undo);
-        this.transformCaret(op.blockId, op.undo);
+        switch (op.type) {
+          case HistoryType.UPDATE_CONTENTS: {
+            this.executeJson0(op.blockId, op.undo);
+            this.transformCaret(op.blockId, op.undo);
+            break;
+          }
+        }
       });
       this.stack.redo.push(ops);
       this.isUpdating = false;
@@ -171,13 +184,20 @@ export class HistoryModule implements Module {
   }
 
   redo() {
+    if (this.tmpUndo.length > 0) {
+      this.optimizeOp();
+    }
     const ops = this.stack.redo.pop();
     if (ops && ops.length > 0) {
       this.isUpdating = true;
       ops.forEach((op) => {
-        if (!op.redo) return;
-        this.executeJson0(op.blockId, op.redo);
-        this.transformCaret(op.blockId, op.redo);
+        switch (op.type) {
+          case HistoryType.UPDATE_CONTENTS: {
+            this.executeJson0(op.blockId, op.redo);
+            this.transformCaret(op.blockId, op.redo);
+            break;
+          }
+        }
       });
       this.stack.undo.push(ops);
       this.isUpdating = false;
@@ -188,7 +208,6 @@ export class HistoryModule implements Module {
     const block = this.editor.getBlock(blockId);
     if (!block) return;
     const updatedBlock: Block = json0.type.apply(block, ops);
-
     this.editor.updateBlock(
       {
         ...updatedBlock,
@@ -220,7 +239,6 @@ export class HistoryModule implements Module {
         index: affectedLength > 0 ? startIndex + affectedLength : startIndex,
         length: 0,
       });
-
       this.editor.updateCaretRect();
     }, 10);
   }

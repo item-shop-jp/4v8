@@ -18,6 +18,7 @@ export interface Settings {
   allowAttributes?: string[];
   allowFormats?: string[];
   modules?: ModuleOptions;
+  collaborationLevel?: 'block' | 'inline';
 }
 
 export interface PositionParams {

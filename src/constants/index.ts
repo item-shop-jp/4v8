@@ -1,4 +1,5 @@
 import { Source } from '../types/editor';
+import { AddOp, UpdateOp, RemoveOp } from '../types/history';
 
 export const KeyCodes = {
   ESC: 'Escape',
@@ -28,9 +29,9 @@ export const EditorEvents = {
 };
 
 export const HistoryType = {
-  UPDATE_CONTENTS: 'update_contents',
-  ADD_BLOCK: 'add_block',
-  REMOVE_BLOCK: 'remove_block',
+  UPDATE_CONTENTS: 'update_contents' as UpdateOp['type'],
+  ADD_BLOCK: 'add_block' as AddOp['type'],
+  REMOVE_BLOCK: 'remove_block' as RemoveOp['type'],
 };
 
 export const EventSources: {

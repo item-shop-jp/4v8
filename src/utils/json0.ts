@@ -6,16 +6,16 @@ export function getTextLength(ops: JSON0[] = []): number {
   let length = 0;
   ops.forEach((op) => {
     if (op.li) {
-      length += stringLength(op.li.text);
+      length += stringLength(op.li.text.replaceAll(/\uFEFF/gi, ''));
     }
     if (op.ld) {
-      length -= stringLength(op.ld.text);
+      length -= stringLength(op.ld.text.replaceAll(/\uFEFF/gi, ''));
     }
     if (op.si) {
-      length += stringLength(op.si);
+      length += stringLength(op.si.replaceAll(/\uFEFF/gi, ''));
     }
     if (op.sd) {
-      length -= stringLength(op.sd);
+      length -= stringLength(op.sd.replaceAll(/\uFEFF/gi, ''));
     }
   });
   return length;
@@ -49,8 +49,6 @@ export function getStartIndex(contents: Inline[], ops: JSON0[] = []): number {
     }
     index += stringLength(contents[i].text);
   }
-
-  if (index < 1) index = 1;
 
   return index;
 }

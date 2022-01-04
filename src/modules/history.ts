@@ -130,7 +130,9 @@ export class HistoryModule implements Module {
     if (this.tmpUndo.length < 1) return;
     let optimizedUndo: Op[] = [];
     this.tmpUndo.reverse().forEach((tmp) => {
-      const index = optimizedUndo.findIndex((v) => v.blockId === tmp.blockId);
+      const index = optimizedUndo.findIndex(
+        (v) => v.blockId === tmp.blockId && v.type === tmp.type,
+      );
       if (index === -1) {
         optimizedUndo.push(tmp);
         return;
@@ -145,7 +147,6 @@ export class HistoryModule implements Module {
             tmp.undo,
           );
         }
-        //@ts-ignore
         if ((optimizedUndo[index] as UpdateOp).redo && tmp.redo) {
           (optimizedUndo[index] as UpdateOp).redo = json0.type.compose(
             tmp.redo,
@@ -195,6 +196,11 @@ export class HistoryModule implements Module {
           case HistoryType.UPDATE_CONTENTS: {
             this.executeJson0(op.blockId, op.redo);
             this.transformCaret(op.blockId, op.redo);
+            console.log('update_block', op.blockId);
+            break;
+          }
+          case HistoryType.ADD_BLOCK: {
+            console.log('add_block', op.blockId);
             break;
           }
         }

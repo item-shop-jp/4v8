@@ -45,6 +45,7 @@ export class EditorModule implements Module {
     blockId = blockId ?? caretPosition?.blockId;
     const appendBlock = createBlock('PARAGRAPH');
     this.editor.createBlock(appendBlock, blockId);
+    this.editor.getModule('history').optimizeOp();
     setTimeout(() => {
       this.editor.next();
     }, 10);
@@ -60,6 +61,7 @@ export class EditorModule implements Module {
     const prevBlockLength = this.editor.getBlockLength(blocks[currentIndex - 1].id) ?? 0;
     this.editor.prev({ index: prevBlockLength });
     this.editor.deleteBlock(blockId);
+    this.editor.getModule('history').optimizeOp();
     this.editor.render();
   }
 
@@ -74,6 +76,7 @@ export class EditorModule implements Module {
       ...source,
       contents: copyObject([...source.contents, ...other.contents]),
     });
+    this.editor.getModule('history').optimizeOp();
     setTimeout(
       () => this.editor.setCaretPosition({ blockId: source.id, index: currentSourceLength }),
       10,
@@ -102,5 +105,6 @@ export class EditorModule implements Module {
     }, 10);
     this.editor.createBlock(lastBlock, firstBlock.id);
     this.editor.updateBlock(firstBlock);
+    this.editor.getModule('history').optimizeOp();
   }
 }

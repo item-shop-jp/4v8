@@ -474,14 +474,15 @@ export function useEditor({
     (appendBlock: Block, prevBlockId?: string, source: Source = EventSources.USER) => {
       const currentIndex = blocksRef.current.findIndex((v) => v.id === prevBlockId);
 
-      // eventEmitter.emit(EditorEvents.EVENT_EDITOR_CHANGE, {
-      //   payload: {
-      //     type: HistoryType.ADD_BLOCK,
-      //     blockId: appendBlock.id,
-      //     block: appendBlock,
-      //   },
-      //   source,
-      // });
+      eventEmitter.emit(EditorEvents.EVENT_EDITOR_CHANGE, {
+        payload: {
+          type: HistoryType.ADD_BLOCK,
+          blockId: appendBlock.id,
+          block: appendBlock,
+          prevBlockId,
+        },
+        source,
+      });
 
       updateBlocks(
         currentIndex !== -1

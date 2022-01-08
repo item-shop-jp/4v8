@@ -45,7 +45,7 @@ export class EditorModule implements Module {
     blockId = blockId ?? caretPosition?.blockId;
     const appendBlock = createBlock('PARAGRAPH');
     this.editor.createBlock(appendBlock, blockId);
-    this.editor.getModule('history').optimizeOp();
+    this.editor.getModule('history')?.optimizeOp();
     setTimeout(() => {
       this.editor.next();
     }, 10);

@@ -43,9 +43,11 @@ export interface EditorController {
   getBlock(blockId: string): Block | null;
   getBlockLength(blockId: string): number | null;
   createBlock(appendBlock: Block, prevBlockId?: string): void;
+  createBlock(appendBlock: Block, prevBlockId: string, source: Source): void;
   updateBlock(block: Block): void;
   updateBlock(block: Block, source: Source): void;
   deleteBlock(blockId: string): void;
+  deleteBlock(blockId: string, source: Source): void;
   sync(blockId?: string, blockElement?: HTMLElement, forceUpdate?: boolean): void;
   setCaretPosition(caretPosition: Partial<CaretPosition>): void;
   getCaretPosition(): CaretPosition | null;
@@ -77,6 +79,6 @@ export interface EditorController {
   getModule(name: 'history'): HistoryModule;
   getModule(name: 'logger'): LoggerModule;
   getModule<T = any>(name: string): T | null;
-  removeAllModules: () => void;
-  getEventEmitter: () => EventEmitter;
+  removeAllModules(): void;
+  getEventEmitter(): EventEmitter;
 }

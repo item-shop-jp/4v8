@@ -15,7 +15,7 @@ export function useEventEmitter(): [
   const on = React.useCallback(
     <T>(key: string, callback: (res: T) => void): Subscription | undefined => {
       if (!eventEmitter) return;
-      const sub = eventEmitter.on<T>(key).subscribe((res) => {
+      const sub = eventEmitter.select<T>(key).subscribe((res) => {
         callback(res);
       });
       subscriptionRef.current?.add(sub);

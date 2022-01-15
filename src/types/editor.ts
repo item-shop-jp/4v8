@@ -22,9 +22,7 @@ export interface Settings {
 }
 
 export interface PositionParams {
-  caretPosition?: CaretPosition;
   index?: number;
-  length?: number;
   margin?: number;
 }
 

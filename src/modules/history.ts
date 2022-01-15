@@ -53,7 +53,7 @@ export class HistoryModule implements Module {
     this.eventEmitter.info('init history module');
 
     const sub = this.eventEmitter
-      .on<{ payload: Op; source: Source }>(EditorEvents.EVENT_EDITOR_CHANGE)
+      .select<{ payload: Op; source: Source }>(EditorEvents.EVENT_EDITOR_CHANGE)
       .subscribe(({ payload, source }) => {
         if (this.isUpdating) return;
         if (source === EventSources.USER) {

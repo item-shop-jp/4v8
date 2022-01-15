@@ -18,14 +18,14 @@ export const KeyCodes = {
 };
 
 export const EditorEvents = {
-  EVENT_EDITOR_CREATE: 'event:editor-create',
-  EVENT_EDITOR_CHANGE: 'event:editor-change',
-  EVENT_BLOCK_RERENDER: 'event:block-rerender',
-  EVENT_BLOCK_SELECTED: 'event:block-selected', // Selector Mode
-  EVENT_SELECTION_CHANGE: 'event:selection-change',
-  EVENT_LOG_INFO: 'event:log-info',
-  EVENT_LOG_WARNING: 'event:log-warning',
-  EVENT_LOG_ERROR: 'event:log-error',
+  EVENT_EDITOR_CREATE: 'editor-create',
+  EVENT_EDITOR_CHANGE: 'editor-change',
+  EVENT_BLOCK_RERENDER: 'block-rerender',
+  EVENT_BLOCK_SELECTED: 'block-selected', // Selector Mode
+  EVENT_SELECTION_CHANGE: 'selection-change',
+  EVENT_LOG_INFO: 'log-info',
+  EVENT_LOG_WARNING: 'log-warning',
+  EVENT_LOG_ERROR: 'log-error',
 };
 
 export const HistoryType = {

@@ -52,108 +52,110 @@ const Button = styled.a<ButtonProps>`
   }
 `;
 
-export const BubbleToolbar = React.memo(({ editor, scrollContainer, ...props }: BubbleToolbarProps) => {
-  const [formats, setFormats] = React.useState<InlineAttributes>({});
-  const [position, setPosition] = React.useState<ToolbarPosition>();
-  const [blockType, setBlockType] = React.useState<BlockType>();
-  const [collapsed, setCollapsed] = React.useState<boolean>(true);
+export const BubbleToolbar = React.memo(
+  ({ editor, scrollContainer, ...props }: BubbleToolbarProps) => {
+    const [formats, setFormats] = React.useState<InlineAttributes>({});
+    const [position, setPosition] = React.useState<ToolbarPosition>();
+    const [blockType, setBlockType] = React.useState<BlockType>();
+    const [collapsed, setCollapsed] = React.useState<boolean>(true);
 
-  const handleBold = React.useCallback(
-    (event: React.MouseEvent) => {
-      event.preventDefault();
-      editor.getModule('toolbar').formatInline({ bold: !formats?.bold });
-    },
-    [formats],
-  );
-
-  const handleUnderline = React.useCallback(
-    (event: React.MouseEvent) => {
-      event.preventDefault();
-      editor.getModule('toolbar').formatInline({ underline: !formats?.underline });
-    },
-    [formats],
-  );
-
-  const handleStrike = React.useCallback(
-    (event: React.MouseEvent) => {
-      event.preventDefault();
-      editor.getModule('toolbar').formatInline({ strike: !formats?.strike });
-    },
-    [formats],
-  );
-
-  const handleLink = React.useCallback(
-    (event: React.MouseEvent) => {
-      event.preventDefault();
-      editor.getModule('toolbar').formatInline({ link: 'https://google.com' });
-    },
-    [formats],
-  );
-
-  const handleHeader1 = React.useCallback(
-    (event: React.MouseEvent) => {
-      event.preventDefault();
-      editor.getModule('toolbar').formatBlock('HEADER1');
-    },
-    [formats],
-  );
-
-  React.useEffect(() => {
-    const subs = new Subscription();
-    const eventEmitter = editor.getEventEmitter();
-    subs.add(
-      eventEmitter.on(EditorEvents.EVENT_SELECTION_CHANGE).subscribe((v) => {
-        const caret = editor.getCaretPosition();
-        if (!caret) {
-          setPosition(undefined);
-          setCollapsed(true);
-          return;
-        }
-        const container = getScrollContainer(scrollContainer);
-        if (container) {
-          const containerRect = container.getBoundingClientRect();
-          const top = (container?.scrollTop ?? 0) + caret.rect.top - containerRect.top;
-          const left = caret.rect.left - containerRect.left;
-          setPosition({ top, left });
-        } else {
-          const scrollEl = document.scrollingElement as HTMLElement;
-          const top = scrollEl.scrollTop + caret.rect.top;
-          const left = caret.rect.left;
-          setPosition({ top, left });
-        }
-
-        setCollapsed(caret.collapsed);
-        setFormats(editor.getFormats(caret.blockId, caret.index, caret.length));
-        setBlockType(editor.getBlock(caret.blockId)?.type);
-      }),
+    const handleBold = React.useCallback(
+      (event: React.MouseEvent) => {
+        event.preventDefault();
+        editor.getModule('toolbar').formatInline({ bold: !formats?.bold });
+      },
+      [formats],
     );
-    return () => {
-      subs.unsubscribe();
-    };
-  }, [editor, scrollContainer]);
 
-  return ReactDOM.createPortal(
-    <>
-      {!collapsed && (
-        <Container top={position?.top ?? 0} left={position?.left ?? 0} {...props}>
-          <Button href="#" onClick={handleHeader1} active={blockType === 'HEADER1'}>
-            H1
-          </Button>
-          <Button href="#" onClick={handleBold} active={!!formats?.bold}>
-            B
-          </Button>
-          <Button href="#" onClick={handleUnderline} active={!!formats?.underline}>
-            U
-          </Button>
-          <Button href="#" onClick={handleStrike} active={!!formats?.strike}>
-            S
-          </Button>
-          <Button href="#" onClick={handleLink} active={!!formats?.link}>
-            L
-          </Button>
-        </Container>
-      )}
-    </>,
-    getScrollContainer(scrollContainer) ?? document.body,
-  );
-});
+    const handleUnderline = React.useCallback(
+      (event: React.MouseEvent) => {
+        event.preventDefault();
+        editor.getModule('toolbar').formatInline({ underline: !formats?.underline });
+      },
+      [formats],
+    );
+
+    const handleStrike = React.useCallback(
+      (event: React.MouseEvent) => {
+        event.preventDefault();
+        editor.getModule('toolbar').formatInline({ strike: !formats?.strike });
+      },
+      [formats],
+    );
+
+    const handleLink = React.useCallback(
+      (event: React.MouseEvent) => {
+        event.preventDefault();
+        editor.getModule('toolbar').formatInline({ link: 'https://google.com' });
+      },
+      [formats],
+    );
+
+    const handleHeader1 = React.useCallback(
+      (event: React.MouseEvent) => {
+        event.preventDefault();
+        editor.getModule('toolbar').formatBlock('HEADER1');
+      },
+      [formats],
+    );
+
+    React.useEffect(() => {
+      const subs = new Subscription();
+      const eventEmitter = editor.getEventEmitter();
+      subs.add(
+        eventEmitter.select(EditorEvents.EVENT_SELECTION_CHANGE).subscribe((v) => {
+          const caret = editor.getCaretPosition();
+          if (!caret) {
+            setPosition(undefined);
+            setCollapsed(true);
+            return;
+          }
+          const container = getScrollContainer(scrollContainer);
+          if (container) {
+            const containerRect = container.getBoundingClientRect();
+            const top = (container?.scrollTop ?? 0) + caret.rect.top - containerRect.top;
+            const left = caret.rect.left - containerRect.left;
+            setPosition({ top, left });
+          } else {
+            const scrollEl = document.scrollingElement as HTMLElement;
+            const top = scrollEl.scrollTop + caret.rect.top;
+            const left = caret.rect.left;
+            setPosition({ top, left });
+          }
+
+          setCollapsed(caret.collapsed);
+          setFormats(editor.getFormats(caret.blockId, caret.index, caret.length));
+          setBlockType(editor.getBlock(caret.blockId)?.type);
+        }),
+      );
+      return () => {
+        subs.unsubscribe();
+      };
+    }, [editor, scrollContainer]);
+
+    return ReactDOM.createPortal(
+      <>
+        {!collapsed && (
+          <Container top={position?.top ?? 0} left={position?.left ?? 0} {...props}>
+            <Button href="#" onClick={handleHeader1} active={blockType === 'HEADER1'}>
+              H1
+            </Button>
+            <Button href="#" onClick={handleBold} active={!!formats?.bold}>
+              B
+            </Button>
+            <Button href="#" onClick={handleUnderline} active={!!formats?.underline}>
+              U
+            </Button>
+            <Button href="#" onClick={handleStrike} active={!!formats?.strike}>
+              S
+            </Button>
+            <Button href="#" onClick={handleLink} active={!!formats?.link}>
+              L
+            </Button>
+          </Container>
+        )}
+      </>,
+      getScrollContainer(scrollContainer) ?? document.body,
+    );
+  },
+);

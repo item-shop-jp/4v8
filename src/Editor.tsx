@@ -180,12 +180,12 @@ export const Editor: React.VFC<Props> = React.memo(
         settings?.modules ?? {},
       );
       subs.add(
-        eventEmitter.on(EditorEvents.EVENT_BLOCK_RERENDER).subscribe(() => {
+        eventEmitter.select(EditorEvents.EVENT_BLOCK_RERENDER).subscribe(() => {
           setBlocks(editor.getBlocks());
         }),
       );
       subs.add(
-        eventEmitter.on(EditorEvents.EVENT_BLOCK_SELECTED).subscribe((blockIds: string[]) => {
+        eventEmitter.select(EditorEvents.EVENT_BLOCK_SELECTED).subscribe((blockIds: string[]) => {
           setSelectedIds(blockIds);
         }),
       );

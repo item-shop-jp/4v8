@@ -26,7 +26,7 @@ export function useBlockRenderer({ blockId, editor }: Props): Block | null {
 
     subs.add(
       eventEmitter
-        .on<string[]>(EditorEvents.EVENT_BLOCK_RERENDER)
+        .select<string[]>(EditorEvents.EVENT_BLOCK_RERENDER)
         .pipe(filter((affectedIds) => affectedIds.includes(blockId)))
         .subscribe(() => {
           const currentBlock = editor.getBlock(blockId);

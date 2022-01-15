@@ -39,7 +39,7 @@ export const GlobalToolbar = React.memo(({ editor, ...props }: GlobalToolbarProp
     const subs = new Subscription();
     const eventEmitter = editor.getEventEmitter();
     subs.add(
-      eventEmitter.on(EditorEvents.EVENT_SELECTION_CHANGE).subscribe((v) => {
+      eventEmitter.select(EditorEvents.EVENT_SELECTION_CHANGE).subscribe((v) => {
         const caret = editor.getCaretPosition();
         if (!caret) return;
         setFormats(editor.getFormats(caret.blockId, caret.index, caret.length));

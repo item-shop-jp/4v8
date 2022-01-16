@@ -37,6 +37,7 @@ export interface EditorController {
   blur(): void;
   getFormats(blockId: string, index: number, length?: number): InlineAttributes;
   formatText(blockId: string, index: number, length: number, attributes: InlineAttributes): void;
+  setBlocks(blocks: Block[]): void;
   getBlocks(): Block[];
   getBlock(blockId: string): Block | null;
   getBlockLength(blockId: string): number | null;

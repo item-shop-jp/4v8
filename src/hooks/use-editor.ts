@@ -207,6 +207,11 @@ export function useEditor({
     [],
   );
 
+  const setBlocks = React.useCallback((blocks: Block[]) => {
+    blocksRef.current = blocks;
+    render();
+  }, []);
+
   const getBlocks = React.useCallback((): Block[] => {
     return blocksRef.current;
   }, []);
@@ -563,6 +568,7 @@ export function useEditor({
       blur,
       getFormats,
       formatText,
+      setBlocks,
       getBlocks,
       getBlock,
       getBlockLength,

@@ -1,7 +1,7 @@
 {
   "name": "shibuya-editor",
   "version": "0.1.0",
-  "main": "packages/shibuya-editor/index.ts",
+  "main": "src/packages/shibuya-editor/index.ts",
   "author": "@tioken",
   "license": "MIT",
   "repository": {

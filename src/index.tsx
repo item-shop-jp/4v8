@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import styled, { css } from 'styled-components';
-import { Editor } from './Editor';
-import { LogLevels } from './constants';
-import { Paragraph, Header1 } from './components/blocks';
+import { LogLevels } from './packages/shibuya-editor/constants';
+import { EditorController } from './packages/shibuya-editor/types/editor';
+import { Editor, Paragraph, Header1 } from './packages/shibuya-editor';
 
 const ScrollContainer = styled.div`
   margin: 50px auto;
@@ -45,6 +45,7 @@ const settings = {
 };
 
 export const Container: React.VFC = React.memo(() => {
+  const editorRef = React.useRef<EditorController>(null);
   const formats = React.useMemo(() => {
     return {
       'block/paragraph': StyledParagraph,
@@ -52,9 +53,18 @@ export const Container: React.VFC = React.memo(() => {
     };
   }, []);
 
+  React.useEffect(() => {
+    console.log(editorRef.current);
+    editorRef.current?.setBlocks(
+      JSON.parse(
+        '[{"id":"OodywE2HkiW1KeTBPCa96","contents":[{"id":"OYbvu_ZB9QppDCeIOSfbZ","attributes":{"bold": true},"text":"今日はいい天気ですね🤗","type":"TEXT","isEmbed":false}],"attributes":{},"type":"PARAGRAPH"},{"id":"zB28GJ_DWSjPfe_IGov5-","contents":[{"id":"lNkUDGfX2rsgZhzq_lZ3f","text":"﻿","type":"TEXT","attributes":{},"isEmbed":false}],"attributes":{},"type":"PARAGRAPH"}]',
+      ),
+    );
+  });
+
   return (
     <BasicContainer id="scroll">
-      <Editor settings={settings} formats={formats} readOnly={false} />
+      <Editor settings={settings} formats={formats} readOnly={false} ref={editorRef} />
     </BasicContainer>
   );
 });

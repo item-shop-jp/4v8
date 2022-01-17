@@ -1,7 +1,13 @@
 {
-  "name": "4v8-editor",
+  "name": "shibuya-editor",
   "version": "0.1.0",
-  "private": true,
+  "main": "packages/shibuya-editor/index.ts",
+  "author": "@tioken",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/4v8js/shibuya-editor.git"
+  },
   "dependencies": {
     "@testing-library/jest-dom": "5.16.1",
     "@testing-library/react": "12.1.2",

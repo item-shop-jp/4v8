@@ -2,7 +2,6 @@ import * as React from 'react';
 import { Subscription } from 'rxjs';
 import isEqual from 'lodash.isequal';
 import { debounce } from 'throttle-debounce';
-import * as json0diff from 'json0-ot-diff';
 import * as json0 from 'ot-json0';
 import DiffMatchPatch from 'diff-match-patch';
 import { EventEmitter } from '../utils/event-emitter';
@@ -24,6 +23,8 @@ import {
   HistoryModule,
 } from '../modules';
 import { copyObject } from '../utils/object';
+
+const json0diff = require('json0-ot-diff');
 
 interface Props {
   settings: Settings;

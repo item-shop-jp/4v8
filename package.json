@@ -1,7 +1,7 @@
 {
   "name": "shibuya-editor",
   "version": "0.1.0",
-  "main": "src/packages/shibuya-editor/index.ts",
+  "main": "dist/main.ts",
   "author": "@tioken",
   "license": "MIT",
   "repository": {
@@ -9,6 +9,9 @@
     "url": "git+https://github.com/4v8js/shibuya-editor.git"
   },
   "dependencies": {
+    "@rollup/plugin-commonjs": "^21.0.1",
+    "@rollup/plugin-node-resolve": "^13.1.3",
+    "@rollup/plugin-typescript": "^8.3.0",
     "@testing-library/jest-dom": "5.16.1",
     "@testing-library/react": "12.1.2",
     "@testing-library/user-event": "13.5.0",
@@ -31,6 +34,8 @@
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-scripts": "5.0.0",
+    "rollup": "^2.64.0",
+    "rollup-plugin-dts": "^4.1.0",
     "rxjs": "7.5.1",
     "string-length": "5.0.1",
     "styled-components": "5.3.3",
@@ -42,6 +47,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "build:lib": "rollup -c",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -50,6 +56,9 @@
       "react-app",
       "react-app/jest"
     ]
+  },
+  "browser": {
+    "crypto": false
   },
   "browserslist": {
     "production": [

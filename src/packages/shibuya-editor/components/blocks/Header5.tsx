@@ -18,16 +18,20 @@ export interface Header5Props {
 const Header = styled.h5`
   outline: 0;
   transition: all 0.3s, color 0.3s;
+  padding: 2px 12px;
+  box-sizing: border-box;
   ::after {
     opacity: 0.3;
     content: attr(placeholder);
   }
 `;
 
-export const Header5 = React.memo(({ blockId, length, contents, attributes, editor, ...props }: Header5Props) => {
-  return (
-    <Header {...props} placeholder={length < 1 ? 'Heading 5' : ''}>
-      {contents}
-    </Header>
-  );
-});
+export const Header5 = React.memo(
+  ({ blockId, length, contents, attributes, editor, ...props }: Header5Props) => {
+    return (
+      <Header {...props} placeholder={length < 1 ? 'Heading 5' : ''}>
+        {contents}
+      </Header>
+    );
+  },
+);

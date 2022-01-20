@@ -18,6 +18,8 @@ const P = styled.p`
   font-size: 1rem;
   outline: 0;
   margin: 0;
+  padding: 2px 12px;
+  box-sizing: border-box;
 `;
 
 export const Paragraph = React.memo(

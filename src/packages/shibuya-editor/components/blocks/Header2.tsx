@@ -18,16 +18,20 @@ export interface Header2Props {
 const Header = styled.h2`
   outline: 0;
   transition: all 0.3s, color 0.3s;
+  padding: 2px 12px;
+  box-sizing: border-box;
   ::after {
     opacity: 0.3;
     content: attr(placeholder);
   }
 `;
 
-export const Header2 = React.memo(({ blockId, length, contents, attributes, editor, ...props }: Header2Props) => {
-  return (
-    <Header {...props} placeholder={length < 1 ? 'Heading 2' : ''}>
-      {contents}
-    </Header>
-  );
-});
+export const Header2 = React.memo(
+  ({ blockId, length, contents, attributes, editor, ...props }: Header2Props) => {
+    return (
+      <Header {...props} placeholder={length < 1 ? 'Heading 2' : ''}>
+        {contents}
+      </Header>
+    );
+  },
+);

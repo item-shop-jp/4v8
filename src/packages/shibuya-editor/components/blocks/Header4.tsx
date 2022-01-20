@@ -18,16 +18,20 @@ export interface Header4Props {
 const Header = styled.h4`
   outline: 0;
   transition: all 0.3s, color 0.3s;
+  padding: 2px 12px;
+  box-sizing: border-box;
   ::after {
     opacity: 0.3;
     content: attr(placeholder);
   }
 `;
 
-export const Header4 = React.memo(({ blockId, length, contents, attributes, editor, ...props }: Header4Props) => {
-  return (
-    <Header {...props} placeholder={length < 1 ? 'Heading 4' : ''}>
-      {contents}
-    </Header>
-  );
-});
+export const Header4 = React.memo(
+  ({ blockId, length, contents, attributes, editor, ...props }: Header4Props) => {
+    return (
+      <Header {...props} placeholder={length < 1 ? 'Heading 4' : ''}>
+        {contents}
+      </Header>
+    );
+  },
+);

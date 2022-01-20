@@ -20,6 +20,8 @@ const Header = styled.h1`
   font-size: 24px;
   outline: 0;
   transition: all 0.3s, color 0.3s;
+  padding: 2px 12px;
+  box-sizing: border-box;
   ::after {
     opacity: 0.3;
     content: attr(placeholder);

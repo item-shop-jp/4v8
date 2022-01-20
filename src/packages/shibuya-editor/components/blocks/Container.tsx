@@ -32,7 +32,6 @@ const FadeIn = keyframes`
 
 const Outer = styled.div`
   position: relative;
-  padding: 2px 12px;
 `;
 
 const Overlay = styled.div`

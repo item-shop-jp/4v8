@@ -18,16 +18,20 @@ export interface Header6Props {
 const Header = styled.h6`
   outline: 0;
   transition: all 0.3s, color 0.3s;
+  padding: 2px 12px;
+  box-sizing: border-box;
   ::after {
     opacity: 0.3;
     content: attr(placeholder);
   }
 `;
 
-export const Header6 = React.memo(({ blockId, length, contents, attributes, editor, ...props }: Header6Props) => {
-  return (
-    <Header {...props} placeholder={length < 1 ? 'Heading 6' : ''}>
-      {contents}
-    </Header>
-  );
-});
+export const Header6 = React.memo(
+  ({ blockId, length, contents, attributes, editor, ...props }: Header6Props) => {
+    return (
+      <Header {...props} placeholder={length < 1 ? 'Heading 6' : ''}>
+        {contents}
+      </Header>
+    );
+  },
+);

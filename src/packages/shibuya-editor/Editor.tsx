@@ -46,12 +46,6 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   cursor: text;
-  img.emoji {
-    height: 1em;
-    width: 1em;
-    margin: 0 0.05em 0 0.1em;
-    vertical-align: -0.1em;
-  }
 `;
 const Inner = styled.div`
   flex-shrink: 0;

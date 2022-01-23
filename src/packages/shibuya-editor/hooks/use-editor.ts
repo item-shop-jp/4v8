@@ -555,7 +555,21 @@ export function useEditor({
     ];
   }, []);
 
-  const deleteBlock = React.useCallback((blockId: string) => {
+  const deleteBlock = React.useCallback((blockId: string, source: Source = EventSources.USER) => {
+    const currentIndex = blocksRef.current.findIndex((v) => v.id === blockId);
+
+    if (currentIndex === -1) return;
+
+    eventEmitter.emit(EditorEvents.EVENT_EDITOR_CHANGE, {
+      payload: {
+        type: HistoryType.REMOVE_BLOCK,
+        blockId: blocksRef.current[currentIndex].id,
+        block: blocksRef.current[currentIndex],
+        prevBlockId: blocksRef.current[currentIndex - 1]?.id,
+      },
+      source,
+    });
+
     updateBlocks(blocksRef.current.filter((v) => v.id !== blockId));
   }, []);
 

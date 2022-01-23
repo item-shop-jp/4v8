@@ -21,14 +21,14 @@ export interface AddOp {
   type: 'add_block';
   blockId: string;
   block: Block;
-  prevBlockId: string;
+  prevBlockId?: string;
 }
 
 export interface RemoveOp {
   type: 'remove_block';
   blockId: string;
   block: Block;
-  prevBlockId: string;
+  prevBlockId?: string;
 }
 
 export type Op = UpdateOp | AddOp | RemoveOp;

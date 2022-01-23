@@ -7,7 +7,7 @@ import { EventEmitter } from '../utils/event-emitter';
 import { getTextLength, getStartIndex } from '../utils/json0';
 import { Block } from '../types/block';
 import { EditorController, Source } from '../types/editor';
-import { Op, JSON0, UpdateOp } from '../types/history';
+import { Op, JSON0, UpdateOp, AddOp } from '../types/history';
 import { EditorEvents, EventSources, HistoryType } from '../constants';
 
 interface Props {
@@ -170,16 +170,29 @@ export class HistoryModule implements Module {
     const ops = this.stack.undo.pop();
     if (ops && ops.length > 0) {
       this.isUpdating = true;
+      const affectedIds: string[] = [];
       ops.forEach((op) => {
         switch (op.type) {
           case HistoryType.UPDATE_CONTENTS: {
             this.executeJson0(op.blockId, op.undo);
             this.transformCaret(op.blockId, op.undo);
+            affectedIds.push(op.blockId);
+            break;
+          }
+          case HistoryType.ADD_BLOCK: {
+            this.editor.deleteBlock(op.blockId);
+            affectedIds.push(op.blockId);
+            break;
+          }
+          case HistoryType.REMOVE_BLOCK: {
+            this.editor.createBlock(op.block, op.prevBlockId);
+            affectedIds.push(op.blockId);
             break;
           }
         }
       });
       this.stack.redo.push(ops);
+      this.editor.render(affectedIds);
       this.isUpdating = false;
     }
   }
@@ -191,21 +204,29 @@ export class HistoryModule implements Module {
     const ops = this.stack.redo.pop();
     if (ops && ops.length > 0) {
       this.isUpdating = true;
+      const affectedIds: string[] = [];
       ops.forEach((op) => {
         switch (op.type) {
           case HistoryType.UPDATE_CONTENTS: {
             this.executeJson0(op.blockId, op.redo);
             this.transformCaret(op.blockId, op.redo);
-            console.log('update_block', op.blockId);
+            affectedIds.push(op.blockId);
             break;
           }
           case HistoryType.ADD_BLOCK: {
-            console.log('add_block', op.blockId);
+            this.editor.createBlock(op.block, op.prevBlockId);
+            affectedIds.push(op.blockId);
+            break;
+          }
+          case HistoryType.REMOVE_BLOCK: {
+            this.editor.deleteBlock(op.blockId);
+            affectedIds.push(op.blockId);
             break;
           }
         }
       });
       this.stack.undo.push(ops);
+      this.editor.render(affectedIds);
       this.isUpdating = false;
     }
   }
@@ -229,7 +250,6 @@ export class HistoryModule implements Module {
       },
       EventSources.USER,
     );
-    this.editor.render([block.id]);
   }
 
   transformCaret(blockId: string, ops: JSON0[]) {

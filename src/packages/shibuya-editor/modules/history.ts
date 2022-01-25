@@ -9,6 +9,7 @@ import { Block } from '../types/block';
 import { EditorController, Source } from '../types/editor';
 import { Op, JSON0, UpdateOp, AddOp } from '../types/history';
 import { EditorEvents, EventSources, HistoryType } from '../constants';
+import { copyObject } from '../utils/object';
 
 interface Props {
   eventEmitter: EventEmitter;
@@ -185,7 +186,7 @@ export class HistoryModule implements Module {
             break;
           }
           case HistoryType.REMOVE_BLOCK: {
-            this.editor.createBlock(op.block, op.prevBlockId);
+            this.editor.createBlock(copyObject(op.block), op.prevBlockId);
             affectedIds.push(op.blockId);
             break;
           }
@@ -214,7 +215,7 @@ export class HistoryModule implements Module {
             break;
           }
           case HistoryType.ADD_BLOCK: {
-            this.editor.createBlock(op.block, op.prevBlockId);
+            this.editor.createBlock(copyObject(op.block), op.prevBlockId);
             affectedIds.push(op.blockId);
             break;
           }

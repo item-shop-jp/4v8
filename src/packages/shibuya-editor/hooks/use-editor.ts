@@ -478,7 +478,7 @@ export function useEditor({
         payload: {
           type: HistoryType.ADD_BLOCK,
           blockId: appendBlock.id,
-          block: appendBlock,
+          block: copyObject(appendBlock),
           prevBlockId,
         },
         source,
@@ -564,7 +564,7 @@ export function useEditor({
       payload: {
         type: HistoryType.REMOVE_BLOCK,
         blockId: blocksRef.current[currentIndex].id,
-        block: blocksRef.current[currentIndex],
+        block: copyObject(blocksRef.current[currentIndex]),
         prevBlockId: blocksRef.current[currentIndex - 1]?.id,
       },
       source,

@@ -34,7 +34,7 @@
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-scripts": "5.0.0",
-    "rollup": "2.64.0",
+    "rollup": "2.66.1",
     "rollup-plugin-dts": "4.1.0",
     "rxjs": "7.5.2",
     "string-length": "5.0.1",

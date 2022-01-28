@@ -1,6 +1,7 @@
 import { Block } from './block';
 import { Inline } from './inline';
 import { HistoryType } from '../constants';
+import { CaretPosition } from './caret';
 
 export interface JSON0 {
   p: [keyof Block, number, keyof Inline, number];
@@ -15,6 +16,7 @@ export interface UpdateOp {
   blockId: string;
   undo: JSON0[];
   redo: JSON0[];
+  position?: CaretPosition;
 }
 
 export interface AddOp {
@@ -22,6 +24,7 @@ export interface AddOp {
   blockId: string;
   block: Block;
   prevBlockId?: string;
+  position?: CaretPosition;
 }
 
 export interface RemoveOp {
@@ -29,6 +32,7 @@ export interface RemoveOp {
   blockId: string;
   block: Block;
   prevBlockId?: string;
+  position?: CaretPosition;
 }
 
 export type Op = UpdateOp | AddOp | RemoveOp;

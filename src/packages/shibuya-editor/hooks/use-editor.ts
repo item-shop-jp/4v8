@@ -272,6 +272,10 @@ export function useEditor({
       if (!element) return;
       const selection = document.getSelection();
       if (!selection) return;
+      const blockLength = getBlockLength(blockId) ?? 0;
+      if (index > blockLength) {
+        index = blockLength;
+      }
       try {
         const range = document.createRange();
         const start = blockUtils.getNativeIndexFromBlockIndex(element, index);
@@ -607,26 +611,26 @@ export function useEditor({
   }, []);
 
   // real-time collaborative test
-  // React.useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     const block = getBlock(blocksRef.current[0].id);
-  //     if (!block) return;
-  //     const contents = [
-  //       ...block.contents.slice(0, block.contents.length - 1),
-  //       {
-  //         ...block.contents[block.contents.length - 1],
-  //         text: 'あ' + block.contents[block.contents.length - 1].text,
-  //       },
-  //     ];
-  //     console.log(JSON.stringify(contents));
-  //     updateBlock({ ...block, contents }, EventSources.COLLABORATOR);
-  //     render([block.id]);
-  //   }, 4000);
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      const block = getBlock(blocksRef.current[0].id);
+      if (!block) return;
+      const contents = [
+        ...block.contents.slice(0, block.contents.length - 1),
+        {
+          ...block.contents[block.contents.length - 1],
+          text: 'あ' + block.contents[block.contents.length - 1].text,
+        },
+      ];
+      console.log(JSON.stringify(contents));
+      updateBlock({ ...block, contents }, EventSources.COLLABORATOR);
+      render([block.id]);
+    }, 4000);
 
-  //   return () => {
-  //     clearInterval(interval);
-  //   };
-  // }, []);
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
 
   React.useEffect(() => {
     modulesRef.current = modules;

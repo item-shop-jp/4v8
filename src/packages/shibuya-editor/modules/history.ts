@@ -10,6 +10,7 @@ import { EditorController, Source } from '../types/editor';
 import { Op, JSON0, UpdateOp, AddOp } from '../types/history';
 import { EditorEvents, EventSources, HistoryType } from '../constants';
 import { copyObject } from '../utils/object';
+import { CaretPosition } from '../types/caret';
 
 interface Props {
   eventEmitter: EventEmitter;
@@ -83,6 +84,10 @@ export class HistoryModule implements Module {
 
   record(op: Op, force = false) {
     this.stack.redo = [];
+    const position = this.editor.getCaretPosition();
+    if (position) {
+      op.position = position;
+    }
     this.tmpUndo.push(op);
     if (force) {
       this.optimizeOp();
@@ -172,22 +177,36 @@ export class HistoryModule implements Module {
     if (ops && ops.length > 0) {
       this.isUpdating = true;
       const affectedIds: string[] = [];
-      ops.forEach((op) => {
+      ops.forEach((op, i) => {
         switch (op.type) {
           case HistoryType.UPDATE_CONTENTS: {
             this.executeJson0(op.blockId, op.undo);
-            this.transformCaret(op.blockId, op.undo);
             affectedIds.push(op.blockId);
+            if (i === ops.length - 1) {
+              this.moveCaret(op.undo, op.position, 'undo');
+            }
             break;
           }
           case HistoryType.ADD_BLOCK: {
             this.editor.deleteBlock(op.blockId);
             affectedIds.push(op.blockId);
+            if (i === ops.length - 1) {
+              this.editor.setCaretPosition({
+                blockId: op.prevBlockId,
+                index: this.editor.getBlockLength(op.prevBlockId ?? '') ?? 0,
+              });
+            }
             break;
           }
           case HistoryType.REMOVE_BLOCK: {
             this.editor.createBlock(copyObject(op.block), op.prevBlockId);
             affectedIds.push(op.blockId);
+            if (i === ops.length - 1) {
+              this.editor.setCaretPosition({
+                blockId: op.blockId,
+                index: this.editor.getBlockLength(op.blockId) ?? 0,
+              });
+            }
             break;
           }
         }
@@ -206,22 +225,41 @@ export class HistoryModule implements Module {
     if (ops && ops.length > 0) {
       this.isUpdating = true;
       const affectedIds: string[] = [];
-      ops.forEach((op) => {
+
+      ops.forEach((op, i) => {
+        console.log(op);
         switch (op.type) {
           case HistoryType.UPDATE_CONTENTS: {
             this.executeJson0(op.blockId, op.redo);
-            this.transformCaret(op.blockId, op.redo);
             affectedIds.push(op.blockId);
+            if (i === ops.length - 1) {
+              this.moveCaret(op.redo, op.position, 'redo');
+            }
             break;
           }
           case HistoryType.ADD_BLOCK: {
             this.editor.createBlock(copyObject(op.block), op.prevBlockId);
             affectedIds.push(op.blockId);
+            if (i === ops.length - 1) {
+              const textIndex = this.editor.getBlockLength(op.blockId) ?? 0;
+              setTimeout(() => {
+                this.editor.setCaretPosition({
+                  blockId: op.blockId,
+                  index: textIndex,
+                });
+              });
+            }
             break;
           }
           case HistoryType.REMOVE_BLOCK: {
             this.editor.deleteBlock(op.blockId);
             affectedIds.push(op.blockId);
+            if (i === ops.length - 1) {
+              this.editor.setCaretPosition({
+                blockId: op.prevBlockId,
+                index: this.editor.getBlockLength(op.prevBlockId ?? '') ?? 0,
+              });
+            }
             break;
           }
         }
@@ -253,18 +291,17 @@ export class HistoryModule implements Module {
     );
   }
 
-  transformCaret(blockId: string, ops: JSON0[]) {
-    const caret = this.editor.getCaretPosition();
-    const block = this.editor.getBlock(blockId);
-    if (!caret || !block) return;
+  moveCaret(ops: JSON0[], position?: CaretPosition, type: 'undo' | 'redo' = 'undo') {
+    if (!position) return;
     this.editor.blur();
+
     setTimeout(() => {
-      const affectedLength = getTextLength(ops);
-      const startIndex = block ? getStartIndex(block.contents, ops) : 0;
+      const affectedLength = type === 'undo' ? getTextLength(ops) : 0;
+      //console.log(position.blockId, position.index, position.length, affectedLength);
       this.editor.setCaretPosition({
-        blockId: block.id,
-        index: affectedLength > 0 ? startIndex + affectedLength : startIndex,
-        length: 0,
+        blockId: position.blockId,
+        index: (position.index ?? 0) + affectedLength,
+        length: position.length ?? 0,
       });
       this.editor.updateCaretRect();
     }, 10);

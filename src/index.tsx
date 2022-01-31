@@ -14,9 +14,13 @@ const ScrollContainer = styled.div`
 `;
 
 const BasicContainer = styled.div`
-  margin: 50px auto 300px;
+  margin: 50px auto;
   max-width: 600px;
   position: relative;
+`;
+
+const StyledEditor = styled(Editor)`
+  border: 1px solid red;
 `;
 
 const StyledParagraph = styled(Paragraph)`
@@ -45,7 +49,8 @@ const settings = {
 };
 
 export const Container: React.VFC = React.memo(() => {
-  const editorRef = React.useRef<EditorController>(null);
+  const editorRef1 = React.useRef<EditorController>(null);
+  const editorRef2 = React.useRef<EditorController>(null);
   const formats = React.useMemo(() => {
     return {
       'block/paragraph': StyledParagraph,
@@ -54,8 +59,8 @@ export const Container: React.VFC = React.memo(() => {
   }, []);
 
   React.useEffect(() => {
-    console.log(editorRef.current);
-    editorRef.current?.setBlocks(
+    console.log(editorRef1.current);
+    editorRef1.current?.setBlocks(
       JSON.parse(
         '[{"id":"OodywE2HkiW1KeTBPCa96","contents":[{"id":"OYbvu_ZB9QppDCeIOSfbZ","attributes":{"bold": true},"text":"今日はいい天気ですね🤗","type":"TEXT","isEmbed":false}],"attributes":{},"type":"PARAGRAPH"},{"id":"zB28GJ_DWSjPfe_IGov5-","contents":[{"id":"lNkUDGfX2rsgZhzq_lZ3f","text":"﻿","type":"TEXT","attributes":{},"isEmbed":false}],"attributes":{},"type":"PARAGRAPH"}]',
       ),
@@ -63,9 +68,14 @@ export const Container: React.VFC = React.memo(() => {
   });
 
   return (
-    <BasicContainer id="scroll">
-      <Editor settings={settings} formats={formats} readOnly={false} ref={editorRef} />
-    </BasicContainer>
+    <>
+      <BasicContainer id="scroll1">
+        <Editor settings={settings} formats={formats} readOnly={false} ref={editorRef1} />
+      </BasicContainer>
+      <BasicContainer id="scroll2">
+        <StyledEditor settings={settings} formats={formats} readOnly={false} ref={editorRef2} />
+      </BasicContainer>
+    </>
   );
 });
 

@@ -227,7 +227,6 @@ export class HistoryModule implements Module {
       const affectedIds: string[] = [];
 
       ops.forEach((op, i) => {
-        console.log(op);
         switch (op.type) {
           case HistoryType.UPDATE_CONTENTS: {
             this.executeJson0(op.blockId, op.redo);

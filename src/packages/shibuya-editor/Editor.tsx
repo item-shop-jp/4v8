@@ -23,6 +23,7 @@ import {
   ToolbarModule,
   SelectorModule,
   HistoryModule,
+  ClipboardModule,
 } from './modules';
 import { getBlockElementById, getBlockId } from './utils/block';
 import { EditorEvents } from './constants';
@@ -174,6 +175,7 @@ export const Editor = React.memo(
             { name: 'toolbar', module: ToolbarModule },
             { name: 'selector', module: SelectorModule },
             { name: 'history', module: HistoryModule },
+            { name: 'clipboard', module: ClipboardModule },
           ],
           settings?.modules ?? {},
         );

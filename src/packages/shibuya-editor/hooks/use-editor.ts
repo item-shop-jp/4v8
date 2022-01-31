@@ -71,6 +71,12 @@ export function useEditor({
     selection.removeAllRanges();
   }, []);
 
+  const hasFocus = React.useCallback(() => {
+    const selection = document.getSelection();
+    if (!selection || !editorRef.current) return false;
+    return editorRef.current.contains(selection.focusNode);
+  }, []);
+
   const prev = React.useCallback(({ index, margin = 10 }: PositionParams = {}): boolean => {
     const position = lastCaretPositionRef.current;
     const currentIndex = blocksRef.current.findIndex((v) => v.id === position?.blockId);
@@ -581,10 +587,15 @@ export function useEditor({
     eventEmitter.emit(EditorEvents.EVENT_BLOCK_RERENDER, affectedIds);
   }, []);
 
+  const getEditorRef = React.useCallback(() => {
+    return editorRef.current;
+  }, []);
+
   const editorController = React.useMemo(() => {
     return {
       focus,
       blur,
+      hasFocus,
       getFormats,
       formatText,
       setBlocks,
@@ -607,30 +618,31 @@ export function useEditor({
       getModule,
       removeAllModules,
       getEventEmitter,
+      getEditorRef,
     };
   }, []);
 
   // real-time collaborative test
-  React.useEffect(() => {
-    const interval = setInterval(() => {
-      const block = getBlock(blocksRef.current[0].id);
-      if (!block) return;
-      const contents = [
-        ...block.contents.slice(0, block.contents.length - 1),
-        {
-          ...block.contents[block.contents.length - 1],
-          text: 'あ' + block.contents[block.contents.length - 1].text,
-        },
-      ];
-      console.log(JSON.stringify(contents));
-      updateBlock({ ...block, contents }, EventSources.COLLABORATOR);
-      render([block.id]);
-    }, 4000);
+  // React.useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     const block = getBlock(blocksRef.current[0].id);
+  //     if (!block) return;
+  //     const contents = [
+  //       ...block.contents.slice(0, block.contents.length - 1),
+  //       {
+  //         ...block.contents[block.contents.length - 1],
+  //         text: 'あ' + block.contents[block.contents.length - 1].text,
+  //       },
+  //     ];
+  //     console.log(JSON.stringify(contents));
+  //     updateBlock({ ...block, contents }, EventSources.COLLABORATOR);
+  //     render([block.id]);
+  //   }, 4000);
 
-    return () => {
-      clearInterval(interval);
-    };
-  }, []);
+  //   return () => {
+  //     clearInterval(interval);
+  //   };
+  // }, []);
 
   React.useEffect(() => {
     modulesRef.current = modules;

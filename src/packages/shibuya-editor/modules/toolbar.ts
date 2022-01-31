@@ -27,13 +27,18 @@ export class ToolbarModule implements Module {
 
   formatInline(attributes: InlineAttributes = {}) {
     const caretPosition = this.editor.getCaretPosition();
+
     if (!caretPosition) return;
     const block = this.editor.getBlock(caretPosition.blockId);
     if (!block) return;
     this.editor.formatText(block.id, caretPosition.index, caretPosition.length, attributes);
     setTimeout(
       () =>
-        this.editor.setCaretPosition({ blockId: block.id, index: caretPosition.index, length: caretPosition.length }),
+        this.editor.setCaretPosition({
+          blockId: block.id,
+          index: caretPosition.index,
+          length: caretPosition.length,
+        }),
       10,
     );
   }
@@ -47,7 +52,11 @@ export class ToolbarModule implements Module {
     this.editor.render([block.id]);
     setTimeout(
       () =>
-        this.editor.setCaretPosition({ blockId: block.id, index: caretPosition.index, length: caretPosition.length }),
+        this.editor.setCaretPosition({
+          blockId: block.id,
+          index: caretPosition.index,
+          length: caretPosition.length,
+        }),
       10,
     );
   }

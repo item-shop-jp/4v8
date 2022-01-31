@@ -27,6 +27,7 @@ const Button = styled.a`
 
 export const GlobalToolbar = React.memo(({ editor, ...props }: GlobalToolbarProps) => {
   const [formats, setFormats] = React.useState<InlineAttributes>({});
+  const [isDisplay, setDisplay] = React.useState(false);
   const handleHeader1 = React.useCallback(
     (event: React.MouseEvent) => {
       event.preventDefault();
@@ -41,7 +42,11 @@ export const GlobalToolbar = React.memo(({ editor, ...props }: GlobalToolbarProp
     subs.add(
       eventEmitter.select(EditorEvents.EVENT_SELECTION_CHANGE).subscribe((v) => {
         const caret = editor.getCaretPosition();
-        if (!caret) return;
+        if (!caret || !editor.hasFocus()) {
+          setDisplay(false);
+          return;
+        }
+        setDisplay(true);
         setFormats(editor.getFormats(caret.blockId, caret.index, caret.length));
       }),
     );
@@ -51,11 +56,15 @@ export const GlobalToolbar = React.memo(({ editor, ...props }: GlobalToolbarProp
   });
 
   return ReactDOM.createPortal(
-    <Container {...props}>
-      <Button href="#" onClick={handleHeader1}>
-        header1
-      </Button>
-    </Container>,
+    <>
+      {isDisplay && (
+        <Container {...props}>
+          <Button href="#" onClick={handleHeader1}>
+            header1
+          </Button>
+        </Container>
+      )}
+    </>,
     document.body,
   );
 });

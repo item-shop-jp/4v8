@@ -4,6 +4,8 @@ import { EventEmitter } from '../utils/event-emitter';
 import { EditorController } from '../types/editor';
 import { getBlockId, getBlockElementById } from '../utils/block';
 import { EditorEvents } from '../constants';
+import { Block } from '../types/block';
+import { copyObject } from '../utils/object';
 
 interface Props {
   eventEmitter: EventEmitter;
@@ -22,6 +24,7 @@ export class SelectorModule implements Module {
   private enabled = false;
   private mousePressed = false;
   private changed = false;
+  private selectedBlocks: Block[] = [];
 
   mouseMove = throttle(100, (e: MouseEvent) => {
     if (!this.mousePressed) return;
@@ -29,6 +32,7 @@ export class SelectorModule implements Module {
     const startIndex = blocks.findIndex((v) => v.id === this.position.start);
     const [blockId] = getBlockId(e.target as HTMLElement);
     let blockIds = [];
+    let selectedBlocks: Block[] = [];
     if (!blockId) {
       const startEl = getBlockElementById(blocks[startIndex].id);
       const startTop = startEl?.getBoundingClientRect()?.top ?? 0;
@@ -60,9 +64,11 @@ export class SelectorModule implements Module {
       this.position.end = blockId;
       const endIndex = blocks.findIndex((v) => v.id === this.position.end);
       if (startIndex > endIndex) {
-        blockIds = blocks.slice(endIndex, startIndex + 1).map((v) => v.id);
+        selectedBlocks = copyObject(blocks.slice(endIndex, startIndex + 1));
+        blockIds = selectedBlocks.map((v) => v.id);
       } else {
-        blockIds = blocks.slice(startIndex, endIndex + 1).map((v) => v.id);
+        selectedBlocks = copyObject(blocks.slice(startIndex, endIndex + 1));
+        blockIds = selectedBlocks.map((v) => v.id);
       }
     }
 
@@ -73,6 +79,7 @@ export class SelectorModule implements Module {
     }
 
     if (this.enabled) {
+      this.selectedBlocks = selectedBlocks;
       this.sendBlockSelectedEvent(blockIds);
     }
   });
@@ -115,6 +122,11 @@ export class SelectorModule implements Module {
     this.mousePressed = false;
     this.enabled = false;
     this.position = { start: null, end: null };
+    this.selectedBlocks = [];
     this.sendBlockSelectedEvent([]);
+  }
+
+  getSelectedBlocks() {
+    return this.selectedBlocks;
   }
 }

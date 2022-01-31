@@ -35,6 +35,7 @@ export type Source = 'user' | 'silent' | 'collaborator';
 export interface EditorController {
   focus(): void;
   blur(): void;
+  hasFocus(): boolean;
   getFormats(blockId: string, index: number, length?: number): InlineAttributes;
   formatText(blockId: string, index: number, length: number, attributes: InlineAttributes): void;
   setBlocks(blocks: Block[]): void;
@@ -80,4 +81,5 @@ export interface EditorController {
   getModule<T = any>(name: string): T | null;
   removeAllModules(): void;
   getEventEmitter(): EventEmitter;
+  getEditorRef(): HTMLElement | null;
 }

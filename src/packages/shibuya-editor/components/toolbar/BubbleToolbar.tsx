@@ -105,7 +105,7 @@ export const BubbleToolbar = React.memo(
       subs.add(
         eventEmitter.select(EditorEvents.EVENT_SELECTION_CHANGE).subscribe((v) => {
           const caret = editor.getCaretPosition();
-          if (!caret) {
+          if (!caret || !editor.hasFocus()) {
             setPosition(undefined);
             setCollapsed(true);
             return;

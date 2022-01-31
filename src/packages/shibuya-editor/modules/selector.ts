@@ -30,6 +30,7 @@ export class SelectorModule implements Module {
     if (!this.mousePressed) return;
     const blocks = this.editor.getBlocks();
     const startIndex = blocks.findIndex((v) => v.id === this.position.start);
+    if (startIndex === -1) return;
     const [blockId] = getBlockId(e.target as HTMLElement);
     let blockIds = [];
     let selectedBlocks: Block[] = [];

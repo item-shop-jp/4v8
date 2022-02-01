@@ -59,7 +59,7 @@ export class HistoryModule implements Module {
       .subscribe(({ payload, source }) => {
         if (this.isUpdating) return;
         if (source === EventSources.USER) {
-          this.record(payload);
+          setTimeout(() => this.record(payload), 20);
         }
         if (source === EventSources.COLLABORATOR) {
           this.transform(payload);

@@ -91,6 +91,14 @@ export const BubbleToolbar = React.memo(
       [formats],
     );
 
+    const handleInlineCode = React.useCallback(
+      (event: React.MouseEvent) => {
+        event.preventDefault();
+        editor.getModule('toolbar').formatInline({ code: !formats?.code });
+      },
+      [formats],
+    );
+
     const handleHeader1 = React.useCallback(
       (event: React.MouseEvent) => {
         event.preventDefault();
@@ -148,6 +156,9 @@ export const BubbleToolbar = React.memo(
             </Button>
             <Button href="#" onClick={handleStrike} active={!!formats?.strike}>
               S
+            </Button>
+            <Button href="#" onClick={handleInlineCode} active={!!formats?.code}>
+              code
             </Button>
             <Button href="#" onClick={handleLink} active={!!formats?.link}>
               L

@@ -377,7 +377,6 @@ export class KeyBoardModule implements Module {
         caretPosition.length,
       );
     }
-
     editor.updateBlock({ ...block, contents: deletedContents });
     editor.blur();
     editor.render([block.id]);

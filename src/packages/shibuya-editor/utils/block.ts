@@ -245,6 +245,7 @@ export function deleteInlineContents(
   if (destContents.length < 1) {
     destContents.push(createInline('TEXT'));
   }
+
   return destContents;
 }
 

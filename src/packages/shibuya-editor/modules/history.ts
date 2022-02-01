@@ -88,6 +88,7 @@ export class HistoryModule implements Module {
     if (position) {
       op.position = position;
     }
+
     this.tmpUndo.push(op);
     if (force) {
       this.optimizeOp();
@@ -310,20 +311,25 @@ export class HistoryModule implements Module {
   moveCaret(ops: JSON0[], position?: CaretPosition, type: 'undo' | 'redo' = 'undo') {
     if (!position) return;
 
+    let affectedLength = type === 'undo' ? getTextLength(ops) : 0;
+    let positionIndex = position.index ?? 0;
+    let positionLength = position.length ?? 0;
+
     setTimeout(() => {
-      let affectedLength = type === 'undo' ? getTextLength(ops) : 0;
-      const positionIndex = position.index ?? 0;
-      const positionLength = position.length ?? 0;
       const blockLength = this.editor.getBlockLength(position.blockId) ?? 0;
+
       if (positionIndex + affectedLength + positionLength > blockLength) {
         affectedLength = 0;
       }
+      if (positionIndex + positionLength > blockLength) {
+        positionLength = 0;
+      }
       this.editor.setCaretPosition({
         blockId: position.blockId,
-        index: (position.index ?? 0) + affectedLength,
-        length: position.length ?? 0,
+        index: positionIndex + affectedLength,
+        length: positionLength,
       });
       this.editor.updateCaretRect();
-    }, 10);
+    }, 20);
   }
 }

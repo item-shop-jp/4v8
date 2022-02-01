@@ -12,7 +12,7 @@ import {
   Paragraph,
 } from './components/blocks';
 import { InlineText } from './components/inlines';
-import { Bold, Strike, Underline } from './components/styles';
+import { Bold, Strike, Underline, InlineCode } from './components/styles';
 import { GlobalToolbar, BubbleToolbar } from './components/toolbar';
 import { useEditor } from './hooks/use-editor';
 import { useEventEmitter } from './hooks/use-event-emitter';
@@ -81,6 +81,7 @@ export const Editor = React.memo(
         'style/bold': Bold,
         'style/underline': Underline,
         'style/strike': Strike,
+        'style/code': InlineCode,
       });
       const [blocks, setBlocks] = React.useState<Block[]>([]);
       const [selectedIds, setSelectedIds] = React.useState<string[]>([]);

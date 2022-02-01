@@ -514,6 +514,7 @@ export function useEditor({
   const updateBlock = React.useCallback((block: Block, source: Source = EventSources.USER) => {
     const currentIndex = blocksRef.current.findIndex((v) => v.id === block.id);
     if (currentIndex === -1) return;
+    block = copyObject(block);
     const contents = blockUtils.optimizeInlineContents(block.contents);
     const prevBlock = {
       ...blocksRef.current[currentIndex],
@@ -539,6 +540,7 @@ export function useEditor({
         };
       }),
     };
+
     const redo = json0diff(prevBlock, currentBlock, DiffMatchPatch);
     const undo = json0diff(currentBlock, prevBlock, DiffMatchPatch);
 

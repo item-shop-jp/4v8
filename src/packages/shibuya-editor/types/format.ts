@@ -23,8 +23,9 @@ export interface Formats {
   'block/header5': React.FC<Header5Props>;
   'block/header6': React.FC<Header6Props>;
   'inline/text': React.FC<InlineTextProps>;
-  'style/bold': FlattenSimpleInterpolation;
-  'style/underline': FlattenSimpleInterpolation;
-  'style/strike': FlattenSimpleInterpolation;
+  'inline/style/bold': FlattenSimpleInterpolation;
+  'inline/style/underline': FlattenSimpleInterpolation;
+  'inline/style/strike': FlattenSimpleInterpolation;
+  'inline/style/code': FlattenSimpleInterpolation;
   [key: string]: any;
 }

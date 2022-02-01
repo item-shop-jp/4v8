@@ -78,10 +78,10 @@ export const Editor = React.memo(
         'block/header5': Header5,
         'block/header6': Header6,
         'inline/text': InlineText,
-        'style/bold': Bold,
-        'style/underline': Underline,
-        'style/strike': Strike,
-        'style/code': InlineCode,
+        'inline/style/bold': Bold,
+        'inline/style/underline': Underline,
+        'inline/style/strike': Strike,
+        'inline/style/code': InlineCode,
       });
       const [blocks, setBlocks] = React.useState<Block[]>([]);
       const [selectedIds, setSelectedIds] = React.useState<string[]>([]);

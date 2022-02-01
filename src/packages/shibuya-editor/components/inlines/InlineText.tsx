@@ -29,7 +29,7 @@ const Text = styled.span<InlineContentProps>`
   }
   ${({ attributes, formats }) => {
     return Object.keys(attributes).map((key: string) => {
-      const styleFormat = `style/${key}`;
+      const styleFormat = `inline/style/${key}`;
       if (attributes[key] && formats[styleFormat]) {
         return formats[styleFormat];
       }
@@ -41,7 +41,7 @@ const Text = styled.span<InlineContentProps>`
 const Link = styled.a<InlineContentProps>`
   ${({ attributes, formats }) => {
     return Object.keys(attributes).map((key: string) => {
-      const styleFormat = `style/${key}`;
+      const styleFormat = `inline/style/${key}`;
       if (attributes[key] && formats[styleFormat]) {
         return formats[styleFormat];
       }

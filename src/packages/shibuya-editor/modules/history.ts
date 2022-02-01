@@ -176,6 +176,7 @@ export class HistoryModule implements Module {
     const ops = this.stack.undo.pop();
     if (ops && ops.length > 0) {
       this.isUpdating = true;
+      this.editor.blur();
       const affectedIds: string[] = [];
       ops.forEach((op, i) => {
         switch (op.type) {
@@ -191,10 +192,15 @@ export class HistoryModule implements Module {
             this.editor.deleteBlock(op.blockId);
             affectedIds.push(op.blockId);
             if (i === ops.length - 1) {
-              this.editor.setCaretPosition({
-                blockId: op.prevBlockId,
-                index: this.editor.getBlockLength(op.prevBlockId ?? '') ?? 0,
-              });
+              const textIndex = this.editor.getBlockLength(op.prevBlockId ?? '') ?? 0;
+              setTimeout(
+                () =>
+                  this.editor.setCaretPosition({
+                    blockId: op.prevBlockId,
+                    index: textIndex,
+                  }),
+                10,
+              );
             }
             break;
           }
@@ -202,10 +208,15 @@ export class HistoryModule implements Module {
             this.editor.createBlock(copyObject(op.block), op.prevBlockId);
             affectedIds.push(op.blockId);
             if (i === ops.length - 1) {
-              this.editor.setCaretPosition({
-                blockId: op.blockId,
-                index: this.editor.getBlockLength(op.blockId) ?? 0,
-              });
+              const textIndex = this.editor.getBlockLength(op.blockId) ?? 0;
+              setTimeout(
+                () =>
+                  this.editor.setCaretPosition({
+                    blockId: op.blockId,
+                    index: textIndex,
+                  }),
+                10,
+              );
             }
             break;
           }
@@ -224,6 +235,7 @@ export class HistoryModule implements Module {
     const ops = this.stack.redo.pop();
     if (ops && ops.length > 0) {
       this.isUpdating = true;
+      this.editor.blur();
       const affectedIds: string[] = [];
 
       ops.forEach((op, i) => {
@@ -246,7 +258,7 @@ export class HistoryModule implements Module {
                   blockId: op.blockId,
                   index: textIndex,
                 });
-              });
+              }, 10);
             }
             break;
           }
@@ -254,10 +266,15 @@ export class HistoryModule implements Module {
             this.editor.deleteBlock(op.blockId);
             affectedIds.push(op.blockId);
             if (i === ops.length - 1) {
-              this.editor.setCaretPosition({
-                blockId: op.prevBlockId,
-                index: this.editor.getBlockLength(op.prevBlockId ?? '') ?? 0,
-              });
+              const textIndex = this.editor.getBlockLength(op.prevBlockId ?? '') ?? 0;
+              setTimeout(
+                () =>
+                  this.editor.setCaretPosition({
+                    blockId: op.prevBlockId,
+                    index: textIndex,
+                  }),
+                10,
+              );
             }
             break;
           }
@@ -292,11 +309,15 @@ export class HistoryModule implements Module {
 
   moveCaret(ops: JSON0[], position?: CaretPosition, type: 'undo' | 'redo' = 'undo') {
     if (!position) return;
-    this.editor.blur();
 
     setTimeout(() => {
-      const affectedLength = type === 'undo' ? getTextLength(ops) : 0;
-      //console.log(position.blockId, position.index, position.length, affectedLength);
+      let affectedLength = type === 'undo' ? getTextLength(ops) : 0;
+      const positionIndex = position.index ?? 0;
+      const positionLength = position.length ?? 0;
+      const blockLength = this.editor.getBlockLength(position.blockId) ?? 0;
+      if (positionIndex + affectedLength + positionLength > blockLength) {
+        affectedLength = 0;
+      }
       this.editor.setCaretPosition({
         blockId: position.blockId,
         index: (position.index ?? 0) + affectedLength,

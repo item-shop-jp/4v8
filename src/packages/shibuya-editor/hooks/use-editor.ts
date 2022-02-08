@@ -96,7 +96,7 @@ export function useEditor({
 
     if (prevRect.top <= (container ? containerOffsetTop : containerOffsetTop + scrollMarginTop)) {
       if (container) {
-        container.scrollTop = currentIndex - 1 < 1 ? 0 : prevBlock.offsetTop;
+        container.scrollTop = currentIndex - 1 < 1 ? 0 : prevBlock.parentElement?.offsetTop ?? 0;
       } else {
         if (document.scrollingElement) {
           let editorScrollTop =
@@ -142,6 +142,7 @@ export function useEditor({
   const next = React.useCallback(({ index = 0, margin = 10 }: PositionParams = {}): boolean => {
     const position = lastCaretPositionRef.current;
     const currentIndex = blocksRef.current.findIndex((v) => v.id === position?.blockId);
+
     if (currentIndex === -1 || !blocksRef.current[currentIndex + 1]) return false;
     if (!lastCaretRectRef.current) {
       setCaretPosition({
@@ -150,24 +151,38 @@ export function useEditor({
       });
       return false;
     }
+
     const nextBlock = blockUtils.getBlockElementById(blocksRef.current[currentIndex + 1].id);
     if (!nextBlock) return false;
-    let nextRect = nextBlock.getBoundingClientRect();
+
+    let nextRect =
+      nextBlock.parentElement?.getBoundingClientRect() ?? nextBlock.getBoundingClientRect();
     const container = getScrollContainer(scrollContainer);
     const scrollHeight = container?.clientHeight ?? window.innerHeight;
-    if (
-      nextRect.top + nextRect.height >=
-      (container ? scrollHeight : scrollHeight - scrollMarginBottom)
-    ) {
-      if (container) {
-        container.scrollTop = nextBlock.offsetTop - container.clientHeight + scrollMarginBottom;
-      } else {
-        if (document.scrollingElement) {
-          const nextTop = document.scrollingElement.scrollTop + nextRect.top;
-          const p = nextTop - window.innerHeight + scrollMarginBottom;
-          document.scrollingElement.scrollTop = p;
+
+    if (container) {
+      const containerRect = container.getBoundingClientRect() ?? 0;
+      if (
+        nextRect.top + nextRect.height >=
+        containerRect.top + containerRect.height - scrollMarginBottom
+      ) {
+        const scrollTop =
+          (nextBlock.parentElement?.offsetTop ?? 0) - container.clientHeight + scrollMarginBottom;
+        if (container.scrollHeight > scrollTop + container.clientHeight) {
+          container.scrollTop = scrollTop;
+        } else {
+          container.scrollTop = container.scrollHeight - container.clientHeight;
         }
+        nextRect =
+          nextBlock.parentElement?.getBoundingClientRect() ?? nextBlock.getBoundingClientRect();
       }
+    } else if (nextRect.top + nextRect.height >= scrollHeight - scrollMarginBottom) {
+      if (document.scrollingElement) {
+        const nextTop = document.scrollingElement.scrollTop + nextRect.top;
+        const p = nextTop - window.innerHeight + scrollMarginBottom;
+        document.scrollingElement.scrollTop = p;
+      }
+
       nextRect = nextBlock.getBoundingClientRect();
     }
     const range = caretRangeFromPoint(lastCaretRectRef.current.x, nextRect.y + margin);
@@ -298,6 +313,39 @@ export function useEditor({
     },
     [],
   );
+
+  const scrollIntoView = React.useCallback((blockId?: string) => {
+    blockId = blockId ?? lastCaretPositionRef.current?.blockId ?? '';
+    const element = blockUtils.getBlockElementById(blockId);
+    if (!element) return;
+    let nextRect =
+      element.parentElement?.getBoundingClientRect() ?? element.getBoundingClientRect();
+    const container = getScrollContainer(scrollContainer);
+    const scrollHeight = container?.clientHeight ?? window.innerHeight;
+    if (container) {
+      const containerRect = container.getBoundingClientRect() ?? 0;
+      if (
+        nextRect.top + nextRect.height >=
+        containerRect.top + containerRect.height - scrollMarginBottom
+      ) {
+        const scrollTop =
+          (element.parentElement?.offsetTop ?? 0) - container.clientHeight + scrollMarginBottom;
+        if (container.scrollHeight > scrollTop + container.clientHeight) {
+          container.scrollTop = scrollTop;
+        } else {
+          container.scrollTop = container.scrollHeight - container.clientHeight;
+        }
+        nextRect =
+          element.parentElement?.getBoundingClientRect() ?? element.getBoundingClientRect();
+      }
+    } else if (nextRect.top + nextRect.height >= scrollHeight - scrollMarginBottom) {
+      if (document.scrollingElement) {
+        const nextTop = document.scrollingElement.scrollTop + nextRect.top;
+        const p = nextTop - window.innerHeight + scrollMarginBottom;
+        document.scrollingElement.scrollTop = p;
+      }
+    }
+  }, []);
 
   const normalizeRange = React.useCallback((nativeRange: Range) => {
     const [startInlineId, startInlineElement] = getInlineId(
@@ -611,6 +659,7 @@ export function useEditor({
       getCaretPosition,
       setCaretPosition,
       updateCaretRect,
+      scrollIntoView,
       getNativeRange,
       prev,
       next,

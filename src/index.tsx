@@ -72,9 +72,15 @@ export const Container: React.VFC = React.memo(() => {
       <BasicContainer id="scroll1">
         <Editor settings={settings} formats={formats} readOnly={false} ref={editorRef1} />
       </BasicContainer>
-      <BasicContainer id="scroll2">
-        <StyledEditor settings={settings} formats={formats} readOnly={false} ref={editorRef2} />
-      </BasicContainer>
+      <ScrollContainer id="scroll2">
+        <StyledEditor
+          scrollContainer={'#scroll2'}
+          settings={settings}
+          formats={formats}
+          readOnly={false}
+          ref={editorRef2}
+        />
+      </ScrollContainer>
     </>
   );
 });

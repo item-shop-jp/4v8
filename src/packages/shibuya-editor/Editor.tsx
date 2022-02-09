@@ -57,6 +57,13 @@ const MarginBottom = styled.div`
   flex-grow: 1;
   user-select: none;
 `;
+const Clipboard = styled.div`
+  left: -100000px;
+  height: 1px;
+  overflow-y: hidden;
+  position: absolute;
+  top: 50%;
+`;
 
 export const Editor = React.memo(
   React.forwardRef<EditorController, Props>(
@@ -285,6 +292,7 @@ export const Editor = React.memo(
           <MarginBottom onClick={handleContainerClick} />
           <MemoGlobalToolbar editor={memoEditor} />
           <MemoBubbleToolbar editor={memoEditor} scrollContainer={scrollContainer} />
+          <Clipboard contentEditable={true} className="clipboard" />
         </Container>
       );
     },

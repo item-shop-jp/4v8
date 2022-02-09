@@ -6,6 +6,7 @@ export const KeyCodes = {
   ENTER: 'Enter',
   NUMPAD_ENTER: 'NumpadEnter',
   TAB: 'Tab',
+  C: 'KeyC',
   S: 'KeyS',
   Z: 'KeyZ',
   SPACE: 'Space',

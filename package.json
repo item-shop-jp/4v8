@@ -36,7 +36,7 @@
     "react-scripts": "5.0.0",
     "rollup": "2.66.1",
     "rollup-plugin-dts": "4.1.0",
-    "rxjs": "7.5.2",
+    "rxjs": "7.5.4",
     "string-length": "5.0.1",
     "styled-components": "5.3.3",
     "throttle-debounce": "3.0.1",

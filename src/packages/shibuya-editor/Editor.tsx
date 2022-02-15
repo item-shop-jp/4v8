@@ -12,7 +12,7 @@ import {
   Paragraph,
 } from './components/blocks';
 import { InlineText } from './components/inlines';
-import { Bold, Strike, Underline, InlineCode } from './components/styles';
+import { Bold, Strike, Underline, InlineCode, Italic } from './components/styles';
 import { GlobalToolbar, BubbleToolbar } from './components/toolbar';
 import { useEditor } from './hooks/use-editor';
 import { useEventEmitter } from './hooks/use-event-emitter';
@@ -89,6 +89,7 @@ export const Editor = React.memo(
         'inline/style/underline': Underline,
         'inline/style/strike': Strike,
         'inline/style/code': InlineCode,
+        'inline/style/italic': Italic,
       });
       const [blocks, setBlocks] = React.useState<Block[]>([]);
       const [selectedIds, setSelectedIds] = React.useState<string[]>([]);
@@ -139,8 +140,7 @@ export const Editor = React.memo(
 
       const handlePaste = React.useCallback(
         (e: React.ClipboardEvent) => {
-          console.log('paste', e);
-          e.preventDefault();
+          editor.getModule('clipboard').onPaste(e.nativeEvent);
         },
         [editor],
       );

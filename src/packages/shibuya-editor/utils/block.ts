@@ -442,3 +442,10 @@ export function getDuplicateAttributes(
   }, {});
   return duplicateAttributes;
 }
+
+export function convertBlocksToText(blocks: Block[]): string {
+  const text = blocks.reduce<string>((r, block) => {
+    return `${r}${block.contents.map((content) => content.text).join('')}\n`;
+  }, '');
+  return text.replaceAll(/\uFEFF/gi, '');
+}

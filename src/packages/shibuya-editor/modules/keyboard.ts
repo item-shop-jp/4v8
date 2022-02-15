@@ -130,6 +130,26 @@ export class KeyBoardModule implements Module {
       shiftKey: true,
       handler: this._handleRedo.bind(this),
     });
+
+    // override native events
+    this.addBinding({
+      key: KeyCodes.B,
+      prevented: true,
+      shortKey: true,
+      handler: this._handleBold.bind(this),
+    });
+    this.addBinding({
+      key: KeyCodes.I,
+      prevented: true,
+      shortKey: true,
+      handler: this._handleItalic.bind(this),
+    });
+    this.addBinding({
+      key: KeyCodes.U,
+      prevented: true,
+      shortKey: true,
+      handler: this._handleUnderline.bind(this),
+    });
   }
 
   onDestroy() {
@@ -400,5 +420,38 @@ export class KeyBoardModule implements Module {
     event: React.KeyboardEvent,
   ) {
     editor.getModule('history').redo();
+  }
+
+  private _handleBold(
+    caretPosition: CaretPosition,
+    editor: EditorController,
+    event: React.KeyboardEvent,
+  ) {
+    const caret = editor.getCaretPosition();
+    if (!caret) return;
+    const formats = editor.getFormats(caret.blockId, caret.index, caret.length);
+    editor.getModule('toolbar').formatInline({ bold: !formats?.bold });
+  }
+
+  private _handleItalic(
+    caretPosition: CaretPosition,
+    editor: EditorController,
+    event: React.KeyboardEvent,
+  ) {
+    const caret = editor.getCaretPosition();
+    if (!caret) return;
+    const formats = editor.getFormats(caret.blockId, caret.index, caret.length);
+    editor.getModule('toolbar').formatInline({ italic: !formats?.italic });
+  }
+
+  private _handleUnderline(
+    caretPosition: CaretPosition,
+    editor: EditorController,
+    event: React.KeyboardEvent,
+  ) {
+    const caret = editor.getCaretPosition();
+    if (!caret) return;
+    const formats = editor.getFormats(caret.blockId, caret.index, caret.length);
+    editor.getModule('toolbar').formatInline({ underline: !formats?.underline });
   }
 }

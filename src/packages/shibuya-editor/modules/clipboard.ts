@@ -40,7 +40,7 @@ export class ClipboardModule implements Module {
       this.eventEmitter
         .select(EditorEvents.EVENT_BLOCK_SELECTED)
         .subscribe((blockIds: string[]) => {
-          if (!this.clipboardEl) return;
+          if (!this.clipboardEl || blockIds.length < 1) return;
           const range = new Range();
           const selection = document.getSelection();
           range.setStart(this.clipboardEl, 0);

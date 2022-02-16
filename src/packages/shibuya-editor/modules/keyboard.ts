@@ -372,6 +372,13 @@ export class KeyBoardModule implements Module {
     const textLength = editor.getBlockLength(caretPosition.blockId);
     let deletedContents;
     let caretIndex: number;
+
+    const selectedBlocks = editor.getModule('selector').getSelectedBlocks();
+    if (selectedBlocks.length > 0) {
+      editor.getModule('editor').deleteBlocks(selectedBlocks.map((block) => block.id));
+      return;
+    }
+
     if (caretPosition.collapsed) {
       if (!block) return;
       // Ignored for null characters

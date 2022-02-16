@@ -71,6 +71,17 @@ export class EditorModule implements Module {
     this.editor.render();
   }
 
+  deleteBlocks(blockIds: string[]) {
+    const blocks = this.editor.getBlocks();
+    const currentIndex = blocks.findIndex((v) => v.id === blockIds[0]);
+    if (blocks.length <= 1 || currentIndex < 1) return;
+    const prevBlockLength = this.editor.getBlockLength(blocks[currentIndex - 1].id) ?? 0;
+    this.editor.setCaretPosition({ blockId: blocks[currentIndex - 1].id, index: prevBlockLength });
+    this.editor.deleteBlocks(blockIds);
+    this.editor.getModule('history').optimizeOp();
+    this.editor.render();
+  }
+
   mergeBlock(sourceBlockId: string, otherBlockId: string) {
     const blocks = this.editor.getBlocks();
     const source = blocks.find((v) => v.id === sourceBlockId);

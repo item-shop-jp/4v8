@@ -48,6 +48,8 @@ export interface EditorController {
   updateBlock(block: Block, source: Source): void;
   deleteBlock(blockId: string): void;
   deleteBlock(blockId: string, source: Source): void;
+  deleteBlocks(blockIds: string[]): void;
+  deleteBlocks(blockIds: string[], source: Source): void;
   sync(blockId?: string, blockElement?: HTMLElement, forceUpdate?: boolean): void;
   setCaretPosition(caretPosition: Partial<CaretPosition>): void;
   getCaretPosition(): CaretPosition | null;

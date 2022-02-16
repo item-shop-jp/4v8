@@ -633,6 +633,30 @@ export function useEditor({
     updateBlocks(blocksRef.current.filter((v) => v.id !== blockId));
   }, []);
 
+  const deleteBlocks = React.useCallback(
+    (blockIds: string[], source: Source = EventSources.USER) => {
+      const deleteBlocks = blocksRef.current.filter((v) => blockIds.includes(v.id));
+
+      if (deleteBlocks.length < 1) return;
+
+      eventEmitter.emit(EditorEvents.EVENT_EDITOR_CHANGE, {
+        payload: deleteBlocks.map((block) => {
+          const currentIndex = blocksRef.current.findIndex((v) => v.id === block.id);
+          return {
+            type: HistoryType.REMOVE_BLOCK,
+            blockId: block.id,
+            block: copyObject(block),
+            prevBlockId: blocksRef.current[currentIndex - 1]?.id,
+          };
+        }),
+        source,
+      });
+
+      updateBlocks(blocksRef.current.filter((v) => !blockIds.includes(v.id)));
+    },
+    [],
+  );
+
   const render = React.useCallback((affectedIds: string[] = []) => {
     eventEmitter.emit(EditorEvents.EVENT_BLOCK_RERENDER, affectedIds);
   }, []);
@@ -655,6 +679,7 @@ export function useEditor({
       createBlock,
       updateBlock,
       deleteBlock,
+      deleteBlocks,
       sync,
       getCaretPosition,
       setCaretPosition,

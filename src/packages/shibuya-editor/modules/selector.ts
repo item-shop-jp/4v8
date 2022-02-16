@@ -32,9 +32,10 @@ export class SelectorModule implements Module {
     const startIndex = blocks.findIndex((v) => v.id === this.position.start);
     if (startIndex === -1) return;
     const [blockId] = getBlockId(e.target as HTMLElement);
-    let blockIds = [];
+    let blockIds: string[] = [];
     let selectedBlocks: Block[] = [];
-    if (!blockId) {
+    const blockIndex = blocks.findIndex((v) => v.id === blockId);
+    if (!blockId || blockIndex === -1) {
       const startEl = getBlockElementById(blocks[startIndex].id);
       const startTop = startEl?.getBoundingClientRect()?.top ?? 0;
       const isUpward = startTop > e.clientY;
@@ -61,6 +62,7 @@ export class SelectorModule implements Module {
           }
         }
       }
+      selectedBlocks = copyObject(blocks.filter((v) => blockIds.includes(v.id)));
     } else {
       this.position.end = blockId;
       const endIndex = blocks.findIndex((v) => v.id === this.position.end);
@@ -104,6 +106,7 @@ export class SelectorModule implements Module {
 
   mouseDown(e: MouseEvent) {
     this.reset();
+
     const [blockId] = getBlockId(e.target as HTMLElement);
     if (!blockId) return;
     this.mousePressed = true;

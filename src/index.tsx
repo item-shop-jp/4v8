@@ -70,7 +70,7 @@ export const Container: React.VFC = React.memo(() => {
     );
     editorRef2.current?.setBlocks(
       JSON.parse(
-        '[{"id":"OodywE2HkiW1KeTBPCa96","contents":[{"id":"OYbvu_ZB9QppDCeIOSfbZ","attributes":{"bold": true},"text":"今日は悪い天気ですね🤗","type":"TEXT","isEmbed":false}],"attributes":{},"type":"PARAGRAPH"},{"id":"zB28GJ_DWSjPfe_IGov5-","contents":[{"id":"lNkUDGfX2rsgZhzq_lZ3f","text":"﻿","type":"TEXT","attributes":{},"isEmbed":false}],"attributes":{},"type":"PARAGRAPH"}]',
+        '[{"id":"OodywE2HkiW1KeTBPCa9s","contents":[{"id":"OYbvu_ZB9QppDCeIOSfbA","attributes":{"bold": true},"text":"今日は悪い天気ですね🤗","type":"TEXT","isEmbed":false}],"attributes":{},"type":"PARAGRAPH"},{"id":"zB28GJ_DWSjPfe_IGov6-","contents":[{"id":"lNkUDGfX2rsgZhzq_lZ3e","text":"﻿","type":"TEXT","attributes":{},"isEmbed":false}],"attributes":{},"type":"PARAGRAPH"}]',
       ),
     );
   });

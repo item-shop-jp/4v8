@@ -55,14 +55,28 @@ export class HistoryModule implements Module {
     this.eventEmitter.info('init history module');
 
     const sub = this.eventEmitter
-      .select<{ payload: Op; source: Source }>(EditorEvents.EVENT_EDITOR_CHANGE)
+      .select<{ payload: Op | Op[]; source: Source }>(EditorEvents.EVENT_EDITOR_CHANGE)
       .subscribe(({ payload, source }) => {
         if (this.isUpdating) return;
         if (source === EventSources.USER) {
-          setTimeout(() => this.record(payload), 20);
+          if (Array.isArray(payload)) {
+            setTimeout(() => {
+              payload.forEach((op) => {
+                this.transform(op);
+              });
+            }, 20);
+          } else {
+            setTimeout(() => this.record(payload), 20);
+          }
         }
         if (source === EventSources.COLLABORATOR) {
-          this.transform(payload);
+          if (Array.isArray(payload)) {
+            payload.forEach((op) => {
+              this.transform(op);
+            });
+          } else {
+            this.transform(payload);
+          }
         }
       });
     this.subs.add(sub);

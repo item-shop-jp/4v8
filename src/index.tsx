@@ -11,16 +11,19 @@ const ScrollContainer = styled.div`
   height: 600px;
   overflow: auto;
   position: relative;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  padding: 12px 0;
 `;
 
 const BasicContainer = styled.div`
   margin: 50px auto;
-  max-width: 600px;
+  max-width: 624px;
   position: relative;
 `;
 
 const StyledEditor = styled(Editor)`
-  border: 1px solid red;
+  border: none;
 `;
 
 const StyledParagraph = styled(Paragraph)`
@@ -63,6 +66,11 @@ export const Container: React.VFC = React.memo(() => {
     editorRef1.current?.setBlocks(
       JSON.parse(
         '[{"id":"OodywE2HkiW1KeTBPCa96","contents":[{"id":"OYbvu_ZB9QppDCeIOSfbZ","attributes":{"bold": true},"text":"今日はいい天気ですね🤗","type":"TEXT","isEmbed":false}],"attributes":{},"type":"PARAGRAPH"},{"id":"zB28GJ_DWSjPfe_IGov5-","contents":[{"id":"lNkUDGfX2rsgZhzq_lZ3f","text":"﻿","type":"TEXT","attributes":{},"isEmbed":false}],"attributes":{},"type":"PARAGRAPH"}]',
+      ),
+    );
+    editorRef2.current?.setBlocks(
+      JSON.parse(
+        '[{"id":"OodywE2HkiW1KeTBPCa96","contents":[{"id":"OYbvu_ZB9QppDCeIOSfbZ","attributes":{"bold": true},"text":"今日は悪い天気ですね🤗","type":"TEXT","isEmbed":false}],"attributes":{},"type":"PARAGRAPH"},{"id":"zB28GJ_DWSjPfe_IGov5-","contents":[{"id":"lNkUDGfX2rsgZhzq_lZ3f","text":"﻿","type":"TEXT","attributes":{},"isEmbed":false}],"attributes":{},"type":"PARAGRAPH"}]',
       ),
     );
   });

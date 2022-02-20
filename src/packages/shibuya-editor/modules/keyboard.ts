@@ -288,13 +288,6 @@ export class KeyBoardModule implements Module {
     // }
   }
 
-  private _handleShiftEnter(caretPosition: CaretPosition, editor: EditorController) {
-    if (caretPosition.collapsed) {
-    } else {
-      console.log('key shift enter(range)');
-    }
-  }
-
   private _handlekeyLeft(
     caretPosition: CaretPosition,
     editor: EditorController,
@@ -372,12 +365,6 @@ export class KeyBoardModule implements Module {
     const textLength = editor.getBlockLength(caretPosition.blockId);
     let deletedContents;
     let caretIndex: number;
-
-    const selectedBlocks = editor.getModule('selector').getSelectedBlocks();
-    if (selectedBlocks.length > 0) {
-      editor.getModule('editor').deleteBlocks(selectedBlocks.map((block) => block.id));
-      return;
-    }
 
     if (caretPosition.collapsed) {
       if (!block) return;

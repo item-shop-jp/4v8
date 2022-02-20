@@ -57,7 +57,7 @@ const MarginBottom = styled.div`
   flex-grow: 1;
   user-select: none;
 `;
-const Clipboard = styled.div`
+const Selector = styled.div`
   left: -100000px;
   height: 1px;
   overflow-y: hidden;
@@ -99,6 +99,16 @@ export const Editor = React.memo(
           const keyboard = editor.getModule('keyboard');
           if (keyboard && keyboard instanceof KeyBoardModule) {
             keyboard.onKeyDown(event);
+          }
+        },
+        [editor],
+      );
+
+      const handleSelectorKeyDown = React.useCallback(
+        (event: React.KeyboardEvent) => {
+          const selector = editor.getModule('selector');
+          if (selector && selector instanceof SelectorModule) {
+            selector.onKeyDown(event);
           }
         },
         [editor],
@@ -292,7 +302,11 @@ export const Editor = React.memo(
           <MarginBottom onClick={handleContainerClick} />
           <MemoGlobalToolbar editor={memoEditor} />
           <MemoBubbleToolbar editor={memoEditor} scrollContainer={scrollContainer} />
-          <Clipboard contentEditable={true} className="clipboard" />
+          <Selector
+            contentEditable={true}
+            className="clipboard"
+            onKeyDown={handleSelectorKeyDown}
+          />
         </Container>
       );
     },

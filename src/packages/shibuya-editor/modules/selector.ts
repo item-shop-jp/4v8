@@ -3,9 +3,11 @@ import { Module } from '../types/module';
 import { EventEmitter } from '../utils/event-emitter';
 import { EditorController } from '../types/editor';
 import { getBlockId, getBlockElementById } from '../utils/block';
-import { EditorEvents } from '../constants';
+import { KeyCodes, EditorEvents } from '../constants';
 import { Block } from '../types/block';
 import { copyObject } from '../utils/object';
+
+const ShortKey = /Mac/i.test(navigator.platform) ? 'metaKey' : 'ctrlKey';
 
 interface Props {
   eventEmitter: EventEmitter;
@@ -17,6 +19,18 @@ interface Position {
   end: string | null;
 }
 
+interface KeyBindingProps {
+  key: string;
+  formats?: string[];
+  shortKey?: boolean;
+  metaKey?: boolean;
+  ctrlKey?: boolean;
+  shiftKey?: boolean;
+  altKey?: boolean;
+  prevented?: boolean;
+  handler: (editor: EditorController, event: React.KeyboardEvent) => void;
+}
+
 export class SelectorModule implements Module {
   private eventEmitter;
   private editor;
@@ -25,6 +39,7 @@ export class SelectorModule implements Module {
   private mousePressed = false;
   private changed = false;
   private selectedBlocks: Block[] = [];
+  private bindings: KeyBindingProps[] = [];
 
   mouseMove = throttle(100, (e: MouseEvent) => {
     if (!this.mousePressed) return;
@@ -98,6 +113,12 @@ export class SelectorModule implements Module {
 
   onInit() {
     this.eventEmitter.info('init selector module');
+
+    this.addBinding({
+      key: KeyCodes.BACKSPACE,
+      prevented: true,
+      handler: this._handleBackspace.bind(this),
+    });
   }
 
   onDestroy() {
@@ -132,5 +153,55 @@ export class SelectorModule implements Module {
 
   getSelectedBlocks() {
     return this.selectedBlocks;
+  }
+
+  addBinding(props: KeyBindingProps) {
+    this.bindings.push(props);
+  }
+
+  onKeyDown(e: React.KeyboardEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+    this.bindings.forEach((binding) => {
+      this._trigger(e, binding);
+    });
+  }
+
+  private _trigger(e: React.KeyboardEvent, props: KeyBindingProps): boolean {
+    const {
+      key,
+      metaKey = false,
+      ctrlKey = false,
+      shiftKey = false,
+      shortKey = false,
+      altKey = false,
+      prevented = false,
+      handler,
+    } = props;
+    if (shortKey && !e[ShortKey]) return false;
+    if (!shortKey) {
+      if ((metaKey && !e.metaKey) || (!metaKey && e.metaKey)) return false;
+      if ((ctrlKey && !e.ctrlKey) || (!ctrlKey && e.ctrlKey)) return false;
+    } else {
+      if (metaKey && !e.metaKey) return false;
+      if (ctrlKey && !e.ctrlKey) return false;
+    }
+
+    if ((shiftKey && !e.shiftKey) || (!shiftKey && e.shiftKey)) return false;
+    if ((altKey && !e.altKey) || (!altKey && e.altKey)) return false;
+
+    if (key !== e.code) return false;
+
+    handler(this.editor, e);
+
+    return prevented;
+  }
+
+  private _handleBackspace(editor: EditorController) {
+    const selectedBlocks = editor.getModule('selector').getSelectedBlocks();
+    if (selectedBlocks.length > 0) {
+      editor.getModule('editor').deleteBlocks(selectedBlocks.map((block) => block.id));
+      return;
+    }
   }
 }

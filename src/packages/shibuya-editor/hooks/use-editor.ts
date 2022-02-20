@@ -640,15 +640,17 @@ export function useEditor({
       if (deleteBlocks.length < 1) return;
 
       eventEmitter.emit(EditorEvents.EVENT_EDITOR_CHANGE, {
-        payload: deleteBlocks.map((block) => {
-          const currentIndex = blocksRef.current.findIndex((v) => v.id === block.id);
-          return {
-            type: HistoryType.REMOVE_BLOCK,
-            blockId: block.id,
-            block: copyObject(block),
-            prevBlockId: blocksRef.current[currentIndex - 1]?.id,
-          };
-        }),
+        payload: deleteBlocks
+          .map((block) => {
+            const currentIndex = blocksRef.current.findIndex((v) => v.id === block.id);
+            return {
+              type: HistoryType.REMOVE_BLOCK,
+              blockId: block.id,
+              block: copyObject(block),
+              prevBlockId: blocksRef.current[currentIndex - 1]?.id,
+            };
+          })
+          .reverse(),
         source,
       });
 

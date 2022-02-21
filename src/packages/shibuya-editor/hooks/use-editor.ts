@@ -529,7 +529,12 @@ export function useEditor({
   );
 
   const createBlock = React.useCallback(
-    (appendBlock: Block, prevBlockId?: string, source: Source = EventSources.USER) => {
+    (
+      appendBlock: Block,
+      prevBlockId?: string,
+      type: 'prepend' | 'append' = 'append',
+      source: Source = EventSources.USER,
+    ) => {
       const currentIndex = blocksRef.current.findIndex((v) => v.id === prevBlockId);
 
       eventEmitter.emit(EditorEvents.EVENT_EDITOR_CHANGE, {
@@ -549,6 +554,8 @@ export function useEditor({
               appendBlock,
               ...blocksRef.current.slice(currentIndex + 1),
             ]
+          : type === 'prepend'
+          ? [appendBlock, ...blocksRef.current]
           : [...blocksRef.current, appendBlock],
       );
     },

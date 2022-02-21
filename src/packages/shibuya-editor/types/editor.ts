@@ -42,8 +42,13 @@ export interface EditorController {
   getBlocks(): Block[];
   getBlock(blockId: string): Block | null;
   getBlockLength(blockId: string): number | null;
-  createBlock(appendBlock: Block, prevBlockId?: string): void;
-  createBlock(appendBlock: Block, prevBlockId: string, source: Source): void;
+  createBlock(appendBlock: Block, prevBlockId?: string, type?: 'prepend' | 'append'): void;
+  createBlock(
+    appendBlock: Block,
+    prevBlockId: string,
+    type: 'prepend' | 'append',
+    source: Source,
+  ): void;
   updateBlock(block: Block): void;
   updateBlock(block: Block, source: Source): void;
   deleteBlock(blockId: string): void;

@@ -57,8 +57,8 @@ export class HistoryModule implements Module {
     const sub = this.eventEmitter
       .select<{ payload: Op | Op[]; source: Source }>(EditorEvents.EVENT_EDITOR_CHANGE)
       .subscribe(({ payload, source }) => {
-        if (this.isUpdating) return;
         if (source === EventSources.USER) {
+          if (this.isUpdating) return;
           if (Array.isArray(payload)) {
             setTimeout(() => {
               payload.forEach((op) => {
@@ -243,7 +243,12 @@ export class HistoryModule implements Module {
       });
 
       removeOps.forEach((op, i) => {
-        this.editor.createBlock(copyObject(op.block), op.prevBlockId);
+        if (op.prevBlockId) {
+          this.editor.createBlock(copyObject(op.block), op.prevBlockId);
+        } else {
+          this.editor.createBlock(copyObject(op.block), op.prevBlockId, 'prepend');
+        }
+
         affectedIds.push(op.blockId);
         if (i === removeOps.length - 1) {
           setTimeout(() => {
@@ -284,9 +289,11 @@ export class HistoryModule implements Module {
         affectedIds.push(op.blockId);
         if (i === 0 && addOps.length < 1 && updateOps.length < 1) {
           setTimeout(() => {
-            const textIndex = this.editor.getBlockLength(op.prevBlockId ?? '') ?? 0;
+            const blocks = this.editor.getBlocks();
+            const focusBlockId = op.prevBlockId ?? blocks[0].id;
+            const textIndex = this.editor.getBlockLength(focusBlockId) ?? 0;
             this.editor.setCaretPosition({
-              blockId: op.prevBlockId,
+              blockId: focusBlockId,
               index: textIndex,
             });
           }, 10);
@@ -298,7 +305,6 @@ export class HistoryModule implements Module {
         affectedIds.push(op.blockId);
         if (i === addOps.length - 1 && updateOps.length < 1) {
           setTimeout(() => {
-            console.log(op.blockId);
             const textIndex = this.editor.getBlockLength(op.blockId) ?? 0;
             this.editor.setCaretPosition({
               blockId: op.blockId,

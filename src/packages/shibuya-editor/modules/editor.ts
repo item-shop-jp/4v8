@@ -82,11 +82,13 @@ export class EditorModule implements Module {
     this.editor.getModule('history').optimizeOp();
     this.editor.render();
     const currentIndex = blocks.findIndex((v) => v.id === blockIds[0]);
-    if (currentIndex > 0) {
-      const prevBlockLength = this.editor.getBlockLength(blocks[currentIndex - 1].id) ?? 0;
+    if (currentIndex !== -1) {
+      const deletedBlocks = this.editor.getBlocks();
+      const targetBlockId = currentIndex === 0 ? deletedBlocks[0].id : blocks[currentIndex - 1].id;
+      const targetBlockLength = this.editor.getBlockLength(targetBlockId) ?? 0;
       this.editor.setCaretPosition({
-        blockId: blocks[currentIndex - 1].id,
-        index: prevBlockLength,
+        blockId: targetBlockId,
+        index: targetBlockLength,
       });
     }
   }

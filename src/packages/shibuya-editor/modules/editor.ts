@@ -75,6 +75,10 @@ export class EditorModule implements Module {
     const blocks = this.editor.getBlocks();
     if (blocks.length <= 1) return;
     this.editor.deleteBlocks(blockIds);
+    const deletedBlocks = this.editor.getBlocks();
+    if (deletedBlocks.length < 1) {
+      this.createBlock();
+    }
     this.editor.getModule('history').optimizeOp();
     this.editor.render();
     const currentIndex = blocks.findIndex((v) => v.id === blockIds[0]);

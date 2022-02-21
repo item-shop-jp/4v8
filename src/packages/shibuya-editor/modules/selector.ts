@@ -199,9 +199,8 @@ export class SelectorModule implements Module {
 
   private _handleBackspace(editor: EditorController) {
     const selectedBlocks = editor.getModule('selector').getSelectedBlocks();
-    if (selectedBlocks.length > 0) {
-      editor.getModule('editor').deleteBlocks(selectedBlocks.map((block) => block.id));
-      return;
-    }
+    if (selectedBlocks.length < 1) return;
+    editor.getModule('editor').deleteBlocks(selectedBlocks.map((block) => block.id));
+    this.reset();
   }
 }

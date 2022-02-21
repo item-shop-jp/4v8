@@ -7,7 +7,7 @@ import { EventEmitter } from '../utils/event-emitter';
 import { getTextLength, getStartIndex } from '../utils/json0';
 import { Block } from '../types/block';
 import { EditorController, Source } from '../types/editor';
-import { Op, JSON0, UpdateOp, AddOp } from '../types/history';
+import { Op, JSON0, UpdateOp, AddOp, RemoveOp } from '../types/history';
 import { EditorEvents, EventSources, HistoryType } from '../constants';
 import { copyObject } from '../utils/object';
 import { CaretPosition } from '../types/caret';
@@ -212,57 +212,47 @@ export class HistoryModule implements Module {
       this.isUpdating = true;
       this.editor.blur();
       const affectedIds: string[] = [];
-      const blockLevelOps = ops.filter(
-        (v) => v.type === HistoryType.ADD_BLOCK || v.type === HistoryType.REMOVE_BLOCK,
-      );
-      const inlineLevelOps = ops.filter((v) => v.type === HistoryType.UPDATE_CONTENTS);
+      const addOps: AddOp[] = ops.filter((v) => v.type === HistoryType.ADD_BLOCK) as AddOp[];
+      const removeOps: RemoveOp[] = ops.filter(
+        (v) => v.type === HistoryType.REMOVE_BLOCK,
+      ) as RemoveOp[];
+      const updateOps: UpdateOp[] = ops.filter(
+        (v) => v.type === HistoryType.UPDATE_CONTENTS,
+      ) as UpdateOp[];
 
-      inlineLevelOps.forEach((op, i) => {
-        switch (op.type) {
-          case HistoryType.UPDATE_CONTENTS: {
-            this.executeJson0(op.blockId, op.undo);
-            affectedIds.push(op.blockId);
-            if (i === inlineLevelOps.length - 1 && blockLevelOps.length < 1) {
-              this.moveCaret(op.undo, op.position, 'undo');
-            }
-            break;
-          }
+      updateOps.forEach((op, i) => {
+        this.executeJson0(op.blockId, op.undo);
+        affectedIds.push(op.blockId);
+        if (i === updateOps.length - 1 && addOps.length < 1 && removeOps.length < 1) {
+          this.moveCaret(op.undo, op.position, 'undo');
         }
       });
-      blockLevelOps.forEach((op, i) => {
-        switch (op.type) {
-          case HistoryType.ADD_BLOCK: {
-            this.editor.deleteBlock(op.blockId);
-            affectedIds.push(op.blockId);
-            if (i === blockLevelOps.length - 1) {
-              const textIndex = this.editor.getBlockLength(op.prevBlockId ?? '') ?? 0;
-              setTimeout(
-                () =>
-                  this.editor.setCaretPosition({
-                    blockId: op.prevBlockId,
-                    index: textIndex,
-                  }),
-                10,
-              );
-            }
-            break;
-          }
-          case HistoryType.REMOVE_BLOCK: {
-            this.editor.createBlock(copyObject(op.block), op.prevBlockId);
-            affectedIds.push(op.blockId);
-            if (i === blockLevelOps.length - 1) {
-              const textIndex = this.editor.getBlockLength(op.blockId) ?? 0;
-              setTimeout(
-                () =>
-                  this.editor.setCaretPosition({
-                    blockId: op.blockId,
-                    index: textIndex,
-                  }),
-                10,
-              );
-            }
-            break;
-          }
+
+      addOps.forEach((op, i) => {
+        this.editor.deleteBlock(op.blockId);
+        affectedIds.push(op.blockId);
+        if (i === addOps.length - 1 && removeOps.length < 1) {
+          setTimeout(() => {
+            const textIndex = this.editor.getBlockLength(op.prevBlockId ?? '') ?? 0;
+            this.editor.setCaretPosition({
+              blockId: op.prevBlockId,
+              index: textIndex,
+            });
+          }, 10);
+        }
+      });
+
+      removeOps.forEach((op, i) => {
+        this.editor.createBlock(copyObject(op.block), op.prevBlockId);
+        affectedIds.push(op.blockId);
+        if (i === removeOps.length - 1) {
+          setTimeout(() => {
+            const textIndex = this.editor.getBlockLength(op.blockId) ?? 0;
+            this.editor.setCaretPosition({
+              blockId: op.blockId,
+              index: textIndex,
+            });
+          }, 10);
         }
       });
 
@@ -281,52 +271,49 @@ export class HistoryModule implements Module {
       this.isUpdating = true;
       this.editor.blur();
       const affectedIds: string[] = [];
+      const addOps: AddOp[] = ops.filter((v) => v.type === HistoryType.ADD_BLOCK) as AddOp[];
+      const removeOps: RemoveOp[] = ops.filter(
+        (v) => v.type === HistoryType.REMOVE_BLOCK,
+      ) as RemoveOp[];
+      const updateOps: UpdateOp[] = ops.filter(
+        (v) => v.type === HistoryType.UPDATE_CONTENTS,
+      ) as UpdateOp[];
 
-      const blockLevelOps = ops.filter(
-        (v) => v.type === HistoryType.ADD_BLOCK || v.type === HistoryType.REMOVE_BLOCK,
-      );
-      const inlineLevelOps = ops.filter((v) => v.type === HistoryType.UPDATE_CONTENTS);
-
-      blockLevelOps.forEach((op, i) => {
-        switch (op.type) {
-          case HistoryType.ADD_BLOCK: {
-            this.editor.createBlock(copyObject(op.block), op.prevBlockId);
-            affectedIds.push(op.blockId);
-            if (i === blockLevelOps.length - 1 && inlineLevelOps.length < 1) {
-              const textIndex = this.editor.getBlockLength(op.blockId) ?? 0;
-              setTimeout(() => {
-                this.editor.setCaretPosition({
-                  blockId: op.blockId,
-                  index: textIndex,
-                });
-              }, 10);
-            }
-            break;
-          }
-          case HistoryType.REMOVE_BLOCK: {
-            this.editor.deleteBlock(op.blockId);
-            affectedIds.push(op.blockId);
-            if (i === blockLevelOps.length - 1 && inlineLevelOps.length < 1) {
-              const textIndex = this.editor.getBlockLength(op.prevBlockId ?? '') ?? 0;
-              setTimeout(
-                () =>
-                  this.editor.setCaretPosition({
-                    blockId: op.prevBlockId,
-                    index: textIndex,
-                  }),
-                10,
-              );
-            }
-            break;
-          }
+      removeOps.forEach((op, i) => {
+        this.editor.deleteBlock(op.blockId);
+        affectedIds.push(op.blockId);
+        if (i === 0 && addOps.length < 1 && updateOps.length < 1) {
+          setTimeout(() => {
+            const textIndex = this.editor.getBlockLength(op.prevBlockId ?? '') ?? 0;
+            this.editor.setCaretPosition({
+              blockId: op.prevBlockId,
+              index: textIndex,
+            });
+          }, 10);
         }
       });
-      inlineLevelOps.forEach((op, i) => {
+
+      addOps.forEach((op, i) => {
+        this.editor.createBlock(copyObject(op.block), op.prevBlockId);
+        affectedIds.push(op.blockId);
+        if (i === addOps.length - 1 && updateOps.length < 1) {
+          setTimeout(() => {
+            console.log(op.blockId);
+            const textIndex = this.editor.getBlockLength(op.blockId) ?? 0;
+            this.editor.setCaretPosition({
+              blockId: op.blockId,
+              index: textIndex,
+            });
+          }, 10);
+        }
+      });
+
+      updateOps.forEach((op, i) => {
         switch (op.type) {
           case HistoryType.UPDATE_CONTENTS: {
             this.executeJson0(op.blockId, op.redo);
             affectedIds.push(op.blockId);
-            if (i === inlineLevelOps.length - 1) {
+            if (i === updateOps.length - 1) {
               this.moveCaret(op.redo, op.position, 'redo');
             }
             break;

@@ -107,9 +107,37 @@ export const Editor = React.memo(
       const handleSelectorKeyDown = React.useCallback(
         (event: React.KeyboardEvent) => {
           const selector = editor.getModule('selector');
-          if (selector && selector instanceof SelectorModule) {
+          if (selector) {
             selector.onKeyDown(event);
           }
+        },
+        [editor],
+      );
+
+      const handleSelectorCopy = React.useCallback(
+        (event: React.ClipboardEvent) => {
+          const clipboard = editor.getModule('clipboard');
+          if (clipboard) {
+            clipboard.onCopy(event);
+          }
+        },
+        [editor],
+      );
+
+      const handleSelectorCut = React.useCallback(
+        (event: React.ClipboardEvent) => {
+          const clipboard = editor.getModule('clipboard');
+          if (clipboard) {
+            clipboard.onCut(event);
+          }
+        },
+        [editor],
+      );
+
+      const handleSelectorInput = React.useCallback(
+        (event: React.FormEvent) => {
+          // event.preventDefault();
+          // event.stopPropagation();
         },
         [editor],
       );
@@ -134,7 +162,7 @@ export const Editor = React.memo(
         [editor],
       );
 
-      const handleInput = React.useCallback((e: React.KeyboardEvent) => {
+      const handleInput = React.useCallback((e: React.FormEvent) => {
         const keyboard = editor.getModule('keyboard');
         if (keyboard) {
           keyboard.onInput(e);
@@ -306,6 +334,9 @@ export const Editor = React.memo(
             contentEditable={true}
             className="clipboard"
             onKeyDown={handleSelectorKeyDown}
+            onBeforeInput={handleSelectorInput}
+            onCopy={handleSelectorCopy}
+            onCut={handleSelectorCut}
           />
         </Container>
       );

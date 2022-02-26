@@ -18,7 +18,7 @@ interface BlockProps {
   onDrag: (e: React.DragEvent) => void;
   onCompositionStart: (e: React.CompositionEvent) => void;
   onCompositionEnd: (e: React.CompositionEvent) => void;
-  onBeforeInput: (e: React.KeyboardEvent) => void;
+  onBeforeInput: (e: React.FormEvent) => void;
 }
 
 const FadeIn = keyframes`

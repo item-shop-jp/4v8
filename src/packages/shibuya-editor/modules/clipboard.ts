@@ -12,8 +12,6 @@ interface Props {
 }
 
 export class ClipboardModule implements Module {
-  onCopy: (e: ClipboardEvent) => void;
-  onCut: (e: ClipboardEvent) => void;
   private eventEmitter;
   private editor;
   private editorRef;
@@ -24,18 +22,12 @@ export class ClipboardModule implements Module {
     this.editor = editor;
     this.editorRef = this.editor.getEditorRef();
     this.eventEmitter = eventEmitter;
-    this.onCopy = this._onCopy.bind(this);
-    this.onCut = this._onCut.bind(this);
   }
 
   onInit() {
     this.eventEmitter.info('init clipboard module');
     const editorRef = this.editor.getEditorRef();
     this.clipboardEl = editorRef?.parentElement?.querySelector('.clipboard') ?? null;
-    if (this.clipboardEl) {
-      this.clipboardEl.addEventListener('copy', this.onCopy, true);
-      this.clipboardEl.addEventListener('cut', this.onCut, true);
-    }
     this.subs.add(
       this.eventEmitter
         .select(EditorEvents.EVENT_BLOCK_SELECTED)
@@ -52,40 +44,35 @@ export class ClipboardModule implements Module {
 
   onDestroy() {
     this.eventEmitter.info('destroy clipboard module');
-    if (this.clipboardEl) {
-      this.clipboardEl.removeEventListener('copy', this.onCopy, true);
-      this.clipboardEl.removeEventListener('cut', this.onCut, true);
-    }
     this.subs.unsubscribe();
   }
 
-  onPaste(event: ClipboardEvent) {
+  onPaste(event: React.ClipboardEvent) {
     event.preventDefault();
     if (event.clipboardData) {
       console.log(event.clipboardData.getData('text/shibuya-formats'));
     }
   }
 
+  onCopy(event: React.ClipboardEvent) {
+    event.preventDefault();
+    const selectedBlocks = this.editor.getModule('selector').getSelectedBlocks();
+    this._save(event.nativeEvent, selectedBlocks);
+  }
+
+  onCut(event: React.ClipboardEvent) {
+    event.preventDefault();
+    const selectedBlocks = this.editor.getModule('selector').getSelectedBlocks();
+    if (selectedBlocks.length < 1) return;
+    this._save(event.nativeEvent, selectedBlocks);
+    this.editor.getModule('editor').deleteBlocks(selectedBlocks.map((block) => block.id));
+    this.editor.getModule('selector').reset();
+  }
+
   private _save(event: ClipboardEvent, blocks: Block[]) {
-    const clipboard = `<div shibuya-clipboard='${JSON.stringify(blocks)}' />`;
     if (event.clipboardData) {
-      //event.clipboardData.setData('text/html', htmlClipboard);
       event.clipboardData.setData('text/plain', convertBlocksToText(blocks));
-      event.clipboardData.setData('text/shibuya-formats', clipboard);
+      event.clipboardData.setData('text/shibuya-formats', JSON.stringify(blocks));
     }
-  }
-
-  private _onCopy(event: ClipboardEvent) {
-    event.preventDefault();
-    const selectedBlocks = this.editor.getModule('selector').getSelectedBlocks();
-    this._save(event, selectedBlocks);
-    console.log('copy', selectedBlocks);
-  }
-
-  private _onCut(event: ClipboardEvent) {
-    event.preventDefault();
-    const selectedBlocks = this.editor.getModule('selector').getSelectedBlocks();
-    this._save(event, selectedBlocks);
-    console.log('cut', selectedBlocks);
   }
 }

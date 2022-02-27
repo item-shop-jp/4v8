@@ -1,4 +1,5 @@
 import { Subscription } from 'rxjs';
+import { nanoid } from 'nanoid';
 import { Module } from '../types/module';
 import { EventEmitter } from '../utils/event-emitter';
 import { EditorController } from '../types/editor';
@@ -49,8 +50,30 @@ export class ClipboardModule implements Module {
 
   onPaste(event: React.ClipboardEvent) {
     event.preventDefault();
-    if (event.clipboardData) {
-      console.log(event.clipboardData.getData('text/shibuya-formats'));
+    const caretPosition = this.editor.getCaretPosition();
+    const blocks = this.editor.getBlocks();
+    const prevBlock = blocks.find((block) => block.id === caretPosition?.blockId);
+
+    if (prevBlock && event.clipboardData.getData('text/shibuya-formats')) {
+      const appendBlocks = JSON.parse(
+        event.clipboardData.getData('text/shibuya-formats'),
+      ) as Block[];
+      let prevBlockId = prevBlock.id;
+      const affectedIds = appendBlocks.map((v, i) => {
+        const appendBlock = { ...v, id: nanoid() };
+        this.editor.createBlock(appendBlock, prevBlockId);
+        prevBlockId = appendBlock.id;
+        return appendBlock.id;
+      });
+      this.editor.render(affectedIds);
+      setTimeout(() => {
+        const textIndex = this.editor.getBlockLength(prevBlockId) ?? 0;
+        this.editor.setCaretPosition({
+          blockId: prevBlockId,
+          index: textIndex,
+        });
+        this.editor.updateCaretRect();
+      });
     }
   }
 

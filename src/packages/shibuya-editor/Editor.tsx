@@ -114,7 +114,7 @@ export const Editor = React.memo(
         [editor],
       );
 
-      const handleSelectorCopy = React.useCallback(
+      const handleCopy = React.useCallback(
         (event: React.ClipboardEvent) => {
           const clipboard = editor.getModule('clipboard');
           if (clipboard) {
@@ -124,7 +124,7 @@ export const Editor = React.memo(
         [editor],
       );
 
-      const handleSelectorCut = React.useCallback(
+      const handleCut = React.useCallback(
         (event: React.ClipboardEvent) => {
           const clipboard = editor.getModule('clipboard');
           if (clipboard) {
@@ -318,6 +318,8 @@ export const Editor = React.memo(
                   onClick={handleClick}
                   onKeyDown={handleKeyDown}
                   onPaste={handlePaste}
+                  onCopy={handleCopy}
+                  onCut={handleCut}
                   onDrop={handleDrop}
                   onDrag={handleDrag}
                   onBeforeInput={handleInput}
@@ -335,8 +337,8 @@ export const Editor = React.memo(
             className="clipboard"
             onKeyDown={handleSelectorKeyDown}
             onBeforeInput={handleSelectorInput}
-            onCopy={handleSelectorCopy}
-            onCut={handleSelectorCut}
+            onCopy={handleCopy}
+            onCut={handleCut}
           />
         </Container>
       );

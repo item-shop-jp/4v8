@@ -482,7 +482,8 @@ export function useEditor({
 
       setTimeout(() => {
         if (!blockId || !block || !blockElement || composing) return;
-        const { contents, affected, affectedLength } = blockUtils.getInlineContents(blockElement);
+        const { contents, affected, affectedLength } =
+          blockUtils.convertHTMLtoInlines(blockElement);
         updateCaretPositionRef();
         if (isEqual(block.contents, contents)) return;
         updateBlock({ ...block, contents });

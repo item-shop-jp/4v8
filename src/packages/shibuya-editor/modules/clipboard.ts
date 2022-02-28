@@ -5,7 +5,8 @@ import { EventEmitter } from '../utils/event-emitter';
 import { EditorController } from '../types/editor';
 import { EditorEvents } from '../constants';
 import { Block } from '../types/block';
-import { convertBlocksToText } from '../utils/block';
+import { convertBlocksToText, deleteInlineContents, getInlineContents } from '../utils/block';
+import { Inline } from '../types/inline';
 
 interface Props {
   eventEmitter: EventEmitter;
@@ -51,8 +52,7 @@ export class ClipboardModule implements Module {
   onPaste(event: React.ClipboardEvent) {
     event.preventDefault();
     const caretPosition = this.editor.getCaretPosition();
-    const blocks = this.editor.getBlocks();
-    const prevBlock = blocks.find((block) => block.id === caretPosition?.blockId);
+    const prevBlock = this.editor.getBlock(caretPosition?.blockId ?? '');
 
     if (prevBlock && event.clipboardData.getData('text/shibuya-formats')) {
       const appendBlocks = JSON.parse(
@@ -80,22 +80,70 @@ export class ClipboardModule implements Module {
   onCopy(event: React.ClipboardEvent) {
     event.preventDefault();
     const selectedBlocks = this.editor.getModule('selector').getSelectedBlocks();
-    this._save(event.nativeEvent, selectedBlocks);
+    if (selectedBlocks.length > 0) {
+      // block
+      this._saveBlocks(event.nativeEvent, selectedBlocks);
+    } else {
+      // inline
+      const caretPosition = this.editor.getCaretPosition();
+      const block = this.editor.getBlock(caretPosition?.blockId ?? '');
+      if (block && caretPosition && !caretPosition.collapsed && caretPosition.length > 0) {
+        const inlineContents = getInlineContents(
+          block.contents,
+          caretPosition.index,
+          caretPosition.length,
+        );
+        console.log(JSON.stringify(inlineContents));
+      }
+    }
   }
 
   onCut(event: React.ClipboardEvent) {
     event.preventDefault();
+    const caretPosition = this.editor.getCaretPosition();
     const selectedBlocks = this.editor.getModule('selector').getSelectedBlocks();
-    if (selectedBlocks.length < 1) return;
-    this._save(event.nativeEvent, selectedBlocks);
-    this.editor.getModule('editor').deleteBlocks(selectedBlocks.map((block) => block.id));
-    this.editor.getModule('selector').reset();
+    if (selectedBlocks.length > 0) {
+      // block
+      this._saveBlocks(event.nativeEvent, selectedBlocks);
+      this.editor.getModule('editor').deleteBlocks(selectedBlocks.map((block) => block.id));
+      this.editor.getModule('selector').reset();
+    } else if (caretPosition && !caretPosition.collapsed && caretPosition.length > 0) {
+      // inline
+      const block = this.editor.getBlock(caretPosition?.blockId ?? '');
+      if (block) {
+        const caretIndex = caretPosition.index;
+        const inlineContents = getInlineContents(
+          block.contents,
+          caretPosition.index,
+          caretPosition.length,
+        );
+        console.log(JSON.stringify(inlineContents));
+        const deletedContents = deleteInlineContents(
+          block.contents,
+          caretPosition.index,
+          caretPosition.length,
+        );
+        this.editor.updateBlock({ ...block, contents: deletedContents });
+        this.editor.blur();
+        this.editor.render([block.id]);
+        setTimeout(() => {
+          this.editor.setCaretPosition({ blockId: block.id, index: caretIndex });
+          this.editor.updateCaretRect();
+        }, 10);
+      }
+    }
   }
 
-  private _save(event: ClipboardEvent, blocks: Block[]) {
+  private _saveBlocks(event: ClipboardEvent, blocks: Block[]) {
     if (event.clipboardData) {
       event.clipboardData.setData('text/plain', convertBlocksToText(blocks));
       event.clipboardData.setData('text/shibuya-formats', JSON.stringify(blocks));
+    }
+  }
+
+  private _saveInline(event: ClipboardEvent, inlines: Inline[]) {
+    if (event.clipboardData) {
+      console.log(inlines);
     }
   }
 }

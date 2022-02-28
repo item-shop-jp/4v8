@@ -150,12 +150,6 @@ export class KeyBoardModule implements Module {
       shortKey: true,
       handler: this._handleUnderline.bind(this),
     });
-    this.addBinding({
-      key: KeyCodes.X,
-      prevented: true,
-      shortKey: true,
-      handler: this._handleCut.bind(this),
-    });
   }
 
   onDestroy() {
@@ -454,10 +448,4 @@ export class KeyBoardModule implements Module {
     const formats = editor.getFormats(caret.blockId, caret.index, caret.length);
     editor.getModule('toolbar').formatInline({ underline: !formats?.underline });
   }
-
-  private _handleCut(
-    caretPosition: CaretPosition,
-    editor: EditorController,
-    event: React.KeyboardEvent,
-  ) {}
 }

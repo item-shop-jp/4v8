@@ -27,5 +27,6 @@ export interface Formats {
   'inline/style/underline': FlattenSimpleInterpolation;
   'inline/style/strike': FlattenSimpleInterpolation;
   'inline/style/code': FlattenSimpleInterpolation;
+  'inline/style/link': FlattenSimpleInterpolation;
   [key: string]: any;
 }

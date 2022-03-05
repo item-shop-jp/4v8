@@ -30,6 +30,7 @@ import { EditorEvents } from './constants';
 import { Formats } from './types/format';
 import { Block } from './types/block';
 import { Settings, EditorController } from './types/editor';
+import { Link } from './components/styles/Link';
 
 interface Props {
   scrollContainer?: HTMLElement | string;
@@ -90,6 +91,7 @@ export const Editor = React.memo(
         'inline/style/strike': Strike,
         'inline/style/code': InlineCode,
         'inline/style/italic': Italic,
+        'inline/style/link': Link,
       });
       const [blocks, setBlocks] = React.useState<Block[]>([]);
       const [selectedIds, setSelectedIds] = React.useState<string[]>([]);

@@ -105,7 +105,7 @@ export const BubbleToolbar = React.memo(
       (event: React.MouseEvent) => {
         event.preventDefault();
         setCurrentCaretPosition(editor.getCaretPosition());
-        editor.getModule('toolbar').formatInline({ link: 'https://google.com' });
+        editor.getModule('toolbar').formatInline({ link: '' });
         setTimeout(() => {
           setShowPopup(!showPopup);
         }, 10);
@@ -200,6 +200,7 @@ export const BubbleToolbar = React.memo(
         )}
         {showPopup && (
           <StyledLinkPopup
+            scrollContainer={scrollContainer}
             top={popupPosition?.top ?? 0}
             left={popupPosition?.left ?? 0}
             onLinkSave={handleChangeLink}

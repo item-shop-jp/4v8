@@ -50,7 +50,7 @@ export const BlockContainer: React.VFC<BlockProps> = React.memo(
     const block = useBlockRenderer({ blockId, editor });
 
     const memoContents = React.useMemo(() => {
-      return InlineContainer({ contents: block?.contents ?? [], formats });
+      return InlineContainer({ contents: block?.contents ?? [], formats, editor });
     }, [block?.contents, formats]);
 
     React.useEffect(() => {

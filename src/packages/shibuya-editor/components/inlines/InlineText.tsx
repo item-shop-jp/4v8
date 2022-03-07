@@ -1,12 +1,16 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import twemoji from 'twemoji';
+import { EditorController } from '../../types/editor';
 import { Formats } from '../../types/format';
 import { Inline } from '../../types/inline';
+import { getBlockId } from '../../utils/block';
+import { getInlineId } from '../../utils/inline';
 
 export interface InlineTextProps {
   inline: Inline;
   formats: Formats;
+  editor: EditorController;
 }
 
 interface InlineContentProps {
@@ -50,7 +54,7 @@ const Link = styled.a<InlineContentProps>`
   }}
 `;
 
-export const InlineText = ({ inline, formats, ...props }: InlineTextProps) => {
+export const InlineText = ({ inline, formats, editor, ...props }: InlineTextProps) => {
   const memoInnerHTML = React.useMemo(() => {
     const text = inline.text.replaceAll('\n', '<br>');
     return {
@@ -61,6 +65,15 @@ export const InlineText = ({ inline, formats, ...props }: InlineTextProps) => {
     };
   }, [inline]);
 
+  const handleClickLink = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    const [blockId] = getBlockId(e.nativeEvent.target as HTMLElement);
+    const [inlineId] = getInlineId(e.nativeEvent.target as HTMLElement);
+    if (!blockId || !inlineId) return;
+    const block = editor.getBlock(blockId);
+    if (!block) return;
+    const inline = block.contents.find((v) => v.id === inlineId);
+  };
+
   return (
     <>
       {inline.attributes['link'] ? (
@@ -70,6 +83,7 @@ export const InlineText = ({ inline, formats, ...props }: InlineTextProps) => {
           dangerouslySetInnerHTML={memoInnerHTML}
           formats={formats}
           attributes={inline.attributes}
+          onClick={handleClickLink}
           {...props}
         />
       ) : (

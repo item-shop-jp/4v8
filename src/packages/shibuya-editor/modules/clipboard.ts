@@ -93,7 +93,7 @@ export class ClipboardModule implements Module {
           caretPosition.index,
           caretPosition.length,
         );
-        console.log(JSON.stringify(inlineContents));
+        this._saveInlineContents(event.nativeEvent, inlineContents);
       }
     }
   }
@@ -117,7 +117,7 @@ export class ClipboardModule implements Module {
           caretPosition.index,
           caretPosition.length,
         );
-        console.log(JSON.stringify(inlineContents));
+        this._saveInlineContents(event.nativeEvent, inlineContents);
         const deletedContents = deleteInlineContents(
           block.contents,
           caretPosition.index,
@@ -141,7 +141,7 @@ export class ClipboardModule implements Module {
     }
   }
 
-  private _saveInline(event: ClipboardEvent, inlines: Inline[]) {
+  private _saveInlineContents(event: ClipboardEvent, inlines: Inline[]) {
     if (event.clipboardData) {
       console.log(inlines);
     }

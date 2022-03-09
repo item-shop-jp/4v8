@@ -80,12 +80,29 @@ export class ClipboardModule implements Module {
             index: textIndex,
           });
           this.editor.updateCaretRect();
-        });
+        }, 10);
       } else if (type === 'inlines') {
-        console.log('inline', data);
+        const inlineContents = data as Inline[];
         const [first, last] = splitInlineContents(prevBlock.contents, caretPosition.index);
-        this.editor.updateBlock({ ...prevBlock, contents: [...first, ...data, ...last] });
+        const appendTextLength = inlineContents.map((v) => v.text).join('').length;
+        this.editor.updateBlock({
+          ...prevBlock,
+          contents: [
+            ...first,
+            ...inlineContents.map((v) => {
+              return { ...v, id: nanoid() };
+            }),
+            ...last,
+          ],
+        });
         this.editor.render([prevBlock.id]);
+        setTimeout(() => {
+          this.editor.setCaretPosition({
+            blockId: prevBlock.id,
+            index: caretPosition.index + appendTextLength,
+          });
+          this.editor.updateCaretRect();
+        }, 10);
       }
     }
   }
@@ -159,12 +176,14 @@ export class ClipboardModule implements Module {
 
   private _saveInlineContents(event: ClipboardEvent, inlines: Inline[]) {
     if (event.clipboardData) {
-      console.log(inlines);
       const plainText = inlines.map((v) => v.text).join('');
       event.clipboardData.setData('text/plain', plainText);
       event.clipboardData.setData(
         'text/shibuya-formats',
-        JSON.stringify({ type: 'inlines', data: inlines }),
+        JSON.stringify({
+          type: 'inlines',
+          data: inlines,
+        }),
       );
     }
   }

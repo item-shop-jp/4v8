@@ -169,7 +169,20 @@ export class HistoryModule implements Module {
   optimizeOp() {
     if (this.tmpUndo.length < 1) return;
     let optimizedUndo: Op[] = [];
-    this.tmpUndo.reverse().forEach((tmp) => {
+    const updateOps = this.tmpUndo
+      .filter((tmp) => tmp.type === HistoryType.UPDATE_CONTENTS)
+      .reverse();
+    const otherOps = this.tmpUndo.filter((tmp) => tmp.type !== HistoryType.UPDATE_CONTENTS);
+    otherOps.forEach((tmp) => {
+      const index = optimizedUndo.findIndex(
+        (v) => v.blockId === tmp.blockId && v.type === tmp.type,
+      );
+      if (index === -1) {
+        optimizedUndo.push(tmp);
+        return;
+      }
+    });
+    updateOps.forEach((tmp) => {
       const index = optimizedUndo.findIndex(
         (v) => v.blockId === tmp.blockId && v.type === tmp.type,
       );
@@ -231,7 +244,7 @@ export class HistoryModule implements Module {
       addOps.forEach((op, i) => {
         this.editor.deleteBlock(op.blockId);
         affectedIds.push(op.blockId);
-        if (i === addOps.length - 1 && removeOps.length < 1) {
+        if (i === 0 && removeOps.length < 1) {
           setTimeout(() => {
             const textIndex = this.editor.getBlockLength(op.prevBlockId ?? '') ?? 0;
             this.editor.setCaretPosition({

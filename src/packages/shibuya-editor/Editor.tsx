@@ -289,6 +289,7 @@ export const Editor = React.memo(
                   blockId={block.id}
                   readOnly={readOnly}
                   selected={block.selected}
+                  scrollContainer={scrollContainer}
                   onClick={handleClick}
                   onKeyDown={handleKeyDown}
                   onPaste={handlePaste}

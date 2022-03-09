@@ -11,6 +11,7 @@ interface BlockProps {
   selected: boolean;
   formats: Formats;
   editor: EditorController;
+  scrollContainer?: HTMLElement | string;
   onClick: (e: React.MouseEvent) => void;
   onKeyDown: (e: React.KeyboardEvent) => void;
   onPaste: (e: React.ClipboardEvent) => void;
@@ -44,13 +45,13 @@ const Overlay = styled.div`
 `;
 
 export const BlockContainer: React.VFC<BlockProps> = React.memo(
-  ({ blockId, editor, selected, readOnly = false, formats, ...props }) => {
+  ({ blockId, editor, selected, readOnly = false, scrollContainer, formats, ...props }) => {
     const [blockFormat, setBlockFormat] = React.useState<string>();
     const [Container, setContainer] = React.useState<React.FC<any>>(formats['block/paragraph']);
     const block = useBlockRenderer({ blockId, editor });
 
     const memoContents = React.useMemo(() => {
-      return InlineContainer({ contents: block?.contents ?? [], formats, editor });
+      return InlineContainer({ contents: block?.contents ?? [], formats, editor, scrollContainer });
     }, [block?.contents, formats]);
 
     React.useEffect(() => {

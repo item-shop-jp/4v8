@@ -5,37 +5,37 @@ import styled from 'styled-components';
 import { getScrollContainer } from '../../utils/dom';
 
 interface Props {
+  text: string;
+  currentLink: string;
   scrollContainer?: HTMLElement | string;
-  onLinkSave: (link: string, event: React.MouseEvent) => void;
+  onClickEdit: () => void;
+  onClickDelete: () => void;
 }
 
-const Container = styled.div`
+const Container = styled.div``;
+
+const ButtonContainer = styled.div`
   display: flex;
+  justify-content: flex-end;
+  button:first-child {
+    margin-right: 8px;
+  }
 `;
 
-const Info = styled.div`
-  margin-right: 8px;
-`;
+export const EditLinkPopup = React.memo(
+  ({ text, currentLink, scrollContainer, onClickEdit, onClickDelete, ...props }: Props) => {
+    const [link, setLink] = React.useState('');
 
-const Button = styled.button`
-  margin-left: 16px;
-`;
-
-export const EditLinkPopup = React.memo(({ scrollContainer, onLinkSave, ...props }: Props) => {
-  const [link, setLink] = React.useState('');
-
-  const handleChangeLink = React.useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      setLink(event.target.value);
-    },
-    [link],
-  );
-  return ReactDOM.createPortal(
-    <Container {...props}>
-      <Info>Enter link:</Info>
-      <input value={link} onChange={handleChangeLink} />
-      <Button onClick={(event) => onLinkSave(link, event)}>save</Button>
-    </Container>,
-    getScrollContainer(scrollContainer) ?? document.body,
-  );
-});
+    return ReactDOM.createPortal(
+      <Container {...props}>
+        <div>{text}</div>
+        <a href={currentLink}>http://{currentLink}</a>
+        <ButtonContainer>
+          <button onClick={onClickEdit}>編集</button>
+          <button onClick={onClickDelete}>削除する</button>
+        </ButtonContainer>
+      </Container>,
+      getScrollContainer(scrollContainer) ?? document.body,
+    );
+  },
+);

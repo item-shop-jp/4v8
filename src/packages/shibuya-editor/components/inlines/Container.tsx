@@ -8,6 +8,7 @@ interface ContainerProps {
   contents: Inline[];
   formats: Formats;
   editor: EditorController;
+  scrollContainer?: HTMLElement | string;
 }
 
 export const InlineContainer: React.VFC<ContainerProps> = ({

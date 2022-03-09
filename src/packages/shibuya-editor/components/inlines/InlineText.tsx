@@ -4,18 +4,26 @@ import twemoji from 'twemoji';
 import { EditorController } from '../../types/editor';
 import { Formats } from '../../types/format';
 import { Inline } from '../../types/inline';
-import { getBlockId } from '../../utils/block';
-import { getInlineId } from '../../utils/inline';
+import { getScrollContainer } from '../../utils/dom';
+import { EditLinkPopup } from '../popups';
+import { Subscription } from 'rxjs';
+import { EditorEvents } from '../../constants';
 
 export interface InlineTextProps {
   inline: Inline;
   formats: Formats;
   editor: EditorController;
+  scrollContainer?: HTMLElement | string;
 }
 
 interface InlineContentProps {
   attributes: Inline['attributes'];
   formats: Formats;
+}
+
+interface PopupProps {
+  top: number;
+  left: number;
 }
 
 const Text = styled.span<InlineContentProps>`
@@ -54,7 +62,30 @@ const Link = styled.a<InlineContentProps>`
   }}
 `;
 
-export const InlineText = ({ inline, formats, editor, ...props }: InlineTextProps) => {
+const StyledEditLinkPopup = styled(EditLinkPopup)<PopupProps>`
+  position: absolute;
+  top: ${({ top }) => `${top + 30}px`};
+  left: ${({ left }) => `${left}px`};
+  min-width: 300px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0px 0px 5px #ddd;
+  color: #444;
+  padding: 16px;
+  white-space: nowrap;
+`;
+
+export const InlineText = ({
+  inline,
+  formats,
+  editor,
+  scrollContainer,
+  ...props
+}: InlineTextProps) => {
+  const [showPopup, setShowPopup] = React.useState(false);
+  const [position, setPosition] = React.useState<PopupProps>();
+
   const memoInnerHTML = React.useMemo(() => {
     const text = inline.text.replaceAll('\n', '<br>');
     return {
@@ -65,27 +96,71 @@ export const InlineText = ({ inline, formats, editor, ...props }: InlineTextProp
     };
   }, [inline]);
 
-  const handleClickLink = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    const [blockId] = getBlockId(e.nativeEvent.target as HTMLElement);
-    const [inlineId] = getInlineId(e.nativeEvent.target as HTMLElement);
-    if (!blockId || !inlineId) return;
-    const block = editor.getBlock(blockId);
-    if (!block) return;
-    const inline = block.contents.find((v) => v.id === inlineId);
+  const handleClickLink = () => {
+    setShowPopup(true);
+    const caret = editor.getCaretPosition();
+    if (!caret) return;
+    const container = getScrollContainer(scrollContainer);
+    if (container) {
+      const containerRect = container.getBoundingClientRect();
+      const top = (container?.scrollTop ?? 0) + caret.rect.top - containerRect.top;
+      const left = caret.rect.left - containerRect.left;
+      setPosition({ top, left });
+    } else {
+      const scrollEl = document.scrollingElement as HTMLElement;
+      const top = scrollEl.scrollTop + caret.rect.top;
+      const left = caret.rect.left;
+      setPosition({ top, left });
+    }
   };
+
+  const handleClickEdit = () => {};
+
+  const handleClickDelete = () => {};
+
+  React.useEffect(() => {
+    const subs = new Subscription();
+    const eventEmitter = editor.getEventEmitter();
+    subs.add(
+      eventEmitter.select(EditorEvents.EVENT_SELECTION_CHANGE).subscribe((v) => {
+        const caret = editor.getCaretPosition();
+        if (!caret || !editor.hasFocus()) {
+          setPosition(undefined);
+          setShowPopup(false);
+          return;
+        }
+      }),
+    );
+    return () => {
+      subs.unsubscribe();
+    };
+  }, [editor, scrollContainer]);
 
   return (
     <>
       {inline.attributes['link'] ? (
-        <Link
-          href={inline.attributes['link']}
-          target="_blank"
-          dangerouslySetInnerHTML={memoInnerHTML}
-          formats={formats}
-          attributes={inline.attributes}
-          onClick={handleClickLink}
-          {...props}
-        />
+        <>
+          <Link
+            href={inline.attributes['link']}
+            target="_blank"
+            dangerouslySetInnerHTML={memoInnerHTML}
+            formats={formats}
+            attributes={inline.attributes}
+            onClick={handleClickLink}
+            {...props}
+          />
+          {showPopup && (
+            <StyledEditLinkPopup
+              top={position?.top ?? 0}
+              left={position?.left ?? 0}
+              text={inline.text}
+              currentLink={inline.attributes['link']}
+              scrollContainer={scrollContainer}
+              onClickEdit={handleClickEdit}
+              onClickDelete={handleClickDelete}
+            />
+          )}
+        </>
       ) : (
         <Text
           dangerouslySetInnerHTML={memoInnerHTML}

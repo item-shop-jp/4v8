@@ -5,7 +5,12 @@ import { EventEmitter } from '../utils/event-emitter';
 import { EditorController } from '../types/editor';
 import { EditorEvents } from '../constants';
 import { Block } from '../types/block';
-import { convertBlocksToText, deleteInlineContents, getInlineContents } from '../utils/block';
+import {
+  convertBlocksToText,
+  deleteInlineContents,
+  getInlineContents,
+  splitInlineContents,
+} from '../utils/block';
 import { Inline } from '../types/inline';
 
 interface Props {
@@ -52,28 +57,36 @@ export class ClipboardModule implements Module {
   onPaste(event: React.ClipboardEvent) {
     event.preventDefault();
     const caretPosition = this.editor.getCaretPosition();
+    const clipboardJson = event.clipboardData.getData('text/shibuya-formats');
     const prevBlock = this.editor.getBlock(caretPosition?.blockId ?? '');
+    if (caretPosition && prevBlock && clipboardJson) {
+      const { type, data } = JSON.parse(clipboardJson);
 
-    if (prevBlock && event.clipboardData.getData('text/shibuya-formats')) {
-      const appendBlocks = JSON.parse(
-        event.clipboardData.getData('text/shibuya-formats'),
-      ) as Block[];
-      let prevBlockId = prevBlock.id;
-      const affectedIds = appendBlocks.map((v, i) => {
-        const appendBlock = { ...v, id: nanoid() };
-        this.editor.createBlock(appendBlock, prevBlockId);
-        prevBlockId = appendBlock.id;
-        return appendBlock.id;
-      });
-      this.editor.render(affectedIds);
-      setTimeout(() => {
-        const textIndex = this.editor.getBlockLength(prevBlockId) ?? 0;
-        this.editor.setCaretPosition({
-          blockId: prevBlockId,
-          index: textIndex,
+      // blocks
+      if (prevBlock && type === 'blocks') {
+        const appendBlocks = data as Block[];
+        let prevBlockId = prevBlock.id;
+        const affectedIds = appendBlocks.map((v, i) => {
+          const appendBlock = { ...v, id: nanoid() };
+          this.editor.createBlock(appendBlock, prevBlockId);
+          prevBlockId = appendBlock.id;
+          return appendBlock.id;
         });
-        this.editor.updateCaretRect();
-      });
+        this.editor.render(affectedIds);
+        setTimeout(() => {
+          const textIndex = this.editor.getBlockLength(prevBlockId) ?? 0;
+          this.editor.setCaretPosition({
+            blockId: prevBlockId,
+            index: textIndex,
+          });
+          this.editor.updateCaretRect();
+        });
+      } else if (type === 'inlines') {
+        console.log('inline', data);
+        const [first, last] = splitInlineContents(prevBlock.contents, caretPosition.index);
+        this.editor.updateBlock({ ...prevBlock, contents: [...first, ...data, ...last] });
+        this.editor.render([prevBlock.id]);
+      }
     }
   }
 
@@ -137,13 +150,22 @@ export class ClipboardModule implements Module {
   private _saveBlocks(event: ClipboardEvent, blocks: Block[]) {
     if (event.clipboardData) {
       event.clipboardData.setData('text/plain', convertBlocksToText(blocks));
-      event.clipboardData.setData('text/shibuya-formats', JSON.stringify(blocks));
+      event.clipboardData.setData(
+        'text/shibuya-formats',
+        JSON.stringify({ type: 'blocks', data: blocks }),
+      );
     }
   }
 
   private _saveInlineContents(event: ClipboardEvent, inlines: Inline[]) {
     if (event.clipboardData) {
       console.log(inlines);
+      const plainText = inlines.map((v) => v.text).join('');
+      event.clipboardData.setData('text/plain', plainText);
+      event.clipboardData.setData(
+        'text/shibuya-formats',
+        JSON.stringify({ type: 'inlines', data: inlines }),
+      );
     }
   }
 }

@@ -9,8 +9,6 @@ export interface ParagraphProps {
   formats?: Formats;
   contents: Inline[];
   editor: EditorController;
-  onClick: (e: React.MouseEvent) => void;
-  onKeyDown: (e: React.KeyboardEvent) => void;
 }
 
 const P = styled.p`

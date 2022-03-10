@@ -6,7 +6,7 @@ import { Inline } from '../../types/inline';
 import { BlockAttributes } from '../../types/block';
 import { useMutationObserver } from '../../hooks/use-mutation-observer';
 
-export interface Header1Props {
+export interface BulletListProps {
   blockId: string;
   formats?: Formats;
   contents: Inline[];
@@ -14,20 +14,26 @@ export interface Header1Props {
   attributes: BlockAttributes;
   editor: EditorController;
 }
-const Header = styled.h1`
-  font-size: 24px;
+const ListItem = styled.div`
+  font-size: 1rem;
   outline: 0;
-  transition: all 0.3s, color 0.3s;
-  padding: 2px 12px;
+  margin: 0;
+  padding: 2px 12px 2px 32px;
   box-sizing: border-box;
+  ::before {
+    position: absolute;
+    height: 1em;
+    left: 12px;
+    content: var(--content);
+  }
   ::after {
     opacity: 0.3;
     content: attr(placeholder);
   }
 `;
 
-export const Header1 = React.memo(
-  ({ blockId, contents, placeholder = 'Header 1', attributes, editor, ...props }: Header1Props) => {
+export const BulletList = React.memo(
+  ({ blockId, contents, placeholder = 'List', attributes, editor, ...props }: BulletListProps) => {
     const headerRef = React.useRef(null);
     const [showPlaceholder, setShowPlaceholder] = React.useState(false);
     const handleChangeElement = React.useCallback(() => {
@@ -47,9 +53,14 @@ export const Header1 = React.memo(
     }, []);
 
     return (
-      <Header ref={headerRef} placeholder={showPlaceholder ? placeholder : ''} {...props}>
+      <ListItem
+        ref={headerRef}
+        style={{ '--content': "'1.'" } as React.CSSProperties}
+        placeholder={showPlaceholder ? placeholder : ''}
+        {...props}
+      >
         {contents}
-      </Header>
+      </ListItem>
     );
   },
 );

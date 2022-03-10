@@ -426,8 +426,6 @@ export function getInlineContents(contents: Inline[], index: number, length: num
       } else {
         length--;
       }
-    } else {
-      console.log(contents[i].text);
     }
 
     cumulativeLength += inlineLength;

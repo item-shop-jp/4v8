@@ -8,6 +8,7 @@ import { getScrollContainer } from '../../utils/dom';
 import { EditLinkPopup } from '../popups';
 import { Subscription } from 'rxjs';
 import { EditorEvents } from '../../constants';
+import { copyObject } from '../../utils/object';
 
 export interface InlineTextProps {
   inline: Inline;
@@ -116,7 +117,32 @@ export const InlineText = ({
 
   const handleClickEdit = () => {};
 
-  const handleClickDelete = () => {};
+  const handleClickDelete = React.useCallback(() => {
+    const caretPosition = editor.getCaretPosition();
+    if (!caretPosition) return;
+    const block = editor.getBlock(caretPosition.blockId);
+    if (!block) return;
+    const inlineIndex = block.contents.findIndex((v) => v.id === inline.id);
+    if (inlineIndex === -1) return;
+    editor.updateBlock({
+      ...block,
+      contents: copyObject([
+        ...block.contents.slice(0, inlineIndex),
+        {
+          ...block.contents[inlineIndex],
+          attributes: {
+            ...block.contents[inlineIndex].attributes,
+            link: false,
+          },
+        },
+        ...block.contents.slice(inlineIndex + 1),
+      ]),
+    });
+    editor.render([block.id]);
+    setTimeout(() => {
+      editor.focus();
+    }, 10);
+  }, [inline]);
 
   React.useEffect(() => {
     const subs = new Subscription();

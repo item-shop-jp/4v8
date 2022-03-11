@@ -9,6 +9,7 @@ import { EditLinkPopup } from '../popups';
 import { Subscription } from 'rxjs';
 import { EditorEvents } from '../../constants';
 import { copyObject } from '../../utils/object';
+import { EditTextLinkPopup } from '../popups/editTextLink';
 
 export interface InlineTextProps {
   inline: Inline;
@@ -77,6 +78,20 @@ const StyledEditLinkPopup = styled(EditLinkPopup)<PopupProps>`
   white-space: nowrap;
 `;
 
+const StyledEditTextLinkPopup = styled(EditTextLinkPopup)<PopupProps>`
+  position: absolute;
+  top: ${({ top }) => `${top + 30}px`};
+  left: ${({ left }) => `${left}px`};
+  min-width: 300px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0px 0px 5px #ddd;
+  color: #444;
+  padding: 16px;
+  white-space: nowrap;
+`;
+
 export const InlineText = ({
   inline,
   formats,
@@ -85,6 +100,7 @@ export const InlineText = ({
   ...props
 }: InlineTextProps) => {
   const [showPopup, setShowPopup] = React.useState(false);
+  const [showEditPopup, setShowEditPopup] = React.useState(false);
   const [position, setPosition] = React.useState<PopupProps>();
 
   const memoInnerHTML = React.useMemo(() => {
@@ -115,7 +131,18 @@ export const InlineText = ({
     }
   };
 
-  const handleClickEdit = () => {};
+  const handleShowPopup = React.useCallback(() => {
+    setShowEditPopup(true);
+    setShowPopup(false);
+  }, []);
+
+  const handleHidePopup = React.useCallback(() => {
+    setShowEditPopup(false);
+  }, []);
+
+  const handleClickEdit = React.useCallback((text: string, link: string) => {
+    console.log(text, link);
+  }, []);
 
   const handleClickDelete = React.useCallback(() => {
     const caretPosition = editor.getCaretPosition();
@@ -144,23 +171,23 @@ export const InlineText = ({
     }, 10);
   }, [inline]);
 
-  React.useEffect(() => {
-    const subs = new Subscription();
-    const eventEmitter = editor.getEventEmitter();
-    subs.add(
-      eventEmitter.select(EditorEvents.EVENT_SELECTION_CHANGE).subscribe((v) => {
-        const caret = editor.getCaretPosition();
-        if (!caret || !editor.hasFocus()) {
-          setPosition(undefined);
-          setShowPopup(false);
-          return;
-        }
-      }),
-    );
-    return () => {
-      subs.unsubscribe();
-    };
-  }, [editor, scrollContainer]);
+  // React.useEffect(() => {
+  //   const subs = new Subscription();
+  //   const eventEmitter = editor.getEventEmitter();
+  //   subs.add(
+  //     eventEmitter.select(EditorEvents.EVENT_SELECTION_CHANGE).subscribe((v) => {
+  //       const caret = editor.getCaretPosition();
+  //       if (!caret || !editor.hasFocus()) {
+  //         setPosition(undefined);
+  //         setShowPopup(false);
+  //         return;
+  //       }
+  //     }),
+  //   );
+  //   return () => {
+  //     subs.unsubscribe();
+  //   };
+  // }, [editor, scrollContainer]);
 
   return (
     <>
@@ -182,8 +209,19 @@ export const InlineText = ({
               text={inline.text}
               currentLink={inline.attributes['link']}
               scrollContainer={scrollContainer}
-              onClickEdit={handleClickEdit}
+              onClickEdit={handleShowPopup}
               onClickDelete={handleClickDelete}
+            />
+          )}
+          {showEditPopup && (
+            <StyledEditTextLinkPopup
+              top={position?.top ?? 0}
+              left={position?.left ?? 0}
+              currentText={inline.text}
+              currentLink={inline.attributes['link']}
+              scrollContainer={scrollContainer}
+              onCancel={handleHidePopup}
+              onSave={handleClickEdit}
             />
           )}
         </>

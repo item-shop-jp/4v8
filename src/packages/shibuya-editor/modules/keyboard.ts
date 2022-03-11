@@ -172,7 +172,7 @@ export class KeyBoardModule implements Module {
     this.sync(blockId, blockElement);
   }
 
-  onInput(e: React.KeyboardEvent) {
+  onInput(e: React.FormEvent) {
     const nativeRange = this.editor.getNativeRange();
     const [blockId, blockElement] = getBlockId(nativeRange?.startContainer as HTMLElement);
     if (this.composing || !blockId || !blockElement) {

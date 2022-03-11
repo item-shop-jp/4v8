@@ -482,7 +482,8 @@ export function useEditor({
 
       setTimeout(() => {
         if (!blockId || !block || !blockElement || composing) return;
-        const { contents, affected, affectedLength } = blockUtils.getInlineContents(blockElement);
+        const { contents, affected, affectedLength } =
+          blockUtils.convertHTMLtoInlines(blockElement);
         updateCaretPositionRef();
         if (isEqual(block.contents, contents)) return;
         updateBlock({ ...block, contents });
@@ -647,17 +648,15 @@ export function useEditor({
       if (deleteBlocks.length < 1) return;
 
       eventEmitter.emit(EditorEvents.EVENT_EDITOR_CHANGE, {
-        payload: deleteBlocks
-          .map((block) => {
-            const currentIndex = blocksRef.current.findIndex((v) => v.id === block.id);
-            return {
-              type: HistoryType.REMOVE_BLOCK,
-              blockId: block.id,
-              block: copyObject(block),
-              prevBlockId: blocksRef.current[currentIndex - 1]?.id,
-            };
-          })
-          .reverse(),
+        payload: deleteBlocks.map((block) => {
+          const currentIndex = blocksRef.current.findIndex((v) => v.id === block.id);
+          return {
+            type: HistoryType.REMOVE_BLOCK,
+            blockId: block.id,
+            block: copyObject(block),
+            prevBlockId: blocksRef.current[currentIndex - 1]?.id,
+          };
+        }),
         source,
       });
 

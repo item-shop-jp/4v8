@@ -160,11 +160,18 @@ export class SelectorModule implements Module {
   }
 
   onKeyDown(e: React.KeyboardEvent) {
-    e.preventDefault();
-    e.stopPropagation();
+    let prevented = false;
+
     this.bindings.forEach((binding) => {
-      this._trigger(e, binding);
+      if (this._trigger(e, binding)) {
+        prevented = true;
+      }
     });
+
+    if (prevented) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
   }
 
   private _trigger(e: React.KeyboardEvent, props: KeyBindingProps): boolean {

@@ -2738,7 +2738,7 @@ var Subscription = (function () {
         this.initialTeardown = initialTeardown;
         this.closed = false;
         this._parentage = null;
-        this._teardowns = null;
+        this._finalizers = null;
     }
     Subscription.prototype.unsubscribe = function () {
         var e_1, _a, e_2, _b;
@@ -2767,23 +2767,23 @@ var Subscription = (function () {
                     _parentage.remove(this);
                 }
             }
-            var initialTeardown = this.initialTeardown;
-            if (isFunction(initialTeardown)) {
+            var initialFinalizer = this.initialTeardown;
+            if (isFunction(initialFinalizer)) {
                 try {
-                    initialTeardown();
+                    initialFinalizer();
                 }
                 catch (e) {
                     errors = e instanceof UnsubscriptionError ? e.errors : [e];
                 }
             }
-            var _teardowns = this._teardowns;
-            if (_teardowns) {
-                this._teardowns = null;
+            var _finalizers = this._finalizers;
+            if (_finalizers) {
+                this._finalizers = null;
                 try {
-                    for (var _teardowns_1 = __values(_teardowns), _teardowns_1_1 = _teardowns_1.next(); !_teardowns_1_1.done; _teardowns_1_1 = _teardowns_1.next()) {
-                        var teardown_1 = _teardowns_1_1.value;
+                    for (var _finalizers_1 = __values(_finalizers), _finalizers_1_1 = _finalizers_1.next(); !_finalizers_1_1.done; _finalizers_1_1 = _finalizers_1.next()) {
+                        var finalizer = _finalizers_1_1.value;
                         try {
-                            execTeardown(teardown_1);
+                            execFinalizer(finalizer);
                         }
                         catch (err) {
                             errors = errors !== null && errors !== void 0 ? errors : [];
@@ -2799,7 +2799,7 @@ var Subscription = (function () {
                 catch (e_2_1) { e_2 = { error: e_2_1 }; }
                 finally {
                     try {
-                        if (_teardowns_1_1 && !_teardowns_1_1.done && (_b = _teardowns_1.return)) _b.call(_teardowns_1);
+                        if (_finalizers_1_1 && !_finalizers_1_1.done && (_b = _finalizers_1.return)) _b.call(_finalizers_1);
                     }
                     finally { if (e_2) throw e_2.error; }
                 }
@@ -2813,7 +2813,7 @@ var Subscription = (function () {
         var _a;
         if (teardown && teardown !== this) {
             if (this.closed) {
-                execTeardown(teardown);
+                execFinalizer(teardown);
             }
             else {
                 if (teardown instanceof Subscription) {
@@ -2822,7 +2822,7 @@ var Subscription = (function () {
                     }
                     teardown._addParent(this);
                 }
-                (this._teardowns = (_a = this._teardowns) !== null && _a !== void 0 ? _a : []).push(teardown);
+                (this._finalizers = (_a = this._finalizers) !== null && _a !== void 0 ? _a : []).push(teardown);
             }
         }
     };
@@ -2844,8 +2844,8 @@ var Subscription = (function () {
         }
     };
     Subscription.prototype.remove = function (teardown) {
-        var _teardowns = this._teardowns;
-        _teardowns && arrRemove(_teardowns, teardown);
+        var _finalizers = this._finalizers;
+        _finalizers && arrRemove(_finalizers, teardown);
         if (teardown instanceof Subscription) {
             teardown._removeParent(this);
         }
@@ -2862,12 +2862,12 @@ function isSubscription(value) {
     return (value instanceof Subscription ||
         (value && 'closed' in value && isFunction(value.remove) && isFunction(value.add) && isFunction(value.unsubscribe)));
 }
-function execTeardown(teardown) {
-    if (isFunction(teardown)) {
-        teardown();
+function execFinalizer(finalizer) {
+    if (isFunction(finalizer)) {
+        finalizer();
     }
     else {
-        teardown.unsubscribe();
+        finalizer.unsubscribe();
     }
 }
 
@@ -2880,13 +2880,16 @@ var config = {
 };
 
 var timeoutProvider = {
-    setTimeout: function () {
+    setTimeout: function (handler, timeout) {
         var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
+        for (var _i = 2; _i < arguments.length; _i++) {
+            args[_i - 2] = arguments[_i];
         }
         var delegate = timeoutProvider.delegate;
-        return ((delegate === null || delegate === void 0 ? void 0 : delegate.setTimeout) || setTimeout).apply(void 0, __spreadArray([], __read(args)));
+        if (delegate === null || delegate === void 0 ? void 0 : delegate.setTimeout) {
+            return delegate.setTimeout.apply(delegate, __spreadArray([handler, timeout], __read(args)));
+        }
+        return setTimeout.apply(void 0, __spreadArray([handler, timeout], __read(args)));
     },
     clearTimeout: function (handle) {
         var delegate = timeoutProvider.delegate;
@@ -2938,12 +2941,6 @@ function errorContext(cb) {
     }
     else {
         cb();
-    }
-}
-function captureError(err) {
-    if (config.useDeprecatedSynchronousErrorHandling && context) {
-        context.errorThrown = true;
-        context.error = err;
     }
 }
 
@@ -3020,55 +3017,88 @@ var Subscriber = (function (_super) {
     };
     return Subscriber;
 }(Subscription));
+var _bind = Function.prototype.bind;
+function bind(fn, thisArg) {
+    return _bind.call(fn, thisArg);
+}
+var ConsumerObserver = (function () {
+    function ConsumerObserver(partialObserver) {
+        this.partialObserver = partialObserver;
+    }
+    ConsumerObserver.prototype.next = function (value) {
+        var partialObserver = this.partialObserver;
+        if (partialObserver.next) {
+            try {
+                partialObserver.next(value);
+            }
+            catch (error) {
+                handleUnhandledError(error);
+            }
+        }
+    };
+    ConsumerObserver.prototype.error = function (err) {
+        var partialObserver = this.partialObserver;
+        if (partialObserver.error) {
+            try {
+                partialObserver.error(err);
+            }
+            catch (error) {
+                handleUnhandledError(error);
+            }
+        }
+        else {
+            handleUnhandledError(err);
+        }
+    };
+    ConsumerObserver.prototype.complete = function () {
+        var partialObserver = this.partialObserver;
+        if (partialObserver.complete) {
+            try {
+                partialObserver.complete();
+            }
+            catch (error) {
+                handleUnhandledError(error);
+            }
+        }
+    };
+    return ConsumerObserver;
+}());
 var SafeSubscriber = (function (_super) {
     __extends(SafeSubscriber, _super);
     function SafeSubscriber(observerOrNext, error, complete) {
         var _this = _super.call(this) || this;
-        var next;
-        if (isFunction(observerOrNext)) {
-            next = observerOrNext;
+        var partialObserver;
+        if (isFunction(observerOrNext) || !observerOrNext) {
+            partialObserver = {
+                next: observerOrNext !== null && observerOrNext !== void 0 ? observerOrNext : undefined,
+                error: error !== null && error !== void 0 ? error : undefined,
+                complete: complete !== null && complete !== void 0 ? complete : undefined,
+            };
         }
-        else if (observerOrNext) {
-            (next = observerOrNext.next, error = observerOrNext.error, complete = observerOrNext.complete);
+        else {
             var context_1;
             if (_this && config.useDeprecatedNextContext) {
                 context_1 = Object.create(observerOrNext);
                 context_1.unsubscribe = function () { return _this.unsubscribe(); };
+                partialObserver = {
+                    next: observerOrNext.next && bind(observerOrNext.next, context_1),
+                    error: observerOrNext.error && bind(observerOrNext.error, context_1),
+                    complete: observerOrNext.complete && bind(observerOrNext.complete, context_1),
+                };
             }
             else {
-                context_1 = observerOrNext;
+                partialObserver = observerOrNext;
             }
-            next = next === null || next === void 0 ? void 0 : next.bind(context_1);
-            error = error === null || error === void 0 ? void 0 : error.bind(context_1);
-            complete = complete === null || complete === void 0 ? void 0 : complete.bind(context_1);
         }
-        _this.destination = {
-            next: next ? wrapForErrorHandling(next) : noop,
-            error: wrapForErrorHandling(error !== null && error !== void 0 ? error : defaultErrorHandler),
-            complete: complete ? wrapForErrorHandling(complete) : noop,
-        };
+        _this.destination = new ConsumerObserver(partialObserver);
         return _this;
     }
     return SafeSubscriber;
 }(Subscriber));
-function wrapForErrorHandling(handler, instance) {
-    return function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        try {
-            handler.apply(void 0, __spreadArray([], __read(args)));
-        }
-        catch (err) {
-            if (config.useDeprecatedSynchronousErrorHandling) {
-                captureError(err);
-            }
-            else {
-                reportUnhandledError(err);
-            }
-        }
-    };
+function handleUnhandledError(error) {
+    {
+        reportUnhandledError(error);
+    }
 }
 function defaultErrorHandler(err) {
     throw err;
@@ -3215,11 +3245,15 @@ function operate(init) {
     };
 }
 
+function createOperatorSubscriber(destination, onNext, onComplete, onError, onFinalize) {
+    return new OperatorSubscriber(destination, onNext, onComplete, onError, onFinalize);
+}
 var OperatorSubscriber = (function (_super) {
     __extends(OperatorSubscriber, _super);
-    function OperatorSubscriber(destination, onNext, onComplete, onError, onFinalize) {
+    function OperatorSubscriber(destination, onNext, onComplete, onError, onFinalize, shouldUnsubscribe) {
         var _this = _super.call(this, destination) || this;
         _this.onFinalize = onFinalize;
+        _this.shouldUnsubscribe = shouldUnsubscribe;
         _this._next = onNext
             ? function (value) {
                 try {
@@ -3260,9 +3294,11 @@ var OperatorSubscriber = (function (_super) {
     }
     OperatorSubscriber.prototype.unsubscribe = function () {
         var _a;
-        var closed = this.closed;
-        _super.prototype.unsubscribe.call(this);
-        !closed && ((_a = this.onFinalize) === null || _a === void 0 ? void 0 : _a.call(this));
+        if (!this.shouldUnsubscribe || this.shouldUnsubscribe()) {
+            var closed_1 = this.closed;
+            _super.prototype.unsubscribe.call(this);
+            !closed_1 && ((_a = this.onFinalize) === null || _a === void 0 ? void 0 : _a.call(this));
+        }
     };
     return OperatorSubscriber;
 }(Subscriber));
@@ -3280,6 +3316,7 @@ var Subject = (function (_super) {
     function Subject() {
         var _this = _super.call(this) || this;
         _this.closed = false;
+        _this.currentObservers = null;
         _this.observers = [];
         _this.isStopped = false;
         _this.hasError = false;
@@ -3302,17 +3339,19 @@ var Subject = (function (_super) {
             var e_1, _a;
             _this._throwIfClosed();
             if (!_this.isStopped) {
-                var copy = _this.observers.slice();
+                if (!_this.currentObservers) {
+                    _this.currentObservers = Array.from(_this.observers);
+                }
                 try {
-                    for (var copy_1 = __values(copy), copy_1_1 = copy_1.next(); !copy_1_1.done; copy_1_1 = copy_1.next()) {
-                        var observer = copy_1_1.value;
+                    for (var _b = __values(_this.currentObservers), _c = _b.next(); !_c.done; _c = _b.next()) {
+                        var observer = _c.value;
                         observer.next(value);
                     }
                 }
                 catch (e_1_1) { e_1 = { error: e_1_1 }; }
                 finally {
                     try {
-                        if (copy_1_1 && !copy_1_1.done && (_a = copy_1.return)) _a.call(copy_1);
+                        if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                     }
                     finally { if (e_1) throw e_1.error; }
                 }
@@ -3348,7 +3387,7 @@ var Subject = (function (_super) {
     };
     Subject.prototype.unsubscribe = function () {
         this.isStopped = this.closed = true;
-        this.observers = null;
+        this.observers = this.currentObservers = null;
     };
     Object.defineProperty(Subject.prototype, "observed", {
         get: function () {
@@ -3368,10 +3407,17 @@ var Subject = (function (_super) {
         return this._innerSubscribe(subscriber);
     };
     Subject.prototype._innerSubscribe = function (subscriber) {
+        var _this = this;
         var _a = this, hasError = _a.hasError, isStopped = _a.isStopped, observers = _a.observers;
-        return hasError || isStopped
-            ? EMPTY_SUBSCRIPTION
-            : (observers.push(subscriber), new Subscription(function () { return arrRemove(observers, subscriber); }));
+        if (hasError || isStopped) {
+            return EMPTY_SUBSCRIPTION;
+        }
+        this.currentObservers = null;
+        observers.push(subscriber);
+        return new Subscription(function () {
+            _this.currentObservers = null;
+            arrRemove(observers, subscriber);
+        });
     };
     Subject.prototype._checkFinalizedStatuses = function (subscriber) {
         var _a = this, hasError = _a.hasError, thrownError = _a.thrownError, isStopped = _a.isStopped;
@@ -3422,7 +3468,7 @@ var AnonymousSubject = (function (_super) {
 function map(project, thisArg) {
     return operate(function (source, subscriber) {
         var index = 0;
-        source.subscribe(new OperatorSubscriber(subscriber, function (value) {
+        source.subscribe(createOperatorSubscriber(subscriber, function (value) {
             subscriber.next(project.call(thisArg, value, index++));
         }));
     });
@@ -3431,7 +3477,7 @@ function map(project, thisArg) {
 function filter(predicate, thisArg) {
     return operate(function (source, subscriber) {
         var index = 0;
-        source.subscribe(new OperatorSubscriber(subscriber, function (value) { return predicate.call(thisArg, value, index++) && subscriber.next(value); }));
+        source.subscribe(createOperatorSubscriber(subscriber, function (value) { return predicate.call(thisArg, value, index++) && subscriber.next(value); }));
     });
 }
 
@@ -5295,7 +5341,31 @@ const KeyCodes = {
     ENTER: 'Enter',
     NUMPAD_ENTER: 'NumpadEnter',
     TAB: 'Tab',
+    A: 'KeyA',
+    B: 'KeyB',
+    C: 'KeyC',
+    D: 'KeyD',
+    E: 'KeyE',
+    F: 'KeyF',
+    G: 'KeyG',
+    H: 'KeyH',
+    I: 'KeyI',
+    J: 'KeyJ',
+    K: 'KeyK',
+    L: 'KeyL',
+    M: 'KeyM',
+    N: 'KeyN',
+    O: 'KeyO',
+    P: 'KeyP',
+    Q: 'KeyQ',
+    R: 'KeyR',
     S: 'KeyS',
+    T: 'KeyT',
+    U: 'KeyU',
+    V: 'KeyV',
+    W: 'KeyW',
+    X: 'KeyX',
+    Y: 'KeyY',
     Z: 'KeyZ',
     SPACE: 'Space',
     BACKSPACE: 'Backspace',
@@ -5381,7 +5451,7 @@ const InlineContainer = (_a) => {
                 Container = formats[inlineFormat];
             }
             return (jsxRuntime.exports.jsx(Container, Object.assign({ formats: formats, "data-inline-id": content.id, "data-format": inlineFormat, "data-attributes": JSON.stringify(content.attributes), inline: content }, props), content.id));
-        }) }, void 0));
+        }) }));
 };
 
 const FadeIn = Ue `
@@ -5394,11 +5464,10 @@ const FadeIn = Ue `
 `;
 const Outer = styled.div `
   position: relative;
-  padding: 2px 12px;
 `;
 const Overlay = styled.div `
   position: absolute;
-  inset: 0;
+  inset: 0 10px;
   opacity: 1;
   pointer-events: none;
   background-color: rgba(46, 170, 220, 0.2);
@@ -5426,7 +5495,7 @@ const BlockContainer = React__namespace.memo((_a) => {
             }
         });
     }, [block === null || block === void 0 ? void 0 : block.type]);
-    return (jsxRuntime.exports.jsxs(Outer, { children: [jsxRuntime.exports.jsx(Container, Object.assign({ suppressContentEditableWarning: true, className: "notranslate", contentEditable: !readOnly, blockId: blockId, "data-block-id": blockId, "data-format": blockFormat, formats: formats, attributes: block === null || block === void 0 ? void 0 : block.attributes, contents: memoContents, selected: selected }, props), void 0), selected && jsxRuntime.exports.jsx(Overlay, {}, void 0)] }, void 0));
+    return (jsxRuntime.exports.jsxs(Outer, { children: [jsxRuntime.exports.jsx(Container, Object.assign({ suppressContentEditableWarning: true, className: "notranslate", contentEditable: !readOnly, blockId: blockId, "data-block-id": blockId, "data-format": blockFormat, formats: formats, attributes: block === null || block === void 0 ? void 0 : block.attributes, contents: memoContents, selected: selected }, props)), selected && jsxRuntime.exports.jsx(Overlay, {})] }));
 });
 
 function useMutationObserver(ref, callback, options = {
@@ -5446,6 +5515,8 @@ const Header$5 = styled.h1 `
   font-size: 24px;
   outline: 0;
   transition: all 0.3s, color 0.3s;
+  padding: 2px 12px;
+  box-sizing: border-box;
   ::after {
     opacity: 0.3;
     content: attr(placeholder);
@@ -5470,12 +5541,14 @@ const Header1 = React__namespace.memo((_a) => {
     React__namespace.useEffect(() => {
         handleChangeElement();
     }, []);
-    return (jsxRuntime.exports.jsx(Header$5, Object.assign({ ref: headerRef, placeholder: showPlaceholder ? placeholder : '' }, props, { children: contents }), void 0));
+    return (jsxRuntime.exports.jsx(Header$5, Object.assign({ ref: headerRef, placeholder: showPlaceholder ? placeholder : '' }, props, { children: contents })));
 });
 
 const Header$4 = styled.h2 `
   outline: 0;
   transition: all 0.3s, color 0.3s;
+  padding: 2px 12px;
+  box-sizing: border-box;
   ::after {
     opacity: 0.3;
     content: attr(placeholder);
@@ -5483,12 +5556,14 @@ const Header$4 = styled.h2 `
 `;
 const Header2 = React__namespace.memo((_a) => {
     var { blockId, length, contents, attributes, editor } = _a, props = __rest(_a, ["blockId", "length", "contents", "attributes", "editor"]);
-    return (jsxRuntime.exports.jsx(Header$4, Object.assign({}, props, { placeholder: length < 1 ? 'Heading 2' : '' }, { children: contents }), void 0));
+    return (jsxRuntime.exports.jsx(Header$4, Object.assign({}, props, { placeholder: length < 1 ? 'Heading 2' : '' }, { children: contents })));
 });
 
 const Header$3 = styled.h3 `
   outline: 0;
   transition: all 0.3s, color 0.3s;
+  padding: 2px 12px;
+  box-sizing: border-box;
   ::after {
     opacity: 0.3;
     content: attr(placeholder);
@@ -5496,12 +5571,14 @@ const Header$3 = styled.h3 `
 `;
 const Header3 = React__namespace.memo((_a) => {
     var { blockId, length, contents, attributes, editor } = _a, props = __rest(_a, ["blockId", "length", "contents", "attributes", "editor"]);
-    return (jsxRuntime.exports.jsx(Header$3, Object.assign({}, props, { placeholder: length < 1 ? 'Heading 3' : '' }, { children: contents }), void 0));
+    return (jsxRuntime.exports.jsx(Header$3, Object.assign({}, props, { placeholder: length < 1 ? 'Heading 3' : '' }, { children: contents })));
 });
 
 const Header$2 = styled.h4 `
   outline: 0;
   transition: all 0.3s, color 0.3s;
+  padding: 2px 12px;
+  box-sizing: border-box;
   ::after {
     opacity: 0.3;
     content: attr(placeholder);
@@ -5509,12 +5586,14 @@ const Header$2 = styled.h4 `
 `;
 const Header4 = React__namespace.memo((_a) => {
     var { blockId, length, contents, attributes, editor } = _a, props = __rest(_a, ["blockId", "length", "contents", "attributes", "editor"]);
-    return (jsxRuntime.exports.jsx(Header$2, Object.assign({}, props, { placeholder: length < 1 ? 'Heading 4' : '' }, { children: contents }), void 0));
+    return (jsxRuntime.exports.jsx(Header$2, Object.assign({}, props, { placeholder: length < 1 ? 'Heading 4' : '' }, { children: contents })));
 });
 
 const Header$1 = styled.h5 `
   outline: 0;
   transition: all 0.3s, color 0.3s;
+  padding: 2px 12px;
+  box-sizing: border-box;
   ::after {
     opacity: 0.3;
     content: attr(placeholder);
@@ -5522,12 +5601,14 @@ const Header$1 = styled.h5 `
 `;
 const Header5 = React__namespace.memo((_a) => {
     var { blockId, length, contents, attributes, editor } = _a, props = __rest(_a, ["blockId", "length", "contents", "attributes", "editor"]);
-    return (jsxRuntime.exports.jsx(Header$1, Object.assign({}, props, { placeholder: length < 1 ? 'Heading 5' : '' }, { children: contents }), void 0));
+    return (jsxRuntime.exports.jsx(Header$1, Object.assign({}, props, { placeholder: length < 1 ? 'Heading 5' : '' }, { children: contents })));
 });
 
 const Header = styled.h6 `
   outline: 0;
   transition: all 0.3s, color 0.3s;
+  padding: 2px 12px;
+  box-sizing: border-box;
   ::after {
     opacity: 0.3;
     content: attr(placeholder);
@@ -5535,7 +5616,7 @@ const Header = styled.h6 `
 `;
 const Header6 = React__namespace.memo((_a) => {
     var { blockId, length, contents, attributes, editor } = _a, props = __rest(_a, ["blockId", "length", "contents", "attributes", "editor"]);
-    return (jsxRuntime.exports.jsx(Header, Object.assign({}, props, { placeholder: length < 1 ? 'Heading 6' : '' }, { children: contents }), void 0));
+    return (jsxRuntime.exports.jsx(Header, Object.assign({}, props, { placeholder: length < 1 ? 'Heading 6' : '' }, { children: contents })));
 });
 
 const P = styled.p `
@@ -5543,19 +5624,33 @@ const P = styled.p `
   font-size: 1rem;
   outline: 0;
   margin: 0;
+  padding: 2px 12px;
+  box-sizing: border-box;
 `;
 const Paragraph = React__namespace.memo((_a) => {
     var { blockId, formats, editor, contents } = _a, props = __rest(_a, ["blockId", "formats", "editor", "contents"]);
-    return jsxRuntime.exports.jsx(P, Object.assign({}, props, { children: contents }), void 0);
+    return jsxRuntime.exports.jsx(P, Object.assign({}, props, { children: contents }));
 });
 
 /*! Copyright Twitter Inc. and other contributors. Licensed under MIT */
 var twemoji=function(){var twemoji={base:"https://twemoji.maxcdn.com/v/13.1.0/",ext:".png",size:"72x72",className:"emoji",convert:{fromCodePoint:fromCodePoint,toCodePoint:toCodePoint},onerror:function onerror(){if(this.parentNode){this.parentNode.replaceChild(createText(this.alt,false),this);}},parse:parse,replace:replace,test:test},escaper={"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"},re=/(?:\ud83d\udc68\ud83c\udffb\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc68\ud83c\udffc\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc68\ud83c\udffd\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc68\ud83c\udffe\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc68\ud83c\udfff\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffb\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffb\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc69\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffc\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffc\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc69\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffd\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffd\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc69\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffe\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffe\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc69\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udfff\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udfff\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc69\ud83c[\udffb-\udfff]|\ud83e\uddd1\ud83c\udffb\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83e\uddd1\ud83c[\udffc-\udfff]|\ud83e\uddd1\ud83c\udffc\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83e\uddd1\ud83c[\udffb\udffd-\udfff]|\ud83e\uddd1\ud83c\udffd\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83e\uddd1\ud83c[\udffb\udffc\udffe\udfff]|\ud83e\uddd1\ud83c\udffe\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83e\uddd1\ud83c[\udffb-\udffd\udfff]|\ud83e\uddd1\ud83c\udfff\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83e\uddd1\ud83c[\udffb-\udffe]|\ud83d\udc68\ud83c\udffb\u200d\u2764\ufe0f\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc68\ud83c\udffb\u200d\ud83e\udd1d\u200d\ud83d\udc68\ud83c[\udffc-\udfff]|\ud83d\udc68\ud83c\udffc\u200d\u2764\ufe0f\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc68\ud83c\udffc\u200d\ud83e\udd1d\u200d\ud83d\udc68\ud83c[\udffb\udffd-\udfff]|\ud83d\udc68\ud83c\udffd\u200d\u2764\ufe0f\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc68\ud83c\udffd\u200d\ud83e\udd1d\u200d\ud83d\udc68\ud83c[\udffb\udffc\udffe\udfff]|\ud83d\udc68\ud83c\udffe\u200d\u2764\ufe0f\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc68\ud83c\udffe\u200d\ud83e\udd1d\u200d\ud83d\udc68\ud83c[\udffb-\udffd\udfff]|\ud83d\udc68\ud83c\udfff\u200d\u2764\ufe0f\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc68\ud83c\udfff\u200d\ud83e\udd1d\u200d\ud83d\udc68\ud83c[\udffb-\udffe]|\ud83d\udc69\ud83c\udffb\u200d\u2764\ufe0f\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffb\u200d\u2764\ufe0f\u200d\ud83d\udc69\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffb\u200d\ud83e\udd1d\u200d\ud83d\udc68\ud83c[\udffc-\udfff]|\ud83d\udc69\ud83c\udffb\u200d\ud83e\udd1d\u200d\ud83d\udc69\ud83c[\udffc-\udfff]|\ud83d\udc69\ud83c\udffc\u200d\u2764\ufe0f\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffc\u200d\u2764\ufe0f\u200d\ud83d\udc69\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffc\u200d\ud83e\udd1d\u200d\ud83d\udc68\ud83c[\udffb\udffd-\udfff]|\ud83d\udc69\ud83c\udffc\u200d\ud83e\udd1d\u200d\ud83d\udc69\ud83c[\udffb\udffd-\udfff]|\ud83d\udc69\ud83c\udffd\u200d\u2764\ufe0f\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffd\u200d\u2764\ufe0f\u200d\ud83d\udc69\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffd\u200d\ud83e\udd1d\u200d\ud83d\udc68\ud83c[\udffb\udffc\udffe\udfff]|\ud83d\udc69\ud83c\udffd\u200d\ud83e\udd1d\u200d\ud83d\udc69\ud83c[\udffb\udffc\udffe\udfff]|\ud83d\udc69\ud83c\udffe\u200d\u2764\ufe0f\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffe\u200d\u2764\ufe0f\u200d\ud83d\udc69\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffe\u200d\ud83e\udd1d\u200d\ud83d\udc68\ud83c[\udffb-\udffd\udfff]|\ud83d\udc69\ud83c\udffe\u200d\ud83e\udd1d\u200d\ud83d\udc69\ud83c[\udffb-\udffd\udfff]|\ud83d\udc69\ud83c\udfff\u200d\u2764\ufe0f\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udfff\u200d\u2764\ufe0f\u200d\ud83d\udc69\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udfff\u200d\ud83e\udd1d\u200d\ud83d\udc68\ud83c[\udffb-\udffe]|\ud83d\udc69\ud83c\udfff\u200d\ud83e\udd1d\u200d\ud83d\udc69\ud83c[\udffb-\udffe]|\ud83e\uddd1\ud83c\udffb\u200d\u2764\ufe0f\u200d\ud83e\uddd1\ud83c[\udffc-\udfff]|\ud83e\uddd1\ud83c\udffb\u200d\ud83e\udd1d\u200d\ud83e\uddd1\ud83c[\udffb-\udfff]|\ud83e\uddd1\ud83c\udffc\u200d\u2764\ufe0f\u200d\ud83e\uddd1\ud83c[\udffb\udffd-\udfff]|\ud83e\uddd1\ud83c\udffc\u200d\ud83e\udd1d\u200d\ud83e\uddd1\ud83c[\udffb-\udfff]|\ud83e\uddd1\ud83c\udffd\u200d\u2764\ufe0f\u200d\ud83e\uddd1\ud83c[\udffb\udffc\udffe\udfff]|\ud83e\uddd1\ud83c\udffd\u200d\ud83e\udd1d\u200d\ud83e\uddd1\ud83c[\udffb-\udfff]|\ud83e\uddd1\ud83c\udffe\u200d\u2764\ufe0f\u200d\ud83e\uddd1\ud83c[\udffb-\udffd\udfff]|\ud83e\uddd1\ud83c\udffe\u200d\ud83e\udd1d\u200d\ud83e\uddd1\ud83c[\udffb-\udfff]|\ud83e\uddd1\ud83c\udfff\u200d\u2764\ufe0f\u200d\ud83e\uddd1\ud83c[\udffb-\udffe]|\ud83e\uddd1\ud83c\udfff\u200d\ud83e\udd1d\u200d\ud83e\uddd1\ud83c[\udffb-\udfff]|\ud83d\udc68\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68|\ud83d\udc69\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d[\udc68\udc69]|\ud83d\udc68\u200d\u2764\ufe0f\u200d\ud83d\udc68|\ud83d\udc69\u200d\u2764\ufe0f\u200d\ud83d[\udc68\udc69]|\ud83e\uddd1\u200d\ud83e\udd1d\u200d\ud83e\uddd1|\ud83d\udc6b\ud83c[\udffb-\udfff]|\ud83d\udc6c\ud83c[\udffb-\udfff]|\ud83d\udc6d\ud83c[\udffb-\udfff]|\ud83d\udc8f\ud83c[\udffb-\udfff]|\ud83d\udc91\ud83c[\udffb-\udfff]|\ud83d[\udc6b-\udc6d\udc8f\udc91])|(?:\ud83d[\udc68\udc69]|\ud83e\uddd1)(?:\ud83c[\udffb-\udfff])?\u200d(?:\u2695\ufe0f|\u2696\ufe0f|\u2708\ufe0f|\ud83c[\udf3e\udf73\udf7c\udf84\udf93\udfa4\udfa8\udfeb\udfed]|\ud83d[\udcbb\udcbc\udd27\udd2c\ude80\ude92]|\ud83e[\uddaf-\uddb3\uddbc\uddbd])|(?:\ud83c[\udfcb\udfcc]|\ud83d[\udd74\udd75]|\u26f9)((?:\ud83c[\udffb-\udfff]|\ufe0f)\u200d[\u2640\u2642]\ufe0f)|(?:\ud83c[\udfc3\udfc4\udfca]|\ud83d[\udc6e\udc70\udc71\udc73\udc77\udc81\udc82\udc86\udc87\ude45-\ude47\ude4b\ude4d\ude4e\udea3\udeb4-\udeb6]|\ud83e[\udd26\udd35\udd37-\udd39\udd3d\udd3e\uddb8\uddb9\uddcd-\uddcf\uddd4\uddd6-\udddd])(?:\ud83c[\udffb-\udfff])?\u200d[\u2640\u2642]\ufe0f|(?:\ud83d\udc68\u200d\ud83d\udc68\u200d\ud83d\udc66\u200d\ud83d\udc66|\ud83d\udc68\u200d\ud83d\udc68\u200d\ud83d\udc67\u200d\ud83d[\udc66\udc67]|\ud83d\udc68\u200d\ud83d\udc69\u200d\ud83d\udc66\u200d\ud83d\udc66|\ud83d\udc68\u200d\ud83d\udc69\u200d\ud83d\udc67\u200d\ud83d[\udc66\udc67]|\ud83d\udc69\u200d\ud83d\udc69\u200d\ud83d\udc66\u200d\ud83d\udc66|\ud83d\udc69\u200d\ud83d\udc69\u200d\ud83d\udc67\u200d\ud83d[\udc66\udc67]|\ud83d\udc68\u200d\ud83d\udc66\u200d\ud83d\udc66|\ud83d\udc68\u200d\ud83d\udc67\u200d\ud83d[\udc66\udc67]|\ud83d\udc68\u200d\ud83d\udc68\u200d\ud83d[\udc66\udc67]|\ud83d\udc68\u200d\ud83d\udc69\u200d\ud83d[\udc66\udc67]|\ud83d\udc69\u200d\ud83d\udc66\u200d\ud83d\udc66|\ud83d\udc69\u200d\ud83d\udc67\u200d\ud83d[\udc66\udc67]|\ud83d\udc69\u200d\ud83d\udc69\u200d\ud83d[\udc66\udc67]|\ud83c\udff3\ufe0f\u200d\u26a7\ufe0f|\ud83c\udff3\ufe0f\u200d\ud83c\udf08|\ud83d\ude36\u200d\ud83c\udf2b\ufe0f|\u2764\ufe0f\u200d\ud83d\udd25|\u2764\ufe0f\u200d\ud83e\ude79|\ud83c\udff4\u200d\u2620\ufe0f|\ud83d\udc15\u200d\ud83e\uddba|\ud83d\udc3b\u200d\u2744\ufe0f|\ud83d\udc41\u200d\ud83d\udde8|\ud83d\udc68\u200d\ud83d[\udc66\udc67]|\ud83d\udc69\u200d\ud83d[\udc66\udc67]|\ud83d\udc6f\u200d\u2640\ufe0f|\ud83d\udc6f\u200d\u2642\ufe0f|\ud83d\ude2e\u200d\ud83d\udca8|\ud83d\ude35\u200d\ud83d\udcab|\ud83e\udd3c\u200d\u2640\ufe0f|\ud83e\udd3c\u200d\u2642\ufe0f|\ud83e\uddde\u200d\u2640\ufe0f|\ud83e\uddde\u200d\u2642\ufe0f|\ud83e\udddf\u200d\u2640\ufe0f|\ud83e\udddf\u200d\u2642\ufe0f|\ud83d\udc08\u200d\u2b1b)|[#*0-9]\ufe0f?\u20e3|(?:[©®\u2122\u265f]\ufe0f)|(?:\ud83c[\udc04\udd70\udd71\udd7e\udd7f\ude02\ude1a\ude2f\ude37\udf21\udf24-\udf2c\udf36\udf7d\udf96\udf97\udf99-\udf9b\udf9e\udf9f\udfcd\udfce\udfd4-\udfdf\udff3\udff5\udff7]|\ud83d[\udc3f\udc41\udcfd\udd49\udd4a\udd6f\udd70\udd73\udd76-\udd79\udd87\udd8a-\udd8d\udda5\udda8\uddb1\uddb2\uddbc\uddc2-\uddc4\uddd1-\uddd3\udddc-\uddde\udde1\udde3\udde8\uddef\uddf3\uddfa\udecb\udecd-\udecf\udee0-\udee5\udee9\udef0\udef3]|[\u203c\u2049\u2139\u2194-\u2199\u21a9\u21aa\u231a\u231b\u2328\u23cf\u23ed-\u23ef\u23f1\u23f2\u23f8-\u23fa\u24c2\u25aa\u25ab\u25b6\u25c0\u25fb-\u25fe\u2600-\u2604\u260e\u2611\u2614\u2615\u2618\u2620\u2622\u2623\u2626\u262a\u262e\u262f\u2638-\u263a\u2640\u2642\u2648-\u2653\u2660\u2663\u2665\u2666\u2668\u267b\u267f\u2692-\u2697\u2699\u269b\u269c\u26a0\u26a1\u26a7\u26aa\u26ab\u26b0\u26b1\u26bd\u26be\u26c4\u26c5\u26c8\u26cf\u26d1\u26d3\u26d4\u26e9\u26ea\u26f0-\u26f5\u26f8\u26fa\u26fd\u2702\u2708\u2709\u270f\u2712\u2714\u2716\u271d\u2721\u2733\u2734\u2744\u2747\u2757\u2763\u2764\u27a1\u2934\u2935\u2b05-\u2b07\u2b1b\u2b1c\u2b50\u2b55\u3030\u303d\u3297\u3299])(?:\ufe0f|(?!\ufe0e))|(?:(?:\ud83c[\udfcb\udfcc]|\ud83d[\udd74\udd75\udd90]|[\u261d\u26f7\u26f9\u270c\u270d])(?:\ufe0f|(?!\ufe0e))|(?:\ud83c[\udf85\udfc2-\udfc4\udfc7\udfca]|\ud83d[\udc42\udc43\udc46-\udc50\udc66-\udc69\udc6e\udc70-\udc78\udc7c\udc81-\udc83\udc85-\udc87\udcaa\udd7a\udd95\udd96\ude45-\ude47\ude4b-\ude4f\udea3\udeb4-\udeb6\udec0\udecc]|\ud83e[\udd0c\udd0f\udd18-\udd1c\udd1e\udd1f\udd26\udd30-\udd39\udd3d\udd3e\udd77\uddb5\uddb6\uddb8\uddb9\uddbb\uddcd-\uddcf\uddd1-\udddd]|[\u270a\u270b]))(?:\ud83c[\udffb-\udfff])?|(?:\ud83c\udff4\udb40\udc67\udb40\udc62\udb40\udc65\udb40\udc6e\udb40\udc67\udb40\udc7f|\ud83c\udff4\udb40\udc67\udb40\udc62\udb40\udc73\udb40\udc63\udb40\udc74\udb40\udc7f|\ud83c\udff4\udb40\udc67\udb40\udc62\udb40\udc77\udb40\udc6c\udb40\udc73\udb40\udc7f|\ud83c\udde6\ud83c[\udde8-\uddec\uddee\uddf1\uddf2\uddf4\uddf6-\uddfa\uddfc\uddfd\uddff]|\ud83c\udde7\ud83c[\udde6\udde7\udde9-\uddef\uddf1-\uddf4\uddf6-\uddf9\uddfb\uddfc\uddfe\uddff]|\ud83c\udde8\ud83c[\udde6\udde8\udde9\uddeb-\uddee\uddf0-\uddf5\uddf7\uddfa-\uddff]|\ud83c\udde9\ud83c[\uddea\uddec\uddef\uddf0\uddf2\uddf4\uddff]|\ud83c\uddea\ud83c[\udde6\udde8\uddea\uddec\udded\uddf7-\uddfa]|\ud83c\uddeb\ud83c[\uddee-\uddf0\uddf2\uddf4\uddf7]|\ud83c\uddec\ud83c[\udde6\udde7\udde9-\uddee\uddf1-\uddf3\uddf5-\uddfa\uddfc\uddfe]|\ud83c\udded\ud83c[\uddf0\uddf2\uddf3\uddf7\uddf9\uddfa]|\ud83c\uddee\ud83c[\udde8-\uddea\uddf1-\uddf4\uddf6-\uddf9]|\ud83c\uddef\ud83c[\uddea\uddf2\uddf4\uddf5]|\ud83c\uddf0\ud83c[\uddea\uddec-\uddee\uddf2\uddf3\uddf5\uddf7\uddfc\uddfe\uddff]|\ud83c\uddf1\ud83c[\udde6-\udde8\uddee\uddf0\uddf7-\uddfb\uddfe]|\ud83c\uddf2\ud83c[\udde6\udde8-\udded\uddf0-\uddff]|\ud83c\uddf3\ud83c[\udde6\udde8\uddea-\uddec\uddee\uddf1\uddf4\uddf5\uddf7\uddfa\uddff]|\ud83c\uddf4\ud83c\uddf2|\ud83c\uddf5\ud83c[\udde6\uddea-\udded\uddf0-\uddf3\uddf7-\uddf9\uddfc\uddfe]|\ud83c\uddf6\ud83c\udde6|\ud83c\uddf7\ud83c[\uddea\uddf4\uddf8\uddfa\uddfc]|\ud83c\uddf8\ud83c[\udde6-\uddea\uddec-\uddf4\uddf7-\uddf9\uddfb\uddfd-\uddff]|\ud83c\uddf9\ud83c[\udde6\udde8\udde9\uddeb-\udded\uddef-\uddf4\uddf7\uddf9\uddfb\uddfc\uddff]|\ud83c\uddfa\ud83c[\udde6\uddec\uddf2\uddf3\uddf8\uddfe\uddff]|\ud83c\uddfb\ud83c[\udde6\udde8\uddea\uddec\uddee\uddf3\uddfa]|\ud83c\uddfc\ud83c[\uddeb\uddf8]|\ud83c\uddfd\ud83c\uddf0|\ud83c\uddfe\ud83c[\uddea\uddf9]|\ud83c\uddff\ud83c[\udde6\uddf2\uddfc]|\ud83c[\udccf\udd8e\udd91-\udd9a\udde6-\uddff\ude01\ude32-\ude36\ude38-\ude3a\ude50\ude51\udf00-\udf20\udf2d-\udf35\udf37-\udf7c\udf7e-\udf84\udf86-\udf93\udfa0-\udfc1\udfc5\udfc6\udfc8\udfc9\udfcf-\udfd3\udfe0-\udff0\udff4\udff8-\udfff]|\ud83d[\udc00-\udc3e\udc40\udc44\udc45\udc51-\udc65\udc6a\udc6f\udc79-\udc7b\udc7d-\udc80\udc84\udc88-\udc8e\udc90\udc92-\udca9\udcab-\udcfc\udcff-\udd3d\udd4b-\udd4e\udd50-\udd67\udda4\uddfb-\ude44\ude48-\ude4a\ude80-\udea2\udea4-\udeb3\udeb7-\udebf\udec1-\udec5\uded0-\uded2\uded5-\uded7\udeeb\udeec\udef4-\udefc\udfe0-\udfeb]|\ud83e[\udd0d\udd0e\udd10-\udd17\udd1d\udd20-\udd25\udd27-\udd2f\udd3a\udd3c\udd3f-\udd45\udd47-\udd76\udd78\udd7a-\uddb4\uddb7\uddba\uddbc-\uddcb\uddd0\uddde-\uddff\ude70-\ude74\ude78-\ude7a\ude80-\ude86\ude90-\udea8\udeb0-\udeb6\udec0-\udec2\uded0-\uded6]|[\u23e9-\u23ec\u23f0\u23f3\u267e\u26ce\u2705\u2728\u274c\u274e\u2753-\u2755\u2795-\u2797\u27b0\u27bf\ue50a])|\ufe0f/g,UFE0Fg=/\uFE0F/g,U200D=String.fromCharCode(8205),rescaper=/[&<>'"]/g,shouldntBeParsed=/^(?:iframe|noframes|noscript|script|select|style|textarea)$/,fromCharCode=String.fromCharCode;return twemoji;function createText(text,clean){return document.createTextNode(clean?text.replace(UFE0Fg,""):text)}function escapeHTML(s){return s.replace(rescaper,replacer)}function defaultImageSrcGenerator(icon,options){return "".concat(options.base,options.size,"/",icon,options.ext)}function grabAllTextNodes(node,allText){var childNodes=node.childNodes,length=childNodes.length,subnode,nodeType;while(length--){subnode=childNodes[length];nodeType=subnode.nodeType;if(nodeType===3){allText.push(subnode);}else if(nodeType===1&&!("ownerSVGElement"in subnode)&&!shouldntBeParsed.test(subnode.nodeName.toLowerCase())){grabAllTextNodes(subnode,allText);}}return allText}function grabTheRightIcon(rawText){return toCodePoint(rawText.indexOf(U200D)<0?rawText.replace(UFE0Fg,""):rawText)}function parseNode(node,options){var allText=grabAllTextNodes(node,[]),length=allText.length,attrib,attrname,modified,fragment,subnode,text,match,i,index,img,rawText,iconId,src;while(length--){modified=false;fragment=document.createDocumentFragment();subnode=allText[length];text=subnode.nodeValue;i=0;while(match=re.exec(text)){index=match.index;if(index!==i){fragment.appendChild(createText(text.slice(i,index),true));}rawText=match[0];iconId=grabTheRightIcon(rawText);i=index+rawText.length;src=options.callback(iconId,options);if(iconId&&src){img=new Image;img.onerror=options.onerror;img.setAttribute("draggable","false");attrib=options.attributes(rawText,iconId);for(attrname in attrib){if(attrib.hasOwnProperty(attrname)&&attrname.indexOf("on")!==0&&!img.hasAttribute(attrname)){img.setAttribute(attrname,attrib[attrname]);}}img.className=options.className;img.alt=rawText;img.src=src;modified=true;fragment.appendChild(img);}if(!img)fragment.appendChild(createText(rawText,false));img=null;}if(modified){if(i<text.length){fragment.appendChild(createText(text.slice(i),true));}subnode.parentNode.replaceChild(fragment,subnode);}}return node}function parseString(str,options){return replace(str,function(rawText){var ret=rawText,iconId=grabTheRightIcon(rawText),src=options.callback(iconId,options),attrib,attrname;if(iconId&&src){ret="<img ".concat('class="',options.className,'" ','draggable="false" ','alt="',rawText,'"',' src="',src,'"');attrib=options.attributes(rawText,iconId);for(attrname in attrib){if(attrib.hasOwnProperty(attrname)&&attrname.indexOf("on")!==0&&ret.indexOf(" "+attrname+"=")===-1){ret=ret.concat(" ",attrname,'="',escapeHTML(attrib[attrname]),'"');}}ret=ret.concat("/>");}return ret})}function replacer(m){return escaper[m]}function returnNull(){return null}function toSizeSquaredAsset(value){return typeof value==="number"?value+"x"+value:value}function fromCodePoint(codepoint){var code=typeof codepoint==="string"?parseInt(codepoint,16):codepoint;if(code<65536){return fromCharCode(code)}code-=65536;return fromCharCode(55296+(code>>10),56320+(code&1023))}function parse(what,how){if(!how||typeof how==="function"){how={callback:how};}return (typeof what==="string"?parseString:parseNode)(what,{callback:how.callback||defaultImageSrcGenerator,attributes:typeof how.attributes==="function"?how.attributes:returnNull,base:typeof how.base==="string"?how.base:twemoji.base,ext:how.ext||twemoji.ext,size:how.folder||toSizeSquaredAsset(how.size||twemoji.size),className:how.className||twemoji.className,onerror:how.onerror||twemoji.onerror})}function replace(text,callback){return String(text).replace(re,callback)}function test(text){re.lastIndex=0;var result=re.test(text);re.lastIndex=0;return result}function toCodePoint(unicodeSurrogates,sep){var r=[],c=0,p=0,i=0;while(i<unicodeSurrogates.length){c=unicodeSurrogates.charCodeAt(i++);if(p){r.push((65536+(p-55296<<10)+(c-56320)).toString(16));p=0;}else if(55296<=c&&c<=56319){p=c;}else {r.push(c.toString(16));}}return r.join(sep||"-")}}();
 
 const Text$1 = styled.span `
+  &::selection {
+    background: rgba(46, 170, 220, 0.2);
+  }
+  img.emoji {
+    height: 1em;
+    width: 1em;
+    margin: 0 0.05em 0 0.1em;
+    vertical-align: -0.1em;
+    &::selection {
+      background: rgba(46, 170, 220, 0.2);
+    }
+  }
   ${({ attributes, formats }) => {
     return Object.keys(attributes).map((key) => {
-        const styleFormat = `style/${key}`;
+        const styleFormat = `inline/style/${key}`;
         if (attributes[key] && formats[styleFormat]) {
             return formats[styleFormat];
         }
@@ -5566,7 +5661,7 @@ const Text$1 = styled.span `
 const Link = styled.a `
   ${({ attributes, formats }) => {
     return Object.keys(attributes).map((key) => {
-        const styleFormat = `style/${key}`;
+        const styleFormat = `inline/style/${key}`;
         if (attributes[key] && formats[styleFormat]) {
             return formats[styleFormat];
         }
@@ -5585,7 +5680,7 @@ const InlineText = (_a) => {
             }),
         };
     }, [inline]);
-    return (jsxRuntime.exports.jsx(jsxRuntime.exports.Fragment, { children: inline.attributes['link'] ? (jsxRuntime.exports.jsx(Link, Object.assign({ href: inline.attributes['link'], target: "_blank", dangerouslySetInnerHTML: memoInnerHTML, formats: formats, attributes: inline.attributes }, props), void 0)) : (jsxRuntime.exports.jsx(Text$1, Object.assign({ dangerouslySetInnerHTML: memoInnerHTML, formats: formats, attributes: inline.attributes }, props), void 0)) }, void 0));
+    return (jsxRuntime.exports.jsx(jsxRuntime.exports.Fragment, { children: inline.attributes['link'] ? (jsxRuntime.exports.jsx(Link, Object.assign({ href: inline.attributes['link'], target: "_blank", dangerouslySetInnerHTML: memoInnerHTML, formats: formats, attributes: inline.attributes }, props))) : (jsxRuntime.exports.jsx(Text$1, Object.assign({ dangerouslySetInnerHTML: memoInnerHTML, formats: formats, attributes: inline.attributes }, props))) }));
 };
 
 const Bold = Ce `
@@ -5598,6 +5693,19 @@ const Underline = Ce `
 
 const Strike = Ce `
   text-decoration: line-through;
+`;
+
+const InlineCode = Ce `
+  background: rgba(135, 131, 120, 0.15);
+  color: #eb5757;
+  border-radius: 3px;
+  font-size: 85%;
+  padding: 0.2em 0.4em;
+`;
+
+const Italic = Ce `
+  transform: skewX(-20deg);
+  display: inline-block;
 `;
 
 const Container$2 = styled.div `
@@ -5616,6 +5724,7 @@ const Button$1 = styled.a `
 const GlobalToolbar = React__namespace.memo((_a) => {
     var { editor } = _a, props = __rest(_a, ["editor"]);
     const [formats, setFormats] = React__namespace.useState({});
+    const [isDisplay, setDisplay] = React__namespace.useState(false);
     const handleHeader1 = React__namespace.useCallback((event) => {
         event.preventDefault();
         editor.getModule('toolbar').formatBlock('HEADER1');
@@ -5625,15 +5734,18 @@ const GlobalToolbar = React__namespace.memo((_a) => {
         const eventEmitter = editor.getEventEmitter();
         subs.add(eventEmitter.select(EditorEvents.EVENT_SELECTION_CHANGE).subscribe((v) => {
             const caret = editor.getCaretPosition();
-            if (!caret)
+            if (!caret || !editor.hasFocus()) {
+                setDisplay(false);
                 return;
+            }
+            setDisplay(true);
             setFormats(editor.getFormats(caret.blockId, caret.index, caret.length));
         }));
         return () => {
             subs.unsubscribe();
         };
     });
-    return ReactDOM__default["default"].createPortal(jsxRuntime.exports.jsx(Container$2, Object.assign({}, props, { children: jsxRuntime.exports.jsx(Button$1, Object.assign({ href: "#", onClick: handleHeader1 }, { children: "header1" }), void 0) }), void 0), document.body);
+    return ReactDOM__default["default"].createPortal(jsxRuntime.exports.jsx(jsxRuntime.exports.Fragment, { children: isDisplay && (jsxRuntime.exports.jsx(Container$2, Object.assign({}, props, { children: jsxRuntime.exports.jsx(Button$1, Object.assign({ href: "#", onClick: handleHeader1 }, { children: "header1" })) }))) }), document.body);
 });
 
 function getScrollContainer(scrollContainer) {
@@ -5692,6 +5804,10 @@ const BubbleToolbar = React__namespace.memo((_a) => {
         event.preventDefault();
         editor.getModule('toolbar').formatInline({ link: 'https://google.com' });
     }, [formats]);
+    const handleInlineCode = React__namespace.useCallback((event) => {
+        event.preventDefault();
+        editor.getModule('toolbar').formatInline({ code: !(formats === null || formats === void 0 ? void 0 : formats.code) });
+    }, [formats]);
     const handleHeader1 = React__namespace.useCallback((event) => {
         event.preventDefault();
         editor.getModule('toolbar').formatBlock('HEADER1');
@@ -5702,7 +5818,7 @@ const BubbleToolbar = React__namespace.memo((_a) => {
         subs.add(eventEmitter.select(EditorEvents.EVENT_SELECTION_CHANGE).subscribe((v) => {
             var _a, _b;
             const caret = editor.getCaretPosition();
-            if (!caret) {
+            if (!caret || !editor.hasFocus()) {
                 setPosition(undefined);
                 setCollapsed(true);
                 return;
@@ -5728,7 +5844,7 @@ const BubbleToolbar = React__namespace.memo((_a) => {
             subs.unsubscribe();
         };
     }, [editor, scrollContainer]);
-    return ReactDOM__default["default"].createPortal(jsxRuntime.exports.jsx(jsxRuntime.exports.Fragment, { children: !collapsed && (jsxRuntime.exports.jsxs(Container$1, Object.assign({ top: (_b = position === null || position === void 0 ? void 0 : position.top) !== null && _b !== void 0 ? _b : 0, left: (_c = position === null || position === void 0 ? void 0 : position.left) !== null && _c !== void 0 ? _c : 0 }, props, { children: [jsxRuntime.exports.jsx(Button, Object.assign({ href: "#", onClick: handleHeader1, active: blockType === 'HEADER1' }, { children: "H1" }), void 0), jsxRuntime.exports.jsx(Button, Object.assign({ href: "#", onClick: handleBold, active: !!(formats === null || formats === void 0 ? void 0 : formats.bold) }, { children: "B" }), void 0), jsxRuntime.exports.jsx(Button, Object.assign({ href: "#", onClick: handleUnderline, active: !!(formats === null || formats === void 0 ? void 0 : formats.underline) }, { children: "U" }), void 0), jsxRuntime.exports.jsx(Button, Object.assign({ href: "#", onClick: handleStrike, active: !!(formats === null || formats === void 0 ? void 0 : formats.strike) }, { children: "S" }), void 0), jsxRuntime.exports.jsx(Button, Object.assign({ href: "#", onClick: handleLink, active: !!(formats === null || formats === void 0 ? void 0 : formats.link) }, { children: "L" }), void 0)] }), void 0)) }, void 0), (_d = getScrollContainer(scrollContainer)) !== null && _d !== void 0 ? _d : document.body);
+    return ReactDOM__default["default"].createPortal(jsxRuntime.exports.jsx(jsxRuntime.exports.Fragment, { children: !collapsed && (jsxRuntime.exports.jsxs(Container$1, Object.assign({ top: (_b = position === null || position === void 0 ? void 0 : position.top) !== null && _b !== void 0 ? _b : 0, left: (_c = position === null || position === void 0 ? void 0 : position.left) !== null && _c !== void 0 ? _c : 0 }, props, { children: [jsxRuntime.exports.jsx(Button, Object.assign({ href: "#", onClick: handleHeader1, active: blockType === 'HEADER1' }, { children: "H1" })), jsxRuntime.exports.jsx(Button, Object.assign({ href: "#", onClick: handleBold, active: !!(formats === null || formats === void 0 ? void 0 : formats.bold) }, { children: "B" })), jsxRuntime.exports.jsx(Button, Object.assign({ href: "#", onClick: handleUnderline, active: !!(formats === null || formats === void 0 ? void 0 : formats.underline) }, { children: "U" })), jsxRuntime.exports.jsx(Button, Object.assign({ href: "#", onClick: handleStrike, active: !!(formats === null || formats === void 0 ? void 0 : formats.strike) }, { children: "S" })), jsxRuntime.exports.jsx(Button, Object.assign({ href: "#", onClick: handleInlineCode, active: !!(formats === null || formats === void 0 ? void 0 : formats.code) }, { children: "code" })), jsxRuntime.exports.jsx(Button, Object.assign({ href: "#", onClick: handleLink, active: !!(formats === null || formats === void 0 ? void 0 : formats.link) }, { children: "L" }))] }))) }), (_d = getScrollContainer(scrollContainer)) !== null && _d !== void 0 ? _d : document.body);
 });
 
 /* eslint-disable no-undefined,no-param-reassign,no-shadow */
@@ -8898,7 +9014,7 @@ function getBlockLength(block) {
     }
     return cumulativeLength;
 }
-function getInlineContents(block) {
+function convertHTMLtoInlines(block) {
     const element = block instanceof HTMLElement ? block : getBlockElementById(block);
     let affectedLength = 0;
     let affected = false;
@@ -9183,6 +9299,43 @@ function optimizeInlineContents(contents) {
     }
     return dest;
 }
+function getInlineContents(contents, index, length = 0) {
+    let startIndex = index;
+    let endIndex = index + length;
+    const destContents = [];
+    let cumulativeLength = 0;
+    for (let i = 0; i < contents.length; i++) {
+        const inlineLength = contents[i].isEmbed ? 1 : stringLength(contents[i].text);
+        if (length > 0 &&
+            endIndex >= cumulativeLength &&
+            startIndex < cumulativeLength + inlineLength) {
+            if (!contents[i].isEmbed) {
+                let selectedIndex = startIndex - cumulativeLength;
+                selectedIndex = selectedIndex > 0 ? selectedIndex : 0;
+                const textlength = stringLength(contents[i].text);
+                const deleteTextlength = textlength - selectedIndex;
+                const selectedLength = textlength - length >= 0 ? length : textlength;
+                const deletelength = deleteTextlength - length >= 0 ? length : deleteTextlength;
+                length -= deletelength;
+                let text = contents[i].text;
+                if (textlength - (selectedIndex + selectedLength) > 0) {
+                    const removeLast = dist.remove(selectedIndex + selectedLength, textlength - (selectedIndex + selectedLength));
+                    text = dist.type.apply(text, removeLast);
+                }
+                const removeFirst = dist.remove(0, selectedIndex);
+                text = dist.type.apply(text, removeFirst);
+                if (stringLength(text) > 0) {
+                    destContents.push(Object.assign(Object.assign({}, contents[i]), { text }));
+                }
+            }
+            else {
+                length--;
+            }
+        }
+        cumulativeLength += inlineLength;
+    }
+    return destContents;
+}
 function getDuplicateAttributes(contents, index, length = 0) {
     let startIndex = index;
     let endIndex = index + length;
@@ -9225,6 +9378,12 @@ function getDuplicateAttributes(contents, index, length = 0) {
     }, {});
     return duplicateAttributes;
 }
+function convertBlocksToText(blocks) {
+    const text = blocks.reduce((r, block) => {
+        return `${r}${block.contents.map((content) => content.text).join('')}\n`;
+    }, '');
+    return text.replaceAll(/\uFEFF/gi, '');
+}
 
 function caretRangeFromPoint(x, y) {
     // for chrome & safari & edge
@@ -9243,7 +9402,6 @@ function caretRangeFromPoint(x, y) {
     return null;
 }
 function getRectByRange(range) {
-    var _a;
     let clientRect = null;
     if (range.endContainer instanceof Text) {
         clientRect = range.getBoundingClientRect();
@@ -9261,7 +9419,7 @@ function getRectByRange(range) {
             clientRect = currentNodeRange.getBoundingClientRect();
         }
         else {
-            if (!(currentNode instanceof Image) && ((_a = currentNode) === null || _a === void 0 ? void 0 : _a.tagName) !== 'BR')
+            if (!(currentNode instanceof Image) && (currentNode === null || currentNode === void 0 ? void 0 : currentNode.tagName) !== 'BR')
                 return null;
             clientRect = currentNode.getBoundingClientRect();
         }
@@ -9305,7 +9463,14 @@ function useEditor({ settings: { scrollMarginTop = 100, scrollMarginBottom = 250
             return null;
         selection.removeAllRanges();
     }, []);
+    const hasFocus = React__namespace.useCallback(() => {
+        const selection = document.getSelection();
+        if (!selection || !editorRef.current)
+            return false;
+        return editorRef.current.contains(selection.focusNode);
+    }, []);
     const prev = React__namespace.useCallback(({ index, margin = 10 } = {}) => {
+        var _a, _b;
         const position = lastCaretPositionRef.current;
         const currentIndex = blocksRef.current.findIndex((v) => v.id === (position === null || position === void 0 ? void 0 : position.blockId));
         if (currentIndex < 1 || !blocksRef.current[currentIndex - 1])
@@ -9325,7 +9490,7 @@ function useEditor({ settings: { scrollMarginTop = 100, scrollMarginBottom = 250
         const containerOffsetTop = container ? container.getBoundingClientRect().top : 0;
         if (prevRect.top <= (container ? containerOffsetTop : containerOffsetTop + scrollMarginTop)) {
             if (container) {
-                container.scrollTop = currentIndex - 1 < 1 ? 0 : prevBlock.offsetTop;
+                container.scrollTop = currentIndex - 1 < 1 ? 0 : (_b = (_a = prevBlock.parentElement) === null || _a === void 0 ? void 0 : _a.offsetTop) !== null && _b !== void 0 ? _b : 0;
             }
             else {
                 if (document.scrollingElement) {
@@ -9360,7 +9525,7 @@ function useEditor({ settings: { scrollMarginTop = 100, scrollMarginBottom = 250
         return true;
     }, []);
     const next = React__namespace.useCallback(({ index = 0, margin = 10 } = {}) => {
-        var _a;
+        var _a, _b, _c, _d, _e, _f, _g, _h;
         const position = lastCaretPositionRef.current;
         const currentIndex = blocksRef.current.findIndex((v) => v.id === (position === null || position === void 0 ? void 0 : position.blockId));
         if (currentIndex === -1 || !blocksRef.current[currentIndex + 1])
@@ -9375,20 +9540,29 @@ function useEditor({ settings: { scrollMarginTop = 100, scrollMarginBottom = 250
         const nextBlock = getBlockElementById(blocksRef.current[currentIndex + 1].id);
         if (!nextBlock)
             return false;
-        let nextRect = nextBlock.getBoundingClientRect();
+        let nextRect = (_b = (_a = nextBlock.parentElement) === null || _a === void 0 ? void 0 : _a.getBoundingClientRect()) !== null && _b !== void 0 ? _b : nextBlock.getBoundingClientRect();
         const container = getScrollContainer(scrollContainer);
-        const scrollHeight = (_a = container === null || container === void 0 ? void 0 : container.clientHeight) !== null && _a !== void 0 ? _a : window.innerHeight;
-        if (nextRect.top + nextRect.height >=
-            (container ? scrollHeight : scrollHeight - scrollMarginBottom)) {
-            if (container) {
-                container.scrollTop = nextBlock.offsetTop - container.clientHeight + scrollMarginBottom;
-            }
-            else {
-                if (document.scrollingElement) {
-                    const nextTop = document.scrollingElement.scrollTop + nextRect.top;
-                    const p = nextTop - window.innerHeight + scrollMarginBottom;
-                    document.scrollingElement.scrollTop = p;
+        const scrollHeight = (_c = container === null || container === void 0 ? void 0 : container.clientHeight) !== null && _c !== void 0 ? _c : window.innerHeight;
+        if (container) {
+            const containerRect = (_d = container.getBoundingClientRect()) !== null && _d !== void 0 ? _d : 0;
+            if (nextRect.top + nextRect.height >=
+                containerRect.top + containerRect.height - scrollMarginBottom) {
+                const scrollTop = ((_f = (_e = nextBlock.parentElement) === null || _e === void 0 ? void 0 : _e.offsetTop) !== null && _f !== void 0 ? _f : 0) - container.clientHeight + scrollMarginBottom;
+                if (container.scrollHeight > scrollTop + container.clientHeight) {
+                    container.scrollTop = scrollTop;
                 }
+                else {
+                    container.scrollTop = container.scrollHeight - container.clientHeight;
+                }
+                nextRect =
+                    (_h = (_g = nextBlock.parentElement) === null || _g === void 0 ? void 0 : _g.getBoundingClientRect()) !== null && _h !== void 0 ? _h : nextBlock.getBoundingClientRect();
+            }
+        }
+        else if (nextRect.top + nextRect.height >= scrollHeight - scrollMarginBottom) {
+            if (document.scrollingElement) {
+                const nextTop = document.scrollingElement.scrollTop + nextRect.top;
+                const p = nextTop - window.innerHeight + scrollMarginBottom;
+                document.scrollingElement.scrollTop = p;
             }
             nextRect = nextBlock.getBoundingClientRect();
         }
@@ -9485,12 +9659,17 @@ function useEditor({ settings: { scrollMarginTop = 100, scrollMarginBottom = 250
         return range;
     }, []);
     const setCaretPosition = React__namespace.useCallback(({ blockId = '', index = 0, length = 0 }) => {
+        var _a;
         const element = getBlockElementById(blockId);
         if (!element)
             return;
         const selection = document.getSelection();
         if (!selection)
             return;
+        const blockLength = (_a = getBlockLength$1(blockId)) !== null && _a !== void 0 ? _a : 0;
+        if (index > blockLength) {
+            index = blockLength;
+        }
         try {
             const range = document.createRange();
             const start = getNativeIndexFromBlockIndex(element, index);
@@ -9505,6 +9684,38 @@ function useEditor({ settings: { scrollMarginTop = 100, scrollMarginBottom = 250
         }
         catch (e) {
             eventEmitter.warning('Invalid Range', e);
+        }
+    }, []);
+    const scrollIntoView = React__namespace.useCallback((blockId) => {
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
+        blockId = (_b = blockId !== null && blockId !== void 0 ? blockId : (_a = lastCaretPositionRef.current) === null || _a === void 0 ? void 0 : _a.blockId) !== null && _b !== void 0 ? _b : '';
+        const element = getBlockElementById(blockId);
+        if (!element)
+            return;
+        let nextRect = (_d = (_c = element.parentElement) === null || _c === void 0 ? void 0 : _c.getBoundingClientRect()) !== null && _d !== void 0 ? _d : element.getBoundingClientRect();
+        const container = getScrollContainer(scrollContainer);
+        const scrollHeight = (_e = container === null || container === void 0 ? void 0 : container.clientHeight) !== null && _e !== void 0 ? _e : window.innerHeight;
+        if (container) {
+            const containerRect = (_f = container.getBoundingClientRect()) !== null && _f !== void 0 ? _f : 0;
+            if (nextRect.top + nextRect.height >=
+                containerRect.top + containerRect.height - scrollMarginBottom) {
+                const scrollTop = ((_h = (_g = element.parentElement) === null || _g === void 0 ? void 0 : _g.offsetTop) !== null && _h !== void 0 ? _h : 0) - container.clientHeight + scrollMarginBottom;
+                if (container.scrollHeight > scrollTop + container.clientHeight) {
+                    container.scrollTop = scrollTop;
+                }
+                else {
+                    container.scrollTop = container.scrollHeight - container.clientHeight;
+                }
+                nextRect =
+                    (_k = (_j = element.parentElement) === null || _j === void 0 ? void 0 : _j.getBoundingClientRect()) !== null && _k !== void 0 ? _k : element.getBoundingClientRect();
+            }
+        }
+        else if (nextRect.top + nextRect.height >= scrollHeight - scrollMarginBottom) {
+            if (document.scrollingElement) {
+                const nextTop = document.scrollingElement.scrollTop + nextRect.top;
+                const p = nextTop - window.innerHeight + scrollMarginBottom;
+                document.scrollingElement.scrollTop = p;
+            }
         }
     }, []);
     const normalizeRange = React__namespace.useCallback((nativeRange) => {
@@ -9593,7 +9804,7 @@ function useEditor({ settings: { scrollMarginTop = 100, scrollMarginBottom = 250
             var _a, _b;
             if (!blockId || !block || !blockElement || composing)
                 return;
-            const { contents, affected, affectedLength } = getInlineContents(blockElement);
+            const { contents, affected, affectedLength } = convertHTMLtoInlines(blockElement);
             updateCaretPositionRef();
             if (isEqual(block.contents, contents))
                 return;
@@ -9628,13 +9839,13 @@ function useEditor({ settings: { scrollMarginTop = 100, scrollMarginBottom = 250
             }
         }, 10);
     }, []);
-    const createBlock = React__namespace.useCallback((appendBlock, prevBlockId, source = EventSources.USER) => {
+    const createBlock = React__namespace.useCallback((appendBlock, prevBlockId, type = 'append', source = EventSources.USER) => {
         const currentIndex = blocksRef.current.findIndex((v) => v.id === prevBlockId);
         eventEmitter.emit(EditorEvents.EVENT_EDITOR_CHANGE, {
             payload: {
                 type: HistoryType.ADD_BLOCK,
                 blockId: appendBlock.id,
-                block: appendBlock,
+                block: copyObject(appendBlock),
                 prevBlockId,
             },
             source,
@@ -9645,7 +9856,9 @@ function useEditor({ settings: { scrollMarginTop = 100, scrollMarginBottom = 250
                 appendBlock,
                 ...blocksRef.current.slice(currentIndex + 1),
             ]
-            : [...blocksRef.current, appendBlock]);
+            : type === 'prepend'
+                ? [appendBlock, ...blocksRef.current]
+                : [...blocksRef.current, appendBlock]);
     }, []);
     const updateBlocks = React__namespace.useCallback((blocks) => {
         blocksRef.current = blocks;
@@ -9654,6 +9867,7 @@ function useEditor({ settings: { scrollMarginTop = 100, scrollMarginBottom = 250
         const currentIndex = blocksRef.current.findIndex((v) => v.id === block.id);
         if (currentIndex === -1)
             return;
+        block = copyObject(block);
         const contents = optimizeInlineContents(block.contents);
         const prevBlock = Object.assign(Object.assign({}, blocksRef.current[currentIndex]), { contents: blocksRef.current[currentIndex].contents.map((content) => {
                 return {
@@ -9692,16 +9906,52 @@ function useEditor({ settings: { scrollMarginTop = 100, scrollMarginBottom = 250
             ...blocksRef.current.slice(currentIndex + 1),
         ];
     }, []);
-    const deleteBlock = React__namespace.useCallback((blockId) => {
+    const deleteBlock = React__namespace.useCallback((blockId, source = EventSources.USER) => {
+        var _a;
+        const currentIndex = blocksRef.current.findIndex((v) => v.id === blockId);
+        if (currentIndex === -1)
+            return;
+        eventEmitter.emit(EditorEvents.EVENT_EDITOR_CHANGE, {
+            payload: {
+                type: HistoryType.REMOVE_BLOCK,
+                blockId: blocksRef.current[currentIndex].id,
+                block: copyObject(blocksRef.current[currentIndex]),
+                prevBlockId: (_a = blocksRef.current[currentIndex - 1]) === null || _a === void 0 ? void 0 : _a.id,
+            },
+            source,
+        });
         updateBlocks(blocksRef.current.filter((v) => v.id !== blockId));
+    }, []);
+    const deleteBlocks = React__namespace.useCallback((blockIds, source = EventSources.USER) => {
+        const deleteBlocks = blocksRef.current.filter((v) => blockIds.includes(v.id));
+        if (deleteBlocks.length < 1)
+            return;
+        eventEmitter.emit(EditorEvents.EVENT_EDITOR_CHANGE, {
+            payload: deleteBlocks.map((block) => {
+                var _a;
+                const currentIndex = blocksRef.current.findIndex((v) => v.id === block.id);
+                return {
+                    type: HistoryType.REMOVE_BLOCK,
+                    blockId: block.id,
+                    block: copyObject(block),
+                    prevBlockId: (_a = blocksRef.current[currentIndex - 1]) === null || _a === void 0 ? void 0 : _a.id,
+                };
+            }),
+            source,
+        });
+        updateBlocks(blocksRef.current.filter((v) => !blockIds.includes(v.id)));
     }, []);
     const render = React__namespace.useCallback((affectedIds = []) => {
         eventEmitter.emit(EditorEvents.EVENT_BLOCK_RERENDER, affectedIds);
+    }, []);
+    const getEditorRef = React__namespace.useCallback(() => {
+        return editorRef.current;
     }, []);
     const editorController = React__namespace.useMemo(() => {
         return {
             focus,
             blur,
+            hasFocus,
             getFormats,
             formatText,
             setBlocks,
@@ -9711,10 +9961,12 @@ function useEditor({ settings: { scrollMarginTop = 100, scrollMarginBottom = 250
             createBlock,
             updateBlock,
             deleteBlock,
+            deleteBlocks,
             sync,
             getCaretPosition,
             setCaretPosition,
             updateCaretRect,
+            scrollIntoView,
             getNativeRange,
             prev,
             next,
@@ -9724,6 +9976,7 @@ function useEditor({ settings: { scrollMarginTop = 100, scrollMarginBottom = 250
             getModule,
             removeAllModules,
             getEventEmitter,
+            getEditorRef,
         };
     }, []);
     // real-time collaborative test
@@ -9832,11 +10085,16 @@ class EditorModule {
     createBlock(blockId) {
         var _a;
         const caretPosition = this.editor.getCaretPosition();
-        blockId = blockId !== null && blockId !== void 0 ? blockId : caretPosition === null || caretPosition === void 0 ? void 0 : caretPosition.blockId;
         const appendBlock = createBlock('PARAGRAPH');
-        this.editor.createBlock(appendBlock, blockId);
+        const prevBlockId = blockId !== null && blockId !== void 0 ? blockId : caretPosition === null || caretPosition === void 0 ? void 0 : caretPosition.blockId;
+        this.editor.createBlock(appendBlock, prevBlockId);
         (_a = this.editor.getModule('history')) === null || _a === void 0 ? void 0 : _a.optimizeOp();
         setTimeout(() => {
+            this.editor.setCaretPosition({
+                blockId: prevBlockId,
+                index: 0,
+            });
+            this.editor.updateCaretRect();
             this.editor.next();
         }, 10);
         this.editor.render([]);
@@ -9854,6 +10112,29 @@ class EditorModule {
         this.editor.deleteBlock(blockId);
         this.editor.getModule('history').optimizeOp();
         this.editor.render();
+    }
+    deleteBlocks(blockIds) {
+        var _a;
+        const blocks = this.editor.getBlocks();
+        if (blocks.length <= 1)
+            return;
+        this.editor.deleteBlocks(blockIds);
+        const deletedBlocks = this.editor.getBlocks();
+        if (deletedBlocks.length < 1) {
+            this.createBlock();
+        }
+        this.editor.getModule('history').optimizeOp();
+        this.editor.render();
+        const currentIndex = blocks.findIndex((v) => v.id === blockIds[0]);
+        if (currentIndex !== -1) {
+            const deletedBlocks = this.editor.getBlocks();
+            const targetBlockId = currentIndex === 0 ? deletedBlocks[0].id : blocks[currentIndex - 1].id;
+            const targetBlockLength = (_a = this.editor.getBlockLength(targetBlockId)) !== null && _a !== void 0 ? _a : 0;
+            this.editor.setCaretPosition({
+                blockId: targetBlockId,
+                index: targetBlockLength,
+            });
+        }
     }
     mergeBlock(sourceBlockId, otherBlockId) {
         var _a;
@@ -9884,7 +10165,10 @@ class EditorModule {
         setTimeout(() => {
             this.editor.render([blocks[currentIndex].id]);
             this.editor.blur();
-            setTimeout(() => this.editor.setCaretPosition({ blockId: lastBlock.id }), 10);
+            setTimeout(() => {
+                this.editor.setCaretPosition({ blockId: lastBlock.id });
+                this.editor.scrollIntoView();
+            }, 10);
         }, 10);
         this.editor.createBlock(lastBlock, firstBlock.id);
         this.editor.updateBlock(firstBlock);
@@ -9892,7 +10176,7 @@ class EditorModule {
     }
 }
 
-const ShortKey = /Mac/i.test(navigator.platform) ? 'metaKey' : 'ctrlKey';
+const ShortKey$1 = /Mac/i.test(navigator.platform) ? 'metaKey' : 'ctrlKey';
 class KeyBoardModule {
     constructor({ eventEmitter, editor }) {
         this.sync = debounce(100, (blockId, blockElement) => {
@@ -9981,6 +10265,25 @@ class KeyBoardModule {
             shiftKey: true,
             handler: this._handleRedo.bind(this),
         });
+        // override native events
+        this.addBinding({
+            key: KeyCodes.B,
+            prevented: true,
+            shortKey: true,
+            handler: this._handleBold.bind(this),
+        });
+        this.addBinding({
+            key: KeyCodes.I,
+            prevented: true,
+            shortKey: true,
+            handler: this._handleItalic.bind(this),
+        });
+        this.addBinding({
+            key: KeyCodes.U,
+            prevented: true,
+            shortKey: true,
+            handler: this._handleUnderline.bind(this),
+        });
     }
     onDestroy() {
         this.bindings = [];
@@ -10040,7 +10343,7 @@ class KeyBoardModule {
             return false;
         if (!caretPosition)
             return false;
-        if (shortKey && !e[ShortKey])
+        if (shortKey && !e[ShortKey$1])
             return false;
         if (!shortKey) {
             if ((metaKey && !e.metaKey) || (!metaKey && e.metaKey))
@@ -10092,12 +10395,6 @@ class KeyBoardModule {
         //   console.log('変換enter');
         //   return;
         // }
-    }
-    _handleShiftEnter(caretPosition, editor) {
-        if (caretPosition.collapsed) ;
-        else {
-            console.log('key shift enter(range)');
-        }
     }
     _handlekeyLeft(caretPosition, editor, event) {
         var _a;
@@ -10199,6 +10496,27 @@ class KeyBoardModule {
     _handleRedo(caretPosition, editor, event) {
         editor.getModule('history').redo();
     }
+    _handleBold(caretPosition, editor, event) {
+        const caret = editor.getCaretPosition();
+        if (!caret)
+            return;
+        const formats = editor.getFormats(caret.blockId, caret.index, caret.length);
+        editor.getModule('toolbar').formatInline({ bold: !(formats === null || formats === void 0 ? void 0 : formats.bold) });
+    }
+    _handleItalic(caretPosition, editor, event) {
+        const caret = editor.getCaretPosition();
+        if (!caret)
+            return;
+        const formats = editor.getFormats(caret.blockId, caret.index, caret.length);
+        editor.getModule('toolbar').formatInline({ italic: !(formats === null || formats === void 0 ? void 0 : formats.italic) });
+    }
+    _handleUnderline(caretPosition, editor, event) {
+        const caret = editor.getCaretPosition();
+        if (!caret)
+            return;
+        const formats = editor.getFormats(caret.blockId, caret.index, caret.length);
+        editor.getModule('toolbar').formatInline({ underline: !(formats === null || formats === void 0 ? void 0 : formats.underline) });
+    }
 }
 
 class LoggerModule {
@@ -10262,7 +10580,11 @@ class ToolbarModule {
         if (!block)
             return;
         this.editor.formatText(block.id, caretPosition.index, caretPosition.length, attributes);
-        setTimeout(() => this.editor.setCaretPosition({ blockId: block.id, index: caretPosition.index, length: caretPosition.length }), 10);
+        setTimeout(() => this.editor.setCaretPosition({
+            blockId: block.id,
+            index: caretPosition.index,
+            length: caretPosition.length,
+        }), 10);
     }
     formatBlock(type, attributes = {}) {
         const caretPosition = this.editor.getCaretPosition();
@@ -10273,25 +10595,36 @@ class ToolbarModule {
             return;
         this.editor.updateBlock(Object.assign(Object.assign({}, block), { type, attributes }));
         this.editor.render([block.id]);
-        setTimeout(() => this.editor.setCaretPosition({ blockId: block.id, index: caretPosition.index, length: caretPosition.length }), 10);
+        setTimeout(() => this.editor.setCaretPosition({
+            blockId: block.id,
+            index: caretPosition.index,
+            length: caretPosition.length,
+        }), 10);
     }
 }
 
+const ShortKey = /Mac/i.test(navigator.platform) ? 'metaKey' : 'ctrlKey';
 class SelectorModule {
     constructor({ eventEmitter, editor }) {
         this.position = { start: null, end: null };
         this.enabled = false;
         this.mousePressed = false;
         this.changed = false;
+        this.selectedBlocks = [];
+        this.bindings = [];
         this.mouseMove = throttle(100, (e) => {
             var _a, _b;
             if (!this.mousePressed)
                 return;
             const blocks = this.editor.getBlocks();
             const startIndex = blocks.findIndex((v) => v.id === this.position.start);
+            if (startIndex === -1)
+                return;
             const [blockId] = getBlockId(e.target);
             let blockIds = [];
-            if (!blockId) {
+            let selectedBlocks = [];
+            const blockIndex = blocks.findIndex((v) => v.id === blockId);
+            if (!blockId || blockIndex === -1) {
                 const startEl = getBlockElementById(blocks[startIndex].id);
                 const startTop = (_b = (_a = startEl === null || startEl === void 0 ? void 0 : startEl.getBoundingClientRect()) === null || _a === void 0 ? void 0 : _a.top) !== null && _b !== void 0 ? _b : 0;
                 const isUpward = startTop > e.clientY;
@@ -10319,15 +10652,18 @@ class SelectorModule {
                         }
                     }
                 }
+                selectedBlocks = copyObject(blocks.filter((v) => blockIds.includes(v.id)));
             }
             else {
                 this.position.end = blockId;
                 const endIndex = blocks.findIndex((v) => v.id === this.position.end);
                 if (startIndex > endIndex) {
-                    blockIds = blocks.slice(endIndex, startIndex + 1).map((v) => v.id);
+                    selectedBlocks = copyObject(blocks.slice(endIndex, startIndex + 1));
+                    blockIds = selectedBlocks.map((v) => v.id);
                 }
                 else {
-                    blockIds = blocks.slice(startIndex, endIndex + 1).map((v) => v.id);
+                    selectedBlocks = copyObject(blocks.slice(startIndex, endIndex + 1));
+                    blockIds = selectedBlocks.map((v) => v.id);
                 }
             }
             if (!this.enabled && blockIds.length > 1) {
@@ -10336,6 +10672,7 @@ class SelectorModule {
                 this.editor.blur();
             }
             if (this.enabled) {
+                this.selectedBlocks = selectedBlocks;
                 this.sendBlockSelectedEvent(blockIds);
             }
         });
@@ -10347,6 +10684,11 @@ class SelectorModule {
     }
     onInit() {
         this.eventEmitter.info('init selector module');
+        this.addBinding({
+            key: KeyCodes.BACKSPACE,
+            prevented: true,
+            handler: this._handleBackspace.bind(this),
+        });
     }
     onDestroy() {
         this.eventEmitter.info('destroy selector module');
@@ -10371,7 +10713,58 @@ class SelectorModule {
         this.mousePressed = false;
         this.enabled = false;
         this.position = { start: null, end: null };
+        this.selectedBlocks = [];
         this.sendBlockSelectedEvent([]);
+    }
+    getSelectedBlocks() {
+        return this.selectedBlocks;
+    }
+    addBinding(props) {
+        this.bindings.push(props);
+    }
+    onKeyDown(e) {
+        let prevented = false;
+        this.bindings.forEach((binding) => {
+            if (this._trigger(e, binding)) {
+                prevented = true;
+            }
+        });
+        if (prevented) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+    }
+    _trigger(e, props) {
+        const { key, metaKey = false, ctrlKey = false, shiftKey = false, shortKey = false, altKey = false, prevented = false, handler, } = props;
+        if (shortKey && !e[ShortKey])
+            return false;
+        if (!shortKey) {
+            if ((metaKey && !e.metaKey) || (!metaKey && e.metaKey))
+                return false;
+            if ((ctrlKey && !e.ctrlKey) || (!ctrlKey && e.ctrlKey))
+                return false;
+        }
+        else {
+            if (metaKey && !e.metaKey)
+                return false;
+            if (ctrlKey && !e.ctrlKey)
+                return false;
+        }
+        if ((shiftKey && !e.shiftKey) || (!shiftKey && e.shiftKey))
+            return false;
+        if ((altKey && !e.altKey) || (!altKey && e.altKey))
+            return false;
+        if (key !== e.code)
+            return false;
+        handler(this.editor, e);
+        return prevented;
+    }
+    _handleBackspace(editor) {
+        const selectedBlocks = editor.getModule('selector').getSelectedBlocks();
+        if (selectedBlocks.length < 1)
+            return;
+        editor.getModule('editor').deleteBlocks(selectedBlocks.map((block) => block.id));
+        this.reset();
     }
 }
 
@@ -11447,13 +11840,27 @@ class HistoryModule {
         const sub = this.eventEmitter
             .select(EditorEvents.EVENT_EDITOR_CHANGE)
             .subscribe(({ payload, source }) => {
-            if (this.isUpdating)
-                return;
             if (source === EventSources.USER) {
-                this.record(payload);
+                if (this.isUpdating)
+                    return;
+                if (Array.isArray(payload)) {
+                    setTimeout(() => {
+                        payload.forEach((op) => {
+                            this.record(op);
+                        });
+                    }, 20);
+                }
+                else {
+                    setTimeout(() => this.record(payload), 20);
+                }
             }
             if (source === EventSources.COLLABORATOR) {
-                this.transform(payload);
+                if (Array.isArray(payload)) {
+                    this.transformMultiLineOp(payload);
+                }
+                else {
+                    this.transform(payload);
+                }
             }
         });
         this.subs.add(sub);
@@ -11472,6 +11879,10 @@ class HistoryModule {
     }
     record(op, force = false) {
         this.stack.redo = [];
+        const position = this.editor.getCaretPosition();
+        if (position) {
+            op.position = position;
+        }
         this.tmpUndo.push(op);
         if (force) {
             this.optimizeOp();
@@ -11480,6 +11891,7 @@ class HistoryModule {
             this.debouncedOptimizeOp();
         }
     }
+    // Deleting the operation history to avoid interfering with each other's changes during collaborative editing.
     transform(transformOp) {
         this.stack.undo = this.stack.undo
             .map((ops) => {
@@ -11514,11 +11926,40 @@ class HistoryModule {
             }
         }
     }
+    // Deleting the operation history to avoid interfering with each other's changes during collaborative editing.
+    transformMultiLineOp(transformOps) {
+        const ids = transformOps.map((v) => v.blockId);
+        this.stack.undo = this.stack.undo
+            .map((ops) => {
+            return ops.filter((op) => {
+                return !ids.includes(op.blockId);
+            });
+        })
+            .filter((ops) => ops.length > 0);
+        this.stack.redo = this.stack.redo
+            .map((ops) => {
+            return ops.filter((op) => {
+                return !ids.includes(op.blockId);
+            });
+        })
+            .filter((ops) => ops.length > 0);
+    }
     optimizeOp() {
         if (this.tmpUndo.length < 1)
             return;
         let optimizedUndo = [];
-        this.tmpUndo.reverse().forEach((tmp) => {
+        const updateOps = this.tmpUndo
+            .filter((tmp) => tmp.type === HistoryType.UPDATE_CONTENTS)
+            .reverse();
+        const otherOps = this.tmpUndo.filter((tmp) => tmp.type !== HistoryType.UPDATE_CONTENTS);
+        otherOps.forEach((tmp) => {
+            const index = optimizedUndo.findIndex((v) => v.blockId === tmp.blockId && v.type === tmp.type);
+            if (index === -1) {
+                optimizedUndo.push(tmp);
+                return;
+            }
+        });
+        updateOps.forEach((tmp) => {
             const index = optimizedUndo.findIndex((v) => v.blockId === tmp.blockId && v.type === tmp.type);
             if (index === -1) {
                 optimizedUndo.push(tmp);
@@ -11547,16 +11988,53 @@ class HistoryModule {
         const ops = this.stack.undo.pop();
         if (ops && ops.length > 0) {
             this.isUpdating = true;
-            ops.forEach((op) => {
-                switch (op.type) {
-                    case HistoryType.UPDATE_CONTENTS: {
-                        this.executeJson0(op.blockId, op.undo);
-                        this.transformCaret(op.blockId, op.undo);
-                        break;
-                    }
+            this.editor.blur();
+            const affectedIds = [];
+            const addOps = ops.filter((v) => v.type === HistoryType.ADD_BLOCK);
+            const removeOps = ops.filter((v) => v.type === HistoryType.REMOVE_BLOCK);
+            const updateOps = ops.filter((v) => v.type === HistoryType.UPDATE_CONTENTS);
+            updateOps.forEach((op, i) => {
+                this.executeJson0(op.blockId, op.undo);
+                affectedIds.push(op.blockId);
+                if (i === updateOps.length - 1 && addOps.length < 1 && removeOps.length < 1) {
+                    this.moveCaret(op.undo, op.position, 'undo');
+                }
+            });
+            addOps.forEach((op, i) => {
+                this.editor.deleteBlock(op.blockId);
+                affectedIds.push(op.blockId);
+                if (i === 0 && removeOps.length < 1) {
+                    setTimeout(() => {
+                        var _a, _b;
+                        const textIndex = (_b = this.editor.getBlockLength((_a = op.prevBlockId) !== null && _a !== void 0 ? _a : '')) !== null && _b !== void 0 ? _b : 0;
+                        this.editor.setCaretPosition({
+                            blockId: op.prevBlockId,
+                            index: textIndex,
+                        });
+                    }, 10);
+                }
+            });
+            removeOps.forEach((op, i) => {
+                if (op.prevBlockId) {
+                    this.editor.createBlock(copyObject(op.block), op.prevBlockId);
+                }
+                else {
+                    this.editor.createBlock(copyObject(op.block), op.prevBlockId, 'prepend');
+                }
+                affectedIds.push(op.blockId);
+                if (i === removeOps.length - 1) {
+                    setTimeout(() => {
+                        var _a;
+                        const textIndex = (_a = this.editor.getBlockLength(op.blockId)) !== null && _a !== void 0 ? _a : 0;
+                        this.editor.setCaretPosition({
+                            blockId: op.blockId,
+                            index: textIndex,
+                        });
+                    }, 10);
                 }
             });
             this.stack.redo.push(ops);
+            this.editor.render(affectedIds);
             this.isUpdating = false;
         }
     }
@@ -11567,21 +12045,55 @@ class HistoryModule {
         const ops = this.stack.redo.pop();
         if (ops && ops.length > 0) {
             this.isUpdating = true;
-            ops.forEach((op) => {
+            this.editor.blur();
+            const affectedIds = [];
+            const addOps = ops.filter((v) => v.type === HistoryType.ADD_BLOCK);
+            const removeOps = ops.filter((v) => v.type === HistoryType.REMOVE_BLOCK);
+            const updateOps = ops.filter((v) => v.type === HistoryType.UPDATE_CONTENTS);
+            removeOps.forEach((op, i) => {
+                this.editor.deleteBlock(op.blockId);
+                affectedIds.push(op.blockId);
+                if (i === 0 && addOps.length < 1 && updateOps.length < 1) {
+                    setTimeout(() => {
+                        var _a, _b;
+                        const blocks = this.editor.getBlocks();
+                        const focusBlockId = (_a = op.prevBlockId) !== null && _a !== void 0 ? _a : blocks[0].id;
+                        const textIndex = (_b = this.editor.getBlockLength(focusBlockId)) !== null && _b !== void 0 ? _b : 0;
+                        this.editor.setCaretPosition({
+                            blockId: focusBlockId,
+                            index: textIndex,
+                        });
+                    }, 10);
+                }
+            });
+            addOps.forEach((op, i) => {
+                this.editor.createBlock(copyObject(op.block), op.prevBlockId);
+                affectedIds.push(op.blockId);
+                if (i === addOps.length - 1 && updateOps.length < 1) {
+                    setTimeout(() => {
+                        var _a;
+                        const textIndex = (_a = this.editor.getBlockLength(op.blockId)) !== null && _a !== void 0 ? _a : 0;
+                        this.editor.setCaretPosition({
+                            blockId: op.blockId,
+                            index: textIndex,
+                        });
+                    }, 10);
+                }
+            });
+            updateOps.forEach((op, i) => {
                 switch (op.type) {
                     case HistoryType.UPDATE_CONTENTS: {
                         this.executeJson0(op.blockId, op.redo);
-                        this.transformCaret(op.blockId, op.redo);
-                        console.log('update_block', op.blockId);
-                        break;
-                    }
-                    case HistoryType.ADD_BLOCK: {
-                        console.log('add_block', op.blockId);
+                        affectedIds.push(op.blockId);
+                        if (i === updateOps.length - 1) {
+                            this.moveCaret(op.redo, op.position, 'redo');
+                        }
                         break;
                     }
                 }
             });
             this.stack.undo.push(ops);
+            this.editor.render(affectedIds);
             this.isUpdating = false;
         }
     }
@@ -11600,24 +12112,175 @@ class HistoryModule {
                     isEmbed: (_e = content.isEmbed) !== null && _e !== void 0 ? _e : false,
                 };
             }) }), EventSources.USER);
-        this.editor.render([block.id]);
     }
-    transformCaret(blockId, ops) {
-        const caret = this.editor.getCaretPosition();
-        const block = this.editor.getBlock(blockId);
-        if (!caret || !block)
+    moveCaret(ops, position, type = 'undo') {
+        var _a, _b;
+        if (!position)
             return;
-        this.editor.blur();
+        let affectedLength = type === 'undo' ? getTextLength(ops) : 0;
+        let positionIndex = (_a = position.index) !== null && _a !== void 0 ? _a : 0;
+        let positionLength = (_b = position.length) !== null && _b !== void 0 ? _b : 0;
         setTimeout(() => {
-            const affectedLength = getTextLength(ops);
-            const startIndex = block ? getStartIndex(block.contents, ops) : 0;
+            var _a;
+            const blockLength = (_a = this.editor.getBlockLength(position.blockId)) !== null && _a !== void 0 ? _a : 0;
+            if (positionIndex + affectedLength + positionLength > blockLength) {
+                affectedLength = 0;
+            }
+            if (positionIndex + positionLength > blockLength) {
+                positionLength = 0;
+            }
             this.editor.setCaretPosition({
-                blockId: block.id,
-                index: affectedLength > 0 ? startIndex + affectedLength : startIndex,
-                length: 0,
+                blockId: position.blockId,
+                index: positionIndex + affectedLength,
+                length: positionLength,
             });
             this.editor.updateCaretRect();
-        }, 10);
+        }, 20);
+    }
+}
+
+class ClipboardModule {
+    constructor({ eventEmitter, editor }) {
+        this.clipboardEl = null;
+        this.subs = new Subscription();
+        this.editor = editor;
+        this.editorRef = this.editor.getEditorRef();
+        this.eventEmitter = eventEmitter;
+    }
+    onInit() {
+        var _a, _b;
+        this.eventEmitter.info('init clipboard module');
+        const editorRef = this.editor.getEditorRef();
+        this.clipboardEl = (_b = (_a = editorRef === null || editorRef === void 0 ? void 0 : editorRef.parentElement) === null || _a === void 0 ? void 0 : _a.querySelector('.clipboard')) !== null && _b !== void 0 ? _b : null;
+        this.subs.add(this.eventEmitter
+            .select(EditorEvents.EVENT_BLOCK_SELECTED)
+            .subscribe((blockIds) => {
+            if (!this.clipboardEl || blockIds.length < 1)
+                return;
+            const range = new Range();
+            const selection = document.getSelection();
+            range.setStart(this.clipboardEl, 0);
+            range.setEnd(this.clipboardEl, 0);
+            selection === null || selection === void 0 ? void 0 : selection.addRange(range);
+        }));
+    }
+    onDestroy() {
+        this.eventEmitter.info('destroy clipboard module');
+        this.subs.unsubscribe();
+    }
+    onPaste(event) {
+        var _a;
+        event.preventDefault();
+        const caretPosition = this.editor.getCaretPosition();
+        const clipboardJson = event.clipboardData.getData('text/shibuya-formats');
+        const prevBlock = this.editor.getBlock((_a = caretPosition === null || caretPosition === void 0 ? void 0 : caretPosition.blockId) !== null && _a !== void 0 ? _a : '');
+        if (caretPosition && prevBlock && clipboardJson) {
+            const { type, data } = JSON.parse(clipboardJson);
+            // blocks
+            if (prevBlock && type === 'blocks') {
+                const appendBlocks = data;
+                let prevBlockId = prevBlock.id;
+                const affectedIds = appendBlocks.map((v, i) => {
+                    const appendBlock = Object.assign(Object.assign({}, v), { id: nanoid() });
+                    this.editor.createBlock(appendBlock, prevBlockId);
+                    prevBlockId = appendBlock.id;
+                    return appendBlock.id;
+                });
+                this.editor.render(affectedIds);
+                setTimeout(() => {
+                    var _a;
+                    const textIndex = (_a = this.editor.getBlockLength(prevBlockId)) !== null && _a !== void 0 ? _a : 0;
+                    this.editor.setCaretPosition({
+                        blockId: prevBlockId,
+                        index: textIndex,
+                    });
+                    this.editor.updateCaretRect();
+                }, 10);
+            }
+            else if (type === 'inlines') {
+                const inlineContents = data;
+                const [first, last] = splitInlineContents(prevBlock.contents, caretPosition.index);
+                const appendTextLength = inlineContents.map((v) => v.text).join('').length;
+                this.editor.updateBlock(Object.assign(Object.assign({}, prevBlock), { contents: [
+                        ...first,
+                        ...inlineContents.map((v) => {
+                            return Object.assign(Object.assign({}, v), { id: nanoid() });
+                        }),
+                        ...last,
+                    ] }));
+                this.editor.render([prevBlock.id]);
+                setTimeout(() => {
+                    this.editor.setCaretPosition({
+                        blockId: prevBlock.id,
+                        index: caretPosition.index + appendTextLength,
+                    });
+                    this.editor.updateCaretRect();
+                }, 10);
+            }
+        }
+    }
+    onCopy(event) {
+        var _a;
+        event.preventDefault();
+        const selectedBlocks = this.editor.getModule('selector').getSelectedBlocks();
+        if (selectedBlocks.length > 0) {
+            // block
+            this._saveBlocks(event.nativeEvent, selectedBlocks);
+        }
+        else {
+            // inline
+            const caretPosition = this.editor.getCaretPosition();
+            const block = this.editor.getBlock((_a = caretPosition === null || caretPosition === void 0 ? void 0 : caretPosition.blockId) !== null && _a !== void 0 ? _a : '');
+            if (block && caretPosition && !caretPosition.collapsed && caretPosition.length > 0) {
+                const inlineContents = getInlineContents(block.contents, caretPosition.index, caretPosition.length);
+                this._saveInlineContents(event.nativeEvent, inlineContents);
+            }
+        }
+    }
+    onCut(event) {
+        var _a;
+        event.preventDefault();
+        const caretPosition = this.editor.getCaretPosition();
+        const selectedBlocks = this.editor.getModule('selector').getSelectedBlocks();
+        if (selectedBlocks.length > 0) {
+            // block
+            this._saveBlocks(event.nativeEvent, selectedBlocks);
+            this.editor.getModule('editor').deleteBlocks(selectedBlocks.map((block) => block.id));
+            this.editor.getModule('selector').reset();
+        }
+        else if (caretPosition && !caretPosition.collapsed && caretPosition.length > 0) {
+            // inline
+            const block = this.editor.getBlock((_a = caretPosition === null || caretPosition === void 0 ? void 0 : caretPosition.blockId) !== null && _a !== void 0 ? _a : '');
+            if (block) {
+                const caretIndex = caretPosition.index;
+                const inlineContents = getInlineContents(block.contents, caretPosition.index, caretPosition.length);
+                this._saveInlineContents(event.nativeEvent, inlineContents);
+                const deletedContents = deleteInlineContents(block.contents, caretPosition.index, caretPosition.length);
+                this.editor.updateBlock(Object.assign(Object.assign({}, block), { contents: deletedContents }));
+                this.editor.blur();
+                this.editor.render([block.id]);
+                setTimeout(() => {
+                    this.editor.setCaretPosition({ blockId: block.id, index: caretIndex });
+                    this.editor.updateCaretRect();
+                }, 10);
+            }
+        }
+    }
+    _saveBlocks(event, blocks) {
+        if (event.clipboardData) {
+            event.clipboardData.setData('text/plain', convertBlocksToText(blocks));
+            event.clipboardData.setData('text/shibuya-formats', JSON.stringify({ type: 'blocks', data: blocks }));
+        }
+    }
+    _saveInlineContents(event, inlines) {
+        if (event.clipboardData) {
+            const plainText = inlines.map((v) => v.text).join('');
+            event.clipboardData.setData('text/plain', plainText);
+            event.clipboardData.setData('text/shibuya-formats', JSON.stringify({
+                type: 'inlines',
+                data: inlines,
+            }));
+        }
     }
 }
 
@@ -11630,12 +12293,6 @@ const Container = styled.div `
   display: flex;
   flex-direction: column;
   cursor: text;
-  img.emoji {
-    height: 1em;
-    width: 1em;
-    margin: 0 0.05em 0 0.1em;
-    vertical-align: -0.1em;
-  }
 `;
 const Inner = styled.div `
   flex-shrink: 0;
@@ -11645,6 +12302,13 @@ const MarginBottom = styled.div `
   flex-shrink: 0;
   flex-grow: 1;
   user-select: none;
+`;
+const Selector = styled.div `
+  left: -100000px;
+  height: 1px;
+  overflow-y: hidden;
+  position: absolute;
+  top: 50%;
 `;
 const Editor = React__namespace.memo(React__namespace.forwardRef((_a, forwardRef) => {
     var { readOnly = false, formats, settings = {}, scrollContainer } = _a, props = __rest(_a, ["readOnly", "formats", "settings", "scrollContainer"]);
@@ -11662,9 +12326,11 @@ const Editor = React__namespace.memo(React__namespace.forwardRef((_a, forwardRef
         'block/header5': Header5,
         'block/header6': Header6,
         'inline/text': InlineText,
-        'style/bold': Bold,
-        'style/underline': Underline,
-        'style/strike': Strike,
+        'inline/style/bold': Bold,
+        'inline/style/underline': Underline,
+        'inline/style/strike': Strike,
+        'inline/style/code': InlineCode,
+        'inline/style/italic': Italic,
     });
     const [blocks, setBlocks] = React__namespace.useState([]);
     const [selectedIds, setSelectedIds] = React__namespace.useState([]);
@@ -11673,6 +12339,28 @@ const Editor = React__namespace.memo(React__namespace.forwardRef((_a, forwardRef
         if (keyboard && keyboard instanceof KeyBoardModule) {
             keyboard.onKeyDown(event);
         }
+    }, [editor]);
+    const handleSelectorKeyDown = React__namespace.useCallback((event) => {
+        const selector = editor.getModule('selector');
+        if (selector) {
+            selector.onKeyDown(event);
+        }
+    }, [editor]);
+    const handleCopy = React__namespace.useCallback((event) => {
+        const clipboard = editor.getModule('clipboard');
+        if (clipboard) {
+            clipboard.onCopy(event);
+        }
+    }, [editor]);
+    const handleCut = React__namespace.useCallback((event) => {
+        const clipboard = editor.getModule('clipboard');
+        if (clipboard) {
+            clipboard.onCut(event);
+        }
+    }, [editor]);
+    const handleSelectorInput = React__namespace.useCallback((event) => {
+        // event.preventDefault();
+        // event.stopPropagation();
     }, [editor]);
     const handleCompositionStart = React__namespace.useCallback((event) => {
         const keyboard = editor.getModule('keyboard');
@@ -11696,8 +12384,7 @@ const Editor = React__namespace.memo(React__namespace.forwardRef((_a, forwardRef
         editor.updateCaretRect();
     }, [editor]);
     const handlePaste = React__namespace.useCallback((e) => {
-        console.log('paste', e);
-        e.preventDefault();
+        editor.getModule('clipboard').onPaste(e.nativeEvent);
     }, [editor]);
     const handleDrop = React__namespace.useCallback((e) => {
         e.preventDefault();
@@ -11729,6 +12416,7 @@ const Editor = React__namespace.memo(React__namespace.forwardRef((_a, forwardRef
             { name: 'toolbar', module: ToolbarModule },
             { name: 'selector', module: SelectorModule },
             { name: 'history', module: HistoryModule },
+            { name: 'clipboard', module: ClipboardModule },
         ], (_a = settings === null || settings === void 0 ? void 0 : settings.modules) !== null && _a !== void 0 ? _a : {});
         subs.add(eventEmitter.select(EditorEvents.EVENT_BLOCK_RERENDER).subscribe(() => {
             setBlocks(editor.getBlocks());
@@ -11792,8 +12480,8 @@ const Editor = React__namespace.memo(React__namespace.forwardRef((_a, forwardRef
     }, [blockFormats]);
     React__namespace.useImperativeHandle(forwardRef, () => editor, [editor]);
     return (jsxRuntime.exports.jsxs(Container, Object.assign({ ref: containerRef }, props, { children: [jsxRuntime.exports.jsx(Inner, Object.assign({ ref: editorRef }, { children: memoBlocks.map((block, index) => {
-                    return (jsxRuntime.exports.jsx(BlockContainer, { formats: blockFormats, editor: memoEditor, blockId: block.id, readOnly: readOnly, selected: block.selected, onClick: handleClick, onKeyDown: handleKeyDown, onPaste: handlePaste, onDrop: handleDrop, onDrag: handleDrag, onBeforeInput: handleInput, onCompositionStart: handleCompositionStart, onCompositionEnd: handleCompositionEnd }, block.id));
-                }) }), void 0), jsxRuntime.exports.jsx(MarginBottom, { onClick: handleContainerClick }, void 0), jsxRuntime.exports.jsx(MemoGlobalToolbar, { editor: memoEditor }, void 0), jsxRuntime.exports.jsx(MemoBubbleToolbar, { editor: memoEditor, scrollContainer: scrollContainer }, void 0)] }), void 0));
+                    return (jsxRuntime.exports.jsx(BlockContainer, { formats: blockFormats, editor: memoEditor, blockId: block.id, readOnly: readOnly, selected: block.selected, onClick: handleClick, onKeyDown: handleKeyDown, onPaste: handlePaste, onCopy: handleCopy, onCut: handleCut, onDrop: handleDrop, onDrag: handleDrag, onBeforeInput: handleInput, onCompositionStart: handleCompositionStart, onCompositionEnd: handleCompositionEnd }, block.id));
+                }) })), jsxRuntime.exports.jsx(MarginBottom, { onClick: handleContainerClick }), jsxRuntime.exports.jsx(MemoGlobalToolbar, { editor: memoEditor }), jsxRuntime.exports.jsx(MemoBubbleToolbar, { editor: memoEditor, scrollContainer: scrollContainer }), jsxRuntime.exports.jsx(Selector, { contentEditable: true, className: "clipboard", onKeyDown: handleSelectorKeyDown, onBeforeInput: handleSelectorInput, onCopy: handleCopy, onCut: handleCut })] })));
 }));
 
 exports.BlockContainer = BlockContainer;
@@ -11807,8 +12495,10 @@ exports.Header3 = Header3;
 exports.Header4 = Header4;
 exports.Header5 = Header5;
 exports.Header6 = Header6;
+exports.InlineCode = InlineCode;
 exports.InlineText = InlineText;
+exports.Italic = Italic;
 exports.Paragraph = Paragraph;
 exports.Strike = Strike;
 exports.Underline = Underline;
-//# sourceMappingURL=main.ts.map
+//# sourceMappingURL=main.js.map

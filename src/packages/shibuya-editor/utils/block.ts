@@ -50,7 +50,7 @@ export function getBlockLength(block: string | HTMLElement): number | null {
   return cumulativeLength;
 }
 
-export function getInlineContents(block: string | HTMLElement): {
+export function convertHTMLtoInlines(block: string | HTMLElement): {
   contents: Inline[];
   affected: boolean;
   affectedLength: number;
@@ -388,6 +388,50 @@ export function optimizeInlineContents(contents: Inline[]): Inline[] {
     dest.push(createInline('TEXT'));
   }
   return dest;
+}
+
+export function getInlineContents(contents: Inline[], index: number, length: number = 0): Inline[] {
+  let startIndex = index;
+  let endIndex = index + length;
+  const destContents = [];
+  let cumulativeLength = 0;
+  for (let i = 0; i < contents.length; i++) {
+    const inlineLength = contents[i].isEmbed ? 1 : stringLength(contents[i].text);
+    if (
+      length > 0 &&
+      endIndex >= cumulativeLength &&
+      startIndex < cumulativeLength + inlineLength
+    ) {
+      if (!contents[i].isEmbed) {
+        let selectedIndex = startIndex - cumulativeLength;
+        selectedIndex = selectedIndex > 0 ? selectedIndex : 0;
+        const textlength = stringLength(contents[i].text);
+        const deleteTextlength = textlength - selectedIndex;
+        const selectedLength = textlength - length >= 0 ? length : textlength;
+        const deletelength = deleteTextlength - length >= 0 ? length : deleteTextlength;
+        length -= deletelength;
+        let text = contents[i].text;
+        if (textlength - (selectedIndex + selectedLength) > 0) {
+          const removeLast = otText.remove(
+            selectedIndex + selectedLength,
+            textlength - (selectedIndex + selectedLength),
+          );
+          text = otText.type.apply(text, removeLast);
+        }
+        const removeFirst = otText.remove(0, selectedIndex);
+        text = otText.type.apply(text, removeFirst);
+        if (stringLength(text) > 0) {
+          destContents.push({ ...contents[i], text });
+        }
+      } else {
+        length--;
+      }
+    }
+
+    cumulativeLength += inlineLength;
+  }
+
+  return destContents;
 }
 
 export function getDuplicateAttributes(

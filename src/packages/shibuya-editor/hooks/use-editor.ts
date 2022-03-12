@@ -559,6 +559,7 @@ export function useEditor({
           ? [appendBlock, ...blocksRef.current]
           : [...blocksRef.current, appendBlock],
       );
+      numberingList();
     },
     [],
   );
@@ -639,6 +640,7 @@ export function useEditor({
     });
 
     updateBlocks(blocksRef.current.filter((v) => v.id !== blockId));
+    numberingList();
   }, []);
 
   const deleteBlocks = React.useCallback(
@@ -661,12 +663,43 @@ export function useEditor({
       });
 
       updateBlocks(blocksRef.current.filter((v) => !blockIds.includes(v.id)));
+      numberingList();
     },
     [],
   );
 
   const render = React.useCallback((affectedIds: string[] = []) => {
     eventEmitter.emit(EditorEvents.EVENT_BLOCK_RERENDER, affectedIds);
+  }, []);
+
+  const numberingList = React.useCallback(() => {
+    let listNumbers: number[] = [];
+    let lastIndent = 0;
+    updateBlocks(
+      blocksRef.current.map((v, i) => {
+        const indent = v.attributes?.indent ?? 0;
+        if (v.type === 'ORDEREDLIST') {
+          if (!listNumbers[indent]) {
+            listNumbers[indent] = 0;
+          }
+          if (lastIndent < indent) {
+            listNumbers[indent] = 0;
+          }
+          lastIndent = indent;
+          return {
+            ...v,
+            meta: { ...v.meta, listNumber: ++listNumbers[indent] },
+          };
+        }
+        listNumbers = [];
+        lastIndent = indent;
+
+        return {
+          ...v,
+          meta: { ...v.meta, listNumber: 0 },
+        };
+      }),
+    );
   }, []);
 
   const getEditorRef = React.useCallback(() => {

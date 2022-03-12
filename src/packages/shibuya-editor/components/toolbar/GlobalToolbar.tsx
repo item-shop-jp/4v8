@@ -40,7 +40,7 @@ export const GlobalToolbar = React.memo(({ editor, ...props }: GlobalToolbarProp
   const handleList = React.useCallback(
     (event: React.MouseEvent) => {
       event.preventDefault();
-      editor.getModule('toolbar').formatBlock('BULLETLIST');
+      editor.getModule('toolbar').formatBlock('ORDEREDLIST');
     },
     [formats],
   );

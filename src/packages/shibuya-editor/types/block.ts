@@ -2,7 +2,7 @@ import { Inline } from './inline';
 
 export type BlockType =
   | 'PARAGRAPH'
-  | 'BULLETLIST'
+  | 'ORDEREDLIST'
   | 'HEADER1'
   | 'HEADER2'
   | 'HEADER3'
@@ -16,6 +16,7 @@ export interface Block {
   attributes: BlockAttributes;
   type: BlockType;
   data?: any;
+  meta?: BlockAttributes;
 }
 
 export interface BlockAttributes {

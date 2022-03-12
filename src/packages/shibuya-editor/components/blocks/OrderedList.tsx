@@ -6,12 +6,13 @@ import { Inline } from '../../types/inline';
 import { BlockAttributes } from '../../types/block';
 import { useMutationObserver } from '../../hooks/use-mutation-observer';
 
-export interface BulletListProps {
+export interface OrderedListProps {
   blockId: string;
   formats?: Formats;
   contents: Inline[];
   placeholder?: string;
   attributes: BlockAttributes;
+  meta: BlockAttributes;
   editor: EditorController;
 }
 const ListItem = styled.div`
@@ -32,8 +33,16 @@ const ListItem = styled.div`
   }
 `;
 
-export const BulletList = React.memo(
-  ({ blockId, contents, placeholder = 'List', attributes, editor, ...props }: BulletListProps) => {
+export const OrderedList = React.memo(
+  ({
+    blockId,
+    contents,
+    placeholder = 'List',
+    attributes,
+    editor,
+    meta,
+    ...props
+  }: OrderedListProps) => {
     const headerRef = React.useRef(null);
     const [showPlaceholder, setShowPlaceholder] = React.useState(false);
     const handleChangeElement = React.useCallback(() => {
@@ -52,6 +61,7 @@ export const BulletList = React.memo(
       handleChangeElement();
     }, []);
 
+    console.log(meta);
     return (
       <ListItem
         ref={headerRef}

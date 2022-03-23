@@ -251,6 +251,7 @@ export class HistoryModule implements Module {
               blockId: op.prevBlockId,
               index: textIndex,
             });
+            this.editor.updateCaretRect();
           }, 10);
         }
       });
@@ -270,6 +271,7 @@ export class HistoryModule implements Module {
               blockId: op.blockId,
               index: textIndex,
             });
+            this.editor.updateCaretRect();
           }, 10);
         }
       });
@@ -309,6 +311,7 @@ export class HistoryModule implements Module {
               blockId: focusBlockId,
               index: textIndex,
             });
+            this.editor.updateCaretRect();
           }, 10);
         }
       });
@@ -323,6 +326,7 @@ export class HistoryModule implements Module {
               blockId: op.blockId,
               index: textIndex,
             });
+            this.editor.updateCaretRect();
           }, 10);
         }
       });

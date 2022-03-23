@@ -26,9 +26,7 @@ const StyledEditor = styled(Editor)`
   border: none;
 `;
 
-const StyledParagraph = styled(Paragraph)`
-  opacity: 0.8;
-`;
+const StyledParagraph = styled(Paragraph)``;
 
 const StyledUnderline = css`
   border-bottom: green 0.05em solid;

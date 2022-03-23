@@ -61,11 +61,10 @@ export const OrderedList = React.memo(
       handleChangeElement();
     }, []);
 
-    console.log(meta);
     return (
       <ListItem
         ref={headerRef}
-        style={{ '--content': "'1.'" } as React.CSSProperties}
+        style={{ '--content': `'${meta.listNumber}.'` } as React.CSSProperties}
         placeholder={showPlaceholder ? placeholder : ''}
         {...props}
       >

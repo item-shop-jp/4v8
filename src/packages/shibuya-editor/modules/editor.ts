@@ -45,6 +45,7 @@ export class EditorModule implements Module {
     const appendBlock = createBlock('PARAGRAPH');
     const prevBlockId = blockId ?? caretPosition?.blockId;
     this.editor.createBlock(appendBlock, prevBlockId);
+    this.editor.numberingList();
     this.editor.getModule('history')?.optimizeOp();
 
     setTimeout(() => {
@@ -67,6 +68,7 @@ export class EditorModule implements Module {
     const prevBlockLength = this.editor.getBlockLength(blocks[currentIndex - 1].id) ?? 0;
     this.editor.prev({ index: prevBlockLength });
     this.editor.deleteBlock(blockId);
+    this.editor.numberingList();
     this.editor.getModule('history').optimizeOp();
     this.editor.render();
   }
@@ -79,6 +81,7 @@ export class EditorModule implements Module {
     if (deletedBlocks.length < 1) {
       this.createBlock();
     }
+    this.editor.numberingList();
     this.editor.getModule('history').optimizeOp();
     this.editor.render();
     const currentIndex = blocks.findIndex((v) => v.id === blockIds[0]);
@@ -104,6 +107,7 @@ export class EditorModule implements Module {
       ...source,
       contents: copyObject([...source.contents, ...other.contents]),
     });
+    this.editor.numberingList();
     this.editor.getModule('history').optimizeOp();
     setTimeout(
       () => this.editor.setCaretPosition({ blockId: source.id, index: currentSourceLength }),
@@ -126,16 +130,15 @@ export class EditorModule implements Module {
       contents: first.length < 1 ? [createInline('TEXT')] : first,
     };
     const lastBlock = createBlock('PARAGRAPH', last, blocks[currentIndex].attributes);
-    setTimeout(() => {
-      this.editor.render([blocks[currentIndex].id]);
-      this.editor.blur();
-      setTimeout(() => {
-        this.editor.setCaretPosition({ blockId: lastBlock.id });
-        this.editor.scrollIntoView();
-      }, 10);
-    }, 10);
     this.editor.createBlock(lastBlock, firstBlock.id);
     this.editor.updateBlock(firstBlock);
+    this.editor.numberingList();
     this.editor.getModule('history').optimizeOp();
+    this.editor.render([blocks[currentIndex].id]);
+    this.editor.blur();
+    setTimeout(() => {
+      this.editor.setCaretPosition({ blockId: lastBlock.id });
+      this.editor.scrollIntoView();
+    }, 10);
   }
 }

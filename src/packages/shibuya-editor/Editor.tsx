@@ -1,16 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { Subscription } from 'rxjs';
-import {
-  BlockContainer,
-  Header1,
-  Header2,
-  Header3,
-  Header4,
-  Header5,
-  Header6,
-  Paragraph,
-} from './components/blocks';
+import { BlockContainer, Header1, OrderedList, Paragraph } from './components/blocks';
 import { InlineText } from './components/inlines';
 import { Bold, Strike, Underline, InlineCode, Italic } from './components/styles';
 import { GlobalToolbar, BubbleToolbar } from './components/toolbar';
@@ -78,12 +69,8 @@ export const Editor = React.memo(
         'toolbar/global': GlobalToolbar,
         'toolbar/bubble': BubbleToolbar,
         'block/paragraph': Paragraph,
+        'block/orderedlist': OrderedList,
         'block/header1': Header1,
-        'block/header2': Header2,
-        'block/header3': Header3,
-        'block/header4': Header4,
-        'block/header5': Header5,
-        'block/header6': Header6,
         'inline/text': InlineText,
         'inline/style/bold': Bold,
         'inline/style/underline': Underline,
@@ -284,8 +271,12 @@ export const Editor = React.memo(
       }, [formats]);
 
       const memoBlocks = React.useMemo(() => {
-        return blocks.map((v) => {
-          return { id: v.id, type: v.type, selected: selectedIds.includes(v.id) };
+        return blocks.map((v, i) => {
+          return {
+            id: v.id,
+            type: v.type,
+            selected: selectedIds.includes(v.id),
+          };
         });
       }, [blocks.length, selectedIds]);
 
@@ -305,7 +296,16 @@ export const Editor = React.memo(
 
       return (
         <Container ref={containerRef} {...props}>
-          <Inner ref={editorRef}>
+          <Inner
+            ref={editorRef}
+            onClick={handleClick}
+            onKeyDown={handleKeyDown}
+            onPaste={handlePaste}
+            onCopy={handleCopy}
+            onCut={handleCut}
+            onDrop={handleDrop}
+            onDrag={handleDrag}
+          >
             {memoBlocks.map((block, index) => {
               return (
                 <BlockContainer
@@ -315,13 +315,6 @@ export const Editor = React.memo(
                   blockId={block.id}
                   readOnly={readOnly}
                   selected={block.selected}
-                  onClick={handleClick}
-                  onKeyDown={handleKeyDown}
-                  onPaste={handlePaste}
-                  onCopy={handleCopy}
-                  onCut={handleCut}
-                  onDrop={handleDrop}
-                  onDrag={handleDrag}
                   onBeforeInput={handleInput}
                   onCompositionStart={handleCompositionStart}
                   onCompositionEnd={handleCompositionEnd}

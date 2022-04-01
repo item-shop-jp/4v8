@@ -28,10 +28,19 @@ const Button = styled.a`
 export const GlobalToolbar = React.memo(({ editor, ...props }: GlobalToolbarProps) => {
   const [formats, setFormats] = React.useState<InlineAttributes>({});
   const [isDisplay, setDisplay] = React.useState(false);
+
   const handleHeader1 = React.useCallback(
     (event: React.MouseEvent) => {
       event.preventDefault();
       editor.getModule('toolbar').formatBlock('HEADER1');
+    },
+    [formats],
+  );
+
+  const handleList = React.useCallback(
+    (event: React.MouseEvent) => {
+      event.preventDefault();
+      editor.getModule('toolbar').formatBlock('ORDEREDLIST');
     },
     [formats],
   );
@@ -60,7 +69,10 @@ export const GlobalToolbar = React.memo(({ editor, ...props }: GlobalToolbarProp
       {isDisplay && (
         <Container {...props}>
           <Button href="#" onClick={handleHeader1}>
-            header1
+            H1
+          </Button>
+          <Button href="#" onClick={handleList}>
+            List
           </Button>
         </Container>
       )}

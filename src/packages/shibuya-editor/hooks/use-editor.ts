@@ -111,10 +111,13 @@ export function useEditor({
     }
 
     if (typeof index === 'number' && index >= 0) {
-      setCaretPosition({
-        blockId: blocksRef.current[currentIndex - 1].id,
-        index,
-      });
+      setTimeout(() => {
+        setCaretPosition({
+          blockId: blocksRef.current[currentIndex - 1].id,
+          index,
+        });
+      }, 10);
+
       return true;
     }
 
@@ -145,10 +148,12 @@ export function useEditor({
 
     if (currentIndex === -1 || !blocksRef.current[currentIndex + 1]) return false;
     if (!lastCaretRectRef.current) {
-      setCaretPosition({
-        blockId: blocksRef.current[currentIndex + 1].id,
-        index,
-      });
+      setTimeout(() => {
+        setCaretPosition({
+          blockId: blocksRef.current[currentIndex + 1].id,
+          index,
+        });
+      }, 10);
       return false;
     }
 
@@ -289,11 +294,15 @@ export function useEditor({
 
   const setCaretPosition = React.useCallback(
     ({ blockId = '', index = 0, length = 0 }: Partial<CaretPosition>) => {
+      console.log(blockId, index, length);
       const element = blockUtils.getBlockElementById(blockId);
       if (!element) return;
       const selection = document.getSelection();
       if (!selection) return;
       const blockLength = getBlockLength(blockId) ?? 0;
+      if (index < 0) {
+        index = 0;
+      }
       if (index > blockLength) {
         index = blockLength;
       }
@@ -669,6 +678,39 @@ export function useEditor({
     eventEmitter.emit(EditorEvents.EVENT_BLOCK_RERENDER, affectedIds);
   }, []);
 
+  const numberingList = React.useCallback(() => {
+    let listNumbers: number[] = [];
+    let lastIndent = 0;
+    const affectedIds: string[] = [];
+    updateBlocks(
+      blocksRef.current.map((v, i) => {
+        const indent = v.attributes?.indent ?? 0;
+        if (v.type === 'ORDEREDLIST') {
+          if (!listNumbers[indent]) {
+            listNumbers[indent] = 0;
+          }
+          if (lastIndent < indent) {
+            listNumbers[indent] = 0;
+          }
+          lastIndent = indent;
+          affectedIds.push(v.id);
+          return {
+            ...v,
+            meta: { ...v.meta, listNumber: ++listNumbers[indent] },
+          };
+        }
+        listNumbers = [];
+        lastIndent = indent;
+
+        return {
+          ...v,
+          meta: { ...v.meta, listNumber: 0 },
+        };
+      }),
+    );
+    render(affectedIds);
+  }, []);
+
   const getEditorRef = React.useCallback(() => {
     return editorRef.current;
   }, []);
@@ -696,6 +738,7 @@ export function useEditor({
       getNativeRange,
       prev,
       next,
+      numberingList,
       render,
       addModule,
       addModules,

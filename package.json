@@ -23,7 +23,7 @@
     "@types/react-dom": "17.0.14",
     "@types/styled-components": "5.1.24",
     "@types/throttle-debounce": "2.1.0",
-    "@types/twemoji": "12.1.2",
+    "@types/twemoji": "13.1.1",
     "diff-match-patch": "1.0.5",
     "json0-ot-diff": "1.1.2",
     "lodash.isequal": "4.5.0",

@@ -277,6 +277,7 @@ export class HistoryModule implements Module {
       });
 
       this.stack.redo.push(ops);
+      this.editor.numberingList();
       this.editor.render(affectedIds);
       this.isUpdating = false;
     }
@@ -344,6 +345,7 @@ export class HistoryModule implements Module {
         }
       });
       this.stack.undo.push(ops);
+      this.editor.numberingList();
       this.editor.render(affectedIds);
       this.isUpdating = false;
     }
@@ -372,7 +374,6 @@ export class HistoryModule implements Module {
 
   moveCaret(ops: JSON0[], position?: CaretPosition, type: 'undo' | 'redo' = 'undo') {
     if (!position) return;
-
     let affectedLength = type === 'undo' ? getTextLength(ops) : 0;
     let positionIndex = position.index ?? 0;
     let positionLength = position.length ?? 0;

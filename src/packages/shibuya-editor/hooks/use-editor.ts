@@ -300,6 +300,9 @@ export function useEditor({
       const selection = document.getSelection();
       if (!selection) return;
       const blockLength = getBlockLength(blockId) ?? 0;
+      if (index < 0) {
+        index = 0;
+      }
       if (index > blockLength) {
         index = blockLength;
       }

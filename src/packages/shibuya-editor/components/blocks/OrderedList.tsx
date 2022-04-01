@@ -64,7 +64,7 @@ export const OrderedList = React.memo(
     return (
       <ListItem
         ref={headerRef}
-        style={{ '--content': `'${meta.listNumber}.'` } as React.CSSProperties}
+        style={{ '--content': `'${meta?.listNumber ?? 1}.'` } as React.CSSProperties}
         placeholder={showPlaceholder ? placeholder : ''}
         {...props}
       >

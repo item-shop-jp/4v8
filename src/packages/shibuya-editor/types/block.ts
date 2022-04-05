@@ -3,6 +3,7 @@ import { Inline } from './inline';
 export type BlockType =
   | 'PARAGRAPH'
   | 'ORDEREDLIST'
+  | 'BULLETLIST'
   | 'HEADER1'
   | 'HEADER2'
   | 'HEADER3'

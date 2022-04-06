@@ -10,6 +10,8 @@ import { createInline } from '../utils/inline';
 import { Module } from '../types/module';
 import { EditorController } from '../types/editor';
 import { copyObject } from '../utils/object';
+import { BlockAttributes, BlockType } from '../types/block';
+import { Inline } from '../types/inline';
 
 interface Props {
   eventEmitter: EventEmitter;
@@ -40,10 +42,20 @@ export class EditorModule implements Module {
     setTimeout(() => this.subs.unsubscribe());
   }
 
-  createBlock(blockId?: string) {
+  createBlock({
+    prevId = '',
+    type = 'PARAGRAPH',
+    contents = [],
+    attributes = {},
+  }: {
+    prevId?: string;
+    type?: BlockType;
+    contents?: Inline[];
+    attributes?: BlockAttributes;
+  } = {}) {
     const caretPosition = this.editor.getCaretPosition();
-    const appendBlock = createBlock('PARAGRAPH');
-    const prevBlockId = blockId ?? caretPosition?.blockId;
+    const appendBlock = createBlock(type, contents, attributes);
+    const prevBlockId = prevId || caretPosition?.blockId;
     this.editor.createBlock(appendBlock, prevBlockId);
     this.editor.numberingList();
     this.editor.getModule('history')?.optimizeOp();

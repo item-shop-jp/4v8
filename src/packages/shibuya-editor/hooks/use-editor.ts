@@ -669,6 +669,10 @@ export function useEditor({
     eventEmitter.emit(EditorEvents.EVENT_BLOCK_RERENDER, affectedIds);
   }, []);
 
+  const buttonClick = React.useCallback((type: any) => {
+    eventEmitter.emit(EditorEvents.EVENT_BUTTON_CLICKED, type);
+  }, []);
+
   const getEditorRef = React.useCallback(() => {
     return editorRef.current;
   }, []);
@@ -697,6 +701,7 @@ export function useEditor({
       prev,
       next,
       render,
+      buttonClick,
       addModule,
       addModules,
       getModule,

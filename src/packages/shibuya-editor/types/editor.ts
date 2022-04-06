@@ -90,4 +90,5 @@ export interface EditorController {
   removeAllModules(): void;
   getEventEmitter(): EventEmitter;
   getEditorRef(): HTMLElement | null;
+  buttonClick(type?: any): void;
 }

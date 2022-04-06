@@ -114,31 +114,17 @@ export const InlineText = ({
   }, [inline]);
 
   const handleClickLink = () => {
-    setShowPopup(true);
-    const caret = editor.getCaretPosition();
-    if (!caret) return;
-    const container = getScrollContainer(scrollContainer);
-    if (container) {
-      const containerRect = container.getBoundingClientRect();
-      const top = (container?.scrollTop ?? 0) + caret.rect.top - containerRect.top;
-      const left = caret.rect.left - containerRect.left;
-      setPosition({ top, left });
-    } else {
-      const scrollEl = document.scrollingElement as HTMLElement;
-      const top = scrollEl.scrollTop + caret.rect.top;
-      const left = caret.rect.left;
-      setPosition({ top, left });
-    }
+    editor.buttonClick({ mode: 'openPreview', inline });
   };
 
-  const handleShowPopup = React.useCallback(() => {
+  const handleShowPreviewLinkPopup = React.useCallback(() => {
     setShowEditPopup(true);
     setShowPopup(false);
   }, []);
 
-  const handleHidePopup = React.useCallback(() => {
-    setShowEditPopup(false);
-  }, []);
+  // const handleHidePopup = React.useCallback(() => {
+  //   setShowEditPopup(false);
+  // }, []);
 
   const handleClickEdit = React.useCallback((text: string, link: string) => {
     console.log(text, link);
@@ -202,7 +188,7 @@ export const InlineText = ({
             onClick={handleClickLink}
             {...props}
           />
-          {showPopup && (
+          {/* {showPopup && (
             <StyledEditLinkPopup
               top={position?.top ?? 0}
               left={position?.left ?? 0}
@@ -223,7 +209,7 @@ export const InlineText = ({
               onCancel={handleHidePopup}
               onSave={handleClickEdit}
             />
-          )}
+          )} */}
         </>
       ) : (
         <Text

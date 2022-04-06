@@ -47,6 +47,7 @@ export const EditorEvents = {
   EVENT_BLOCK_RERENDER: 'block-rerender',
   EVENT_BLOCK_SELECTED: 'block-selected', // Selector Mode
   EVENT_SELECTION_CHANGE: 'selection-change',
+  EVENT_BUTTON_CLICKED: 'button-clicked',
   EVENT_LOG_INFO: 'log-info',
   EVENT_LOG_WARNING: 'log-warning',
   EVENT_LOG_ERROR: 'log-error',

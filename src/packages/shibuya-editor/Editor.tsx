@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { Subscription } from 'rxjs';
-import { BlockContainer, Header1, OrderedList, Paragraph } from './components/blocks';
+import { BlockContainer, Header1, OrderedList, BulletList, Paragraph } from './components/blocks';
 import { InlineText } from './components/inlines';
 import { Bold, Strike, Underline, InlineCode, Italic } from './components/styles';
 import { GlobalToolbar, BubbleToolbar } from './components/toolbar';
@@ -70,6 +70,7 @@ export const Editor = React.memo(
         'toolbar/bubble': BubbleToolbar,
         'block/paragraph': Paragraph,
         'block/orderedlist': OrderedList,
+        'block/bulletlist': BulletList,
         'block/header1': Header1,
         'inline/text': InlineText,
         'inline/style/bold': Bold,

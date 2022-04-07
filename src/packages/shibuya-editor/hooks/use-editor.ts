@@ -294,7 +294,6 @@ export function useEditor({
 
   const setCaretPosition = React.useCallback(
     ({ blockId = '', index = 0, length = 0 }: Partial<CaretPosition>) => {
-      console.log(blockId, index, length);
       const element = blockUtils.getBlockElementById(blockId);
       if (!element) return;
       const selection = document.getSelection();
@@ -532,6 +531,8 @@ export function useEditor({
             });
             updateCaretRect();
           }, 10);
+        } else {
+          updateCaretRect();
         }
       }, 10);
     },

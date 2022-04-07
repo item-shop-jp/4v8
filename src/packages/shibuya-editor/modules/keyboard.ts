@@ -272,11 +272,32 @@ export class KeyBoardModule implements Module {
     const caret = editor.getCaretPosition();
     if (!caret) return;
     const length = editor.getBlockLength(caret.blockId);
-    if (length === null) return;
+    const block = this.editor.getBlock(caret.blockId);
+    if (length === null || !block) return;
     if (caretPosition.collapsed && (caret.index === length || length === 0)) {
-      this.editor.getModule('editor').createBlock();
+      // For list elements, if enter is pressed with an empty string, the decoration is erased.
+      if (block.type !== 'PARAGRAPH' && length === 0) {
+        editor.updateBlock({ ...block, type: 'PARAGRAPH' });
+        this.editor.numberingList();
+        this.editor.getModule('history')?.optimizeOp();
+        editor.render([block.id]);
+        setTimeout(() => {
+          this.editor.setCaretPosition({
+            blockId: block.id,
+            index: 0,
+          });
+          this.editor.updateCaretRect();
+        }, 10);
+
+        return;
+      }
+
+      editor.getModule('editor').createBlock({
+        type: block.type,
+        attributes: block.attributes,
+      });
     } else {
-      this.editor.getModule('editor').splitBlock(caret.blockId, caret.index, caret.length);
+      editor.getModule('editor').splitBlock(caret.blockId, caret.index, caret.length);
     }
   }
 

@@ -694,10 +694,14 @@ export function useEditor({
             listNumbers[indent] = 0;
           }
           lastIndent = indent;
-          affectedIds.push(v.id);
+
+          if (v.meta?.listNumber !== ++listNumbers[indent]) {
+            affectedIds.push(v.id);
+          }
+
           return {
             ...v,
-            meta: { ...v.meta, listNumber: ++listNumbers[indent] },
+            meta: { ...v.meta, listNumber: listNumbers[indent] },
           };
         }
         listNumbers = [];

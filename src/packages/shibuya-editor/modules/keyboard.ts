@@ -102,13 +102,19 @@ export class KeyBoardModule implements Module {
       handler: this._handleBackspace.bind(this),
     });
 
-    this.addBinding({
-      key: KeyCodes.SPACE,
-      collapsed: true,
-      composing: true,
-      prevented: true,
-      handler: this._handleSpace.bind(this),
-    });
+    // this.addBinding({
+    //   key: KeyCodes.TAB,
+    //   composing: true,
+    //   prevented: true,
+    //   handler: this._handleIndent.bind(this),
+    // });
+
+    // this.addBinding({
+    //   key: KeyCodes.TAB,
+    //   shiftKey: true,
+    //   prevented: true,
+    //   handler: this._handleOutdent.bind(this),
+    // });
 
     // if ([KeyCodes.DEL].includes(e.code)) {
     //   e.preventDefault();
@@ -299,14 +305,6 @@ export class KeyBoardModule implements Module {
     } else {
       editor.getModule('editor').splitBlock(caret.blockId, caret.index, caret.length);
     }
-  }
-
-  private _handleSpace(caretPosition: CaretPosition, editor: EditorController) {
-    // if (this.composing) {
-    //   this.editor.sync();
-    //   console.log('変換enter');
-    //   return;
-    // }
   }
 
   private _handlekeyLeft(

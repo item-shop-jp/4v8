@@ -9,7 +9,7 @@ import { useMutationObserver } from '../../hooks/use-mutation-observer';
 export interface OrderedListProps {
   blockId: string;
   formats?: Formats;
-  contents: Inline[];
+  contents: React.ReactNode;
   placeholder?: string;
   attributes: BlockAttributes;
   meta: BlockAttributes;

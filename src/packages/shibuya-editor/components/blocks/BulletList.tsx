@@ -2,14 +2,13 @@ import * as React from 'react';
 import styled from 'styled-components';
 import { EditorController } from '../../types/editor';
 import { Formats } from '../../types/format';
-import { Inline } from '../../types/inline';
 import { BlockAttributes } from '../../types/block';
 import { useMutationObserver } from '../../hooks/use-mutation-observer';
 
 export interface BulletListProps {
   blockId: string;
   formats?: Formats;
-  contents: Inline[];
+  contents: React.ReactNode;
   placeholder?: string;
   attributes: BlockAttributes;
   editor: EditorController;

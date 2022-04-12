@@ -33,7 +33,7 @@ interface Props {
 }
 
 export function useEditor({
-  settings: { scrollMarginTop = 100, scrollMarginBottom = 250, collaborationLevel = 'inline' },
+  settings,
   eventEmitter,
   scrollContainer,
 }: Props): [React.MutableRefObject<HTMLDivElement | null>, EditorController] {
@@ -43,6 +43,12 @@ export function useEditor({
   const blocksRef = React.useRef<Block[]>([]);
   const modulesRef = React.useRef<any>({});
   const [modules, setModules] = React.useState<any>({});
+  const {
+    scrollMarginTop = 100,
+    scrollMarginBottom = 250,
+    collaborationLevel = 'inline',
+    indentatableFormats = ['ORDEREDLIST', 'BULLETLIST'],
+  } = settings;
 
   const focus = React.useCallback(() => {
     if (lastCaretPositionRef.current) {
@@ -581,6 +587,11 @@ export function useEditor({
     const currentIndex = blocksRef.current.findIndex((v) => v.id === block.id);
     if (currentIndex === -1) return;
     block = copyObject(block);
+    Object.keys(block.attributes).forEach((key) => {
+      if (typeof block.attributes[key] === 'boolean' && !block.attributes[key]) {
+        delete block.attributes[key];
+      }
+    });
     const contents = blockUtils.optimizeInlineContents(block.contents);
     const prevBlock = {
       ...blocksRef.current[currentIndex],

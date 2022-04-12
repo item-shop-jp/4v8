@@ -102,19 +102,19 @@ export class KeyBoardModule implements Module {
       handler: this._handleBackspace.bind(this),
     });
 
-    // this.addBinding({
-    //   key: KeyCodes.TAB,
-    //   composing: true,
-    //   prevented: true,
-    //   handler: this._handleIndent.bind(this),
-    // });
+    this.addBinding({
+      key: KeyCodes.TAB,
+      composing: true,
+      prevented: true,
+      handler: this._handleIndent.bind(this),
+    });
 
-    // this.addBinding({
-    //   key: KeyCodes.TAB,
-    //   shiftKey: true,
-    //   prevented: true,
-    //   handler: this._handleOutdent.bind(this),
-    // });
+    this.addBinding({
+      key: KeyCodes.TAB,
+      shiftKey: true,
+      prevented: true,
+      handler: this._handleOutdent.bind(this),
+    });
 
     // if ([KeyCodes.DEL].includes(e.code)) {
     //   e.preventDefault();
@@ -466,5 +466,48 @@ export class KeyBoardModule implements Module {
     if (!caret) return;
     const formats = editor.getFormats(caret.blockId, caret.index, caret.length);
     editor.getModule('toolbar').formatInline({ underline: !formats?.underline });
+  }
+
+  private _handleIndent(
+    caretPosition: CaretPosition,
+    editor: EditorController,
+    event: React.KeyboardEvent,
+  ) {
+    const caret = editor.getCaretPosition();
+    if (!caret) return;
+    const block = editor.getBlock(caret.blockId);
+    if (!block) return;
+    if (block.attributes.indent > 6) return;
+    editor.updateBlock({
+      ...block,
+      attributes: {
+        ...block.attributes,
+        indent: (block.attributes.indent ?? 0) + 1,
+      },
+    });
+    editor.numberingList();
+    editor.render([block.id]);
+  }
+
+  private _handleOutdent(
+    caretPosition: CaretPosition,
+    editor: EditorController,
+    event: React.KeyboardEvent,
+  ) {
+    const caret = editor.getCaretPosition();
+    if (!caret) return;
+    const block = editor.getBlock(caret.blockId);
+    if (!block) return;
+    if ((block.attributes.indent ?? 0) < 1) return;
+    const indent = block.attributes.indent - 1;
+    editor.updateBlock({
+      ...block,
+      attributes: {
+        ...block.attributes,
+        indent: indent !== 0 ? indent : false,
+      },
+    });
+    editor.numberingList();
+    editor.render([block.id]);
   }
 }

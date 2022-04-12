@@ -1,6 +1,6 @@
 import { ModuleOptions } from './module';
 import { InlineAttributes } from '../types/inline';
-import { Block } from '../types/block';
+import { Block, BlockType } from '../types/block';
 import { CaretPosition } from '../types/caret';
 import { EventEmitter } from '../utils/event-emitter';
 import {
@@ -19,6 +19,7 @@ export interface Settings {
   allowFormats?: string[];
   modules?: ModuleOptions;
   collaborationLevel?: 'block' | 'inline';
+  indentatableFormats?: BlockType[] & string[];
 }
 
 export interface PositionParams {

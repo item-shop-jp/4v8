@@ -73,6 +73,7 @@ export const BlockContainer: React.VFC<BlockProps> = React.memo(
           data-format={blockFormat}
           formats={formats}
           attributes={block?.attributes}
+          meta={block?.meta}
           contents={memoContents}
           selected={selected}
           {...props}

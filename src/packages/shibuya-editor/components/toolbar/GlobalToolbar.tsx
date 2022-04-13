@@ -37,7 +37,15 @@ export const GlobalToolbar = React.memo(({ editor, ...props }: GlobalToolbarProp
     [formats],
   );
 
-  const handleList = React.useCallback(
+  const handleOrderedList = React.useCallback(
+    (event: React.MouseEvent) => {
+      event.preventDefault();
+      editor.getModule('toolbar').formatBlock('ORDEREDLIST');
+    },
+    [formats],
+  );
+
+  const handleBulletList = React.useCallback(
     (event: React.MouseEvent) => {
       event.preventDefault();
       editor.getModule('toolbar').formatBlock('BULLETLIST');
@@ -71,8 +79,11 @@ export const GlobalToolbar = React.memo(({ editor, ...props }: GlobalToolbarProp
           <Button href="#" onClick={handleHeader1}>
             H1
           </Button>
-          <Button href="#" onClick={handleList}>
-            List
+          <Button href="#" onClick={handleOrderedList}>
+            Ordered List
+          </Button>
+          <Button href="#" onClick={handleBulletList}>
+            Bullet List
           </Button>
         </Container>
       )}

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { Subscription } from 'rxjs';
-import { BlockContainer, Header1, BulletList, Paragraph } from './components/blocks';
+import { BlockContainer, Header1, OrderedList, BulletList, Paragraph } from './components/blocks';
 import { InlineText } from './components/inlines';
 import { Bold, Strike, Underline, InlineCode, Italic } from './components/styles';
 import { GlobalToolbar, BubbleToolbar } from './components/toolbar';
@@ -71,6 +71,7 @@ export const Editor = React.memo(
         'toolbar/global': GlobalToolbar,
         'toolbar/bubble': BubbleToolbar,
         'block/paragraph': Paragraph,
+        'block/orderedlist': OrderedList,
         'block/bulletlist': BulletList,
         'block/header1': Header1,
         'inline/text': InlineText,
@@ -275,8 +276,12 @@ export const Editor = React.memo(
       }, [formats]);
 
       const memoBlocks = React.useMemo(() => {
-        return blocks.map((v) => {
-          return { id: v.id, type: v.type, selected: selectedIds.includes(v.id) };
+        return blocks.map((v, i) => {
+          return {
+            id: v.id,
+            type: v.type,
+            selected: selectedIds.includes(v.id),
+          };
         });
       }, [blocks.length, selectedIds]);
 

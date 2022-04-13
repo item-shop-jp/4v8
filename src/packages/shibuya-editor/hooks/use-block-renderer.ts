@@ -32,10 +32,10 @@ export function useBlockRenderer({ blockId, editor }: Props): Block | null {
           const currentBlock = editor.getBlock(blockId);
           if (currentBlock) {
             setBlock((prev) => {
-              if (isEqual(currentBlock, prev)) {
-                setTimeout(() => setBlock(currentBlock));
-                return { ...currentBlock, contents: [] };
-              }
+              // if (isEqual(currentBlock, prev)) {
+              //   setTimeout(() => setBlock(currentBlock));
+              //   return { ...currentBlock, contents: [] };
+              // }
               return copyObject(currentBlock);
             });
           }

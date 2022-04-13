@@ -2,18 +2,19 @@ import * as React from 'react';
 import styled from 'styled-components';
 import { EditorController } from '../../types/editor';
 import { Formats } from '../../types/format';
+import { Inline } from '../../types/inline';
 import { BlockAttributes } from '../../types/block';
 import { useMutationObserver } from '../../hooks/use-mutation-observer';
 
-export interface BulletListProps {
+export interface OrderedListProps {
   blockId: string;
   formats?: Formats;
   contents: React.ReactNode;
   placeholder?: string;
   attributes: BlockAttributes;
+  meta: BlockAttributes;
   editor: EditorController;
 }
-
 const ListItem = styled.div`
   font-size: 1rem;
   outline: 0;
@@ -24,7 +25,7 @@ const ListItem = styled.div`
     position: absolute;
     height: 1em;
     left: 12px;
-    content: '•';
+    content: var(--content);
   }
   ::after {
     opacity: 0.3;
@@ -32,8 +33,16 @@ const ListItem = styled.div`
   }
 `;
 
-export const BulletList = React.memo(
-  ({ blockId, contents, placeholder = 'List', attributes, editor, ...props }: BulletListProps) => {
+export const OrderedList = React.memo(
+  ({
+    blockId,
+    contents,
+    placeholder = 'List',
+    attributes,
+    editor,
+    meta,
+    ...props
+  }: OrderedListProps) => {
     const headerRef = React.useRef(null);
     const [showPlaceholder, setShowPlaceholder] = React.useState(false);
     const handleChangeElement = React.useCallback(() => {
@@ -53,7 +62,12 @@ export const BulletList = React.memo(
     }, []);
 
     return (
-      <ListItem ref={headerRef} placeholder={showPlaceholder ? placeholder : ''} {...props}>
+      <ListItem
+        ref={headerRef}
+        style={{ '--content': `'${meta?.listNumber ?? 1}.'` } as React.CSSProperties}
+        placeholder={showPlaceholder ? placeholder : ''}
+        {...props}
+      >
         {contents}
       </ListItem>
     );

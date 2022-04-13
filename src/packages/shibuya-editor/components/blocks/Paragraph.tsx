@@ -7,7 +7,7 @@ import { Inline } from '../../types/inline';
 export interface ParagraphProps {
   blockId: string;
   formats?: Formats;
-  contents: Inline[];
+  contents: React.ReactNode;
   editor: EditorController;
 }
 

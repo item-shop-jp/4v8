@@ -52,6 +52,7 @@ export class ToolbarModule implements Module {
     const block = this.editor.getBlock(caretPosition.blockId);
     if (!block) return;
     this.editor.updateBlock({ ...block, type, attributes });
+    this.editor.numberingList();
     this.editor.render([block.id]);
     setTimeout(
       () =>

@@ -13,13 +13,13 @@ import {
 } from '../modules';
 
 export interface Settings {
-  scrollMarginBottom?: number;
-  scrollMarginTop?: number;
-  allowAttributes?: string[];
-  allowFormats?: string[];
+  scrollMarginBottom: number;
+  scrollMarginTop: number;
+  allowAttributes: string[];
+  allowFormats: string[];
   modules?: ModuleOptions;
-  collaborationLevel?: 'block' | 'inline';
-  indentatableFormats?: BlockType[] & string[];
+  collaborationLevel: 'block' | 'inline';
+  indentatableFormats: (BlockType | string)[];
 }
 
 export interface PositionParams {
@@ -91,5 +91,6 @@ export interface EditorController {
   getModule<T = any>(name: string): T | null;
   removeAllModules(): void;
   getEventEmitter(): EventEmitter;
+  getSettings(): Settings;
   getEditorRef(): HTMLElement | null;
 }

@@ -476,7 +476,8 @@ export class KeyBoardModule implements Module {
     const caret = editor.getCaretPosition();
     if (!caret) return;
     const block = editor.getBlock(caret.blockId);
-    if (!block) return;
+    const { indentatableFormats } = editor.getSettings();
+    if (!block || !indentatableFormats.includes(block.type)) return;
     if (block.attributes.indent > 6) return;
     editor.updateBlock({
       ...block,
@@ -487,6 +488,11 @@ export class KeyBoardModule implements Module {
     });
     editor.numberingList();
     editor.render([block.id]);
+    editor.blur();
+    setTimeout(() => {
+      editor.setCaretPosition(caret);
+      editor.updateCaretRect();
+    }, 10);
   }
 
   private _handleOutdent(
@@ -497,9 +503,11 @@ export class KeyBoardModule implements Module {
     const caret = editor.getCaretPosition();
     if (!caret) return;
     const block = editor.getBlock(caret.blockId);
-    if (!block) return;
+    const { indentatableFormats } = editor.getSettings();
+    if (!block || !indentatableFormats.includes(block.type)) return;
     if ((block.attributes.indent ?? 0) < 1) return;
     const indent = block.attributes.indent - 1;
+    editor.updateCaretRect();
     editor.updateBlock({
       ...block,
       attributes: {
@@ -509,5 +517,10 @@ export class KeyBoardModule implements Module {
     });
     editor.numberingList();
     editor.render([block.id]);
+    editor.blur();
+    setTimeout(() => {
+      editor.setCaretPosition(caret);
+      editor.updateCaretRect();
+    }, 10);
   }
 }

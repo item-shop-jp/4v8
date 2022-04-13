@@ -19,12 +19,14 @@ const ListItem = styled.div`
   font-size: 1rem;
   outline: 0;
   margin: 0;
-  padding: 2px 12px 2px 32px;
+  padding: 2px 12px 2px 40px;
   box-sizing: border-box;
   ::before {
     position: absolute;
     height: 1em;
-    left: 12px;
+    left: 4px;
+    width: 2em;
+    text-align: right;
     content: var(--content);
   }
   ::after {

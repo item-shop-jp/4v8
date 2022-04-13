@@ -5,11 +5,9 @@ import { EditorController } from '../../types/editor';
 import { Formats } from '../../types/format';
 import { Inline } from '../../types/inline';
 import { getScrollContainer } from '../../utils/dom';
-import { EditLinkPopup } from '../popups';
 import { Subscription } from 'rxjs';
 import { EditorEvents } from '../../constants';
 import { copyObject } from '../../utils/object';
-import { EditTextLinkPopup } from '../popups/editTextLink';
 
 export interface InlineTextProps {
   inline: Inline;
@@ -64,34 +62,6 @@ const Link = styled.a<InlineContentProps>`
   }}
 `;
 
-const StyledEditLinkPopup = styled(EditLinkPopup)<PopupProps>`
-  position: absolute;
-  top: ${({ top }) => `${top + 30}px`};
-  left: ${({ left }) => `${left}px`};
-  min-width: 300px;
-  background-color: #fff;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  box-shadow: 0px 0px 5px #ddd;
-  color: #444;
-  padding: 16px;
-  white-space: nowrap;
-`;
-
-const StyledEditTextLinkPopup = styled(EditTextLinkPopup)<PopupProps>`
-  position: absolute;
-  top: ${({ top }) => `${top + 30}px`};
-  left: ${({ left }) => `${left}px`};
-  min-width: 300px;
-  background-color: #fff;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  box-shadow: 0px 0px 5px #ddd;
-  color: #444;
-  padding: 16px;
-  white-space: nowrap;
-`;
-
 export const InlineText = ({
   inline,
   formats,
@@ -99,10 +69,6 @@ export const InlineText = ({
   scrollContainer,
   ...props
 }: InlineTextProps) => {
-  const [showPopup, setShowPopup] = React.useState(false);
-  const [showEditPopup, setShowEditPopup] = React.useState(false);
-  const [position, setPosition] = React.useState<PopupProps>();
-
   const memoInnerHTML = React.useMemo(() => {
     const text = inline.text.replaceAll('\n', '<br>');
     return {
@@ -117,63 +83,32 @@ export const InlineText = ({
     editor.buttonClick({ mode: 'openPreview', inline });
   };
 
-  const handleShowPreviewLinkPopup = React.useCallback(() => {
-    setShowEditPopup(true);
-    setShowPopup(false);
-  }, []);
-
-  // const handleHidePopup = React.useCallback(() => {
-  //   setShowEditPopup(false);
-  // }, []);
-
-  const handleClickEdit = React.useCallback((text: string, link: string) => {
-    console.log(text, link);
-  }, []);
-
-  const handleClickDelete = React.useCallback(() => {
-    const caretPosition = editor.getCaretPosition();
-    if (!caretPosition) return;
-    const block = editor.getBlock(caretPosition.blockId);
-    if (!block) return;
-    const inlineIndex = block.contents.findIndex((v) => v.id === inline.id);
-    if (inlineIndex === -1) return;
-    editor.updateBlock({
-      ...block,
-      contents: copyObject([
-        ...block.contents.slice(0, inlineIndex),
-        {
-          ...block.contents[inlineIndex],
-          attributes: {
-            ...block.contents[inlineIndex].attributes,
-            link: false,
-          },
-        },
-        ...block.contents.slice(inlineIndex + 1),
-      ]),
-    });
-    editor.render([block.id]);
-    setTimeout(() => {
-      editor.focus();
-    }, 10);
-  }, [inline]);
-
-  // React.useEffect(() => {
-  //   const subs = new Subscription();
-  //   const eventEmitter = editor.getEventEmitter();
-  //   subs.add(
-  //     eventEmitter.select(EditorEvents.EVENT_SELECTION_CHANGE).subscribe((v) => {
-  //       const caret = editor.getCaretPosition();
-  //       if (!caret || !editor.hasFocus()) {
-  //         setPosition(undefined);
-  //         setShowPopup(false);
-  //         return;
-  //       }
-  //     }),
-  //   );
-  //   return () => {
-  //     subs.unsubscribe();
-  //   };
-  // }, [editor, scrollContainer]);
+  // const handleClickDelete = React.useCallback(() => {
+  //   const caretPosition = editor.getCaretPosition();
+  //   if (!caretPosition) return;
+  //   const block = editor.getBlock(caretPosition.blockId);
+  //   if (!block) return;
+  //   const inlineIndex = block.contents.findIndex((v) => v.id === inline.id);
+  //   if (inlineIndex === -1) return;
+  //   editor.updateBlock({
+  //     ...block,
+  //     contents: copyObject([
+  //       ...block.contents.slice(0, inlineIndex),
+  //       {
+  //         ...block.contents[inlineIndex],
+  //         attributes: {
+  //           ...block.contents[inlineIndex].attributes,
+  //           link: false,
+  //         },
+  //       },
+  //       ...block.contents.slice(inlineIndex + 1),
+  //     ]),
+  //   });
+  //   editor.render([block.id]);
+  //   setTimeout(() => {
+  //     editor.focus();
+  //   }, 10);
+  // }, [inline]);
 
   return (
     <>
@@ -188,28 +123,6 @@ export const InlineText = ({
             onClick={handleClickLink}
             {...props}
           />
-          {/* {showPopup && (
-            <StyledEditLinkPopup
-              top={position?.top ?? 0}
-              left={position?.left ?? 0}
-              text={inline.text}
-              currentLink={inline.attributes['link']}
-              scrollContainer={scrollContainer}
-              onClickEdit={handleShowPopup}
-              onClickDelete={handleClickDelete}
-            />
-          )}
-          {showEditPopup && (
-            <StyledEditTextLinkPopup
-              top={position?.top ?? 0}
-              left={position?.left ?? 0}
-              currentText={inline.text}
-              currentLink={inline.attributes['link']}
-              scrollContainer={scrollContainer}
-              onCancel={handleHidePopup}
-              onSave={handleClickEdit}
-            />
-          )} */}
         </>
       ) : (
         <Text

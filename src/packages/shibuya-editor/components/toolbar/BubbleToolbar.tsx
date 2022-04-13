@@ -54,27 +54,12 @@ const Button = styled.a<ButtonProps>`
   }
 `;
 
-const StyledLinkPopup = styled(LinkPopup)<ContainerProps>`
-  position: absolute;
-  top: ${({ top }) => `${top + 30}px`};
-  left: ${({ left }) => `${left}px`};
-  background-color: #fff;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  box-shadow: 0px 0px 5px #ddd;
-  color: #444;
-  padding: 5px 12px;
-  white-space: nowrap;
-`;
-
 export const BubbleToolbar = React.memo(
   ({ editor, scrollContainer, ...props }: BubbleToolbarProps) => {
     const [formats, setFormats] = React.useState<InlineAttributes>({});
     const [position, setPosition] = React.useState<ToolbarPosition>();
-    const [popupPosition, setPopupPosition] = React.useState<ToolbarPosition>();
     const [blockType, setBlockType] = React.useState<BlockType>();
     const [collapsed, setCollapsed] = React.useState<boolean>(true);
-    const [showPopup, setShowPopup] = React.useState<boolean>(false);
     const [currentCaretPosition, setCurrentCaretPosition] = React.useState<CaretPosition | null>();
 
     const handleBold = React.useCallback(
@@ -105,7 +90,7 @@ export const BubbleToolbar = React.memo(
       (event: React.MouseEvent) => {
         event.preventDefault();
         editor.getModule('toolbar').formatInline({ link: '' });
-        editor.buttonClick({ mode: 'openLink' });
+        editor.buttonClick({ mode: 'openEnterLink' });
       },
       [formats, currentCaretPosition],
     );
@@ -126,15 +111,6 @@ export const BubbleToolbar = React.memo(
       [formats],
     );
 
-    const handleChangeLink = React.useCallback(
-      (link: string, event: React.MouseEvent) => {
-        event.preventDefault();
-        editor.getModule('toolbar').formatInline({ link }, currentCaretPosition);
-        setShowPopup(false);
-      },
-      [formats, currentCaretPosition, showPopup],
-    );
-
     React.useEffect(() => {
       const subs = new Subscription();
       const eventEmitter = editor.getEventEmitter();
@@ -152,13 +128,11 @@ export const BubbleToolbar = React.memo(
             const top = (container?.scrollTop ?? 0) + caret.rect.top - containerRect.top;
             const left = caret.rect.left - containerRect.left;
             setPosition({ top, left });
-            setPopupPosition({ top, left });
           } else {
             const scrollEl = document.scrollingElement as HTMLElement;
             const top = scrollEl.scrollTop + caret.rect.top;
             const left = caret.rect.left;
             setPosition({ top, left });
-            setPopupPosition({ top, left });
           }
 
           setCollapsed(caret.collapsed);
@@ -195,14 +169,6 @@ export const BubbleToolbar = React.memo(
             </Button>
           </Container>
         )}
-        {/* {showPopup && (
-          <StyledLinkPopup
-            scrollContainer={scrollContainer}
-            top={popupPosition?.top ?? 0}
-            left={popupPosition?.left ?? 0}
-            onLinkSave={handleChangeLink}
-          />
-        )} */}
       </>,
       getScrollContainer(scrollContainer) ?? document.body,
     );

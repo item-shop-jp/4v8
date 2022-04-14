@@ -405,6 +405,9 @@ export class KeyBoardModule implements Module {
       caretIndex = caretPosition.index - 1;
 
       deletedContents = deleteInlineContents(block.contents, caretIndex, 1);
+      deletedContents[deletedContents.length - 1].text = deletedContents[
+        deletedContents.length - 1
+      ].text.replace(/\n+$/i, '');
     } else {
       if (!block || caretPosition.length < 1) return;
       caretIndex = caretPosition.index;

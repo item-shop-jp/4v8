@@ -1,5 +1,5 @@
 import * as React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { EditorController } from '../../types/editor';
 import { Formats } from '../../types/format';
 import { Inline } from '../../types/inline';
@@ -15,7 +15,7 @@ export interface OrderedListProps {
   meta: BlockAttributes;
   editor: EditorController;
 }
-const ListItem = styled.div`
+const ListItem = styled.div<Pick<OrderedListProps, 'placeholder'>>`
   font-size: 1rem;
   outline: 0;
   margin: 0;
@@ -31,10 +31,17 @@ const ListItem = styled.div`
     text-align: right;
     content: var(--content);
   }
-  ::after {
-    opacity: 0.3;
-    content: attr(placeholder);
-  }
+  ${({ placeholder }) => {
+    return (
+      placeholder &&
+      css`
+        ::after {
+          opacity: 0.3;
+          content: attr(placeholder);
+        }
+      `
+    );
+  }}
 `;
 
 export const OrderedList = React.memo(

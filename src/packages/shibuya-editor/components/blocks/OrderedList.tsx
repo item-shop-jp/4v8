@@ -19,12 +19,14 @@ const ListItem = styled.div`
   font-size: 1rem;
   outline: 0;
   margin: 0;
-  padding: 2px 12px 2px 40px;
+  padding: 2px 12px 2px;
   box-sizing: border-box;
+  position: relative;
+  padding-left: calc(40px + 1.5em * var(--indent));
   ::before {
     position: absolute;
     height: 1em;
-    left: 4px;
+    left: calc(1.5em * var(--indent));
     width: 2em;
     text-align: right;
     content: var(--content);
@@ -59,6 +61,14 @@ export const OrderedList = React.memo(
       characterData: true,
     });
 
+    const memoStyle = React.useMemo(() => {
+      const listNumber = meta?.listNumber ?? 1;
+      if (listNumber < 1) {
+        return {};
+      }
+      return { '--content': `'${listNumber}.'` } as React.CSSProperties;
+    }, [meta?.listNumber]);
+
     React.useEffect(() => {
       handleChangeElement();
     }, []);
@@ -66,7 +76,7 @@ export const OrderedList = React.memo(
     return (
       <ListItem
         ref={headerRef}
-        style={{ '--content': `'${meta?.listNumber ?? 1}.'` } as React.CSSProperties}
+        style={memoStyle}
         placeholder={showPlaceholder ? placeholder : ''}
         {...props}
       >

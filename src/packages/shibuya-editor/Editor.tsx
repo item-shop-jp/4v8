@@ -16,7 +16,7 @@ import {
   HistoryModule,
   ClipboardModule,
 } from './modules';
-import { getBlockElementById, getBlockId } from './utils/block';
+import { getBlockElementById } from './utils/block';
 import { EditorEvents } from './constants';
 import { Formats } from './types/format';
 import { Block } from './types/block';

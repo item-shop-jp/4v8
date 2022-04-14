@@ -1,9 +1,10 @@
 import * as React from 'react';
-import styled, { keyframes } from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
 import { Formats } from '../../types/format';
 import { EditorController } from '../../types/editor';
 import { useBlockRenderer } from '../../hooks/use-block-renderer';
 import { InlineContainer } from '../inlines/Container';
+import { Block } from '../../types/block';
 
 interface BlockProps {
   blockId: string;
@@ -62,10 +63,10 @@ export const BlockContainer: React.VFC<BlockProps> = React.memo(
     }, [block?.type]);
 
     return (
-      <Outer>
+      <Outer style={{ '--indent': `${block?.attributes?.indent ?? 0}` } as React.CSSProperties}>
         <Container
           suppressContentEditableWarning
-          className="notranslate"
+          className={'notranslate'}
           contentEditable={!readOnly}
           blockId={blockId}
           data-block-id={blockId}

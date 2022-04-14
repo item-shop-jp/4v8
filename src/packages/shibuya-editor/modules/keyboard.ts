@@ -35,7 +35,7 @@ export class KeyBoardModule implements Module {
   private eventEmitter;
   private editor;
   private bindings: KeyBindingProps[];
-  private sync = debounce(100, (blockId?: string, blockElement?: HTMLElement) => {
+  private sync = debounce(200, (blockId?: string, blockElement?: HTMLElement) => {
     this.editor.sync(blockId, blockElement, this.forceUpdate);
     this.forceUpdate = false;
   });
@@ -283,7 +283,11 @@ export class KeyBoardModule implements Module {
     if (caretPosition.collapsed && (caret.index === length || length === 0)) {
       // For list elements, if enter is pressed with an empty string, the decoration is erased.
       if (block.type !== 'PARAGRAPH' && length === 0) {
-        editor.updateBlock({ ...block, type: 'PARAGRAPH' });
+        editor.updateBlock({
+          ...block,
+          attributes: { ...block.attributes, indent: false },
+          type: 'PARAGRAPH',
+        });
         this.editor.numberingList();
         this.editor.getModule('history')?.optimizeOp();
         editor.render([block.id]);

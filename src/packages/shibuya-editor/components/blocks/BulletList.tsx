@@ -18,13 +18,15 @@ const ListItem = styled.div`
   font-size: 1rem;
   outline: 0;
   margin: 0;
-  padding: 2px 12px 2px 40px;
+  padding: 2px 12px 2px;
+  padding-left: calc(40px + 1.5em * var(--indent));
   box-sizing: border-box;
+  position: relative;
   ::before {
     position: absolute;
     height: 1em;
-    left: 20px;
     content: '•';
+    left: calc(18px + 1.5em * var(--indent));
   }
   ::after {
     opacity: 0.3;

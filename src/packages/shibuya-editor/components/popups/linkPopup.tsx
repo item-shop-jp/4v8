@@ -6,7 +6,9 @@ import { EditorEvents } from '../../constants';
 import { CaretPosition } from '../../types/caret';
 import { EditorController } from '../../types/editor';
 import { Inline, InlineAttributes } from '../../types/inline';
+import { getInlineContents } from '../../utils/block';
 import { getScrollContainer } from '../../utils/dom';
+import { copyObject } from '../../utils/object';
 
 export interface LinkPopupProps {
   editor: EditorController;
@@ -57,6 +59,15 @@ const Info = styled.div`
   margin-right: 8px;
 `;
 
+const Link = styled.a`
+  padding: 0 8px;
+  max-width: 200px;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+`;
+
+const LinkInput = styled.input``;
+
 const ButtonContainer = styled.div`
   display: flex;
   justify-content: flex-end;
@@ -65,7 +76,9 @@ const ButtonContainer = styled.div`
   }
 `;
 
-const Button = styled.button`
+const Button = styled.button``;
+
+const SingleButton = styled(Button)`
   margin-left: 16px;
 `;
 
@@ -86,14 +99,13 @@ export const LinkPopup = React.memo(
       [link],
     );
 
-    // TODO 保存できない問題の解決 linkのテキストをクリックしたときと、最初にlinkとして保存するときのcaretの位置が違うっぽい
     const handleSave = React.useCallback(
       (event: React.MouseEvent) => {
         event.preventDefault();
         editor.getModule('toolbar').formatInline({ link }, currentCaretPosition);
         handleClose();
       },
-      [link, formats],
+      [link, formats, currentCaretPosition],
     );
 
     const handleClose = React.useCallback(() => {
@@ -101,8 +113,10 @@ export const LinkPopup = React.memo(
       setLink('');
     }, []);
 
-    const handleClickEditButton = React.useCallback(() => {
-      editor.buttonClick({ mode: 'openEnterLink', inline });
+    const handleEdit = React.useCallback(() => {
+      editor.buttonClick({ mode: 'openEnterLink', inline, caretPosition: currentCaretPosition });
+    }, [inline, currentCaretPosition]);
+
     }, [inline]);
 
     React.useEffect(() => {
@@ -111,8 +125,7 @@ export const LinkPopup = React.memo(
       subs.add(
         eventEmitter.select(EditorEvents.EVENT_BUTTON_CLICKED).subscribe((v) => {
           const caret = editor.getCaretPosition();
-          // TODO フォーカスが外れたらポップアップを閉じる
-          if (!caret || !editor.hasFocus()) {
+          if (!caret) {
             handleClose();
             return;
           }
@@ -131,7 +144,7 @@ export const LinkPopup = React.memo(
           }
           setFormats(editor.getFormats(caret.blockId, caret.index, caret.length));
           if (!currentCaretPosition) {
-            setCurrentCaretPosition(caret);
+            setCurrentCaretPosition(v.caretPosition ? v.caretPosition : caret);
           }
           if (v.mode) {
             setMode(v.mode);
@@ -156,8 +169,8 @@ export const LinkPopup = React.memo(
               {...props}
             >
               <Info>Enter link:</Info>
-              <input value={link} onFocus={onFocus} onBlur={onBlur} onChange={handleChange} />
-              <Button onClick={handleSave}>save</Button>
+              <LinkInput value={link} onFocus={onFocus} onBlur={onBlur} onChange={handleChange} />
+              <SingleButton onClick={handleSave}>save</SingleButton>
             </EnterLinkContainer>
           )}
           {mode === 'openPreview' && (
@@ -165,11 +178,11 @@ export const LinkPopup = React.memo(
               style={{ top: position?.top ?? 0, left: position?.left ?? 0 }}
               {...props}
             >
-              <div>URL:</div>
-              <a href={inline?.attributes['link']}>https://{inline?.attributes['link']}</a>
+              <div>Visit URL:</div>
+              <Link href={inline?.attributes['link']}>https://{inline?.attributes['link']}</Link>
               <ButtonContainer>
-                <button onClick={handleClickEditButton}>edit</button>
-                <button>remove</button>
+                <Button onClick={handleEdit}>edit</Button>
+                <Button onClick={handleRemove}>remove</Button>
               </ButtonContainer>
             </PreviewContainer>
           )}

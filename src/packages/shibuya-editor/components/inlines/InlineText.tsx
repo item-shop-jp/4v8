@@ -80,7 +80,8 @@ export const InlineText = ({
   }, [inline]);
 
   const handleClickLink = () => {
-    editor.buttonClick({ mode: 'openPreview', inline });
+    const caretPosition = editor.getCaretPosition();
+    editor.buttonClick({ mode: 'openPreview', inline, caretPosition });
   };
 
   // const handleClickDelete = React.useCallback(() => {

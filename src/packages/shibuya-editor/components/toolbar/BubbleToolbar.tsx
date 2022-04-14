@@ -90,7 +90,7 @@ export const BubbleToolbar = React.memo(
       (event: React.MouseEvent) => {
         event.preventDefault();
         editor.getModule('toolbar').formatInline({ link: '' });
-        editor.buttonClick({ mode: 'openEnterLink' });
+        editor.buttonClick({ mode: 'openEnterLink', caretPosition: currentCaretPosition });
       },
       [formats, currentCaretPosition],
     );

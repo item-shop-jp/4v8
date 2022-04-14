@@ -117,6 +117,32 @@ export const LinkPopup = React.memo(
       editor.buttonClick({ mode: 'openEnterLink', inline, caretPosition: currentCaretPosition });
     }, [inline, currentCaretPosition]);
 
+    const handleRemove = React.useCallback(() => {
+      if (!currentCaretPosition || !inline) return;
+      const block = editor.getBlock(currentCaretPosition.blockId);
+      if (!block) return;
+      const inlineIndex = block.contents.findIndex((v) => v.id === inline.id);
+      if (inlineIndex === -1) return;
+      editor.updateBlock({
+        ...block,
+        contents: copyObject([
+          ...block.contents.slice(0, inlineIndex),
+          {
+            ...block.contents[inlineIndex],
+            attributes: {
+              ...block.contents[inlineIndex].attributes,
+              link: false,
+            },
+          },
+          ...block.contents.slice(inlineIndex + 1),
+        ]),
+      });
+      editor.render([block.id]);
+      setOpen(false);
+      setLink('');
+      setTimeout(() => {
+        editor.focus();
+      }, 10);
     }, [inline]);
 
     React.useEffect(() => {

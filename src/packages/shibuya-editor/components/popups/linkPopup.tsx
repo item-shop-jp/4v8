@@ -86,32 +86,32 @@ export const LinkPopup = React.memo(
   ({ editor, scrollContainer, onFocus, onBlur, onLinkSave, ...props }: Props) => {
     const [formats, setFormats] = React.useState<InlineAttributes>({});
     const [inline, setInline] = React.useState<Inline>();
-    const [link, setLink] = React.useState('');
-    const [mode, setMode] = React.useState();
-    const [open, setOpen] = React.useState(false);
-    const [position, setPosition] = React.useState<PopupPosition>();
+    const [linkUrl, setLinkUrl] = React.useState('');
+    const [popupMode, setPopupMode] = React.useState();
+    const [popupOpen, setPopupOpen] = React.useState(false);
+    const [popupPosition, setPopupPosition] = React.useState<PopupPosition>();
     const [currentCaretPosition, setCurrentCaretPosition] = React.useState<CaretPosition | null>();
     const modalRef = React.useRef<HTMLDivElement>(null);
 
     const handleChange = React.useCallback(
       (event: React.ChangeEvent<HTMLInputElement>) => {
-        setLink(event.target.value);
+        setLinkUrl(event.target.value);
       },
-      [link],
+      [linkUrl],
     );
 
     const handleSave = React.useCallback(
       (event: React.MouseEvent) => {
         event.preventDefault();
-        editor.getModule('toolbar').formatInline({ link }, currentCaretPosition);
+        editor.getModule('toolbar').formatInline({ link: linkUrl }, currentCaretPosition);
         handleClose();
       },
-      [link, formats, currentCaretPosition],
+      [linkUrl, formats, currentCaretPosition],
     );
 
     const handleClose = React.useCallback(() => {
-      setOpen(false);
-      setLink('');
+      setPopupOpen(false);
+      setLinkUrl('');
     }, []);
 
     const handleEdit = React.useCallback(() => {
@@ -144,8 +144,8 @@ export const LinkPopup = React.memo(
         ]),
       });
       editor.render([block.id]);
-      setOpen(false);
-      setLink('');
+      setPopupOpen(false);
+      setLinkUrl('');
       setTimeout(() => {
         editor.focus();
       }, 10);
@@ -156,35 +156,34 @@ export const LinkPopup = React.memo(
       const eventEmitter = editor.getEventEmitter();
       subs.add(
         eventEmitter.select(EditorEvents.EVENT_LINK_CLICK).subscribe((v) => {
-          console.log(1);
           const caret = editor.getCaretPosition();
           if (!caret) {
             handleClose();
             return;
           }
-          setOpen(true);
+          setPopupOpen(true);
           const container = getScrollContainer(scrollContainer);
           if (container) {
             const containerRect = container.getBoundingClientRect();
             const top = (container?.scrollTop ?? 0) + caret.rect.top - containerRect.top;
             const left = caret.rect.left - containerRect.left;
-            setPosition({ top, left });
+            setPopupPosition({ top, left });
           } else {
             const scrollEl = document.scrollingElement as HTMLElement;
             const top = scrollEl.scrollTop + caret.rect.top;
             const left = caret.rect.left;
-            setPosition({ top, left });
+            setPopupPosition({ top, left });
           }
           setFormats(editor.getFormats(caret.blockId, caret.index, caret.length));
           if (!currentCaretPosition) {
             setCurrentCaretPosition(v.caretPosition ? v.caretPosition : caret);
           }
           if (v.mode) {
-            setMode(v.mode);
+            setPopupMode(v.mode);
           }
           if (v.inline) {
             setInline(v.inline);
-            setLink(v.inline?.attributes['link']);
+            setLinkUrl(v.inline?.attributes['link']);
           }
         }),
       );
@@ -194,34 +193,39 @@ export const LinkPopup = React.memo(
     }, []);
 
     React.useEffect(() => {
-      if (!open) return;
-      const handleClsoe = (e: MouseEvent) => {
+      if (!popupOpen) return;
+      const handleClose = (e: MouseEvent) => {
         if (!modalRef.current?.contains(e.target as Node)) {
-          setOpen(false);
+          setPopupOpen(false);
         }
       };
-      document.addEventListener('click', handleClsoe, true);
+      document.addEventListener('click', handleClose, true);
       return () => {
-        document.removeEventListener('click', handleClsoe, true);
+        document.removeEventListener('click', handleClose, true);
       };
-    }, [open]);
+    }, [popupOpen]);
 
     return ReactDOM.createPortal(
-      open && (
+      popupOpen && (
         <div ref={modalRef}>
-          {mode === 'openEnterLink' && (
+          {popupMode === 'openEnterLink' && (
             <EnterLinkContainer
-              style={{ top: position?.top ?? 0, left: position?.left ?? 0 }}
+              style={{ top: popupPosition?.top ?? 0, left: popupPosition?.left ?? 0 }}
               {...props}
             >
               <Info>Enter link:</Info>
-              <LinkInput value={link} onFocus={onFocus} onBlur={onBlur} onChange={handleChange} />
+              <LinkInput
+                value={linkUrl}
+                onFocus={onFocus}
+                onBlur={onBlur}
+                onChange={handleChange}
+              />
               <SingleButton onClick={handleSave}>save</SingleButton>
             </EnterLinkContainer>
           )}
-          {mode === 'openPreview' && (
+          {popupMode === 'openPreview' && (
             <PreviewContainer
-              style={{ top: position?.top ?? 0, left: position?.left ?? 0 }}
+              style={{ top: popupPosition?.top ?? 0, left: popupPosition?.left ?? 0 }}
               {...props}
             >
               <div>Visit URL:</div>

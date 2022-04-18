@@ -1,5 +1,5 @@
 import * as React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { EditorController } from '../../types/editor';
 import { Formats } from '../../types/format';
 import { Inline } from '../../types/inline';
@@ -15,22 +15,33 @@ export interface OrderedListProps {
   meta: BlockAttributes;
   editor: EditorController;
 }
-const ListItem = styled.div`
+const ListItem = styled.div<Pick<OrderedListProps, 'placeholder'>>`
   font-size: 1rem;
   outline: 0;
   margin: 0;
-  padding: 2px 12px 2px 32px;
+  padding: 2px 12px 2px;
   box-sizing: border-box;
+  position: relative;
+  padding-left: calc(40px + 1.5em * var(--indent));
   ::before {
     position: absolute;
     height: 1em;
-    left: 12px;
+    left: calc(1.5em * var(--indent));
+    width: 2em;
+    text-align: right;
     content: var(--content);
   }
-  ::after {
-    opacity: 0.3;
-    content: attr(placeholder);
-  }
+  ${({ placeholder }) => {
+    return (
+      placeholder &&
+      css`
+        ::after {
+          opacity: 0.3;
+          content: attr(placeholder);
+        }
+      `
+    );
+  }}
 `;
 
 export const OrderedList = React.memo(
@@ -57,6 +68,14 @@ export const OrderedList = React.memo(
       characterData: true,
     });
 
+    const memoStyle = React.useMemo(() => {
+      const listNumber = meta?.listNumber ?? 1;
+      if (listNumber < 1) {
+        return {};
+      }
+      return { '--content': `'${listNumber}.'` } as React.CSSProperties;
+    }, [meta?.listNumber]);
+
     React.useEffect(() => {
       handleChangeElement();
     }, []);
@@ -64,7 +83,7 @@ export const OrderedList = React.memo(
     return (
       <ListItem
         ref={headerRef}
-        style={{ '--content': `'${meta?.listNumber ?? 1}.'` } as React.CSSProperties}
+        style={memoStyle}
         placeholder={showPlaceholder ? placeholder : ''}
         {...props}
       >

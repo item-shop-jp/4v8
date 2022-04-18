@@ -1,6 +1,6 @@
 import { ModuleOptions } from './module';
 import { InlineAttributes } from '../types/inline';
-import { Block } from '../types/block';
+import { Block, BlockType } from '../types/block';
 import { CaretPosition } from '../types/caret';
 import { EventEmitter } from '../utils/event-emitter';
 import {
@@ -13,12 +13,13 @@ import {
 } from '../modules';
 
 export interface Settings {
-  scrollMarginBottom?: number;
-  scrollMarginTop?: number;
-  allowAttributes?: string[];
-  allowFormats?: string[];
+  scrollMarginBottom: number;
+  scrollMarginTop: number;
+  allowAttributes: string[];
+  allowFormats: string[];
   modules?: ModuleOptions;
-  collaborationLevel?: 'block' | 'inline';
+  collaborationLevel: 'block' | 'inline';
+  indentatableFormats: (BlockType | string)[];
 }
 
 export interface PositionParams {
@@ -90,6 +91,7 @@ export interface EditorController {
   getModule<T = any>(name: string): T | null;
   removeAllModules(): void;
   getEventEmitter(): EventEmitter;
+  getSettings(): Settings;
   getEditorRef(): HTMLElement | null;
   buttonClick(type?: any): void;
 }

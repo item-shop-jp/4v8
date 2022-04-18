@@ -16,7 +16,7 @@ import {
   HistoryModule,
   ClipboardModule,
 } from './modules';
-import { getBlockElementById, getBlockId } from './utils/block';
+import { getBlockElementById } from './utils/block';
 import { EditorEvents } from './constants';
 import { Formats } from './types/format';
 import { Block } from './types/block';
@@ -28,7 +28,7 @@ interface Props {
   scrollContainer?: HTMLElement | string;
   readOnly?: boolean;
   formats?: { [key: string]: any };
-  settings?: Settings;
+  settings?: Partial<Settings>;
 }
 
 const Container = styled.div`
@@ -65,7 +65,19 @@ export const Editor = React.memo(
       forwardRef,
     ) => {
       const [eventEmitter, eventTool] = useEventEmitter();
-      const [editorRef, editor] = useEditor({ settings, eventEmitter, scrollContainer });
+      const [editorRef, editor] = useEditor({
+        settings: {
+          // default settings
+          scrollMarginTop: settings.scrollMarginTop ?? 100,
+          scrollMarginBottom: settings.scrollMarginBottom ?? 250,
+          allowAttributes: settings.allowAttributes ?? [],
+          allowFormats: settings.allowFormats ?? [],
+          collaborationLevel: settings.collaborationLevel ?? 'inline',
+          indentatableFormats: settings.indentatableFormats ?? ['ORDEREDLIST', 'BULLETLIST'],
+        },
+        eventEmitter,
+        scrollContainer,
+      });
       const containerRef = React.useRef<HTMLDivElement>(null);
       const [blockFormats, setBlockFormats] = React.useState<Formats>({
         'toolbar/global': GlobalToolbar,

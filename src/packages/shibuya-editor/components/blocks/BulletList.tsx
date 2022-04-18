@@ -1,5 +1,5 @@
 import * as React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { EditorController } from '../../types/editor';
 import { Formats } from '../../types/format';
 import { BlockAttributes } from '../../types/block';
@@ -14,22 +14,34 @@ export interface BulletListProps {
   editor: EditorController;
 }
 
-const ListItem = styled.div`
+const ListItem = styled.div<Pick<BulletListProps, 'placeholder'>>`
   font-size: 1rem;
   outline: 0;
   margin: 0;
-  padding: 2px 12px 2px 32px;
+  padding: 2px 12px 2px;
+  padding-left: calc(40px + 1.5em * var(--indent));
   box-sizing: border-box;
+  position: relative;
   ::before {
     position: absolute;
-    height: 1em;
-    left: 12px;
+    font-family: Arial;
+    font-size: 1.5em;
+    line-height: 1;
+    top: 3px;
     content: '•';
+    left: calc(18px + 1em * var(--indent));
   }
-  ::after {
-    opacity: 0.3;
-    content: attr(placeholder);
-  }
+  ${({ placeholder }) => {
+    return (
+      placeholder &&
+      css`
+        ::after {
+          opacity: 0.3;
+          content: attr(placeholder);
+        }
+      `
+    );
+  }}
 `;
 
 export const BulletList = React.memo(

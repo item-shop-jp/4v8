@@ -33,7 +33,7 @@ interface Props {
 }
 
 export function useEditor({
-  settings: { scrollMarginTop = 100, scrollMarginBottom = 250, collaborationLevel = 'inline' },
+  settings,
   eventEmitter,
   scrollContainer,
 }: Props): [React.MutableRefObject<HTMLDivElement | null>, EditorController] {
@@ -94,13 +94,16 @@ export function useEditor({
     const container = getScrollContainer(scrollContainer);
     const containerOffsetTop = container ? container.getBoundingClientRect().top : 0;
 
-    if (prevRect.top <= (container ? containerOffsetTop : containerOffsetTop + scrollMarginTop)) {
+    if (
+      prevRect.top <=
+      (container ? containerOffsetTop : containerOffsetTop + settings.scrollMarginTop)
+    ) {
       if (container) {
         container.scrollTop = currentIndex - 1 < 1 ? 0 : prevBlock.parentElement?.offsetTop ?? 0;
       } else {
         if (document.scrollingElement) {
           let editorScrollTop =
-            document.scrollingElement.scrollTop + prevRect.top - scrollMarginTop;
+            document.scrollingElement.scrollTop + prevRect.top - settings.scrollMarginTop;
           if (currentIndex - 1 < 1) {
             editorScrollTop -= 30;
           }
@@ -169,10 +172,12 @@ export function useEditor({
       const containerRect = container.getBoundingClientRect() ?? 0;
       if (
         nextRect.top + nextRect.height >=
-        containerRect.top + containerRect.height - scrollMarginBottom
+        containerRect.top + containerRect.height - settings.scrollMarginBottom
       ) {
         const scrollTop =
-          (nextBlock.parentElement?.offsetTop ?? 0) - container.clientHeight + scrollMarginBottom;
+          (nextBlock.parentElement?.offsetTop ?? 0) -
+          container.clientHeight +
+          settings.scrollMarginBottom;
         if (container.scrollHeight > scrollTop + container.clientHeight) {
           container.scrollTop = scrollTop;
         } else {
@@ -181,10 +186,10 @@ export function useEditor({
         nextRect =
           nextBlock.parentElement?.getBoundingClientRect() ?? nextBlock.getBoundingClientRect();
       }
-    } else if (nextRect.top + nextRect.height >= scrollHeight - scrollMarginBottom) {
+    } else if (nextRect.top + nextRect.height >= scrollHeight - settings.scrollMarginBottom) {
       if (document.scrollingElement) {
         const nextTop = document.scrollingElement.scrollTop + nextRect.top;
-        const p = nextTop - window.innerHeight + scrollMarginBottom;
+        const p = nextTop - window.innerHeight + settings.scrollMarginBottom;
         document.scrollingElement.scrollTop = p;
       }
 
@@ -334,10 +339,12 @@ export function useEditor({
       const containerRect = container.getBoundingClientRect() ?? 0;
       if (
         nextRect.top + nextRect.height >=
-        containerRect.top + containerRect.height - scrollMarginBottom
+        containerRect.top + containerRect.height - settings.scrollMarginBottom
       ) {
         const scrollTop =
-          (element.parentElement?.offsetTop ?? 0) - container.clientHeight + scrollMarginBottom;
+          (element.parentElement?.offsetTop ?? 0) -
+          container.clientHeight +
+          settings.scrollMarginBottom;
         if (container.scrollHeight > scrollTop + container.clientHeight) {
           container.scrollTop = scrollTop;
         } else {
@@ -346,10 +353,10 @@ export function useEditor({
         nextRect =
           element.parentElement?.getBoundingClientRect() ?? element.getBoundingClientRect();
       }
-    } else if (nextRect.top + nextRect.height >= scrollHeight - scrollMarginBottom) {
+    } else if (nextRect.top + nextRect.height >= scrollHeight - settings.scrollMarginBottom) {
       if (document.scrollingElement) {
         const nextTop = document.scrollingElement.scrollTop + nextRect.top;
-        const p = nextTop - window.innerHeight + scrollMarginBottom;
+        const p = nextTop - window.innerHeight + settings.scrollMarginBottom;
         document.scrollingElement.scrollTop = p;
       }
     }
@@ -581,6 +588,11 @@ export function useEditor({
     const currentIndex = blocksRef.current.findIndex((v) => v.id === block.id);
     if (currentIndex === -1) return;
     block = copyObject(block);
+    Object.keys(block.attributes).forEach((key) => {
+      if (typeof block.attributes[key] === 'boolean' && !block.attributes[key]) {
+        delete block.attributes[key];
+      }
+    });
     const contents = blockUtils.optimizeInlineContents(block.contents);
     const prevBlock = {
       ...blocksRef.current[currentIndex],
@@ -698,10 +710,14 @@ export function useEditor({
             listNumbers[indent] = 0;
           }
           lastIndent = indent;
-          affectedIds.push(v.id);
+
+          if (v.meta?.listNumber !== ++listNumbers[indent]) {
+            affectedIds.push(v.id);
+          }
+
           return {
             ...v,
-            meta: { ...v.meta, listNumber: ++listNumbers[indent] },
+            meta: { ...v.meta, listNumber: listNumbers[indent] },
           };
         }
         listNumbers = [];
@@ -715,6 +731,10 @@ export function useEditor({
     );
     render(affectedIds);
   }, []);
+
+  const getSettings = React.useCallback(() => {
+    return settings;
+  }, [settings]);
 
   const getEditorRef = React.useCallback(() => {
     return editorRef.current;
@@ -751,6 +771,7 @@ export function useEditor({
       getModule,
       removeAllModules,
       getEventEmitter,
+      getSettings,
       getEditorRef,
     };
   }, []);

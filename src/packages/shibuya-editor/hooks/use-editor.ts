@@ -241,6 +241,7 @@ export function useEditor({
 
   const setBlocks = React.useCallback((blocks: Block[]) => {
     blocksRef.current = blocks;
+    numberingList();
     render();
   }, []);
 

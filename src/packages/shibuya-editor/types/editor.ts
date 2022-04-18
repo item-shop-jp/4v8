@@ -93,5 +93,4 @@ export interface EditorController {
   getEventEmitter(): EventEmitter;
   getSettings(): Settings;
   getEditorRef(): HTMLElement | null;
-  buttonClick(type?: any): void;
 }

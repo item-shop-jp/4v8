@@ -89,8 +89,11 @@ export const BubbleToolbar = React.memo(
     const handleLink = React.useCallback(
       (event: React.MouseEvent) => {
         event.preventDefault();
-        editor.getModule('toolbar').formatInline({ link: '' });
-        editor.buttonClick({ mode: 'openEnterLink', caretPosition: currentCaretPosition });
+        const eventEmitter = editor.getEventEmitter();
+        eventEmitter.emit(EditorEvents.EVENT_LINK_CLICK, {
+          mode: 'openEnterLink',
+          caretPosition: currentCaretPosition,
+        });
       },
       [formats, currentCaretPosition],
     );

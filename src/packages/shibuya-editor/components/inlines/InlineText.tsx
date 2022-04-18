@@ -81,7 +81,12 @@ export const InlineText = ({
 
   const handleClickLink = () => {
     const caretPosition = editor.getCaretPosition();
-    editor.buttonClick({ mode: 'openPreview', inline, caretPosition });
+    const eventEmitter = editor.getEventEmitter();
+    eventEmitter.emit(EditorEvents.EVENT_LINK_CLICK, {
+      mode: 'openPreview',
+      inline,
+      caretPosition,
+    });
   };
 
   // const handleClickDelete = React.useCallback(() => {

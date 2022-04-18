@@ -91,6 +91,7 @@ export const LinkPopup = React.memo(
     const [open, setOpen] = React.useState(false);
     const [position, setPosition] = React.useState<PopupPosition>();
     const [currentCaretPosition, setCurrentCaretPosition] = React.useState<CaretPosition | null>();
+    const modalRef = React.useRef<HTMLDivElement>(null);
 
     const handleChange = React.useCallback(
       (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -114,7 +115,12 @@ export const LinkPopup = React.memo(
     }, []);
 
     const handleEdit = React.useCallback(() => {
-      editor.buttonClick({ mode: 'openEnterLink', inline, caretPosition: currentCaretPosition });
+      const eventEmitter = editor.getEventEmitter();
+      eventEmitter.emit(EditorEvents.EVENT_LINK_CLICK, {
+        mode: 'openEnterLink',
+        inline,
+        caretPosition: currentCaretPosition,
+      });
     }, [inline, currentCaretPosition]);
 
     const handleRemove = React.useCallback(() => {
@@ -149,7 +155,8 @@ export const LinkPopup = React.memo(
       const subs = new Subscription();
       const eventEmitter = editor.getEventEmitter();
       subs.add(
-        eventEmitter.select(EditorEvents.EVENT_BUTTON_CLICKED).subscribe((v) => {
+        eventEmitter.select(EditorEvents.EVENT_LINK_CLICK).subscribe((v) => {
+          console.log(1);
           const caret = editor.getCaretPosition();
           if (!caret) {
             handleClose();
@@ -186,9 +193,22 @@ export const LinkPopup = React.memo(
       };
     }, []);
 
+    React.useEffect(() => {
+      if (!open) return;
+      const handleClsoe = (e: MouseEvent) => {
+        if (!modalRef.current?.contains(e.target as Node)) {
+          setOpen(false);
+        }
+      };
+      document.addEventListener('click', handleClsoe, true);
+      return () => {
+        document.removeEventListener('click', handleClsoe, true);
+      };
+    }, [open]);
+
     return ReactDOM.createPortal(
       open && (
-        <>
+        <div ref={modalRef}>
           {mode === 'openEnterLink' && (
             <EnterLinkContainer
               style={{ top: position?.top ?? 0, left: position?.left ?? 0 }}
@@ -212,7 +232,7 @@ export const LinkPopup = React.memo(
               </ButtonContainer>
             </PreviewContainer>
           )}
-        </>
+        </div>
       ),
       getScrollContainer(scrollContainer) ?? document.body,
     );

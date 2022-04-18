@@ -622,6 +622,7 @@ export function useEditor({
     const redo = json0diff(prevBlock, currentBlock, DiffMatchPatch);
     const undo = json0diff(currentBlock, prevBlock, DiffMatchPatch);
 
+    console.log(undo);
     if (redo && undo) {
       eventEmitter.emit(EditorEvents.EVENT_EDITOR_CHANGE, {
         payload: {
@@ -689,10 +690,6 @@ export function useEditor({
 
   const render = React.useCallback((affectedIds: string[] = []) => {
     eventEmitter.emit(EditorEvents.EVENT_BLOCK_RERENDER, affectedIds);
-  }, []);
-
-  const buttonClick = React.useCallback((type: any) => {
-    eventEmitter.emit(EditorEvents.EVENT_BUTTON_CLICKED, type);
   }, []);
 
   const numberingList = React.useCallback(() => {
@@ -765,7 +762,6 @@ export function useEditor({
       next,
       numberingList,
       render,
-      buttonClick,
       addModule,
       addModules,
       getModule,

@@ -35,7 +35,7 @@ export class KeyBoardModule implements Module {
   private eventEmitter;
   private editor;
   private bindings: KeyBindingProps[];
-  private sync = debounce(100, (blockId?: string, blockElement?: HTMLElement) => {
+  private sync = debounce(200, (blockId?: string, blockElement?: HTMLElement) => {
     this.editor.sync(blockId, blockElement, this.forceUpdate);
     this.forceUpdate = false;
   });
@@ -103,11 +103,17 @@ export class KeyBoardModule implements Module {
     });
 
     this.addBinding({
-      key: KeyCodes.SPACE,
-      collapsed: true,
+      key: KeyCodes.TAB,
       composing: true,
       prevented: true,
-      handler: this._handleSpace.bind(this),
+      handler: this._handleIndent.bind(this),
+    });
+
+    this.addBinding({
+      key: KeyCodes.TAB,
+      shiftKey: true,
+      prevented: true,
+      handler: this._handleOutdent.bind(this),
     });
 
     // if ([KeyCodes.DEL].includes(e.code)) {
@@ -277,7 +283,11 @@ export class KeyBoardModule implements Module {
     if (caretPosition.collapsed && (caret.index === length || length === 0)) {
       // For list elements, if enter is pressed with an empty string, the decoration is erased.
       if (block.type !== 'PARAGRAPH' && length === 0) {
-        editor.updateBlock({ ...block, type: 'PARAGRAPH' });
+        editor.updateBlock({
+          ...block,
+          attributes: { ...block.attributes, indent: false },
+          type: 'PARAGRAPH',
+        });
         this.editor.numberingList();
         this.editor.getModule('history')?.optimizeOp();
         editor.render([block.id]);
@@ -299,14 +309,6 @@ export class KeyBoardModule implements Module {
     } else {
       editor.getModule('editor').splitBlock(caret.blockId, caret.index, caret.length);
     }
-  }
-
-  private _handleSpace(caretPosition: CaretPosition, editor: EditorController) {
-    // if (this.composing) {
-    //   this.editor.sync();
-    //   console.log('変換enter');
-    //   return;
-    // }
   }
 
   private _handlekeyLeft(
@@ -403,6 +405,9 @@ export class KeyBoardModule implements Module {
       caretIndex = caretPosition.index - 1;
 
       deletedContents = deleteInlineContents(block.contents, caretIndex, 1);
+      deletedContents[deletedContents.length - 1].text = deletedContents[
+        deletedContents.length - 1
+      ].text.replace(/\n+$/i, '');
     } else {
       if (!block || caretPosition.length < 1) return;
       caretIndex = caretPosition.index;
@@ -468,5 +473,61 @@ export class KeyBoardModule implements Module {
     if (!caret) return;
     const formats = editor.getFormats(caret.blockId, caret.index, caret.length);
     editor.getModule('toolbar').formatInline({ underline: !formats?.underline });
+  }
+
+  private _handleIndent(
+    caretPosition: CaretPosition,
+    editor: EditorController,
+    event: React.KeyboardEvent,
+  ) {
+    const caret = editor.getCaretPosition();
+    if (!caret) return;
+    const block = editor.getBlock(caret.blockId);
+    const { indentatableFormats } = editor.getSettings();
+    if (!block || !indentatableFormats.includes(block.type)) return;
+    if (block.attributes.indent > 6) return;
+    editor.updateBlock({
+      ...block,
+      attributes: {
+        ...block.attributes,
+        indent: (block.attributes.indent ?? 0) + 1,
+      },
+    });
+    editor.numberingList();
+    editor.render([block.id]);
+    editor.blur();
+    setTimeout(() => {
+      editor.setCaretPosition(caret);
+      editor.updateCaretRect();
+    }, 10);
+  }
+
+  private _handleOutdent(
+    caretPosition: CaretPosition,
+    editor: EditorController,
+    event: React.KeyboardEvent,
+  ) {
+    const caret = editor.getCaretPosition();
+    if (!caret) return;
+    const block = editor.getBlock(caret.blockId);
+    const { indentatableFormats } = editor.getSettings();
+    if (!block || !indentatableFormats.includes(block.type)) return;
+    if ((block.attributes.indent ?? 0) < 1) return;
+    const indent = block.attributes.indent - 1;
+    editor.updateCaretRect();
+    editor.updateBlock({
+      ...block,
+      attributes: {
+        ...block.attributes,
+        indent: indent !== 0 ? indent : false,
+      },
+    });
+    editor.numberingList();
+    editor.render([block.id]);
+    editor.blur();
+    setTimeout(() => {
+      editor.setCaretPosition(caret);
+      editor.updateCaretRect();
+    }, 10);
   }
 }

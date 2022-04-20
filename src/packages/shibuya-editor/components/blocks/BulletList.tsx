@@ -28,7 +28,7 @@ const ListItem = styled.div<Pick<BulletListProps, 'placeholder'>>`
     font-size: 1.5em;
     line-height: 1;
     top: 3px;
-    content: '•';
+    content: var(--content);
     left: calc(18px + 1em * var(--indent));
   }
   ${({ placeholder }) => {
@@ -64,8 +64,31 @@ export const BulletList = React.memo(
       handleChangeElement();
     }, []);
 
+    const memoStyle = React.useMemo(() => {
+      const numberType = (attributes?.indent ?? 0) % 3;
+      let content = '';
+      switch (numberType) {
+        case 1:
+          content = '◦';
+          break;
+        case 2:
+          content = '▪';
+          break;
+        default:
+          content = '•';
+          break;
+      }
+
+      return { '--content': `'${content}'` } as React.CSSProperties;
+    }, [attributes?.indent]);
+
     return (
-      <ListItem ref={headerRef} placeholder={showPlaceholder ? placeholder : ''} {...props}>
+      <ListItem
+        ref={headerRef}
+        style={memoStyle}
+        placeholder={showPlaceholder ? placeholder : ''}
+        {...props}
+      >
         {contents}
       </ListItem>
     );

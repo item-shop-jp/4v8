@@ -5,6 +5,7 @@ import { Formats } from '../../types/format';
 import { Inline } from '../../types/inline';
 import { BlockAttributes } from '../../types/block';
 import { useMutationObserver } from '../../hooks/use-mutation-observer';
+import { decimalToRoman, decimalToAlphabet } from '../../utils/number';
 
 export interface OrderedListProps {
   blockId: string;
@@ -26,8 +27,8 @@ const ListItem = styled.div<Pick<OrderedListProps, 'placeholder'>>`
   ::before {
     position: absolute;
     height: 1em;
-    left: calc(1.5em * var(--indent));
-    width: 2em;
+    left: calc(8px + 1.5em * (var(--indent) - 1));
+    width: 3em;
     text-align: right;
     content: var(--content);
   }
@@ -69,12 +70,26 @@ export const OrderedList = React.memo(
     });
 
     const memoStyle = React.useMemo(() => {
+      const numberType = (attributes?.indent ?? 0) % 3;
       const listNumber = meta?.listNumber ?? 1;
       if (listNumber < 1) {
         return {};
       }
-      return { '--content': `'${listNumber}.'` } as React.CSSProperties;
-    }, [meta?.listNumber]);
+      let content = '';
+      switch (numberType) {
+        case 1:
+          content = decimalToAlphabet(listNumber);
+          break;
+        case 2:
+          content = decimalToRoman(listNumber);
+          break;
+        default:
+          content = listNumber;
+          break;
+      }
+
+      return { '--content': `'${content}.'` } as React.CSSProperties;
+    }, [meta?.listNumber, attributes?.indent]);
 
     React.useEffect(() => {
       handleChangeElement();

@@ -717,6 +717,12 @@ export function useEditor({
             meta: { ...v.meta, listNumber: listNumbers[indent] },
           };
         }
+        if (v.type === 'BULLETLIST' && lastIndent < indent) {
+          return {
+            ...v,
+            meta: { ...v.meta, listNumber: 0 },
+          };
+        }
         listNumbers = [];
         lastIndent = indent;
 

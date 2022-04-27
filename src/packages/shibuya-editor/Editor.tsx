@@ -38,6 +38,10 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   cursor: text;
+
+  deepl-inline-translate {
+    display: none;
+  }
 `;
 const Inner = styled.div`
   flex-shrink: 0;

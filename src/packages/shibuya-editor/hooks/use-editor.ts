@@ -556,7 +556,7 @@ export function useEditor({
     ) => {
       const currentIndex = blocksRef.current.findIndex((v) => v.id === prevBlockId);
 
-      eventEmitter.emit(EditorEvents.EVENT_EDITOR_CHANGE, {
+      eventEmitter.emit(EditorEvents.EVENT_EDITOR_HISTORY_PUSH, {
         payload: {
           type: HistoryType.ADD_BLOCK,
           blockId: appendBlock.id,
@@ -624,7 +624,7 @@ export function useEditor({
     const undo = json0diff(currentBlock, prevBlock, DiffMatchPatch);
 
     if (redo && undo) {
-      eventEmitter.emit(EditorEvents.EVENT_EDITOR_CHANGE, {
+      eventEmitter.emit(EditorEvents.EVENT_EDITOR_HISTORY_PUSH, {
         payload: {
           type: HistoryType.UPDATE_CONTENTS,
           blockId: block.id,
@@ -651,7 +651,7 @@ export function useEditor({
 
     if (currentIndex === -1) return;
 
-    eventEmitter.emit(EditorEvents.EVENT_EDITOR_CHANGE, {
+    eventEmitter.emit(EditorEvents.EVENT_EDITOR_HISTORY_PUSH, {
       payload: {
         type: HistoryType.REMOVE_BLOCK,
         blockId: blocksRef.current[currentIndex].id,
@@ -670,7 +670,7 @@ export function useEditor({
 
       if (deleteBlocks.length < 1) return;
 
-      eventEmitter.emit(EditorEvents.EVENT_EDITOR_CHANGE, {
+      eventEmitter.emit(EditorEvents.EVENT_EDITOR_HISTORY_PUSH, {
         payload: deleteBlocks.map((block) => {
           const currentIndex = blocksRef.current.findIndex((v) => v.id === block.id);
           return {

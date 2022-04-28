@@ -55,7 +55,7 @@ export class HistoryModule implements Module {
     this.eventEmitter.info('init history module');
 
     const sub = this.eventEmitter
-      .select<{ payload: Op | Op[]; source: Source }>(EditorEvents.EVENT_EDITOR_CHANGE)
+      .select<{ payload: Op | Op[]; source: Source }>(EditorEvents.EVENT_EDITOR_HISTORY_PUSH)
       .subscribe(({ payload, source }) => {
         if (source === EventSources.USER) {
           if (this.isUpdating) return;
@@ -210,6 +210,9 @@ export class HistoryModule implements Module {
     });
     this.tmpUndo = [];
     this.stack.undo.push(optimizedUndo);
+    setTimeout(() => {
+      this.eventEmitter.emit(EditorEvents.EVENT_EDITOR_CHANGED, optimizedUndo);
+    });
 
     if (this.stack.undo.length > this.options.maxStack) {
       this.stack.undo.shift();

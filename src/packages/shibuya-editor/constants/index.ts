@@ -43,7 +43,8 @@ export const KeyCodes = {
 
 export const EditorEvents = {
   EVENT_EDITOR_CREATE: 'editor-create',
-  EVENT_EDITOR_CHANGE: 'editor-change',
+  EVENT_EDITOR_HISTORY_PUSH: 'editor-history-push', // for undo/redo
+  EVENT_EDITOR_CHANGED: 'editor-changed',
   EVENT_BLOCK_RERENDER: 'block-rerender',
   EVENT_BLOCK_SELECTED: 'block-selected', // Selector Mode
   EVENT_SELECTION_CHANGE: 'selection-change',

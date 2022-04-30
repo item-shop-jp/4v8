@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { debounce } from 'throttle-debounce';
+import { debounce, throttle } from 'throttle-debounce';
 import { Module } from '../types/module';
 import { EventEmitter } from '../utils/event-emitter';
 import { KeyCodes, EditorEvents } from '../constants';
@@ -35,11 +35,9 @@ export class KeyBoardModule implements Module {
   private eventEmitter;
   private editor;
   private bindings: KeyBindingProps[];
-  private sync = debounce(200, (blockId?: string, blockElement?: HTMLElement) => {
-    this.editor.sync(blockId, blockElement, this.forceUpdate);
-    this.forceUpdate = false;
+  private sync = throttle(200, (blockId?: string, blockElement?: HTMLElement) => {
+    this.editor.sync(blockId, blockElement, false);
   });
-  private forceUpdate = false;
   constructor({ eventEmitter, editor }: Props) {
     this.eventEmitter = eventEmitter;
     this.editor = editor;
@@ -169,22 +167,17 @@ export class KeyBoardModule implements Module {
 
   onCompositionEnd(e: React.CompositionEvent) {
     this.composing = false;
-    this.forceUpdate = true;
-    const nativeRange = this.editor.getNativeRange();
-    const [blockId, blockElement] = getBlockId(nativeRange?.startContainer as HTMLElement);
-    if (!blockId || !blockElement) {
-      return;
-    }
-    this.sync(blockId, blockElement);
   }
 
   onInput(e: React.FormEvent) {
-    const nativeRange = this.editor.getNativeRange();
-    const [blockId, blockElement] = getBlockId(nativeRange?.startContainer as HTMLElement);
-    if (this.composing || !blockId || !blockElement) {
-      return;
-    }
-    this.sync(blockId, blockElement);
+    setTimeout(() => {
+      const nativeRange = this.editor.getNativeRange();
+      const [blockId, blockElement] = getBlockId(nativeRange?.startContainer as HTMLElement);
+      if (this.composing || !blockId || !blockElement) {
+        return;
+      }
+      this.sync(blockId, blockElement);
+    });
   }
 
   onKeyPress(e: React.KeyboardEvent) {}

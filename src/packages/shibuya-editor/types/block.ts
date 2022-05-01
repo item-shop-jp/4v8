@@ -4,6 +4,7 @@ export type BlockType =
   | 'PARAGRAPH'
   | 'ORDEREDLIST'
   | 'BULLETLIST'
+  | 'BLOCKQUOTE'
   | 'HEADER1'
   | 'HEADER2'
   | 'HEADER3'

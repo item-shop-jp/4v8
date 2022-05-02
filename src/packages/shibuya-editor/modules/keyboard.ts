@@ -101,6 +101,11 @@ export class KeyBoardModule implements Module {
     });
 
     this.addBinding({
+      key: KeyCodes.SPACE,
+      handler: this._handleSpace.bind(this),
+    });
+
+    this.addBinding({
       key: KeyCodes.TAB,
       composing: true,
       prevented: true,
@@ -433,6 +438,16 @@ export class KeyBoardModule implements Module {
     event: React.KeyboardEvent,
   ) {
     editor.getModule('history').redo();
+  }
+
+  private _handleSpace(
+    caretPosition: CaretPosition,
+    editor: EditorController,
+    event: React.KeyboardEvent,
+  ) {
+    setTimeout(() => {
+      editor.getModule('markdown-shortcut').execute();
+    }, 20);
   }
 
   private _handleBold(

@@ -3,8 +3,10 @@ import { Module } from '../types/module';
 import { EventEmitter } from '../utils/event-emitter';
 import { EditorController } from '../types/editor';
 import { CaretPosition } from '../types/caret';
-import { deleteInlineContents } from '../utils/block';
+import { deleteInlineContents, setAttributesForInlineContents } from '../utils/block';
 import { BlockType } from '../types/block';
+import { InlineAttributes } from '../types/inline';
+import { copyObject } from '../utils/object';
 
 interface Props {
   eventEmitter: EventEmitter;
@@ -45,6 +47,13 @@ export class MarkdownShortcutModule implements Module {
       pattern: /^#{1,6}\s/,
       handler: this._handleHeader.bind(this),
     });
+
+    this.addShortcut({
+      name: 'bold',
+      type: 'inline',
+      pattern: /(.*)((?:\*|_){2})(.+?)((?:\*|_){2})/,
+      handler: this._handleBold.bind(this),
+    });
   }
 
   onDestroy() {
@@ -69,9 +78,35 @@ export class MarkdownShortcutModule implements Module {
     });
   }
 
+  formatInline(
+    blockId: string,
+    index: number,
+    beforeLength: number,
+    afterLength: number,
+    attributes: InlineAttributes,
+  ) {
+    const block = this.editor.getBlock(blockId);
+    if (!block) return;
+    const deletedContents = deleteInlineContents(
+      deleteInlineContents(block.contents, index, beforeLength),
+      index,
+      afterLength,
+    );
+    this.editor.updateBlock({
+      ...block,
+      contents: deleteInlineContents(block.contents, index, length),
+    });
+    this.editor.formatText(block.id, index, length, attributes);
+    setTimeout(() => {
+      this.editor.setCaretPosition({
+        blockId: block.id,
+        index,
+      });
+    }, 10);
+  }
+
   formatBlock(blockId: string, type: BlockType, index: number, length: number) {
     const block = this.editor.getBlock(blockId);
-    console.log(type);
     if (!block) return;
     this.editor.updateBlock({
       ...block,
@@ -114,5 +149,37 @@ export class MarkdownShortcutModule implements Module {
         this.formatBlock(caret.blockId, 'HEADER6', 0, length);
         break;
     }
+  }
+
+  private _handleBold(caret: CaretPosition, match: RegExpMatchArray) {
+    const index = stringLength(match[1]);
+    const openeTagLength = stringLength(match[2]);
+    const contentLength = stringLength(match[3]);
+    const closeTagLength = stringLength(match[4]);
+
+    const block = this.editor.getBlock(caret.blockId);
+    if (!block) return;
+    const deletedContents = deleteInlineContents(
+      deleteInlineContents(copyObject(block.contents), index, openeTagLength),
+      index + contentLength,
+      closeTagLength,
+    );
+    const formatedContents = setAttributesForInlineContents(
+      deletedContents,
+      { bold: true },
+      index,
+      contentLength,
+    );
+    this.editor.updateBlock({
+      ...block,
+      contents: formatedContents,
+    });
+    this.editor.render([block.id]);
+    setTimeout(() => {
+      this.editor.setCaretPosition({
+        blockId: block.id,
+        index: index + contentLength,
+      });
+    }, 10);
   }
 }

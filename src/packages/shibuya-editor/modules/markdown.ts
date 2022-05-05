@@ -1,4 +1,5 @@
 import stringLength from 'string-length';
+import * as otText from 'ot-text-unicode';
 import { Module } from '../types/module';
 import { EventEmitter } from '../utils/event-emitter';
 import { EditorController } from '../types/editor';
@@ -7,6 +8,7 @@ import { deleteInlineContents, setAttributesForInlineContents } from '../utils/b
 import { BlockType } from '../types/block';
 import { InlineAttributes } from '../types/inline';
 import { copyObject } from '../utils/object';
+import { EventSources } from '../constants';
 
 interface Props {
   eventEmitter: EventEmitter;
@@ -37,14 +39,14 @@ export class MarkdownShortcutModule implements Module {
     this.addShortcut({
       name: 'blockquote',
       type: 'block',
-      pattern: /^>\s/,
+      pattern: /^>$/,
       handler: this._handleBlockquote.bind(this),
     });
 
     this.addShortcut({
       name: 'header',
       type: 'block',
-      pattern: /^#{1,6}\s/,
+      pattern: /^#{1,6}$/,
       handler: this._handleHeader.bind(this),
     });
 
@@ -64,43 +66,63 @@ export class MarkdownShortcutModule implements Module {
     this.shortcuts.push(props);
   }
 
-  execute() {
+  execute(): boolean {
+    let isExecuted = false;
     const caret = this.editor.getCaretPosition();
-    if (!caret) return;
+    if (!caret) return isExecuted;
     const block = this.editor.getBlock(caret.blockId);
-    if (!block) return;
-    const plainText = block.contents.map((v) => v.text).join('');
+    if (!block) return isExecuted;
+    let targetText = block.contents.map((v) => v.text).join('');
+    const targetLength = stringLength(targetText) - caret.index;
+    if (targetLength > 0) {
+      const removeOp = otText.remove(caret.index, targetLength);
+      targetText = otText.type.apply(targetText, removeOp);
+    }
+
     this.shortcuts.forEach((shortcut) => {
-      const match = plainText.match(shortcut.pattern);
+      const match = targetText.match(shortcut.pattern);
       if (match) {
         shortcut.handler(caret, match);
+        isExecuted = true;
       }
     });
+    return isExecuted;
   }
 
   formatInline(
     blockId: string,
     index: number,
-    beforeLength: number,
-    afterLength: number,
+    openeTagLength: number,
+    contentLength: number,
+    closeTagLength: number,
     attributes: InlineAttributes,
   ) {
     const block = this.editor.getBlock(blockId);
     if (!block) return;
     const deletedContents = deleteInlineContents(
-      deleteInlineContents(block.contents, index, beforeLength),
-      index,
-      afterLength,
+      deleteInlineContents(block.contents, index, openeTagLength),
+      index + contentLength,
+      closeTagLength,
     );
     this.editor.updateBlock({
       ...block,
-      contents: deleteInlineContents(block.contents, index, length),
+      contents: deletedContents,
     });
-    this.editor.formatText(block.id, index, length, attributes);
+    const formatedContents = setAttributesForInlineContents(
+      copyObject(deletedContents),
+      attributes,
+      index,
+      contentLength,
+    );
+    this.editor.updateBlock({
+      ...block,
+      contents: formatedContents,
+    });
+    this.editor.render([block.id], true);
     setTimeout(() => {
       this.editor.setCaretPosition({
         blockId: block.id,
-        index,
+        index: index + contentLength,
       });
     }, 10);
   }
@@ -129,7 +151,7 @@ export class MarkdownShortcutModule implements Module {
 
   private _handleHeader(caret: CaretPosition, match: RegExpMatchArray) {
     const length = stringLength(match[0]);
-    switch (length - 1) {
+    switch (length) {
       case 1:
         this.formatBlock(caret.blockId, 'HEADER1', 0, length);
         break;
@@ -156,29 +178,9 @@ export class MarkdownShortcutModule implements Module {
     const openeTagLength = stringLength(match[2]);
     const contentLength = stringLength(match[3]);
     const closeTagLength = stringLength(match[4]);
-
-    const block = this.editor.getBlock(caret.blockId);
-    if (!block) return;
-    const deletedContents = deleteInlineContents(
-      deleteInlineContents(copyObject(block.contents), index, openeTagLength),
-      index + contentLength,
-      closeTagLength,
-    );
-    const formatedContents = setAttributesForInlineContents(
-      deletedContents,
-      { bold: true },
-      index,
-      contentLength,
-    );
-    this.editor.updateBlock({
-      ...block,
-      contents: formatedContents,
-    });
-    this.editor.render([block.id]);
     setTimeout(() => {
-      this.editor.setCaretPosition({
-        blockId: block.id,
-        index: index + contentLength,
+      this.formatInline(caret.blockId, index, openeTagLength, contentLength, closeTagLength, {
+        bold: true,
       });
     }, 10);
   }

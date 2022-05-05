@@ -688,8 +688,12 @@ export function useEditor({
     [],
   );
 
-  const render = React.useCallback((affectedIds: string[] = []) => {
-    eventEmitter.emit(EditorEvents.EVENT_BLOCK_RERENDER, affectedIds);
+  const render = React.useCallback((affectedIds: string[] = [], isForce = false) => {
+    if (isForce) {
+      eventEmitter.emit(EditorEvents.EVENT_BLOCK_RERENDER_FORCE, affectedIds);
+    } else {
+      eventEmitter.emit(EditorEvents.EVENT_BLOCK_RERENDER, affectedIds);
+    }
   }, []);
 
   const numberingList = React.useCallback(() => {

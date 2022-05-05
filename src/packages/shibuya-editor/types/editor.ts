@@ -64,7 +64,7 @@ export interface EditorController {
   updateCaretRect(rect?: DOMRect): DOMRect | null;
   prev(params?: PositionParams): boolean;
   next(params?: PositionParams): boolean;
-  render(affectedIds?: string[]): void;
+  render(affectedIds?: string[], isForce?: boolean): void;
   numberingList(): void;
   addModule(
     name: string,

@@ -445,9 +445,10 @@ export class KeyBoardModule implements Module {
     editor: EditorController,
     event: React.KeyboardEvent,
   ) {
-    setTimeout(() => {
-      editor.getModule('markdown-shortcut').execute();
-    }, 20);
+    const isExecuted = editor.getModule('markdown-shortcut').execute();
+    if (isExecuted) {
+      event.preventDefault();
+    }
   }
 
   private _handleBold(

@@ -300,8 +300,14 @@ export class KeyBoardModule implements Module {
         return;
       }
 
+      // Revert to "PARAGRAPH" for header elements
+      let blockType = block.type;
+      if (['HEADER1', 'HEADER2', 'HEADER3', 'HEADER4', 'HEADER5', 'HEADER6'].includes(block.type)) {
+        blockType = 'PARAGRAPH';
+      }
+
       editor.getModule('editor').createBlock({
-        type: block.type,
+        type: blockType,
         attributes: block.attributes,
       });
     } else {

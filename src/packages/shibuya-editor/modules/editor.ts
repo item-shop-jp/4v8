@@ -141,7 +141,12 @@ export class EditorModule implements Module {
       ...blocks[currentIndex],
       contents: first.length < 1 ? [createInline('TEXT')] : first,
     };
-    const lastBlock = createBlock('PARAGRAPH', last, blocks[currentIndex].attributes);
+    let blockType: BlockType = 'PARAGRAPH';
+    if (['ORDEREDLIST', 'BULLETLIST'].includes(blocks[currentIndex].type)) {
+      blockType = blocks[currentIndex].type;
+    }
+
+    const lastBlock = createBlock(blockType, last, blocks[currentIndex].attributes);
     this.editor.createBlock(lastBlock, firstBlock.id);
     this.editor.updateBlock(firstBlock);
     this.editor.numberingList();

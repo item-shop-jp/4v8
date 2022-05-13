@@ -211,7 +211,7 @@ export class HistoryModule implements Module {
     this.tmpUndo = [];
     this.stack.undo.push(optimizedUndo);
     setTimeout(() => {
-      this.eventEmitter.emit(EditorEvents.EVENT_EDITOR_CHANGED, optimizedUndo);
+      this.eventEmitter.emit(EditorEvents.EVENT_EDITOR_CHANGED, copyObject(optimizedUndo));
     });
 
     if (this.stack.undo.length > this.options.maxStack) {
@@ -280,6 +280,18 @@ export class HistoryModule implements Module {
       });
 
       this.stack.redo.push(ops);
+      setTimeout(() => {
+        const chenged = ops.map((v) => {
+          if (v.type !== 'update_contents') return v;
+          return {
+            ...v,
+            undo: v.redo,
+            redo: v.undo,
+          };
+        });
+        this.eventEmitter.emit(EditorEvents.EVENT_EDITOR_CHANGED, copyObject(chenged));
+      });
+
       this.editor.numberingList();
       this.editor.render(affectedIds);
       this.isUpdating = false;
@@ -348,6 +360,9 @@ export class HistoryModule implements Module {
         }
       });
       this.stack.undo.push(ops);
+      setTimeout(() => {
+        this.eventEmitter.emit(EditorEvents.EVENT_EDITOR_CHANGED, copyObject(ops));
+      });
       this.editor.numberingList();
       this.editor.render(affectedIds);
       this.isUpdating = false;

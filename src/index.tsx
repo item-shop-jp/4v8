@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import styled, { css } from 'styled-components';
-import { LogLevels } from './packages/shibuya-editor/constants';
+import { EditorEvents, LogLevels } from './packages/shibuya-editor/constants';
 import { EditorController } from './packages/shibuya-editor/types/editor';
 import { Editor, Paragraph, Header1 } from './packages/shibuya-editor';
 
@@ -60,17 +60,24 @@ export const Container: React.VFC = React.memo(() => {
   }, []);
 
   React.useEffect(() => {
-    console.log(editorRef1.current);
-    editorRef1.current?.setBlocks(
+    if (!editorRef1.current || !editorRef2.current) return;
+    editorRef1.current.setBlocks(
       JSON.parse(
         '[{"id":"OodywE2HkiW1KeTBPCa96","contents":[{"id":"OYbvu_ZB9QppDCeIOSfbZ","attributes":{"bold": true},"text":"今日はいい天気ですね🤗","type":"TEXT","isEmbed":false}],"attributes":{},"type":"PARAGRAPH"},{"id":"zB28GJ_DWSjPfe_IGov5-","contents":[{"id":"lNkUDGfX2rsgZhzq_lZ3f","text":"﻿","type":"TEXT","attributes":{},"isEmbed":false}],"attributes":{},"type":"PARAGRAPH"}]',
       ),
     );
-    editorRef2.current?.setBlocks(
+    editorRef2.current.setBlocks(
       JSON.parse(
         '[{"id":"OodywE2HkiW1KeTBPCa9s","contents":[{"id":"OYbvu_ZB9QppDCeIOSfbA","attributes":{"bold": true},"text":"今日は悪い天気ですね🤗","type":"TEXT","isEmbed":false}],"attributes":{},"type":"PARAGRAPH"},{"id":"zB28GJ_DWSjPfe_IGov6-","contents":[{"id":"lNkUDGfX2rsgZhzq_lZ3e","text":"﻿","type":"TEXT","attributes":{},"isEmbed":false}],"attributes":{},"type":"PARAGRAPH"}]',
       ),
     );
+    const eventEmitter = editorRef1.current.getEventEmitter();
+    eventEmitter.select(EditorEvents.EVENT_EDITOR_CHANGED).subscribe((payload) => {
+      console.log(payload);
+      // payload.forEach((v: any) => {
+      //   console.log(JSON.stringify(editorRef1.current?.getBlock(v.blockId)));
+      // });
+    });
   });
 
   return (

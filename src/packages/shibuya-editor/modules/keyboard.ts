@@ -101,6 +101,11 @@ export class KeyBoardModule implements Module {
     });
 
     this.addBinding({
+      key: KeyCodes.SPACE,
+      handler: this._handleSpace.bind(this),
+    });
+
+    this.addBinding({
       key: KeyCodes.TAB,
       composing: true,
       prevented: true,
@@ -295,8 +300,14 @@ export class KeyBoardModule implements Module {
         return;
       }
 
+      // Revert to "PARAGRAPH" for header elements
+      let blockType = block.type;
+      if (['HEADER1', 'HEADER2', 'HEADER3', 'HEADER4', 'HEADER5', 'HEADER6'].includes(block.type)) {
+        blockType = 'PARAGRAPH';
+      }
+
       editor.getModule('editor').createBlock({
-        type: block.type,
+        type: blockType,
         attributes: block.attributes,
       });
     } else {
@@ -433,6 +444,17 @@ export class KeyBoardModule implements Module {
     event: React.KeyboardEvent,
   ) {
     editor.getModule('history').redo();
+  }
+
+  private _handleSpace(
+    caretPosition: CaretPosition,
+    editor: EditorController,
+    event: React.KeyboardEvent,
+  ) {
+    const isExecuted = editor.getModule('markdown-shortcut').execute();
+    if (isExecuted) {
+      event.preventDefault();
+    }
   }
 
   private _handleBold(

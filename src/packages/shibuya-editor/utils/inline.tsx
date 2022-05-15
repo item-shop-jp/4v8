@@ -21,7 +21,7 @@ export function createInline(
     id: nanoid(),
     text,
     type,
-    attributes: {},
+    attributes,
     isEmbed: isEmbed(type),
   };
 }

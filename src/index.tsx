@@ -73,7 +73,7 @@ export const Container: React.VFC = React.memo(() => {
     );
     const eventEmitter = editorRef1.current.getEventEmitter();
     eventEmitter.select(EditorEvents.EVENT_EDITOR_CHANGED).subscribe((payload) => {
-      console.log(payload);
+      //console.log(payload);
       // payload.forEach((v: any) => {
       //   console.log(JSON.stringify(editorRef1.current?.getBlock(v.blockId)));
       // });

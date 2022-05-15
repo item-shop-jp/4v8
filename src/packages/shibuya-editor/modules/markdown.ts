@@ -56,6 +56,20 @@ export class MarkdownShortcutModule implements Module {
     });
 
     this.addShortcut({
+      name: 'ordered-list',
+      type: 'block',
+      pattern: /^1.$/,
+      handler: this._handleOrderedList.bind(this),
+    });
+
+    this.addShortcut({
+      name: 'bullet-list',
+      type: 'block',
+      pattern: /^\*$/,
+      handler: this._handleBulletList.bind(this),
+    });
+
+    this.addShortcut({
       name: 'bold',
       type: 'inline',
       pattern: /(.*)((?:\*|_){2})(.+?)((?:\*|_){2})/,
@@ -181,6 +195,14 @@ export class MarkdownShortcutModule implements Module {
 
   private _handleBlockquote(caret: CaretPosition, match: RegExpMatchArray) {
     this.formatBlock(caret.blockId, 'BLOCKQUOTE', 0, stringLength(match[0]));
+  }
+
+  private _handleOrderedList(caret: CaretPosition, match: RegExpMatchArray) {
+    this.formatBlock(caret.blockId, 'ORDEREDLIST', 0, stringLength(match[0]));
+  }
+
+  private _handleBulletList(caret: CaretPosition, match: RegExpMatchArray) {
+    this.formatBlock(caret.blockId, 'BULLETLIST', 0, stringLength(match[0]));
   }
 
   private _handleHeader(caret: CaretPosition, match: RegExpMatchArray) {

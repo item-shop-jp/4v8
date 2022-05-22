@@ -4,6 +4,8 @@ import { Subscription } from 'rxjs';
 import {
   BlockContainer,
   Header1,
+  Header2,
+  Header3,
   OrderedList,
   BulletList,
   Blockquote,
@@ -96,6 +98,8 @@ export const Editor = React.memo(
         'block/orderedlist': OrderedList,
         'block/bulletlist': BulletList,
         'block/header1': Header1,
+        'block/header2': Header2,
+        'block/header3': Header3,
         'block/blockquote': Blockquote,
         'inline/text': InlineText,
         'inline/style/bold': Bold,

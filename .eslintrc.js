@@ -23,5 +23,4 @@ module.exports = {
     'react/display-name': [0, { acceptTranspilerName: true }],
     camelcase: [1, { properties: 'always' }],
   },
-  ignorePatterns: ['**/*.ts', '**/*.tsx'],
 };

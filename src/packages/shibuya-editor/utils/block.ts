@@ -350,7 +350,6 @@ export function splitInlineContents(contents: Inline[], index: number): [Inline[
           lastContents.push({ ...contents[i], id: nanoid(), text: lastText });
         }
       } else {
-        length--;
         lastContents.push(contents[i]);
       }
     } else {
@@ -478,7 +477,7 @@ export function getDuplicateAttributes(
     }
     const attributes = { ...r };
     Object.keys(attributes).forEach((attr) => {
-      if (!v.hasOwnProperty(attr)) {
+      if (!Object.prototype.hasOwnProperty.call(v, attr)) {
         delete attributes[attr];
       }
     });

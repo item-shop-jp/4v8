@@ -76,22 +76,44 @@ export class KeyBoardModule implements Module {
     this.addBinding({
       key: KeyCodes.ARROW_UP,
       collapsed: true,
-      handler: this._handlekeyUp.bind(this),
+      handler: this._handleKeyUp.bind(this),
     });
     this.addBinding({
       key: KeyCodes.ARROW_DOWN,
       collapsed: true,
-      handler: this._handlekeyDown.bind(this),
+      handler: this._handleKeyDown.bind(this),
     });
     this.addBinding({
       key: KeyCodes.ARROW_LEFT,
       collapsed: true,
-      handler: this._handlekeyLeft.bind(this),
+      handler: this._handleKeyLeft.bind(this),
     });
     this.addBinding({
       key: KeyCodes.ARROW_RIGHT,
       collapsed: true,
-      handler: this._handlekeyRight.bind(this),
+      handler: this._handleKeyRight.bind(this),
+    });
+
+    // selector operation
+    this.addBinding({
+      key: KeyCodes.ARROW_UP,
+      shiftKey: true,
+      handler: this._handleSelectorUp.bind(this),
+    });
+    this.addBinding({
+      key: KeyCodes.ARROW_DOWN,
+      shiftKey: true,
+      handler: this._handleSelectorDown.bind(this),
+    });
+    this.addBinding({
+      key: KeyCodes.ARROW_LEFT,
+      shiftKey: true,
+      handler: this._handleSelectorLeft.bind(this),
+    });
+    this.addBinding({
+      key: KeyCodes.ARROW_RIGHT,
+      shiftKey: true,
+      handler: this._handleSelectorRight.bind(this),
     });
 
     this.addBinding({
@@ -315,7 +337,7 @@ export class KeyBoardModule implements Module {
     }
   }
 
-  private _handlekeyLeft(
+  private _handleKeyLeft(
     caretPosition: CaretPosition,
     editor: EditorController,
     event: React.KeyboardEvent,
@@ -337,7 +359,7 @@ export class KeyBoardModule implements Module {
     setTimeout(() => editor.updateCaretRect(), 10);
   }
 
-  private _handlekeyRight(
+  private _handleKeyRight(
     caretPosition: CaretPosition,
     editor: EditorController,
     event: React.KeyboardEvent,
@@ -359,7 +381,7 @@ export class KeyBoardModule implements Module {
     setTimeout(() => editor.updateCaretRect(), 10);
   }
 
-  private _handlekeyUp(
+  private _handleKeyUp(
     caretPosition: CaretPosition,
     editor: EditorController,
     event: React.KeyboardEvent,
@@ -372,7 +394,7 @@ export class KeyBoardModule implements Module {
     }
   }
 
-  private _handlekeyDown(
+  private _handleKeyDown(
     caretPosition: CaretPosition,
     editor: EditorController,
     event: React.KeyboardEvent,
@@ -544,5 +566,58 @@ export class KeyBoardModule implements Module {
       editor.setCaretPosition(caret);
       editor.updateCaretRect();
     }, 10);
+  }
+
+  private _handleSelectorUp(
+    caretPosition: CaretPosition,
+    editor: EditorController,
+    event: React.KeyboardEvent,
+  ) {
+    if (caretPosition.isTop) {
+      const block = editor.getBlock(caretPosition.blockId);
+      if (caretPosition.index === 0 && block) {
+        event.preventDefault();
+        editor.getModule('selector').selectBlocks([block]);
+        editor.getModule('selector').setStart(block.id);
+        return;
+      }
+
+      console.log('top');
+    }
+  }
+
+  private _handleSelectorDown(
+    caretPosition: CaretPosition,
+    editor: EditorController,
+    event: React.KeyboardEvent,
+  ) {
+    if (caretPosition.isBottom) {
+      const block = editor.getBlock(caretPosition.blockId);
+      const blockLength = editor.getBlockLength(caretPosition.blockId) ?? 0;
+      if (caretPosition.length === blockLength - caretPosition.index && block) {
+        event.preventDefault();
+        editor.getModule('selector').selectBlocks([block]);
+        editor.getModule('selector').setStart(block.id);
+        return;
+      }
+    }
+  }
+
+  private _handleSelectorLeft(
+    caretPosition: CaretPosition,
+    editor: EditorController,
+    event: React.KeyboardEvent,
+  ) {
+    const caret = editor.getCaretPosition();
+    console.log('left');
+  }
+
+  private _handleSelectorRight(
+    caretPosition: CaretPosition,
+    editor: EditorController,
+    event: React.KeyboardEvent,
+  ) {
+    const caret = editor.getCaretPosition();
+    console.log('right');
   }
 }

@@ -41,6 +41,7 @@ export function decimalToAlphabet(num: number) {
     'z',
   ];
   let dest = '';
+  /* eslint-disable-next-line */
   while (true) {
     const remainder = --num % alphabet.length;
     dest = alphabet[remainder] + dest;

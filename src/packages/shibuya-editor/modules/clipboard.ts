@@ -1,3 +1,4 @@
+import * as React from 'react';
 import { Subscription } from 'rxjs';
 import { nanoid } from 'nanoid';
 import { Module } from '../types/module';
@@ -42,9 +43,11 @@ export class ClipboardModule implements Module {
           if (!this.clipboardEl || blockIds.length < 1) return;
           const range = new Range();
           const selection = document.getSelection();
+          if (!selection) return;
           range.setStart(this.clipboardEl, 0);
           range.setEnd(this.clipboardEl, 0);
-          selection?.addRange(range);
+          selection.removeAllRanges();
+          selection.addRange(range);
         }),
     );
   }

@@ -1,3 +1,4 @@
+import * as React from 'react';
 import { throttle } from 'throttle-debounce';
 import { Module } from '../types/module';
 import { EventEmitter } from '../utils/event-emitter';
@@ -97,14 +98,26 @@ export class SelectorModule implements Module {
     }
 
     if (this.enabled) {
-      this.selectedBlocks = selectedBlocks;
-      this.sendBlockSelectedEvent(blockIds);
+      this.selectBlocks(selectedBlocks);
     }
   });
 
   constructor({ eventEmitter, editor }: Props) {
     this.editor = editor;
     this.eventEmitter = eventEmitter;
+  }
+
+  selectBlocks(blocks: Block[]) {
+    this.selectedBlocks = blocks;
+    this.sendBlockSelectedEvent(blocks.map((v) => v.id));
+  }
+
+  setStart(id: string) {
+    this.position.start = id;
+  }
+
+  setEnd(id: string) {
+    this.position.end = id;
   }
 
   sendBlockSelectedEvent(blockIds: string[]) {
@@ -118,6 +131,20 @@ export class SelectorModule implements Module {
       key: KeyCodes.BACKSPACE,
       prevented: true,
       handler: this._handleBackspace.bind(this),
+    });
+
+    this.addBinding({
+      key: KeyCodes.ARROW_UP,
+      prevented: true,
+      shiftKey: true,
+      handler: this._handleSelectorUp.bind(this),
+    });
+
+    this.addBinding({
+      key: KeyCodes.ARROW_DOWN,
+      prevented: true,
+      shiftKey: true,
+      handler: this._handleSelectorDown.bind(this),
     });
   }
 
@@ -209,5 +236,33 @@ export class SelectorModule implements Module {
     if (selectedBlocks.length < 1) return;
     editor.getModule('editor').deleteBlocks(selectedBlocks.map((block) => block.id));
     this.reset();
+  }
+
+  private _handleSelectorUp() {
+    const blocks = this.editor.getBlocks();
+    const startIndex = this.selectedBlocks.findIndex((v) => v.id === this.position.start);
+    if (startIndex === -1) return;
+    if (startIndex === this.selectedBlocks.length - 1) {
+      const index = blocks.findIndex((v) => this.selectedBlocks[0].id === v.id);
+      if (index === -1 || !blocks[index - 1]) return;
+      this.selectBlocks([blocks[index - 1], ...this.selectedBlocks]);
+    } else {
+      this.selectBlocks(this.selectedBlocks.slice(0, -1));
+    }
+  }
+
+  private _handleSelectorDown() {
+    const blocks = this.editor.getBlocks();
+    const startIndex = this.selectedBlocks.findIndex((v) => v.id === this.position.start);
+    if (startIndex === -1) return;
+    if (startIndex === 0) {
+      const index = blocks.findIndex(
+        (v) => this.selectedBlocks[this.selectedBlocks.length - 1].id === v.id,
+      );
+      if (index === -1 || !blocks[index + 1]) return;
+      this.selectBlocks([...this.selectedBlocks, blocks[index + 1]]);
+    } else {
+      this.selectBlocks(this.selectedBlocks.slice(1));
+    }
   }
 }

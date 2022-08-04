@@ -42,7 +42,7 @@ export class SelectorModule implements Module {
   private selectedBlocks: Block[] = [];
   private bindings: KeyBindingProps[] = [];
 
-  mouseMove = throttle(100, (e: MouseEvent) => {
+  mouseMove = throttle(20, (e: MouseEvent) => {
     if (!this.mousePressed) return;
     const blocks = this.editor.getBlocks();
     const startIndex = blocks.findIndex((v) => v.id === this.position.start);

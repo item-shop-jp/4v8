@@ -100,6 +100,7 @@ export class MarkdownShortcutModule implements Module {
     this.addShortcut({
       name: 'link',
       type: 'inline',
+      /* eslint-disable-next-line */
       pattern: /(.*)(?:\[(.+?)\])(?:\((https?\:\/\/.+?)\))/,
       handler: this._handleLink.bind(this),
     });

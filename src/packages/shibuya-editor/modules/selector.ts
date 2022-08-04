@@ -1,3 +1,4 @@
+import * as React from 'react';
 import { throttle } from 'throttle-debounce';
 import { Module } from '../types/module';
 import { EventEmitter } from '../utils/event-emitter';

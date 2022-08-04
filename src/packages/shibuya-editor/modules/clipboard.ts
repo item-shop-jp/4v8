@@ -1,3 +1,4 @@
+import * as React from 'react';
 import { Subscription } from 'rxjs';
 import { nanoid } from 'nanoid';
 import { Module } from '../types/module';

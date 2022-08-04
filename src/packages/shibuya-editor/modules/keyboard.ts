@@ -574,8 +574,11 @@ export class KeyBoardModule implements Module {
     event: React.KeyboardEvent,
   ) {
     if (caretPosition.isTop) {
-      if (caretPosition.index === 0) {
+      const block = editor.getBlock(caretPosition.blockId);
+      if (caretPosition.index === 0 && block) {
         event.preventDefault();
+        editor.getModule('selector').selectBlocks([block]);
+        editor.getModule('selector').setStart(block.id);
         return;
       }
 
@@ -589,9 +592,12 @@ export class KeyBoardModule implements Module {
     event: React.KeyboardEvent,
   ) {
     if (caretPosition.isBottom) {
+      const block = editor.getBlock(caretPosition.blockId);
       const blockLength = editor.getBlockLength(caretPosition.blockId) ?? 0;
-      if (caretPosition.length === blockLength - caretPosition.index) {
+      if (caretPosition.length === blockLength - caretPosition.index && block) {
         event.preventDefault();
+        editor.getModule('selector').selectBlocks([block]);
+        editor.getModule('selector').setStart(block.id);
         return;
       }
     }

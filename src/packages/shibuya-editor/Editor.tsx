@@ -267,7 +267,7 @@ export const Editor = React.memo(
         };
 
         const handleMouseMove = (e: MouseEvent) => {
-          editor.getModule('selector')?.mouseMove(e);
+          editor.getModule('selector').mouseMove(e);
         };
 
         const handleMouseUp = (e: MouseEvent) => {

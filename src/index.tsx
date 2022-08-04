@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import styled, { css } from 'styled-components';
 import { EditorEvents, LogLevels } from './packages/shibuya-editor/constants';
 import { EditorController } from './packages/shibuya-editor/types/editor';
@@ -98,9 +98,9 @@ export const Container: React.VFC = React.memo(() => {
   );
 });
 
-ReactDOM.render(
+const appRoot = createRoot(document.getElementById('root') as Element);
+appRoot.render(
   <React.StrictMode>
     <Container />
   </React.StrictMode>,
-  document.getElementById('root'),
 );

@@ -35,17 +35,17 @@ interface KeyBindingProps {
 export class SelectorModule implements Module {
   private eventEmitter;
   private editor;
-  private position: Position = { start: null, end: null };
+  private startBlockId: string | null = null;
   private enabled = false;
   private mousePressed = false;
   private changed = false;
   private selectedBlocks: Block[] = [];
   private bindings: KeyBindingProps[] = [];
 
-  mouseMove = throttle(20, (e: MouseEvent) => {
+  mouseMove = throttle(100, (e: MouseEvent) => {
     if (!this.mousePressed) return;
     const blocks = this.editor.getBlocks();
-    const startIndex = blocks.findIndex((v) => v.id === this.position.start);
+    const startIndex = blocks.findIndex((v) => v.id === this.startBlockId);
     if (startIndex === -1) return;
     const [blockId] = getBlockId(e.target as HTMLElement);
     let blockIds: string[] = [];
@@ -80,8 +80,7 @@ export class SelectorModule implements Module {
       }
       selectedBlocks = copyObject(blocks.filter((v) => blockIds.includes(v.id)));
     } else {
-      this.position.end = blockId;
-      const endIndex = blocks.findIndex((v) => v.id === this.position.end);
+      const endIndex = blocks.findIndex((v) => v.id === blockId);
       if (startIndex > endIndex) {
         selectedBlocks = copyObject(blocks.slice(endIndex, startIndex + 1));
         blockIds = selectedBlocks.map((v) => v.id);
@@ -113,11 +112,7 @@ export class SelectorModule implements Module {
   }
 
   setStart(id: string) {
-    this.position.start = id;
-  }
-
-  setEnd(id: string) {
-    this.position.end = id;
+    this.startBlockId = id;
   }
 
   sendBlockSelectedEvent(blockIds: string[]) {
@@ -153,12 +148,25 @@ export class SelectorModule implements Module {
   }
 
   mouseDown(e: MouseEvent) {
+    if (e.shiftKey && this.startBlockId) {
+      const blocks = this.editor.getBlocks();
+      const [blockId] = getBlockId(e.target as HTMLElement);
+      const startIndex = blocks.findIndex((v) => v.id === this.startBlockId);
+      const endIndex = blocks.findIndex((v) => v.id === blockId);
+      if (startIndex === -1 || endIndex === -1) return;
+      this.selectBlocks(
+        blocks.slice(
+          startIndex < endIndex ? startIndex : endIndex,
+          (endIndex > startIndex ? endIndex : startIndex) + 1,
+        ),
+      );
+      return;
+    }
     this.reset();
-
     const [blockId] = getBlockId(e.target as HTMLElement);
     if (!blockId) return;
     this.mousePressed = true;
-    this.position.start = blockId;
+    this.startBlockId = blockId;
   }
 
   mouseUp(e: MouseEvent) {
@@ -173,7 +181,7 @@ export class SelectorModule implements Module {
     if (this.changed) return;
     this.mousePressed = false;
     this.enabled = false;
-    this.position = { start: null, end: null };
+    this.startBlockId = null;
     this.selectedBlocks = [];
     this.sendBlockSelectedEvent([]);
   }
@@ -240,7 +248,7 @@ export class SelectorModule implements Module {
 
   private _handleSelectorUp() {
     const blocks = this.editor.getBlocks();
-    const startIndex = this.selectedBlocks.findIndex((v) => v.id === this.position.start);
+    const startIndex = this.selectedBlocks.findIndex((v) => v.id === this.startBlockId);
     if (startIndex === -1) return;
     if (startIndex === this.selectedBlocks.length - 1) {
       const index = blocks.findIndex((v) => this.selectedBlocks[0].id === v.id);
@@ -253,7 +261,7 @@ export class SelectorModule implements Module {
 
   private _handleSelectorDown() {
     const blocks = this.editor.getBlocks();
-    const startIndex = this.selectedBlocks.findIndex((v) => v.id === this.position.start);
+    const startIndex = this.selectedBlocks.findIndex((v) => v.id === this.startBlockId);
     if (startIndex === -1) return;
     if (startIndex === 0) {
       const index = blocks.findIndex(

@@ -578,8 +578,6 @@ export class KeyBoardModule implements Module {
         editor.getModule('selector').setStart(block.id);
         return;
       }
-
-      console.log('top');
     }
   }
 
@@ -607,9 +605,7 @@ export class KeyBoardModule implements Module {
   ) {
     const blocks = editor.getBlocks();
     const blockLength = editor.getBlockLength(caretPosition.blockId) ?? 0;
-    console.log('al');
     if (blocks && caretPosition.index === 0 && caretPosition.length === blockLength) {
-      console.log('al2');
       event.preventDefault();
       editor.getModule('selector').selectBlocks(blocks);
       editor.getModule('selector').setStart(caretPosition.blockId);

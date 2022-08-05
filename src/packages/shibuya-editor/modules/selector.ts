@@ -42,7 +42,7 @@ export class SelectorModule implements Module {
   private selectedBlocks: Block[] = [];
   private bindings: KeyBindingProps[] = [];
 
-  mouseMove = throttle(100, (e: MouseEvent) => {
+  mouseMove = throttle(20, (e: MouseEvent) => {
     if (!this.mousePressed) return;
     const blocks = this.editor.getBlocks();
     const startIndex = blocks.findIndex((v) => v.id === this.startBlockId);
@@ -140,6 +140,29 @@ export class SelectorModule implements Module {
       prevented: true,
       shiftKey: true,
       handler: this._handleSelectorDown.bind(this),
+    });
+
+    this.addBinding({
+      key: KeyCodes.ARROW_UP,
+      handler: this._handleReset.bind(this),
+    });
+    this.addBinding({
+      key: KeyCodes.ARROW_DOWN,
+      handler: this._handleReset.bind(this),
+    });
+    this.addBinding({
+      key: KeyCodes.ARROW_LEFT,
+      handler: this._handleReset.bind(this),
+    });
+    this.addBinding({
+      key: KeyCodes.ARROW_RIGHT,
+      handler: this._handleReset.bind(this),
+    });
+
+    this.addBinding({
+      key: KeyCodes.A,
+      shortKey: true,
+      handler: this._handleSelectAll.bind(this),
     });
   }
 
@@ -272,5 +295,25 @@ export class SelectorModule implements Module {
     } else {
       this.selectBlocks(this.selectedBlocks.slice(1));
     }
+  }
+
+  private _handleReset(editor: EditorController, e: React.KeyboardEvent) {
+    e.preventDefault();
+    if (this.startBlockId) {
+      const length = this.editor.getBlockLength(this.startBlockId);
+      editor.setCaretPosition({
+        blockId: this.startBlockId,
+        index: length ?? 0,
+      });
+      editor.updateCaretRect();
+    }
+    this.reset();
+  }
+
+  private _handleSelectAll(editor: EditorController, event: React.KeyboardEvent) {
+    const blocks = editor.getBlocks();
+    event.preventDefault();
+    editor.getModule('selector').selectBlocks(blocks);
+    return;
   }
 }

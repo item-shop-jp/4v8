@@ -100,20 +100,17 @@ export class KeyBoardModule implements Module {
       shiftKey: true,
       handler: this._handleSelectorUp.bind(this),
     });
+
     this.addBinding({
       key: KeyCodes.ARROW_DOWN,
       shiftKey: true,
       handler: this._handleSelectorDown.bind(this),
     });
+
     this.addBinding({
-      key: KeyCodes.ARROW_LEFT,
-      shiftKey: true,
-      handler: this._handleSelectorLeft.bind(this),
-    });
-    this.addBinding({
-      key: KeyCodes.ARROW_RIGHT,
-      shiftKey: true,
-      handler: this._handleSelectorRight.bind(this),
+      key: KeyCodes.A,
+      shortKey: true,
+      handler: this._handleSelectAll.bind(this),
     });
 
     this.addBinding({
@@ -603,21 +600,20 @@ export class KeyBoardModule implements Module {
     }
   }
 
-  private _handleSelectorLeft(
+  private _handleSelectAll(
     caretPosition: CaretPosition,
     editor: EditorController,
     event: React.KeyboardEvent,
   ) {
-    const caret = editor.getCaretPosition();
-    console.log('left');
-  }
-
-  private _handleSelectorRight(
-    caretPosition: CaretPosition,
-    editor: EditorController,
-    event: React.KeyboardEvent,
-  ) {
-    const caret = editor.getCaretPosition();
-    console.log('right');
+    const blocks = editor.getBlocks();
+    const blockLength = editor.getBlockLength(caretPosition.blockId) ?? 0;
+    console.log('al');
+    if (blocks && caretPosition.index === 0 && caretPosition.length === blockLength) {
+      console.log('al2');
+      event.preventDefault();
+      editor.getModule('selector').selectBlocks(blocks);
+      editor.getModule('selector').setStart(caretPosition.blockId);
+      return;
+    }
   }
 }

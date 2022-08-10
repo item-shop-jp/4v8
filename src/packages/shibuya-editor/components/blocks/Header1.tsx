@@ -35,12 +35,7 @@ export const Header1 = React.memo(
       const innerText = (headerRef.current as HTMLElement).innerText.replaceAll(/\uFEFF/gi, '');
       setShowPlaceholder(innerText.length < 1);
     }, []);
-    useMutationObserver(headerRef, handleChangeElement, {
-      childList: true,
-      attributes: true,
-      subtree: true,
-      characterData: true,
-    });
+    useMutationObserver(headerRef, handleChangeElement);
 
     React.useEffect(() => {
       handleChangeElement();

@@ -370,24 +370,28 @@ export class HistoryModule implements Module {
   }
 
   executeJson0(blockId: string, ops: JSON0[]) {
-    const block = this.editor.getBlock(blockId);
-    if (!block) return;
-    const updatedBlock: Block = json0.type.apply(block, ops);
-    this.editor.updateBlock(
-      {
-        ...updatedBlock,
-        contents: updatedBlock.contents.map((content) => {
-          return {
-            id: content.id ?? nanoid(),
-            attributes: content.attributes ?? {},
-            text: content.text ?? '',
-            type: content.type ?? 'TEXT',
-            isEmbed: content.isEmbed ?? false,
-          };
-        }),
-      },
-      EventSources.USER,
-    );
+    try {
+      const block = this.editor.getBlock(blockId);
+      if (!block) return;
+      const updatedBlock: Block = json0.type.apply(block, ops);
+      this.editor.updateBlock(
+        {
+          ...updatedBlock,
+          contents: updatedBlock.contents.map((content) => {
+            return {
+              id: content.id ?? nanoid(),
+              attributes: content.attributes ?? {},
+              text: content.text ?? '',
+              type: content.type ?? 'TEXT',
+              isEmbed: content.isEmbed ?? false,
+            };
+          }),
+        },
+        EventSources.USER,
+      );
+    } catch (e) {
+      this.eventEmitter.info('Failed to restore hisotry', e);
+    }
   }
 
   moveCaret(ops: JSON0[], position?: CaretPosition, type: 'undo' | 'redo' = 'undo') {

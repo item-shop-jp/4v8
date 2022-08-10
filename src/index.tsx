@@ -49,7 +49,7 @@ const settings = {
   exclusiveLockMode: true,
 };
 
-export const Container: React.VFC = React.memo(() => {
+export const Container: React.FC = React.memo(() => {
   const editorRef1 = React.useRef<EditorController>(null);
   const editorRef2 = React.useRef<EditorController>(null);
   const formats = React.useMemo(() => {
@@ -60,17 +60,14 @@ export const Container: React.VFC = React.memo(() => {
   }, []);
 
   React.useEffect(() => {
-    if (!editorRef1.current || !editorRef2.current) return;
+    if (!editorRef1.current) return;
+
     editorRef1.current.setBlocks(
       JSON.parse(
         '[{"id":"OodywE2HkiW1KeTBPCa96","contents":[{"id":"OYbvu_ZB9QppDCeIOSfbZ","attributes":{"bold": true},"text":"今日はいい天気ですね🤗","type":"TEXT","isEmbed":false}],"attributes":{},"type":"PARAGRAPH"},{"id":"zB28GJ_DWSjPfe_IGov5-","contents":[{"id":"lNkUDGfX2rsgZhzq_lZ3f","text":"﻿","type":"TEXT","attributes":{},"isEmbed":false}],"attributes":{},"type":"PARAGRAPH"}]',
       ),
     );
-    editorRef2.current.setBlocks(
-      JSON.parse(
-        '[{"id":"OodywE2HkiW1KeTBPCa9s","contents":[{"id":"OYbvu_ZB9QppDCeIOSfbA","attributes":{"bold": true},"text":"今日は悪い天気ですね🤗","type":"TEXT","isEmbed":false}],"attributes":{},"type":"PARAGRAPH"},{"id":"zB28GJ_DWSjPfe_IGov6-","contents":[{"id":"lNkUDGfX2rsgZhzq_lZ3e","text":"﻿","type":"TEXT","attributes":{},"isEmbed":false}],"attributes":{},"type":"PARAGRAPH"}]',
-      ),
-    );
+
     const eventEmitter = editorRef1.current.getEventEmitter();
     eventEmitter.select(EditorEvents.EVENT_EDITOR_CHANGED).subscribe((payload) => {
       //console.log(payload);
@@ -78,14 +75,14 @@ export const Container: React.VFC = React.memo(() => {
       //   console.log(JSON.stringify(editorRef1.current?.getBlock(v.blockId)));
       // });
     });
-  });
+  }, []);
 
   return (
     <>
       <BasicContainer id="scroll1">
         <Editor settings={settings} formats={formats} readOnly={false} ref={editorRef1} />
       </BasicContainer>
-      <ScrollContainer id="scroll2">
+      {/* <ScrollContainer id="scroll2">
         <StyledEditor
           scrollContainer={'#scroll2'}
           settings={settings}
@@ -93,7 +90,7 @@ export const Container: React.VFC = React.memo(() => {
           readOnly={false}
           ref={editorRef2}
         />
-      </ScrollContainer>
+      </ScrollContainer> */}
     </>
   );
 });

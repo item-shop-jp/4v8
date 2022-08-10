@@ -6,6 +6,8 @@ export function useMutationObserver(
   options: MutationObserverInit = {
     childList: true,
     attributes: true,
+    subtree: true,
+    characterData: true,
   },
 ) {
   React.useEffect(() => {
@@ -13,5 +15,5 @@ export function useMutationObserver(
     const observer = new MutationObserver(callback);
     observer.observe(ref.current, options);
     return () => observer.disconnect();
-  }, [callback, options]);
+  }, []);
 }

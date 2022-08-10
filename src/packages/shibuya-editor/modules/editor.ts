@@ -39,7 +39,7 @@ export class EditorModule implements Module {
 
   onDestroy() {
     this.eventEmitter.info('destory editor module');
-    setTimeout(() => this.subs.unsubscribe());
+    this.subs.unsubscribe();
   }
 
   createBlock({

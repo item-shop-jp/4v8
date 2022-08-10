@@ -35,7 +35,10 @@ export class LoggerModule implements Module {
 
   onDestroy() {
     this.eventEmitter.info('destroy logger module');
-    setTimeout(() => this.subs.unsubscribe());
+    setTimeout(() => {
+      // Run one frame later to display the log just before it disappears
+      this.subs.unsubscribe();
+    });
   }
 
   private _watchLogEvents() {

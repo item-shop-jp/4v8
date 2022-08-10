@@ -42,7 +42,6 @@ export function useEditor({
   const lastCaretRectRef = React.useRef<DOMRect | null>();
   const blocksRef = React.useRef<Block[]>([]);
   const modulesRef = React.useRef<any>({});
-  const [modules, setModules] = React.useState<any>({});
 
   const focus = React.useCallback(() => {
     if (lastCaretPositionRef.current) {
@@ -418,9 +417,7 @@ export function useEditor({
         editor: editorController,
         options,
       });
-      setModules((prevModules: any) => {
-        return { ...prevModules, [name]: moduleInstance };
-      });
+      modulesRef.current = { ...modulesRef.current, [name]: moduleInstance };
       moduleInstance.onInit();
     },
     [],
@@ -442,9 +439,7 @@ export function useEditor({
           editor: editorController,
           options: options[name] ?? {},
         });
-        setModules((prevModules: any) => {
-          return { ...prevModules, [name]: moduleInstance };
-        });
+        modulesRef.current = { ...modulesRef.current, [name]: moduleInstance };
         moduleInstance.onInit();
       });
     },
@@ -476,7 +471,7 @@ export function useEditor({
     Object.keys(modulesRef.current).forEach((key) => {
       modulesRef.current[key].onDestroy();
     });
-    setModules({});
+    modulesRef.current = {};
   }, []);
 
   const sync = React.useCallback(
@@ -803,10 +798,6 @@ export function useEditor({
   //     clearInterval(interval);
   //   };
   // }, []);
-
-  React.useEffect(() => {
-    modulesRef.current = modules;
-  }, [modules]);
 
   React.useEffect(() => {
     const debouncedSelectionChange = debounce(200, (e: Event) => {

@@ -23,10 +23,12 @@ const ListItem = styled.div<Pick<OrderedListProps, 'placeholder'>>`
   padding: 2px 12px 2px;
   box-sizing: border-box;
   position: relative;
+  transition: all 0.3s;
   padding-left: calc(40px + 1.5em * var(--indent));
   ::before {
     position: absolute;
     height: 1em;
+    transition: all 0.3s;
     left: calc(8px + 1.5em * (var(--indent) - 1));
     width: 3em;
     text-align: right;

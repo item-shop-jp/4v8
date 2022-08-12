@@ -46,6 +46,15 @@ const settings = {
   scrollMarginTop: 50,
   allowAttributes: ['bold', 'strike'],
   allowFormats: [],
+  indentatableFormats: [
+    'ORDEREDLIST',
+    'BULLETLIST',
+    'PARAGRAPH',
+    'BLOCKQUOTE',
+    'HEADER1',
+    'HEADER2',
+    'HEADER3',
+  ],
   exclusiveLockMode: true,
 };
 

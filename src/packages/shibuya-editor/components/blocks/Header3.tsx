@@ -17,9 +17,10 @@ export interface Header3Props {
 const Header = styled.h3`
   font-size: 16px;
   outline: 0;
-  transition: all 0.3s, color 0.3s;
   padding: 2px 12px;
   box-sizing: border-box;
+  transition: all 0.3s;
+  padding-left: calc(12px + 1.5em * var(--indent));
   ::after {
     opacity: 0.3;
     content: attr(placeholder);

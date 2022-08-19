@@ -60,6 +60,21 @@ export class ClipboardModule implements Module {
   onPaste(event: React.ClipboardEvent) {
     event.preventDefault();
     const caretPosition = this.editor.getCaretPosition();
+
+    // file upload
+    const dataTransferItems = event.clipboardData.items ?? [];
+    if (dataTransferItems.length > 0) {
+      const files: File[] = [];
+      for (let i = 0; i < dataTransferItems.length; i++) {
+        const file = dataTransferItems[i].getAsFile();
+        if (!file) return;
+        files.push(file);
+      }
+      console.log(files);
+      this.editor.getModule('uploader').upload(files);
+      return;
+    }
+
     const clipboardJson = event.clipboardData.getData('text/shibuya-formats');
     const prevBlock = this.editor.getBlock(caretPosition?.blockId ?? '');
     if (caretPosition && prevBlock && clipboardJson) {

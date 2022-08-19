@@ -349,7 +349,11 @@ export class KeyBoardModule implements Module {
         const currentIndex = blocks.findIndex((v) => v.id === caret.blockId);
         if (currentIndex !== -1 && currentIndex > 0) {
           const nextBlockLength = editor.getBlockLength(blocks[currentIndex - 1].id) ?? 0;
-          editor.setCaretPosition({ blockId: blocks[currentIndex - 1].id, index: nextBlockLength });
+          editor.setCaretPosition({
+            blockId: blocks[currentIndex - 1].id,
+            index: nextBlockLength,
+            nextElementDirection: 'up',
+          });
         }
       }
     }

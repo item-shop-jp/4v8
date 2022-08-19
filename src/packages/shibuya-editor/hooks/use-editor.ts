@@ -76,141 +76,159 @@ export function useEditor({
     return editorRef.current.contains(selection.focusNode);
   }, []);
 
-  const prev = React.useCallback(({ index, margin = 10 }: PositionParams = {}): boolean => {
-    const position = lastCaretPositionRef.current;
-    const currentIndex = blocksRef.current.findIndex((v) => v.id === position?.blockId);
-    if (currentIndex < 1 || !blocksRef.current[currentIndex - 1]) return false;
-    if (!lastCaretRectRef.current) {
-      setCaretPosition({
-        blockId: blocksRef.current[currentIndex - 1].id,
-        index: 0,
-      });
-      return false;
-    }
-    const prevBlock = blockUtils.getBlockElementById(blocksRef.current[currentIndex - 1].id);
-    if (!prevBlock) return false;
-    let prevRect = prevBlock.getBoundingClientRect();
-    const container = getScrollContainer(scrollContainer);
-    const containerOffsetTop = container ? container.getBoundingClientRect().top : 0;
-
-    if (
-      prevRect.top <=
-      (container ? containerOffsetTop : containerOffsetTop + settings.scrollMarginTop)
-    ) {
-      if (container) {
-        container.scrollTop = currentIndex - 1 < 1 ? 0 : prevBlock.parentElement?.offsetTop ?? 0;
-      } else {
-        if (document.scrollingElement) {
-          let editorScrollTop =
-            document.scrollingElement.scrollTop + prevRect.top - settings.scrollMarginTop;
-          if (currentIndex - 1 < 1) {
-            editorScrollTop -= 30;
-          }
-          document.scrollingElement.scrollTop = editorScrollTop;
-        }
-      }
-      prevRect = prevBlock.getBoundingClientRect();
-    }
-
-    if (typeof index === 'number' && index >= 0) {
-      setTimeout(() => {
+  const prev = React.useCallback(
+    ({ index, margin = 10, blockId }: PositionParams = {}): boolean => {
+      const position = lastCaretPositionRef.current;
+      const currentIndex = blocksRef.current.findIndex(
+        (v) => v.id === (blockId ?? position?.blockId),
+      );
+      if (currentIndex < 1 || !blocksRef.current[currentIndex - 1]) return false;
+      if (!lastCaretRectRef.current) {
         setCaretPosition({
           blockId: blocksRef.current[currentIndex - 1].id,
-          index,
+          index: 0,
+          nextElementDirection: 'up',
         });
-      }, 10);
+        return false;
+      }
+      const prevBlock = blockUtils.getBlockElementById(blocksRef.current[currentIndex - 1].id);
+      if (!prevBlock) return false;
+      // for embedded elements
+      if (prevBlock.contentEditable === 'false') {
+        return prev({ blockId: prevBlock.dataset.blockId });
+      }
+      let prevRect = prevBlock.getBoundingClientRect();
+      const container = getScrollContainer(scrollContainer);
+      const containerOffsetTop = container ? container.getBoundingClientRect().top : 0;
 
-      return true;
-    }
-
-    const range = caretRangeFromPoint(
-      lastCaretRectRef.current.x,
-      prevRect.y + prevRect.height - margin,
-    );
-    const selection = document.getSelection();
-    if (!selection || !range) return false;
-    selection.setBaseAndExtent(
-      range.startContainer,
-      range.startOffset,
-      range.startContainer,
-      range.startOffset,
-    );
-    const nativeRange = getNativeRange();
-    if (!nativeRange) return false;
-    const newCaretPosition = normalizeRange(nativeRange);
-    if (!newCaretPosition) return false;
-
-    updateCaretPositionRef();
-    return true;
-  }, []);
-
-  const next = React.useCallback(({ index = 0, margin = 10 }: PositionParams = {}): boolean => {
-    const position = lastCaretPositionRef.current;
-    const currentIndex = blocksRef.current.findIndex((v) => v.id === position?.blockId);
-
-    if (currentIndex === -1 || !blocksRef.current[currentIndex + 1]) return false;
-    if (!lastCaretRectRef.current) {
-      setTimeout(() => {
-        setCaretPosition({
-          blockId: blocksRef.current[currentIndex + 1].id,
-          index,
-        });
-      }, 10);
-      return false;
-    }
-
-    const nextBlock = blockUtils.getBlockElementById(blocksRef.current[currentIndex + 1].id);
-    if (!nextBlock) return false;
-
-    let nextRect =
-      nextBlock.parentElement?.getBoundingClientRect() ?? nextBlock.getBoundingClientRect();
-    const container = getScrollContainer(scrollContainer);
-    const scrollHeight = container?.clientHeight ?? window.innerHeight;
-
-    if (container) {
-      const containerRect = container.getBoundingClientRect() ?? 0;
       if (
-        nextRect.top + nextRect.height >=
-        containerRect.top + containerRect.height - settings.scrollMarginBottom
+        prevRect.top <=
+        (container ? containerOffsetTop : containerOffsetTop + settings.scrollMarginTop)
       ) {
-        const scrollTop =
-          (nextBlock.parentElement?.offsetTop ?? 0) -
-          container.clientHeight +
-          settings.scrollMarginBottom;
-        if (container.scrollHeight > scrollTop + container.clientHeight) {
-          container.scrollTop = scrollTop;
+        if (container) {
+          container.scrollTop = currentIndex - 1 < 1 ? 0 : prevBlock.parentElement?.offsetTop ?? 0;
         } else {
-          container.scrollTop = container.scrollHeight - container.clientHeight;
+          if (document.scrollingElement) {
+            let editorScrollTop =
+              document.scrollingElement.scrollTop + prevRect.top - settings.scrollMarginTop;
+            if (currentIndex - 1 < 1) {
+              editorScrollTop -= 30;
+            }
+            document.scrollingElement.scrollTop = editorScrollTop;
+          }
         }
-        nextRect =
-          nextBlock.parentElement?.getBoundingClientRect() ?? nextBlock.getBoundingClientRect();
-      }
-    } else if (nextRect.top + nextRect.height >= scrollHeight - settings.scrollMarginBottom) {
-      if (document.scrollingElement) {
-        const nextTop = document.scrollingElement.scrollTop + nextRect.top;
-        const p = nextTop - window.innerHeight + settings.scrollMarginBottom;
-        document.scrollingElement.scrollTop = p;
+        prevRect = prevBlock.getBoundingClientRect();
       }
 
-      nextRect = nextBlock.getBoundingClientRect();
-    }
-    const range = caretRangeFromPoint(lastCaretRectRef.current.x, nextRect.y + margin);
-    const selection = document.getSelection();
-    if (!selection || !range) return false;
-    selection.setBaseAndExtent(
-      range.startContainer,
-      range.startOffset,
-      range.startContainer,
-      range.startOffset,
-    );
-    const nativeRange = getNativeRange();
-    if (!nativeRange) return false;
-    const newCaretPosition = normalizeRange(nativeRange);
-    if (!newCaretPosition) return false;
+      if (typeof index === 'number' && index >= 0) {
+        setTimeout(() => {
+          setCaretPosition({
+            blockId: blocksRef.current[currentIndex - 1].id,
+            index,
+          });
+        }, 10);
 
-    updateCaretPositionRef();
-    return true;
-  }, []);
+        return true;
+      }
+
+      const range = caretRangeFromPoint(
+        lastCaretRectRef.current.x,
+        prevRect.y + prevRect.height - margin,
+      );
+      const selection = document.getSelection();
+      if (!selection || !range) return false;
+      selection.setBaseAndExtent(
+        range.startContainer,
+        range.startOffset,
+        range.startContainer,
+        range.startOffset,
+      );
+      const nativeRange = getNativeRange();
+      if (!nativeRange) return false;
+      const newCaretPosition = normalizeRange(nativeRange);
+      if (!newCaretPosition) return false;
+
+      updateCaretPositionRef();
+      return true;
+    },
+    [],
+  );
+
+  const next = React.useCallback(
+    ({ index = 0, margin = 10, blockId }: PositionParams = {}): boolean => {
+      const position = lastCaretPositionRef.current;
+      const currentIndex = blocksRef.current.findIndex(
+        (v) => v.id === (blockId ?? position?.blockId),
+      );
+      if (currentIndex === -1 || !blocksRef.current[currentIndex + 1]) return false;
+
+      if (!lastCaretRectRef.current) {
+        setTimeout(() => {
+          setCaretPosition({
+            blockId: blocksRef.current[currentIndex + 1].id,
+            index,
+          });
+        }, 10);
+        return false;
+      }
+
+      const nextBlock = blockUtils.getBlockElementById(blocksRef.current[currentIndex + 1].id);
+      if (!nextBlock) return false;
+      // for embedded elements
+      if (nextBlock.contentEditable === 'false') {
+        return next({ blockId: nextBlock.dataset.blockId });
+      }
+      let nextRect =
+        nextBlock.parentElement?.getBoundingClientRect() ?? nextBlock.getBoundingClientRect();
+      const container = getScrollContainer(scrollContainer);
+      const scrollHeight = container?.clientHeight ?? window.innerHeight;
+
+      if (container) {
+        const containerRect = container.getBoundingClientRect() ?? 0;
+        if (
+          nextRect.top + nextRect.height >=
+          containerRect.top + containerRect.height - settings.scrollMarginBottom
+        ) {
+          const scrollTop =
+            (nextBlock.parentElement?.offsetTop ?? 0) -
+            container.clientHeight +
+            settings.scrollMarginBottom;
+          if (container.scrollHeight > scrollTop + container.clientHeight) {
+            container.scrollTop = scrollTop;
+          } else {
+            container.scrollTop = container.scrollHeight - container.clientHeight;
+          }
+          nextRect =
+            nextBlock.parentElement?.getBoundingClientRect() ?? nextBlock.getBoundingClientRect();
+        }
+      } else if (nextRect.top + nextRect.height >= scrollHeight - settings.scrollMarginBottom) {
+        if (document.scrollingElement) {
+          const nextTop = document.scrollingElement.scrollTop + nextRect.top;
+          const p = nextTop - window.innerHeight + settings.scrollMarginBottom;
+          document.scrollingElement.scrollTop = p;
+        }
+
+        nextRect = nextBlock.getBoundingClientRect();
+      }
+      const range = caretRangeFromPoint(lastCaretRectRef.current.x, nextRect.y + margin);
+      const selection = document.getSelection();
+      if (!selection || !range) return false;
+      selection.setBaseAndExtent(
+        range.startContainer,
+        range.startOffset,
+        range.startContainer,
+        range.startOffset,
+      );
+      const nativeRange = getNativeRange();
+      if (!nativeRange) return false;
+      const newCaretPosition = normalizeRange(nativeRange);
+      if (!newCaretPosition) return false;
+
+      updateCaretPositionRef();
+      return true;
+    },
+    [],
+  );
 
   const getFormats = React.useCallback((blockId: string, index: number, length: number = 0) => {
     const block = blocksRef.current.find((v) => v.id === blockId);
@@ -298,12 +316,38 @@ export function useEditor({
   }, []);
 
   const setCaretPosition = React.useCallback(
-    ({ blockId = '', index = 0, length = 0 }: Partial<CaretPosition>) => {
+    ({
+      blockId = '',
+      index = 0,
+      length = 0,
+      nextElementDirection = 'down',
+    }: Partial<CaretPosition> & { nextElementDirection?: 'up' | 'down' }) => {
       const element = blockUtils.getBlockElementById(blockId);
       if (!element) return;
+
+      // for embedded elements
+      if (element.contentEditable === 'false') {
+        const nextBlockId =
+          nextElementDirection === 'up'
+            ? (element.parentElement?.previousElementSibling as HTMLDivElement).dataset.id
+            : (element.parentElement?.nextElementSibling as HTMLDivElement).dataset.id;
+
+        if (!nextBlockId) return;
+        const nextBlockLength =
+          nextElementDirection === 'up' ? getBlockLength(nextBlockId) ?? 0 : 0;
+        setCaretPosition({
+          blockId: nextBlockId,
+          index: nextBlockLength,
+          length: 0,
+          nextElementDirection,
+        });
+        return;
+      }
+
       const selection = document.getSelection();
       if (!selection) return;
       const blockLength = getBlockLength(blockId) ?? 0;
+
       if (index < 0) {
         index = 0;
       }
@@ -317,6 +361,7 @@ export function useEditor({
         if (!start || !end) return;
         range.setStart(start.node, start.index);
         range.setEnd(end.node, end.index);
+
         selection.removeAllRanges();
         selection.addRange(range);
         updateCaretPositionRef();

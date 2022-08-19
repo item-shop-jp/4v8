@@ -10,7 +10,9 @@ import {
   SelectorModule,
   HistoryModule,
   LoggerModule,
+  MarkdownShortcutModule,
 } from '../modules';
+import { UploaderModule } from '../modules/uploader';
 
 export interface Settings {
   scrollMarginBottom: number;
@@ -25,6 +27,7 @@ export interface Settings {
 export interface PositionParams {
   index?: number;
   margin?: number;
+  blockId?: string;
 }
 
 /*
@@ -57,7 +60,9 @@ export interface EditorController {
   deleteBlocks(blockIds: string[]): void;
   deleteBlocks(blockIds: string[], source: Source): void;
   sync(blockId?: string, blockElement?: HTMLElement, forceUpdate?: boolean): void;
-  setCaretPosition(caretPosition: Partial<CaretPosition>): void;
+  setCaretPosition(
+    caretPosition: Partial<CaretPosition> & { nextElementDirection?: 'up' | 'down' },
+  ): void;
   getCaretPosition(): CaretPosition | null;
   getNativeRange(): Range | null;
   scrollIntoView(blockId?: string): void;
@@ -88,6 +93,8 @@ export interface EditorController {
   getModule(name: 'selector'): SelectorModule;
   getModule(name: 'history'): HistoryModule;
   getModule(name: 'logger'): LoggerModule;
+  getModule(name: 'markdown'): MarkdownShortcutModule;
+  getModule(name: 'uploader'): UploaderModule;
   getModule<T = any>(name: string): T | null;
   removeAllModules(): void;
   getEventEmitter(): EventEmitter;

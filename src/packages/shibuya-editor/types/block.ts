@@ -10,7 +10,8 @@ export type BlockType =
   | 'HEADER3'
   | 'HEADER4'
   | 'HEADER5'
-  | 'HEADER6';
+  | 'HEADER6'
+  | 'IMAGE';
 
 export interface Block {
   id: string;

@@ -63,7 +63,10 @@ export const BlockContainer: React.VFC<BlockProps> = React.memo(
     }, [block?.type]);
 
     return (
-      <Outer style={{ '--indent': `${block?.attributes?.indent ?? 0}` } as React.CSSProperties}>
+      <Outer
+        data-id={blockId}
+        style={{ '--indent': `${block?.attributes?.indent ?? 0}` } as React.CSSProperties}
+      >
         <Container
           suppressContentEditableWarning
           className={'notranslate'}

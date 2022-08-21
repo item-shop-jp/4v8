@@ -164,6 +164,10 @@ export class SelectorModule implements Module {
       shortKey: true,
       handler: this._handleSelectAll.bind(this),
     });
+    this.addBinding({
+      key: KeyCodes.ESC,
+      handler: this._handleReset.bind(this),
+    });
   }
 
   onDestroy() {

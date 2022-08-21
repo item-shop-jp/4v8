@@ -19,9 +19,10 @@ export interface Settings {
   scrollMarginTop: number;
   allowAttributes: string[];
   allowFormats: string[];
+  embeddedBlocks: BlockType[];
   modules?: ModuleOptions;
   collaborationLevel: 'block' | 'inline';
-  indentatableFormats: (BlockType | string)[];
+  indentatableFormats: BlockType[];
 }
 
 export interface PositionParams {

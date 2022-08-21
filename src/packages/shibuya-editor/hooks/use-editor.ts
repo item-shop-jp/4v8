@@ -622,6 +622,10 @@ export function useEditor({
   );
 
   const updateBlocks = React.useCallback((blocks: Block[]) => {
+    // If the last block is an embedded element
+    if (settings.embeddedBlocks.includes(blocks[blocks.length - 1].type)) {
+      blocks = [...blocks, blockUtils.createBlock('PARAGRAPH')];
+    }
     blocksRef.current = blocks;
   }, []);
 

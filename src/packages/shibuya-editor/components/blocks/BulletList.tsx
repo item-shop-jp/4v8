@@ -22,13 +22,15 @@ const ListItem = styled.div<Pick<BulletListProps, 'placeholder'>>`
   padding-left: calc(40px + 1.5em * var(--indent));
   box-sizing: border-box;
   position: relative;
+  transition: all 0.3s;
   ::before {
     position: absolute;
     font-family: Arial;
     font-size: 1.5em;
     line-height: 1;
     top: 3px;
-    content: '•';
+    transition: all 0.3s;
+    content: var(--content);
     left: calc(18px + 1em * var(--indent));
   }
   ${({ placeholder }) => {
@@ -53,19 +55,37 @@ export const BulletList = React.memo(
       const innerText = (headerRef.current as HTMLElement).innerText.replaceAll(/\uFEFF/gi, '');
       setShowPlaceholder(innerText.length < 1);
     }, []);
-    useMutationObserver(headerRef, handleChangeElement, {
-      childList: true,
-      attributes: true,
-      subtree: true,
-      characterData: true,
-    });
+    useMutationObserver(headerRef, handleChangeElement);
 
     React.useEffect(() => {
       handleChangeElement();
     }, []);
 
+    const memoStyle = React.useMemo(() => {
+      const numberType = (attributes?.indent ?? 0) % 3;
+      let content = '';
+      switch (numberType) {
+        case 1:
+          content = '◦';
+          break;
+        case 2:
+          content = '▪';
+          break;
+        default:
+          content = '•';
+          break;
+      }
+
+      return { '--content': `'${content}'` } as React.CSSProperties;
+    }, [attributes?.indent]);
+
     return (
-      <ListItem ref={headerRef} placeholder={showPlaceholder ? placeholder : ''} {...props}>
+      <ListItem
+        ref={headerRef}
+        style={memoStyle}
+        placeholder={showPlaceholder ? placeholder : ''}
+        {...props}
+      >
         {contents}
       </ListItem>
     );

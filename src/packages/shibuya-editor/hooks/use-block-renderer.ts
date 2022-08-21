@@ -42,6 +42,21 @@ export function useBlockRenderer({ blockId, editor }: Props): Block | null {
         }),
     );
 
+    subs.add(
+      eventEmitter
+        .select<string[]>(EditorEvents.EVENT_BLOCK_RERENDER_FORCE)
+        .pipe(filter((affectedIds) => affectedIds.includes(blockId)))
+        .subscribe(() => {
+          const currentBlock = editor.getBlock(blockId);
+          if (currentBlock) {
+            setBlock((prev) => {
+              setTimeout(() => setBlock(currentBlock));
+              return { ...currentBlock, contents: [] };
+            });
+          }
+        }),
+    );
+
     return () => {
       subs.unsubscribe();
     };

@@ -1,7 +1,17 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { Subscription } from 'rxjs';
-import { BlockContainer, Header1, OrderedList, BulletList, Paragraph } from './components/blocks';
+import {
+  BlockContainer,
+  Header1,
+  Header2,
+  Header3,
+  OrderedList,
+  BulletList,
+  Blockquote,
+  Paragraph,
+  ImageEmbed,
+} from './components/blocks';
 import { InlineText } from './components/inlines';
 import { Bold, Strike, Underline, InlineCode, Italic } from './components/styles';
 import { GlobalToolbar, BubbleToolbar } from './components/toolbar';
@@ -15,6 +25,7 @@ import {
   SelectorModule,
   HistoryModule,
   ClipboardModule,
+  MarkdownShortcutModule,
 } from './modules';
 import { getBlockElementById } from './utils/block';
 import { EditorEvents } from './constants';
@@ -23,6 +34,7 @@ import { Block } from './types/block';
 import { Settings, EditorController } from './types/editor';
 import { Link } from './components/styles/Link';
 import { LinkPopup } from './components/popups';
+import { UploaderModule } from './modules/uploader';
 
 interface Props {
   scrollContainer?: HTMLElement | string;
@@ -40,6 +52,10 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   cursor: text;
+
+  deepl-inline-translate {
+    display: none;
+  }
 `;
 const Inner = styled.div`
   flex-shrink: 0;
@@ -72,6 +88,7 @@ export const Editor = React.memo(
           scrollMarginBottom: settings.scrollMarginBottom ?? 250,
           allowAttributes: settings.allowAttributes ?? [],
           allowFormats: settings.allowFormats ?? [],
+          embeddedBlocks: settings.embeddedBlocks ?? ['IMAGE', 'FILE'],
           collaborationLevel: settings.collaborationLevel ?? 'inline',
           indentatableFormats: settings.indentatableFormats ?? ['ORDEREDLIST', 'BULLETLIST'],
         },
@@ -86,6 +103,10 @@ export const Editor = React.memo(
         'block/orderedlist': OrderedList,
         'block/bulletlist': BulletList,
         'block/header1': Header1,
+        'block/header2': Header2,
+        'block/header3': Header3,
+        'block/blockquote': Blockquote,
+        'block/image': ImageEmbed,
         'inline/text': InlineText,
         'inline/style/bold': Bold,
         'inline/style/underline': Underline,
@@ -226,6 +247,8 @@ export const Editor = React.memo(
             { name: 'selector', module: SelectorModule },
             { name: 'history', module: HistoryModule },
             { name: 'clipboard', module: ClipboardModule },
+            { name: 'markdown-shortcut', module: MarkdownShortcutModule },
+            { name: 'uploader', module: UploaderModule },
           ],
           settings?.modules ?? {},
         );

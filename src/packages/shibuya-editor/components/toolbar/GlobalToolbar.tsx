@@ -37,6 +37,14 @@ export const GlobalToolbar = React.memo(({ editor, ...props }: GlobalToolbarProp
     [formats],
   );
 
+  const handleBlockquote = React.useCallback(
+    (event: React.MouseEvent) => {
+      event.preventDefault();
+      editor.getModule('toolbar').formatBlock('BLOCKQUOTE');
+    },
+    [formats],
+  );
+
   const handleOrderedList = React.useCallback(
     (event: React.MouseEvent) => {
       event.preventDefault();
@@ -79,11 +87,14 @@ export const GlobalToolbar = React.memo(({ editor, ...props }: GlobalToolbarProp
           <Button href="#" onClick={handleHeader1}>
             H1
           </Button>
+          <Button href="#" onClick={handleBlockquote}>
+            引用
+          </Button>
           <Button href="#" onClick={handleOrderedList}>
-            Ordered List
+            番号リスト
           </Button>
           <Button href="#" onClick={handleBulletList}>
-            Bullet List
+            リスト
           </Button>
         </Container>
       )}

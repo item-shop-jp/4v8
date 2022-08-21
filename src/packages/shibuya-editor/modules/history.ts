@@ -55,7 +55,7 @@ export class HistoryModule implements Module {
     this.eventEmitter.info('init history module');
 
     const sub = this.eventEmitter
-      .select<{ payload: Op | Op[]; source: Source }>(EditorEvents.EVENT_EDITOR_CHANGE)
+      .select<{ payload: Op | Op[]; source: Source }>(EditorEvents.EVENT_EDITOR_HISTORY_PUSH)
       .subscribe(({ payload, source }) => {
         if (source === EventSources.USER) {
           if (this.isUpdating) return;
@@ -100,7 +100,9 @@ export class HistoryModule implements Module {
     if (position) {
       op.position = position;
     }
-
+    if (op.type === HistoryType.UPDATE_CONTENTS && (op.undo.length < 1 || op.redo.length < 1)) {
+      return;
+    }
     this.tmpUndo.push(op);
     if (force) {
       this.optimizeOp();
@@ -210,6 +212,9 @@ export class HistoryModule implements Module {
     });
     this.tmpUndo = [];
     this.stack.undo.push(optimizedUndo);
+    setTimeout(() => {
+      this.eventEmitter.emit(EditorEvents.EVENT_EDITOR_CHANGED, copyObject(optimizedUndo));
+    });
 
     if (this.stack.undo.length > this.options.maxStack) {
       this.stack.undo.shift();
@@ -277,6 +282,18 @@ export class HistoryModule implements Module {
       });
 
       this.stack.redo.push(ops);
+      setTimeout(() => {
+        const chenged = ops.map((v) => {
+          if (v.type !== 'update_contents') return v;
+          return {
+            ...v,
+            undo: v.redo,
+            redo: v.undo,
+          };
+        });
+        this.eventEmitter.emit(EditorEvents.EVENT_EDITOR_CHANGED, copyObject(chenged));
+      });
+
       this.editor.numberingList();
       this.editor.render(affectedIds);
       this.isUpdating = false;
@@ -345,6 +362,9 @@ export class HistoryModule implements Module {
         }
       });
       this.stack.undo.push(ops);
+      setTimeout(() => {
+        this.eventEmitter.emit(EditorEvents.EVENT_EDITOR_CHANGED, copyObject(ops));
+      });
       this.editor.numberingList();
       this.editor.render(affectedIds);
       this.isUpdating = false;
@@ -352,24 +372,28 @@ export class HistoryModule implements Module {
   }
 
   executeJson0(blockId: string, ops: JSON0[]) {
-    const block = this.editor.getBlock(blockId);
-    if (!block) return;
-    const updatedBlock: Block = json0.type.apply(block, ops);
-    this.editor.updateBlock(
-      {
-        ...updatedBlock,
-        contents: updatedBlock.contents.map((content) => {
-          return {
-            id: content.id ?? nanoid(),
-            attributes: content.attributes ?? {},
-            text: content.text ?? '',
-            type: content.type ?? 'TEXT',
-            isEmbed: content.isEmbed ?? false,
-          };
-        }),
-      },
-      EventSources.USER,
-    );
+    try {
+      const block = this.editor.getBlock(blockId);
+      if (!block) return;
+      const updatedBlock: Block = json0.type.apply(block, ops);
+      this.editor.updateBlock(
+        {
+          ...updatedBlock,
+          contents: updatedBlock.contents.map((content) => {
+            return {
+              id: content.id ?? nanoid(),
+              attributes: content.attributes ?? {},
+              text: content.text ?? '',
+              type: content.type ?? 'TEXT',
+              isEmbed: content.isEmbed ?? false,
+            };
+          }),
+        },
+        EventSources.USER,
+      );
+    } catch (e) {
+      this.eventEmitter.info('Failed to restore hisotry', e);
+    }
   }
 
   moveCaret(ops: JSON0[], position?: CaretPosition, type: 'undo' | 'redo' = 'undo') {

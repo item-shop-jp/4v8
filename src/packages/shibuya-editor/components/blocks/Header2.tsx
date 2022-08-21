@@ -6,7 +6,7 @@ import { Inline } from '../../types/inline';
 import { BlockAttributes } from '../../types/block';
 import { useMutationObserver } from '../../hooks/use-mutation-observer';
 
-export interface Header1Props {
+export interface Header2Props {
   blockId: string;
   formats?: Formats;
   contents: React.ReactNode;
@@ -14,8 +14,8 @@ export interface Header1Props {
   attributes: BlockAttributes;
   editor: EditorController;
 }
-const Header = styled.h1`
-  font-size: 24px;
+const Header = styled.h2`
+  font-size: 20px;
   outline: 0;
   padding: 2px 12px;
   box-sizing: border-box;
@@ -27,8 +27,8 @@ const Header = styled.h1`
   }
 `;
 
-export const Header1 = React.memo(
-  ({ blockId, contents, placeholder = 'Header 1', attributes, editor, ...props }: Header1Props) => {
+export const Header2 = React.memo(
+  ({ blockId, contents, placeholder = 'Header 2', attributes, editor, ...props }: Header2Props) => {
     const headerRef = React.useRef(null);
     const [showPlaceholder, setShowPlaceholder] = React.useState(false);
     const handleChangeElement = React.useCallback(() => {

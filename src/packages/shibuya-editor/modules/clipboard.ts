@@ -1,3 +1,4 @@
+import * as React from 'react';
 import { Subscription } from 'rxjs';
 import { nanoid } from 'nanoid';
 import { Module } from '../types/module';
@@ -42,9 +43,11 @@ export class ClipboardModule implements Module {
           if (!this.clipboardEl || blockIds.length < 1) return;
           const range = new Range();
           const selection = document.getSelection();
+          if (!selection) return;
           range.setStart(this.clipboardEl, 0);
           range.setEnd(this.clipboardEl, 0);
-          selection?.addRange(range);
+          selection.removeAllRanges();
+          selection.addRange(range);
         }),
     );
   }
@@ -57,6 +60,21 @@ export class ClipboardModule implements Module {
   onPaste(event: React.ClipboardEvent) {
     event.preventDefault();
     const caretPosition = this.editor.getCaretPosition();
+
+    // file upload
+    const dataTransferItems = event.clipboardData.items ?? [];
+    if (dataTransferItems.length > 0) {
+      const files: File[] = [];
+      for (let i = 0; i < dataTransferItems.length; i++) {
+        const file = dataTransferItems[i].getAsFile();
+        if (!file) return;
+        files.push(file);
+      }
+      console.log(files);
+      this.editor.getModule('uploader').upload(files);
+      return;
+    }
+
     const clipboardJson = event.clipboardData.getData('text/shibuya-formats');
     const prevBlock = this.editor.getBlock(caretPosition?.blockId ?? '');
     if (caretPosition && prevBlock && clipboardJson) {

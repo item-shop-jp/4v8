@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { debounce } from 'throttle-debounce';
+import { debounce, throttle } from 'throttle-debounce';
 import { Module } from '../types/module';
 import { EventEmitter } from '../utils/event-emitter';
 import { KeyCodes, EditorEvents } from '../constants';
@@ -35,11 +35,9 @@ export class KeyBoardModule implements Module {
   private eventEmitter;
   private editor;
   private bindings: KeyBindingProps[];
-  private sync = debounce(200, (blockId?: string, blockElement?: HTMLElement) => {
-    this.editor.sync(blockId, blockElement, this.forceUpdate);
-    this.forceUpdate = false;
+  private sync = throttle(200, (blockId?: string, blockElement?: HTMLElement) => {
+    this.editor.sync(blockId, blockElement, false);
   });
-  private forceUpdate = false;
   constructor({ eventEmitter, editor }: Props) {
     this.eventEmitter = eventEmitter;
     this.editor = editor;
@@ -78,28 +76,52 @@ export class KeyBoardModule implements Module {
     this.addBinding({
       key: KeyCodes.ARROW_UP,
       collapsed: true,
-      handler: this._handlekeyUp.bind(this),
+      handler: this._handleKeyUp.bind(this),
     });
     this.addBinding({
       key: KeyCodes.ARROW_DOWN,
       collapsed: true,
-      handler: this._handlekeyDown.bind(this),
+      handler: this._handleKeyDown.bind(this),
     });
     this.addBinding({
       key: KeyCodes.ARROW_LEFT,
       collapsed: true,
-      handler: this._handlekeyLeft.bind(this),
+      handler: this._handleKeyLeft.bind(this),
     });
     this.addBinding({
       key: KeyCodes.ARROW_RIGHT,
       collapsed: true,
-      handler: this._handlekeyRight.bind(this),
+      handler: this._handleKeyRight.bind(this),
+    });
+
+    // selector operation
+    this.addBinding({
+      key: KeyCodes.ARROW_UP,
+      shiftKey: true,
+      handler: this._handleSelectorUp.bind(this),
+    });
+
+    this.addBinding({
+      key: KeyCodes.ARROW_DOWN,
+      shiftKey: true,
+      handler: this._handleSelectorDown.bind(this),
+    });
+
+    this.addBinding({
+      key: KeyCodes.A,
+      shortKey: true,
+      handler: this._handleSelectAll.bind(this),
     });
 
     this.addBinding({
       key: KeyCodes.BACKSPACE,
       prevented: true,
       handler: this._handleBackspace.bind(this),
+    });
+
+    this.addBinding({
+      key: KeyCodes.SPACE,
+      handler: this._handleSpace.bind(this),
     });
 
     this.addBinding({
@@ -169,22 +191,17 @@ export class KeyBoardModule implements Module {
 
   onCompositionEnd(e: React.CompositionEvent) {
     this.composing = false;
-    this.forceUpdate = true;
-    const nativeRange = this.editor.getNativeRange();
-    const [blockId, blockElement] = getBlockId(nativeRange?.startContainer as HTMLElement);
-    if (!blockId || !blockElement) {
-      return;
-    }
-    this.sync(blockId, blockElement);
   }
 
   onInput(e: React.FormEvent) {
-    const nativeRange = this.editor.getNativeRange();
-    const [blockId, blockElement] = getBlockId(nativeRange?.startContainer as HTMLElement);
-    if (this.composing || !blockId || !blockElement) {
-      return;
-    }
-    this.sync(blockId, blockElement);
+    setTimeout(() => {
+      const nativeRange = this.editor.getNativeRange();
+      const [blockId, blockElement] = getBlockId(nativeRange?.startContainer as HTMLElement);
+      if (this.composing || !blockId || !blockElement) {
+        return;
+      }
+      this.sync(blockId, blockElement);
+    });
   }
 
   onKeyPress(e: React.KeyboardEvent) {}
@@ -302,8 +319,14 @@ export class KeyBoardModule implements Module {
         return;
       }
 
+      // Revert to "PARAGRAPH" for header elements
+      let blockType = block.type;
+      if (['HEADER1', 'HEADER2', 'HEADER3', 'HEADER4', 'HEADER5', 'HEADER6'].includes(block.type)) {
+        blockType = 'PARAGRAPH';
+      }
+
       editor.getModule('editor').createBlock({
-        type: block.type,
+        type: blockType,
         attributes: block.attributes,
       });
     } else {
@@ -311,7 +334,7 @@ export class KeyBoardModule implements Module {
     }
   }
 
-  private _handlekeyLeft(
+  private _handleKeyLeft(
     caretPosition: CaretPosition,
     editor: EditorController,
     event: React.KeyboardEvent,
@@ -326,14 +349,18 @@ export class KeyBoardModule implements Module {
         const currentIndex = blocks.findIndex((v) => v.id === caret.blockId);
         if (currentIndex !== -1 && currentIndex > 0) {
           const nextBlockLength = editor.getBlockLength(blocks[currentIndex - 1].id) ?? 0;
-          editor.setCaretPosition({ blockId: blocks[currentIndex - 1].id, index: nextBlockLength });
+          editor.setCaretPosition({
+            blockId: blocks[currentIndex - 1].id,
+            index: nextBlockLength,
+            nextElementDirection: 'up',
+          });
         }
       }
     }
     setTimeout(() => editor.updateCaretRect(), 10);
   }
 
-  private _handlekeyRight(
+  private _handleKeyRight(
     caretPosition: CaretPosition,
     editor: EditorController,
     event: React.KeyboardEvent,
@@ -355,7 +382,7 @@ export class KeyBoardModule implements Module {
     setTimeout(() => editor.updateCaretRect(), 10);
   }
 
-  private _handlekeyUp(
+  private _handleKeyUp(
     caretPosition: CaretPosition,
     editor: EditorController,
     event: React.KeyboardEvent,
@@ -368,7 +395,7 @@ export class KeyBoardModule implements Module {
     }
   }
 
-  private _handlekeyDown(
+  private _handleKeyDown(
     caretPosition: CaretPosition,
     editor: EditorController,
     event: React.KeyboardEvent,
@@ -440,6 +467,17 @@ export class KeyBoardModule implements Module {
     event: React.KeyboardEvent,
   ) {
     editor.getModule('history').redo();
+  }
+
+  private _handleSpace(
+    caretPosition: CaretPosition,
+    editor: EditorController,
+    event: React.KeyboardEvent,
+  ) {
+    const isExecuted = editor.getModule('markdown-shortcut').execute();
+    if (isExecuted) {
+      event.preventDefault();
+    }
   }
 
   private _handleBold(
@@ -529,5 +567,53 @@ export class KeyBoardModule implements Module {
       editor.setCaretPosition(caret);
       editor.updateCaretRect();
     }, 10);
+  }
+
+  private _handleSelectorUp(
+    caretPosition: CaretPosition,
+    editor: EditorController,
+    event: React.KeyboardEvent,
+  ) {
+    if (caretPosition.isTop) {
+      const block = editor.getBlock(caretPosition.blockId);
+      if (caretPosition.index === 0 && block) {
+        event.preventDefault();
+        editor.getModule('selector').selectBlocks([block]);
+        editor.getModule('selector').setStart(block.id);
+        return;
+      }
+    }
+  }
+
+  private _handleSelectorDown(
+    caretPosition: CaretPosition,
+    editor: EditorController,
+    event: React.KeyboardEvent,
+  ) {
+    if (caretPosition.isBottom) {
+      const block = editor.getBlock(caretPosition.blockId);
+      const blockLength = editor.getBlockLength(caretPosition.blockId) ?? 0;
+      if (caretPosition.length === blockLength - caretPosition.index && block) {
+        event.preventDefault();
+        editor.getModule('selector').selectBlocks([block]);
+        editor.getModule('selector').setStart(block.id);
+        return;
+      }
+    }
+  }
+
+  private _handleSelectAll(
+    caretPosition: CaretPosition,
+    editor: EditorController,
+    event: React.KeyboardEvent,
+  ) {
+    const blocks = editor.getBlocks();
+    const blockLength = editor.getBlockLength(caretPosition.blockId) ?? 0;
+    if (blocks && caretPosition.index === 0 && caretPosition.length === blockLength) {
+      event.preventDefault();
+      editor.getModule('selector').selectBlocks(blocks);
+      editor.getModule('selector').setStart(caretPosition.blockId);
+      return;
+    }
   }
 }

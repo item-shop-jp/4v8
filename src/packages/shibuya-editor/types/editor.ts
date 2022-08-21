@@ -10,21 +10,25 @@ import {
   SelectorModule,
   HistoryModule,
   LoggerModule,
+  MarkdownShortcutModule,
 } from '../modules';
+import { UploaderModule } from '../modules/uploader';
 
 export interface Settings {
   scrollMarginBottom: number;
   scrollMarginTop: number;
   allowAttributes: string[];
   allowFormats: string[];
+  embeddedBlocks: BlockType[];
   modules?: ModuleOptions;
   collaborationLevel: 'block' | 'inline';
-  indentatableFormats: (BlockType | string)[];
+  indentatableFormats: BlockType[];
 }
 
 export interface PositionParams {
   index?: number;
   margin?: number;
+  blockId?: string;
 }
 
 /*
@@ -46,9 +50,9 @@ export interface EditorController {
   createBlock(appendBlock: Block, prevBlockId?: string, type?: 'prepend' | 'append'): void;
   createBlock(
     appendBlock: Block,
-    prevBlockId: string,
-    type: 'prepend' | 'append',
-    source: Source,
+    prevBlockId?: string,
+    type?: 'prepend' | 'append',
+    source?: Source,
   ): void;
   updateBlock(block: Block): void;
   updateBlock(block: Block, source: Source): void;
@@ -57,14 +61,16 @@ export interface EditorController {
   deleteBlocks(blockIds: string[]): void;
   deleteBlocks(blockIds: string[], source: Source): void;
   sync(blockId?: string, blockElement?: HTMLElement, forceUpdate?: boolean): void;
-  setCaretPosition(caretPosition: Partial<CaretPosition>): void;
+  setCaretPosition(
+    caretPosition: Partial<CaretPosition> & { nextElementDirection?: 'up' | 'down' },
+  ): void;
   getCaretPosition(): CaretPosition | null;
   getNativeRange(): Range | null;
   scrollIntoView(blockId?: string): void;
   updateCaretRect(rect?: DOMRect): DOMRect | null;
   prev(params?: PositionParams): boolean;
   next(params?: PositionParams): boolean;
-  render(affectedIds?: string[]): void;
+  render(affectedIds?: string[], isForce?: boolean): void;
   numberingList(): void;
   addModule(
     name: string,
@@ -88,6 +94,8 @@ export interface EditorController {
   getModule(name: 'selector'): SelectorModule;
   getModule(name: 'history'): HistoryModule;
   getModule(name: 'logger'): LoggerModule;
+  getModule(name: 'markdown'): MarkdownShortcutModule;
+  getModule(name: 'uploader'): UploaderModule;
   getModule<T = any>(name: string): T | null;
   removeAllModules(): void;
   getEventEmitter(): EventEmitter;

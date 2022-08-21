@@ -820,6 +820,7 @@ export function useEditor({
       getBlockLength,
       createBlock,
       updateBlock,
+      updateBlocks,
       deleteBlock,
       deleteBlocks,
       sync,

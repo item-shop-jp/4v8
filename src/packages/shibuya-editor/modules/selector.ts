@@ -168,6 +168,19 @@ export class SelectorModule implements Module {
       key: KeyCodes.ESC,
       handler: this._handleReset.bind(this),
     });
+
+    this.addBinding({
+      key: KeyCodes.TAB,
+      prevented: true,
+      handler: this._handleIndent.bind(this),
+    });
+
+    this.addBinding({
+      key: KeyCodes.TAB,
+      shiftKey: true,
+      prevented: true,
+      handler: this._handleOutdent.bind(this),
+    });
   }
 
   onDestroy() {
@@ -351,6 +364,54 @@ export class SelectorModule implements Module {
     const blocks = editor.getBlocks();
     event.preventDefault();
     editor.getModule('selector').selectBlocks(blocks);
+    return;
+  }
+
+  private _handleIndent(editor: EditorController, event: React.KeyboardEvent) {
+    event.preventDefault();
+    const blocks = editor.getBlocks();
+    const { indentatableFormats } = editor.getSettings();
+    const affectedIds = [];
+    for (let i = 0; i < this.selectedBlocks.length; i++) {
+      const blockIndex = blocks.findIndex((v) => v.id === this.selectedBlocks[i].id);
+      if (blockIndex === -1) return;
+      if (!blocks[blockIndex] || !indentatableFormats.includes(blocks[blockIndex].type)) return;
+      if (blocks[blockIndex].attributes.indent > 6) return;
+      editor.updateBlock({
+        ...blocks[blockIndex],
+        attributes: {
+          ...blocks[blockIndex].attributes,
+          indent: (blocks[blockIndex].attributes.indent ?? 0) + 1,
+        },
+      });
+      affectedIds.push(this.selectedBlocks[i].id);
+    }
+    editor.numberingList();
+    editor.render(affectedIds);
+    return;
+  }
+  private _handleOutdent(editor: EditorController, event: React.KeyboardEvent) {
+    event.preventDefault();
+    const blocks = editor.getBlocks();
+    const { indentatableFormats } = editor.getSettings();
+    const affectedIds = [];
+    for (let i = 0; i < this.selectedBlocks.length; i++) {
+      const blockIndex = blocks.findIndex((v) => v.id === this.selectedBlocks[i].id);
+      if (blockIndex === -1) return;
+      if (!blocks[blockIndex] || !indentatableFormats.includes(blocks[blockIndex].type)) return;
+      if ((blocks[blockIndex].attributes.indent ?? 0) < 1) return;
+      const indent = blocks[blockIndex].attributes.indent - 1;
+      editor.updateBlock({
+        ...blocks[blockIndex],
+        attributes: {
+          ...blocks[blockIndex].attributes,
+          indent: indent !== 0 ? indent : false,
+        },
+      });
+      affectedIds.push(this.selectedBlocks[i].id);
+    }
+    editor.numberingList();
+    editor.render(affectedIds);
     return;
   }
 }

@@ -595,12 +595,15 @@ export function useEditor({
       source: Source = EventSources.USER,
     ) => {
       const currentIndex = blocksRef.current.findIndex((v) => v.id === prevBlockId);
-
+      const block = copyObject(appendBlock);
+      if (block.meta) {
+        delete block.meta;
+      }
       eventEmitter.emit(EditorEvents.EVENT_EDITOR_HISTORY_PUSH, {
         payload: {
           type: HistoryType.ADD_BLOCK,
           blockId: appendBlock.id,
-          block: copyObject(appendBlock),
+          block,
           prevBlockId,
         },
         source,
@@ -629,66 +632,79 @@ export function useEditor({
     blocksRef.current = blocks;
   }, []);
 
-  const updateBlock = React.useCallback((block: Block, source: Source = EventSources.USER) => {
-    const currentIndex = blocksRef.current.findIndex((v) => v.id === block.id);
-    if (currentIndex === -1) return;
-    block = copyObject(block);
-    Object.keys(block.attributes).forEach((key) => {
-      if (typeof block.attributes[key] === 'boolean' && !block.attributes[key]) {
-        delete block.attributes[key];
-      }
-    });
-    const contents = blockUtils.optimizeInlineContents(block.contents);
-    const prevBlock = {
-      ...blocksRef.current[currentIndex],
-      contents: blocksRef.current[currentIndex].contents.map((content) => {
-        return {
-          attributes: content.attributes,
-          text: content.text,
-          type: content.type,
-          isEmbed: content.isEmbed,
-          data: content.data,
-        };
-      }),
-    };
-    const currentBlock = {
-      ...block,
-      contents: contents.map((content) => {
-        return {
-          attributes: content.attributes,
-          text: content.text,
-          type: content.type,
-          isEmbed: content.isEmbed,
-          data: content.data,
-        };
-      }),
-    };
-
-    const redo = json0diff(prevBlock, currentBlock, DiffMatchPatch);
-    const undo = json0diff(currentBlock, prevBlock, DiffMatchPatch);
-
-    if (redo && undo) {
-      eventEmitter.emit(EditorEvents.EVENT_EDITOR_HISTORY_PUSH, {
-        payload: {
-          type: HistoryType.UPDATE_CONTENTS,
-          blockId: block.id,
-          undo,
-          redo,
-        },
-        source,
+  const updateBlock = React.useCallback(
+    (targetBlock: Block, source: Source = EventSources.USER) => {
+      const currentIndex = blocksRef.current.findIndex((v) => v.id === targetBlock.id);
+      if (currentIndex === -1) return;
+      const block = copyObject(targetBlock);
+      const prev = copyObject(blocksRef.current[currentIndex]);
+      Object.keys(block.attributes).forEach((key) => {
+        if (typeof block.attributes[key] === 'boolean' && !block.attributes[key]) {
+          delete block.attributes[key];
+        }
       });
-    }
+      const contents = blockUtils.optimizeInlineContents(block.contents);
 
-    blocksRef.current = [
-      ...blocksRef.current.slice(0, currentIndex),
-      {
-        ...blocksRef.current[currentIndex],
+      blocksRef.current = [
+        ...blocksRef.current.slice(0, currentIndex),
+        {
+          ...blocksRef.current[currentIndex],
+          ...block,
+          contents,
+        },
+        ...blocksRef.current.slice(currentIndex + 1),
+      ];
+
+      if (block.meta) {
+        delete block.meta;
+      }
+      if (prev.meta) {
+        delete prev.meta;
+      }
+
+      const prevBlock = {
+        ...prev,
+        contents: prev.contents.map((content) => {
+          return {
+            attributes: content.attributes,
+            text: content.text,
+            type: content.type,
+            isEmbed: content.isEmbed,
+            data: content.data,
+          };
+        }),
+      };
+
+      const currentBlock = {
         ...block,
-        contents,
-      },
-      ...blocksRef.current.slice(currentIndex + 1),
-    ];
-  }, []);
+        contents: contents.map((content) => {
+          return {
+            attributes: content.attributes,
+            text: content.text,
+            type: content.type,
+            isEmbed: content.isEmbed,
+            data: content.data,
+          };
+        }),
+      };
+
+      const redo = json0diff(prevBlock, currentBlock, DiffMatchPatch);
+      const undo = json0diff(currentBlock, prevBlock, DiffMatchPatch);
+
+      if (redo && undo) {
+        eventEmitter.emit(EditorEvents.EVENT_EDITOR_HISTORY_PUSH, {
+          payload: {
+            type: HistoryType.UPDATE_CONTENTS,
+            blockId: block.id,
+            undo,
+            redo,
+          },
+          source,
+        });
+      }
+    },
+    [],
+  );
 
   const deleteBlock = React.useCallback((blockId: string, source: Source = EventSources.USER) => {
     const currentIndex = blocksRef.current.findIndex((v) => v.id === blockId);

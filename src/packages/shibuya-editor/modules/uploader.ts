@@ -35,22 +35,35 @@ export class UploaderModule implements Module {
   }
 
   upload(files: File[]) {
-    //if (!this.options.onUpload || typeof this.options.onUpload !== 'function') return;
+    if (!this.options.onUpload || typeof this.options.onUpload !== 'function') return;
 
     files.forEach((file) => {
       const isImage = !!file.type.match(/^image\/(gif|jpe?g|a?png|svg|webp|bmp)/i);
       if (isImage) {
         const fileReader = new FileReader();
         fileReader.onload = async (event) => {
-          this.editor.getModule('editor').createBlock({
+          const addedBlock = this.editor.getModule('editor').createBlock({
             type: 'IMAGE',
-            attributes: { thumbnail: (<FileReader>event.target).result },
+            attributes: {
+              thumbnail: (<FileReader>event.target).result,
+            },
+            meta: {
+              isUploading: true,
+            },
           });
-          // const imageUrl = await this.options.onUpload({
-          //   original: file,
-          //   base64: (<FileReader>event.target).result as string,
-          //   isImage,
-          // });
+          const imageUrl = await this.options.onUpload({
+            original: file,
+            base64: (<FileReader>event.target).result as string,
+            isImage,
+          });
+          this.editor.updateBlock({
+            ...addedBlock,
+            attributes: { thumbnail: imageUrl },
+            meta: {
+              isUploading: false,
+            },
+          });
+          this.editor.render([addedBlock.id]);
         };
         fileReader.readAsDataURL(file);
       }

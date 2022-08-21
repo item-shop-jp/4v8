@@ -41,6 +41,15 @@ const settings = {
       maxStack: 50,
       delay: 1000,
     },
+    uploader: {
+      onUpload: async ({ base64 }: { original: File; base64: string | null; isImage: boolean }) => {
+        return new Promise((resolve) => {
+          setTimeout(() => {
+            resolve(base64);
+          }, 2000);
+        });
+      },
+    },
   },
   scrollMarginBottom: 150,
   scrollMarginTop: 50,

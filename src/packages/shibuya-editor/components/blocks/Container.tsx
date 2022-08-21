@@ -32,7 +32,10 @@ const Outer = styled.div`
 
 const Overlay = styled.div`
   position: absolute;
-  inset: 0 10px;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   opacity: 1;
   pointer-events: none;
   background-color: rgba(46, 170, 220, 0.2);

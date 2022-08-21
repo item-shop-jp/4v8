@@ -100,7 +100,9 @@ export class HistoryModule implements Module {
     if (position) {
       op.position = position;
     }
-
+    if (op.type === HistoryType.UPDATE_CONTENTS && (op.undo.length < 1 || op.redo.length < 1)) {
+      return;
+    }
     this.tmpUndo.push(op);
     if (force) {
       this.optimizeOp();

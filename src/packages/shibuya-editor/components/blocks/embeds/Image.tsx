@@ -8,7 +8,8 @@ export interface ImageProps {
   blockId: string;
   formats?: Formats;
   contents: React.ReactNode;
-  attributes: { thumbnail: string; original: string; isUploading?: boolean };
+  attributes: { thumbnail: string; original: string };
+  meta: { isUploading?: boolean };
   editor: EditorController;
 }
 
@@ -17,7 +18,9 @@ const ImageContainer = styled.div`
   display: flex;
   justify-content: center;
 `;
-const Image = styled.img``;
+const Image = styled.img`
+  max-width: 100%;
+`;
 const Loading = styled.div`
   position: absolute;
   top: 0;
@@ -35,14 +38,20 @@ export const ImageEmbed = React.memo(
   ({
     blockId,
     contents,
-    attributes: { thumbnail, original, isUploading = false },
+    attributes: { thumbnail, original },
+    meta: { isUploading = false },
     editor,
     ...props
   }: ImageProps) => {
     const imageRef = React.useRef(null);
+    const handleClick = React.useCallback((e: React.MouseEvent) => {}, []);
+    const handleMouseDown = React.useCallback((e: React.MouseEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+    }, []);
     return (
       <ImageContainer ref={imageRef} {...props} contentEditable={false}>
-        <Image src={thumbnail} />
+        <Image src={thumbnail} onClick={handleClick} onMouseDown={handleMouseDown} />
         {isUploading && (
           <Loading>
             <MutatingDots

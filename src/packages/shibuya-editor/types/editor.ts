@@ -50,9 +50,9 @@ export interface EditorController {
   createBlock(appendBlock: Block, prevBlockId?: string, type?: 'prepend' | 'append'): void;
   createBlock(
     appendBlock: Block,
-    prevBlockId: string,
-    type: 'prepend' | 'append',
-    source: Source,
+    prevBlockId?: string,
+    type?: 'prepend' | 'append',
+    source?: Source,
   ): void;
   updateBlock(block: Block): void;
   updateBlock(block: Block, source: Source): void;

@@ -63,6 +63,7 @@ const Link = styled.a`
   max-width: 200px;
   overflow-x: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
 `;
 
 const LinkInput = styled.input``;

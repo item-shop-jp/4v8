@@ -6,7 +6,6 @@ import { EditorEvents } from '../../constants';
 import { CaretPosition } from '../../types/caret';
 import { EditorController } from '../../types/editor';
 import { Inline, InlineAttributes } from '../../types/inline';
-import { getInlineContents } from '../../utils/block';
 import { getScrollContainer } from '../../utils/dom';
 import { copyObject } from '../../utils/object';
 
@@ -103,10 +102,44 @@ export const LinkPopup = React.memo(
     const handleSave = React.useCallback(
       (event: React.MouseEvent) => {
         event.preventDefault();
-        editor.getModule('toolbar').formatInline({ link: linkUrl }, currentCaretPosition);
-        handleClose();
+        // attributeにlinkがないときは新規追加する
+        if (!inline) {
+          editor.getModule('toolbar').formatInline({ link: linkUrl }, currentCaretPosition);
+          setPopupOpen(false);
+          setLinkUrl('');
+          setTimeout(() => {
+            editor.focus();
+          }, 10);
+          return;
+        }
+        // それ以外はlinkを更新する
+        if (!currentCaretPosition) return;
+        const block = editor.getBlock(currentCaretPosition.blockId);
+        if (!block) return;
+        const inlineIndex = block.contents.findIndex((v) => v.id === inline.id);
+        if (inlineIndex === -1) return;
+        editor.updateBlock({
+          ...block,
+          contents: copyObject([
+            ...block.contents.slice(0, inlineIndex),
+            {
+              ...block.contents[inlineIndex],
+              attributes: {
+                ...block.contents[inlineIndex].attributes,
+                link: linkUrl,
+              },
+            },
+            ...block.contents.slice(inlineIndex + 1),
+          ]),
+        });
+        editor.render([block.id]);
+        setPopupOpen(false);
+        setLinkUrl('');
+        setTimeout(() => {
+          editor.focus();
+        }, 10);
       },
-      [linkUrl, formats, currentCaretPosition],
+      [linkUrl, inline, currentCaretPosition],
     );
 
     const handleClose = React.useCallback(() => {
@@ -229,7 +262,9 @@ export const LinkPopup = React.memo(
               {...props}
             >
               <div>Visit URL:</div>
-              <Link href={inline?.attributes['link']}>https://{inline?.attributes['link']}</Link>
+              <Link target="_blank" rel="noopener noreferrer" href={inline?.attributes['link']}>
+                {inline?.attributes['link']}
+              </Link>
               <ButtonContainer>
                 <Button onClick={handleEdit}>edit</Button>
                 <Button onClick={handleRemove}>remove</Button>

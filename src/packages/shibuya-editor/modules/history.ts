@@ -242,7 +242,7 @@ export class HistoryModule implements Module {
         this.executeJson0(op.blockId, op.undo);
         affectedIds.push(op.blockId);
         if (i === updateOps.length - 1 && addOps.length < 1 && removeOps.length < 1) {
-          this.moveCaret(op.undo, op.position, 'undo');
+          this.moveCaret(op, op.position, 'undo');
         }
       });
 
@@ -355,7 +355,7 @@ export class HistoryModule implements Module {
             this.executeJson0(op.blockId, op.redo);
             affectedIds.push(op.blockId);
             if (i === updateOps.length - 1) {
-              this.moveCaret(op.redo, op.position, 'redo');
+              this.moveCaret(op, op.position, 'redo');
             }
             break;
           }
@@ -396,8 +396,20 @@ export class HistoryModule implements Module {
     }
   }
 
-  moveCaret(ops: JSON0[], position?: CaretPosition, type: 'undo' | 'redo' = 'undo') {
-    if (!position) return;
+  moveCaret(op: UpdateOp, position?: CaretPosition, type: 'undo' | 'redo' = 'undo') {
+    if (!position) {
+      const blockLength = this.editor.getBlockLength(op.blockId) ?? 0;
+      setTimeout(() => {
+        this.editor.setCaretPosition({
+          blockId: op.blockId,
+          index: blockLength,
+          length: 0,
+        });
+        this.editor.updateCaretRect();
+      }, 10);
+      return;
+    }
+    const ops = type === 'undo' ? op.undo : op.redo;
     let affectedLength = type === 'undo' ? getTextLength(ops) : 0;
     let positionIndex = position.index ?? 0;
     let positionLength = position.length ?? 0;

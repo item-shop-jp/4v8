@@ -84,7 +84,6 @@ export const Editor = React.memo(
           // default settings
           scrollMarginTop: settings.scrollMarginTop ?? 100,
           scrollMarginBottom: settings.scrollMarginBottom ?? 250,
-          allowAttributes: settings.allowAttributes ?? [],
           allowFormats: settings.allowFormats ?? [],
           embeddedBlocks: settings.embeddedBlocks ?? ['IMAGE', 'FILE'],
           collaborationLevel: settings.collaborationLevel ?? 'inline',

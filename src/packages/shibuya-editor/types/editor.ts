@@ -17,7 +17,6 @@ import { UploaderModule } from '../modules/uploader';
 export interface Settings {
   scrollMarginBottom: number;
   scrollMarginTop: number;
-  allowAttributes: string[];
   allowFormats: string[];
   embeddedBlocks: BlockType[];
   modules?: ModuleOptions;

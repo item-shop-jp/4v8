@@ -53,7 +53,6 @@ const settings = {
   },
   scrollMarginBottom: 150,
   scrollMarginTop: 50,
-  allowAttributes: ['bold', 'strike'],
   allowFormats: [],
   indentatableFormats: [
     'ORDEREDLIST',

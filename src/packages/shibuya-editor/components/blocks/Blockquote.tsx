@@ -16,6 +16,8 @@ const Container = styled.blockquote`
   padding: 2px 12px;
   box-sizing: border-box;
   border-left: 3px solid #ccc;
+  transition: all 0.3s;
+  padding-left: calc(12px + 1.5em * var(--indent));
 `;
 
 export const Blockquote = React.memo(({ blockId, contents, editor, ...props }: BlockquoteProps) => {

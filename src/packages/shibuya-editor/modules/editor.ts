@@ -8,7 +8,7 @@ import {
 } from '../utils/block';
 import { createInline } from '../utils/inline';
 import { Module } from '../types/module';
-import { EditorController } from '../types/editor';
+import { EditorController, Source } from '../types/editor';
 import { copyObject } from '../utils/object';
 import { BlockAttributes, BlockType } from '../types/block';
 import { Inline } from '../types/inline';
@@ -39,7 +39,7 @@ export class EditorModule implements Module {
 
   onDestroy() {
     this.eventEmitter.info('destory editor module');
-    setTimeout(() => this.subs.unsubscribe());
+    this.subs.unsubscribe();
   }
 
   createBlock({
@@ -47,16 +47,20 @@ export class EditorModule implements Module {
     type = 'PARAGRAPH',
     contents = [],
     attributes = {},
+    meta = {},
+    source = 'user',
   }: {
     prevId?: string;
     type?: BlockType;
     contents?: Inline[];
     attributes?: BlockAttributes;
+    meta?: BlockAttributes;
+    source?: Source;
   } = {}) {
     const caretPosition = this.editor.getCaretPosition();
-    const appendBlock = createBlock(type, contents, attributes);
+    const appendBlock = createBlock(type, contents, attributes, meta);
     const prevBlockId = prevId || caretPosition?.blockId;
-    this.editor.createBlock(appendBlock, prevBlockId);
+    this.editor.createBlock(appendBlock, prevBlockId, 'append', source);
     this.editor.numberingList();
     this.editor.getModule('history')?.optimizeOp();
 
@@ -69,6 +73,7 @@ export class EditorModule implements Module {
       this.editor.next();
     }, 10);
     this.editor.render([]);
+    return appendBlock;
   }
 
   deleteBlock(blockId?: string) {

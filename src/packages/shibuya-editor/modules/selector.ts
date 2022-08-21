@@ -35,7 +35,7 @@ interface KeyBindingProps {
 export class SelectorModule implements Module {
   private eventEmitter;
   private editor;
-  private position: Position = { start: null, end: null };
+  private startBlockId: string | null = null;
   private enabled = false;
   private mousePressed = false;
   private changed = false;
@@ -45,7 +45,7 @@ export class SelectorModule implements Module {
   mouseMove = throttle(20, (e: MouseEvent) => {
     if (!this.mousePressed) return;
     const blocks = this.editor.getBlocks();
-    const startIndex = blocks.findIndex((v) => v.id === this.position.start);
+    const startIndex = blocks.findIndex((v) => v.id === this.startBlockId);
     if (startIndex === -1) return;
     const [blockId] = getBlockId(e.target as HTMLElement);
     let blockIds: string[] = [];
@@ -80,8 +80,7 @@ export class SelectorModule implements Module {
       }
       selectedBlocks = copyObject(blocks.filter((v) => blockIds.includes(v.id)));
     } else {
-      this.position.end = blockId;
-      const endIndex = blocks.findIndex((v) => v.id === this.position.end);
+      const endIndex = blocks.findIndex((v) => v.id === blockId);
       if (startIndex > endIndex) {
         selectedBlocks = copyObject(blocks.slice(endIndex, startIndex + 1));
         blockIds = selectedBlocks.map((v) => v.id);
@@ -113,11 +112,7 @@ export class SelectorModule implements Module {
   }
 
   setStart(id: string) {
-    this.position.start = id;
-  }
-
-  setEnd(id: string) {
-    this.position.end = id;
+    this.startBlockId = id;
   }
 
   sendBlockSelectedEvent(blockIds: string[]) {
@@ -146,6 +141,29 @@ export class SelectorModule implements Module {
       shiftKey: true,
       handler: this._handleSelectorDown.bind(this),
     });
+
+    this.addBinding({
+      key: KeyCodes.ARROW_UP,
+      handler: this._handleKeyUp.bind(this),
+    });
+    this.addBinding({
+      key: KeyCodes.ARROW_DOWN,
+      handler: this._handleKeyDown.bind(this),
+    });
+    this.addBinding({
+      key: KeyCodes.ARROW_LEFT,
+      handler: this._handleReset.bind(this),
+    });
+    this.addBinding({
+      key: KeyCodes.ARROW_RIGHT,
+      handler: this._handleReset.bind(this),
+    });
+
+    this.addBinding({
+      key: KeyCodes.A,
+      shortKey: true,
+      handler: this._handleSelectAll.bind(this),
+    });
   }
 
   onDestroy() {
@@ -153,12 +171,25 @@ export class SelectorModule implements Module {
   }
 
   mouseDown(e: MouseEvent) {
+    if (e.shiftKey && this.startBlockId) {
+      const blocks = this.editor.getBlocks();
+      const [blockId] = getBlockId(e.target as HTMLElement);
+      const startIndex = blocks.findIndex((v) => v.id === this.startBlockId);
+      const endIndex = blocks.findIndex((v) => v.id === blockId);
+      if (startIndex === -1 || endIndex === -1) return;
+      this.selectBlocks(
+        blocks.slice(
+          startIndex < endIndex ? startIndex : endIndex,
+          (endIndex > startIndex ? endIndex : startIndex) + 1,
+        ),
+      );
+      return;
+    }
     this.reset();
-
     const [blockId] = getBlockId(e.target as HTMLElement);
     if (!blockId) return;
     this.mousePressed = true;
-    this.position.start = blockId;
+    this.startBlockId = blockId;
   }
 
   mouseUp(e: MouseEvent) {
@@ -173,7 +204,7 @@ export class SelectorModule implements Module {
     if (this.changed) return;
     this.mousePressed = false;
     this.enabled = false;
-    this.position = { start: null, end: null };
+    this.startBlockId = null;
     this.selectedBlocks = [];
     this.sendBlockSelectedEvent([]);
   }
@@ -240,7 +271,7 @@ export class SelectorModule implements Module {
 
   private _handleSelectorUp() {
     const blocks = this.editor.getBlocks();
-    const startIndex = this.selectedBlocks.findIndex((v) => v.id === this.position.start);
+    const startIndex = this.selectedBlocks.findIndex((v) => v.id === this.startBlockId);
     if (startIndex === -1) return;
     if (startIndex === this.selectedBlocks.length - 1) {
       const index = blocks.findIndex((v) => this.selectedBlocks[0].id === v.id);
@@ -253,7 +284,7 @@ export class SelectorModule implements Module {
 
   private _handleSelectorDown() {
     const blocks = this.editor.getBlocks();
-    const startIndex = this.selectedBlocks.findIndex((v) => v.id === this.position.start);
+    const startIndex = this.selectedBlocks.findIndex((v) => v.id === this.startBlockId);
     if (startIndex === -1) return;
     if (startIndex === 0) {
       const index = blocks.findIndex(
@@ -264,5 +295,58 @@ export class SelectorModule implements Module {
     } else {
       this.selectBlocks(this.selectedBlocks.slice(1));
     }
+  }
+
+  private _handleReset(editor: EditorController, e: React.KeyboardEvent) {
+    e.preventDefault();
+    if (this.startBlockId) {
+      const length = this.editor.getBlockLength(this.startBlockId);
+      editor.setCaretPosition({
+        blockId: this.startBlockId,
+        index: length ?? 0,
+      });
+      editor.updateCaretRect();
+    }
+    this.reset();
+  }
+
+  private _handleKeyUp(editor: EditorController, e: React.KeyboardEvent) {
+    e.preventDefault();
+    if (this.selectedBlocks.length < 1) return;
+    if (this.selectedBlocks.length > 1) {
+      this.selectBlocks(this.selectedBlocks.filter((v) => v.id === this.startBlockId));
+      return;
+    }
+    const blocks = this.editor.getBlocks();
+    const currentIndex = blocks.findIndex((v) => v.id === this.startBlockId);
+
+    if (currentIndex === -1 || currentIndex < 1) return;
+    const nextBlock = blocks[currentIndex - 1];
+    this.startBlockId = nextBlock.id;
+    this.selectBlocks([nextBlock]);
+  }
+
+  private _handleKeyDown(editor: EditorController, e: React.KeyboardEvent) {
+    e.preventDefault();
+    if (this.selectedBlocks.length < 1) return;
+    if (this.selectedBlocks.length > 1) {
+      this.selectBlocks(this.selectedBlocks.filter((v) => v.id === this.startBlockId));
+      return;
+    }
+
+    const blocks = this.editor.getBlocks();
+    const currentIndex = blocks.findIndex((v) => v.id === this.startBlockId);
+
+    if (currentIndex === -1 || currentIndex >= blocks.length - 1) return;
+    const nextBlock = blocks[currentIndex + 1];
+    this.startBlockId = nextBlock.id;
+    this.selectBlocks([nextBlock]);
+  }
+
+  private _handleSelectAll(editor: EditorController, event: React.KeyboardEvent) {
+    const blocks = editor.getBlocks();
+    event.preventDefault();
+    editor.getModule('selector').selectBlocks(blocks);
+    return;
   }
 }

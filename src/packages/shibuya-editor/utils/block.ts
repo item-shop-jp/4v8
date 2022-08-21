@@ -10,11 +10,13 @@ export function createBlock(
   type: BlockType,
   contents: Inline[] = [],
   attributes?: BlockAttributes,
+  meta?: BlockAttributes,
 ): Block {
   return {
     id: nanoid(),
     contents: contents.length < 1 ? [createInline('TEXT')] : contents,
     attributes: attributes ?? {},
+    meta: meta ?? {},
     type,
   };
 }

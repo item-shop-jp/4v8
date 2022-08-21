@@ -131,6 +131,7 @@ export class MarkdownShortcutModule implements Module {
       const match = targetText.match(this.shortcuts[i].pattern);
       if (match) {
         this.shortcuts[i].handler(caret, match);
+        this.editor.getModule('history')?.optimizeOp();
         isExecuted = true;
         break;
       }

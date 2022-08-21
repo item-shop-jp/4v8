@@ -72,6 +72,7 @@
     ]
   },
   "dependencies": {
-    "json0-ot-diff": "1.1.2"
+    "json0-ot-diff": "1.1.2",
+    "react-loader-spinner": "^5.1.7-beta.1"
   }
 }

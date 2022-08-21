@@ -10,6 +10,7 @@ import {
   BulletList,
   Blockquote,
   Paragraph,
+  ImageEmbed,
 } from './components/blocks';
 import { InlineText } from './components/inlines';
 import { Bold, Strike, Underline, InlineCode, Italic } from './components/styles';
@@ -31,6 +32,7 @@ import { EditorEvents } from './constants';
 import { Formats } from './types/format';
 import { Block } from './types/block';
 import { Settings, EditorController } from './types/editor';
+import { UploaderModule } from './modules/uploader';
 
 interface Props {
   scrollContainer?: HTMLElement | string;
@@ -84,6 +86,7 @@ export const Editor = React.memo(
           scrollMarginBottom: settings.scrollMarginBottom ?? 250,
           allowAttributes: settings.allowAttributes ?? [],
           allowFormats: settings.allowFormats ?? [],
+          embeddedBlocks: settings.embeddedBlocks ?? ['IMAGE', 'FILE'],
           collaborationLevel: settings.collaborationLevel ?? 'inline',
           indentatableFormats: settings.indentatableFormats ?? ['ORDEREDLIST', 'BULLETLIST'],
         },
@@ -101,6 +104,7 @@ export const Editor = React.memo(
         'block/header2': Header2,
         'block/header3': Header3,
         'block/blockquote': Blockquote,
+        'block/image': ImageEmbed,
         'inline/text': InlineText,
         'inline/style/bold': Bold,
         'inline/style/underline': Underline,
@@ -240,6 +244,7 @@ export const Editor = React.memo(
             { name: 'history', module: HistoryModule },
             { name: 'clipboard', module: ClipboardModule },
             { name: 'markdown-shortcut', module: MarkdownShortcutModule },
+            { name: 'uploader', module: UploaderModule },
           ],
           settings?.modules ?? {},
         );
@@ -267,7 +272,7 @@ export const Editor = React.memo(
         };
 
         const handleMouseMove = (e: MouseEvent) => {
-          editor.getModule('selector').mouseMove(e);
+          editor.getModule('selector')?.mouseMove(e);
         };
 
         const handleMouseUp = (e: MouseEvent) => {

@@ -42,7 +42,6 @@ export function useEditor({
   const lastCaretRectRef = React.useRef<DOMRect | null>();
   const blocksRef = React.useRef<Block[]>([]);
   const modulesRef = React.useRef<any>({});
-  const [modules, setModules] = React.useState<any>({});
 
   const focus = React.useCallback(() => {
     if (lastCaretPositionRef.current) {
@@ -77,141 +76,159 @@ export function useEditor({
     return editorRef.current.contains(selection.focusNode);
   }, []);
 
-  const prev = React.useCallback(({ index, margin = 10 }: PositionParams = {}): boolean => {
-    const position = lastCaretPositionRef.current;
-    const currentIndex = blocksRef.current.findIndex((v) => v.id === position?.blockId);
-    if (currentIndex < 1 || !blocksRef.current[currentIndex - 1]) return false;
-    if (!lastCaretRectRef.current) {
-      setCaretPosition({
-        blockId: blocksRef.current[currentIndex - 1].id,
-        index: 0,
-      });
-      return false;
-    }
-    const prevBlock = blockUtils.getBlockElementById(blocksRef.current[currentIndex - 1].id);
-    if (!prevBlock) return false;
-    let prevRect = prevBlock.getBoundingClientRect();
-    const container = getScrollContainer(scrollContainer);
-    const containerOffsetTop = container ? container.getBoundingClientRect().top : 0;
-
-    if (
-      prevRect.top <=
-      (container ? containerOffsetTop : containerOffsetTop + settings.scrollMarginTop)
-    ) {
-      if (container) {
-        container.scrollTop = currentIndex - 1 < 1 ? 0 : prevBlock.parentElement?.offsetTop ?? 0;
-      } else {
-        if (document.scrollingElement) {
-          let editorScrollTop =
-            document.scrollingElement.scrollTop + prevRect.top - settings.scrollMarginTop;
-          if (currentIndex - 1 < 1) {
-            editorScrollTop -= 30;
-          }
-          document.scrollingElement.scrollTop = editorScrollTop;
-        }
-      }
-      prevRect = prevBlock.getBoundingClientRect();
-    }
-
-    if (typeof index === 'number' && index >= 0) {
-      setTimeout(() => {
+  const prev = React.useCallback(
+    ({ index, margin = 10, blockId }: PositionParams = {}): boolean => {
+      const position = lastCaretPositionRef.current;
+      const currentIndex = blocksRef.current.findIndex(
+        (v) => v.id === (blockId ?? position?.blockId),
+      );
+      if (currentIndex < 1 || !blocksRef.current[currentIndex - 1]) return false;
+      if (!lastCaretRectRef.current) {
         setCaretPosition({
           blockId: blocksRef.current[currentIndex - 1].id,
-          index,
+          index: 0,
+          nextElementDirection: 'up',
         });
-      }, 10);
+        return false;
+      }
+      const prevBlock = blockUtils.getBlockElementById(blocksRef.current[currentIndex - 1].id);
+      if (!prevBlock) return false;
+      // for embedded elements
+      if (prevBlock.contentEditable === 'false') {
+        return prev({ blockId: prevBlock.dataset.blockId });
+      }
+      let prevRect = prevBlock.getBoundingClientRect();
+      const container = getScrollContainer(scrollContainer);
+      const containerOffsetTop = container ? container.getBoundingClientRect().top : 0;
 
-      return true;
-    }
-
-    const range = caretRangeFromPoint(
-      lastCaretRectRef.current.x,
-      prevRect.y + prevRect.height - margin,
-    );
-    const selection = document.getSelection();
-    if (!selection || !range) return false;
-    selection.setBaseAndExtent(
-      range.startContainer,
-      range.startOffset,
-      range.startContainer,
-      range.startOffset,
-    );
-    const nativeRange = getNativeRange();
-    if (!nativeRange) return false;
-    const newCaretPosition = normalizeRange(nativeRange);
-    if (!newCaretPosition) return false;
-
-    updateCaretPositionRef();
-    return true;
-  }, []);
-
-  const next = React.useCallback(({ index = 0, margin = 10 }: PositionParams = {}): boolean => {
-    const position = lastCaretPositionRef.current;
-    const currentIndex = blocksRef.current.findIndex((v) => v.id === position?.blockId);
-
-    if (currentIndex === -1 || !blocksRef.current[currentIndex + 1]) return false;
-    if (!lastCaretRectRef.current) {
-      setTimeout(() => {
-        setCaretPosition({
-          blockId: blocksRef.current[currentIndex + 1].id,
-          index,
-        });
-      }, 10);
-      return false;
-    }
-
-    const nextBlock = blockUtils.getBlockElementById(blocksRef.current[currentIndex + 1].id);
-    if (!nextBlock) return false;
-
-    let nextRect =
-      nextBlock.parentElement?.getBoundingClientRect() ?? nextBlock.getBoundingClientRect();
-    const container = getScrollContainer(scrollContainer);
-    const scrollHeight = container?.clientHeight ?? window.innerHeight;
-
-    if (container) {
-      const containerRect = container.getBoundingClientRect() ?? 0;
       if (
-        nextRect.top + nextRect.height >=
-        containerRect.top + containerRect.height - settings.scrollMarginBottom
+        prevRect.top <=
+        (container ? containerOffsetTop : containerOffsetTop + settings.scrollMarginTop)
       ) {
-        const scrollTop =
-          (nextBlock.parentElement?.offsetTop ?? 0) -
-          container.clientHeight +
-          settings.scrollMarginBottom;
-        if (container.scrollHeight > scrollTop + container.clientHeight) {
-          container.scrollTop = scrollTop;
+        if (container) {
+          container.scrollTop = currentIndex - 1 < 1 ? 0 : prevBlock.parentElement?.offsetTop ?? 0;
         } else {
-          container.scrollTop = container.scrollHeight - container.clientHeight;
+          if (document.scrollingElement) {
+            let editorScrollTop =
+              document.scrollingElement.scrollTop + prevRect.top - settings.scrollMarginTop;
+            if (currentIndex - 1 < 1) {
+              editorScrollTop -= 30;
+            }
+            document.scrollingElement.scrollTop = editorScrollTop;
+          }
         }
-        nextRect =
-          nextBlock.parentElement?.getBoundingClientRect() ?? nextBlock.getBoundingClientRect();
-      }
-    } else if (nextRect.top + nextRect.height >= scrollHeight - settings.scrollMarginBottom) {
-      if (document.scrollingElement) {
-        const nextTop = document.scrollingElement.scrollTop + nextRect.top;
-        const p = nextTop - window.innerHeight + settings.scrollMarginBottom;
-        document.scrollingElement.scrollTop = p;
+        prevRect = prevBlock.getBoundingClientRect();
       }
 
-      nextRect = nextBlock.getBoundingClientRect();
-    }
-    const range = caretRangeFromPoint(lastCaretRectRef.current.x, nextRect.y + margin);
-    const selection = document.getSelection();
-    if (!selection || !range) return false;
-    selection.setBaseAndExtent(
-      range.startContainer,
-      range.startOffset,
-      range.startContainer,
-      range.startOffset,
-    );
-    const nativeRange = getNativeRange();
-    if (!nativeRange) return false;
-    const newCaretPosition = normalizeRange(nativeRange);
-    if (!newCaretPosition) return false;
+      if (typeof index === 'number' && index >= 0) {
+        setTimeout(() => {
+          setCaretPosition({
+            blockId: blocksRef.current[currentIndex - 1].id,
+            index,
+          });
+        }, 10);
 
-    updateCaretPositionRef();
-    return true;
-  }, []);
+        return true;
+      }
+
+      const range = caretRangeFromPoint(
+        lastCaretRectRef.current.x,
+        prevRect.y + prevRect.height - margin,
+      );
+      const selection = document.getSelection();
+      if (!selection || !range) return false;
+      selection.setBaseAndExtent(
+        range.startContainer,
+        range.startOffset,
+        range.startContainer,
+        range.startOffset,
+      );
+      const nativeRange = getNativeRange();
+      if (!nativeRange) return false;
+      const newCaretPosition = normalizeRange(nativeRange);
+      if (!newCaretPosition) return false;
+
+      updateCaretPositionRef();
+      return true;
+    },
+    [],
+  );
+
+  const next = React.useCallback(
+    ({ index = 0, margin = 10, blockId }: PositionParams = {}): boolean => {
+      const position = lastCaretPositionRef.current;
+      const currentIndex = blocksRef.current.findIndex(
+        (v) => v.id === (blockId ?? position?.blockId),
+      );
+      if (currentIndex === -1 || !blocksRef.current[currentIndex + 1]) return false;
+
+      if (!lastCaretRectRef.current) {
+        setTimeout(() => {
+          setCaretPosition({
+            blockId: blocksRef.current[currentIndex + 1].id,
+            index,
+          });
+        }, 10);
+        return false;
+      }
+
+      const nextBlock = blockUtils.getBlockElementById(blocksRef.current[currentIndex + 1].id);
+      if (!nextBlock) return false;
+      // for embedded elements
+      if (nextBlock.contentEditable === 'false') {
+        return next({ blockId: nextBlock.dataset.blockId });
+      }
+      let nextRect =
+        nextBlock.parentElement?.getBoundingClientRect() ?? nextBlock.getBoundingClientRect();
+      const container = getScrollContainer(scrollContainer);
+      const scrollHeight = container?.clientHeight ?? window.innerHeight;
+
+      if (container) {
+        const containerRect = container.getBoundingClientRect() ?? 0;
+        if (
+          nextRect.top + nextRect.height >=
+          containerRect.top + containerRect.height - settings.scrollMarginBottom
+        ) {
+          const scrollTop =
+            (nextBlock.parentElement?.offsetTop ?? 0) -
+            container.clientHeight +
+            settings.scrollMarginBottom;
+          if (container.scrollHeight > scrollTop + container.clientHeight) {
+            container.scrollTop = scrollTop;
+          } else {
+            container.scrollTop = container.scrollHeight - container.clientHeight;
+          }
+          nextRect =
+            nextBlock.parentElement?.getBoundingClientRect() ?? nextBlock.getBoundingClientRect();
+        }
+      } else if (nextRect.top + nextRect.height >= scrollHeight - settings.scrollMarginBottom) {
+        if (document.scrollingElement) {
+          const nextTop = document.scrollingElement.scrollTop + nextRect.top;
+          const p = nextTop - window.innerHeight + settings.scrollMarginBottom;
+          document.scrollingElement.scrollTop = p;
+        }
+
+        nextRect = nextBlock.getBoundingClientRect();
+      }
+      const range = caretRangeFromPoint(lastCaretRectRef.current.x, nextRect.y + margin);
+      const selection = document.getSelection();
+      if (!selection || !range) return false;
+      selection.setBaseAndExtent(
+        range.startContainer,
+        range.startOffset,
+        range.startContainer,
+        range.startOffset,
+      );
+      const nativeRange = getNativeRange();
+      if (!nativeRange) return false;
+      const newCaretPosition = normalizeRange(nativeRange);
+      if (!newCaretPosition) return false;
+
+      updateCaretPositionRef();
+      return true;
+    },
+    [],
+  );
 
   const getFormats = React.useCallback((blockId: string, index: number, length: number = 0) => {
     const block = blocksRef.current.find((v) => v.id === blockId);
@@ -299,12 +316,38 @@ export function useEditor({
   }, []);
 
   const setCaretPosition = React.useCallback(
-    ({ blockId = '', index = 0, length = 0 }: Partial<CaretPosition>) => {
+    ({
+      blockId = '',
+      index = 0,
+      length = 0,
+      nextElementDirection = 'down',
+    }: Partial<CaretPosition> & { nextElementDirection?: 'up' | 'down' }) => {
       const element = blockUtils.getBlockElementById(blockId);
       if (!element) return;
+
+      // for embedded elements
+      if (element.contentEditable === 'false') {
+        const nextBlockId =
+          nextElementDirection === 'up'
+            ? (element.parentElement?.previousElementSibling as HTMLDivElement).dataset.id
+            : (element.parentElement?.nextElementSibling as HTMLDivElement).dataset.id;
+
+        if (!nextBlockId) return;
+        const nextBlockLength =
+          nextElementDirection === 'up' ? getBlockLength(nextBlockId) ?? 0 : 0;
+        setCaretPosition({
+          blockId: nextBlockId,
+          index: nextBlockLength,
+          length: 0,
+          nextElementDirection,
+        });
+        return;
+      }
+
       const selection = document.getSelection();
       if (!selection) return;
       const blockLength = getBlockLength(blockId) ?? 0;
+
       if (index < 0) {
         index = 0;
       }
@@ -318,6 +361,7 @@ export function useEditor({
         if (!start || !end) return;
         range.setStart(start.node, start.index);
         range.setEnd(end.node, end.index);
+
         selection.removeAllRanges();
         selection.addRange(range);
         updateCaretPositionRef();
@@ -418,9 +462,7 @@ export function useEditor({
         editor: editorController,
         options,
       });
-      setModules((prevModules: any) => {
-        return { ...prevModules, [name]: moduleInstance };
-      });
+      modulesRef.current = { ...modulesRef.current, [name]: moduleInstance };
       moduleInstance.onInit();
     },
     [],
@@ -442,9 +484,7 @@ export function useEditor({
           editor: editorController,
           options: options[name] ?? {},
         });
-        setModules((prevModules: any) => {
-          return { ...prevModules, [name]: moduleInstance };
-        });
+        modulesRef.current = { ...modulesRef.current, [name]: moduleInstance };
         moduleInstance.onInit();
       });
     },
@@ -476,7 +516,7 @@ export function useEditor({
     Object.keys(modulesRef.current).forEach((key) => {
       modulesRef.current[key].onDestroy();
     });
-    setModules({});
+    modulesRef.current = {};
   }, []);
 
   const sync = React.useCallback(
@@ -555,12 +595,15 @@ export function useEditor({
       source: Source = EventSources.USER,
     ) => {
       const currentIndex = blocksRef.current.findIndex((v) => v.id === prevBlockId);
-
+      const block = copyObject(appendBlock);
+      if (block.meta) {
+        delete block.meta;
+      }
       eventEmitter.emit(EditorEvents.EVENT_EDITOR_HISTORY_PUSH, {
         payload: {
           type: HistoryType.ADD_BLOCK,
           blockId: appendBlock.id,
-          block: copyObject(appendBlock),
+          block,
           prevBlockId,
         },
         source,
@@ -582,69 +625,86 @@ export function useEditor({
   );
 
   const updateBlocks = React.useCallback((blocks: Block[]) => {
+    // If the last block is an embedded element
+    if (settings.embeddedBlocks.includes(blocks[blocks.length - 1].type)) {
+      blocks = [...blocks, blockUtils.createBlock('PARAGRAPH')];
+    }
     blocksRef.current = blocks;
   }, []);
 
-  const updateBlock = React.useCallback((block: Block, source: Source = EventSources.USER) => {
-    const currentIndex = blocksRef.current.findIndex((v) => v.id === block.id);
-    if (currentIndex === -1) return;
-    block = copyObject(block);
-    Object.keys(block.attributes).forEach((key) => {
-      if (typeof block.attributes[key] === 'boolean' && !block.attributes[key]) {
-        delete block.attributes[key];
-      }
-    });
-    const contents = blockUtils.optimizeInlineContents(block.contents);
-    const prevBlock = {
-      ...blocksRef.current[currentIndex],
-      contents: blocksRef.current[currentIndex].contents.map((content) => {
-        return {
-          attributes: content.attributes,
-          text: content.text,
-          type: content.type,
-          isEmbed: content.isEmbed,
-          data: content.data,
-        };
-      }),
-    };
-    const currentBlock = {
-      ...block,
-      contents: contents.map((content) => {
-        return {
-          attributes: content.attributes,
-          text: content.text,
-          type: content.type,
-          isEmbed: content.isEmbed,
-          data: content.data,
-        };
-      }),
-    };
-
-    const redo = json0diff(prevBlock, currentBlock, DiffMatchPatch);
-    const undo = json0diff(currentBlock, prevBlock, DiffMatchPatch);
-
-    if (redo && undo) {
-      eventEmitter.emit(EditorEvents.EVENT_EDITOR_HISTORY_PUSH, {
-        payload: {
-          type: HistoryType.UPDATE_CONTENTS,
-          blockId: block.id,
-          undo,
-          redo,
-        },
-        source,
+  const updateBlock = React.useCallback(
+    (targetBlock: Block, source: Source = EventSources.USER) => {
+      const currentIndex = blocksRef.current.findIndex((v) => v.id === targetBlock.id);
+      if (currentIndex === -1) return;
+      const block = copyObject(targetBlock);
+      const prev = copyObject(blocksRef.current[currentIndex]);
+      Object.keys(block.attributes).forEach((key) => {
+        if (typeof block.attributes[key] === 'boolean' && !block.attributes[key]) {
+          delete block.attributes[key];
+        }
       });
-    }
+      const contents = blockUtils.optimizeInlineContents(block.contents);
 
-    blocksRef.current = [
-      ...blocksRef.current.slice(0, currentIndex),
-      {
-        ...blocksRef.current[currentIndex],
+      blocksRef.current = [
+        ...blocksRef.current.slice(0, currentIndex),
+        {
+          ...blocksRef.current[currentIndex],
+          ...block,
+          contents,
+        },
+        ...blocksRef.current.slice(currentIndex + 1),
+      ];
+
+      if (block.meta) {
+        delete block.meta;
+      }
+      if (prev.meta) {
+        delete prev.meta;
+      }
+
+      const prevBlock = {
+        ...prev,
+        contents: prev.contents.map((content) => {
+          return {
+            attributes: content.attributes,
+            text: content.text,
+            type: content.type,
+            isEmbed: content.isEmbed,
+            data: content.data,
+          };
+        }),
+      };
+
+      const currentBlock = {
         ...block,
-        contents,
-      },
-      ...blocksRef.current.slice(currentIndex + 1),
-    ];
-  }, []);
+        contents: contents.map((content) => {
+          return {
+            attributes: content.attributes,
+            text: content.text,
+            type: content.type,
+            isEmbed: content.isEmbed,
+            data: content.data,
+          };
+        }),
+      };
+
+      const redo = json0diff(prevBlock, currentBlock, DiffMatchPatch);
+      const undo = json0diff(currentBlock, prevBlock, DiffMatchPatch);
+
+      if (redo && undo) {
+        eventEmitter.emit(EditorEvents.EVENT_EDITOR_HISTORY_PUSH, {
+          payload: {
+            type: HistoryType.UPDATE_CONTENTS,
+            blockId: block.id,
+            undo,
+            redo,
+          },
+          source,
+        });
+      }
+    },
+    [],
+  );
 
   const deleteBlock = React.useCallback((blockId: string, source: Source = EventSources.USER) => {
     const currentIndex = blocksRef.current.findIndex((v) => v.id === blockId);
@@ -803,10 +863,6 @@ export function useEditor({
   //     clearInterval(interval);
   //   };
   // }, []);
-
-  React.useEffect(() => {
-    modulesRef.current = modules;
-  }, [modules]);
 
   React.useEffect(() => {
     const debouncedSelectionChange = debounce(200, (e: Event) => {

@@ -32,7 +32,10 @@ const Outer = styled.div`
 
 const Overlay = styled.div`
   position: absolute;
-  inset: 0 10px;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   opacity: 1;
   pointer-events: none;
   background-color: rgba(46, 170, 220, 0.2);
@@ -63,7 +66,10 @@ export const BlockContainer: React.VFC<BlockProps> = React.memo(
     }, [block?.type]);
 
     return (
-      <Outer style={{ '--indent': `${block?.attributes?.indent ?? 0}` } as React.CSSProperties}>
+      <Outer
+        data-id={blockId}
+        style={{ '--indent': `${block?.attributes?.indent ?? 0}` } as React.CSSProperties}
+      >
         <Container
           suppressContentEditableWarning
           className={'notranslate'}

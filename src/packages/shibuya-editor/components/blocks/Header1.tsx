@@ -17,9 +17,10 @@ export interface Header1Props {
 const Header = styled.h1`
   font-size: 24px;
   outline: 0;
-  transition: all 0.3s, color 0.3s;
   padding: 2px 12px;
   box-sizing: border-box;
+  transition: all 0.3s;
+  padding-left: calc(12px + 1.5em * var(--indent));
   ::after {
     opacity: 0.3;
     content: attr(placeholder);
@@ -35,12 +36,7 @@ export const Header1 = React.memo(
       const innerText = (headerRef.current as HTMLElement).innerText.replaceAll(/\uFEFF/gi, '');
       setShowPlaceholder(innerText.length < 1);
     }, []);
-    useMutationObserver(headerRef, handleChangeElement, {
-      childList: true,
-      attributes: true,
-      subtree: true,
-      characterData: true,
-    });
+    useMutationObserver(headerRef, handleChangeElement);
 
     React.useEffect(() => {
       handleChangeElement();

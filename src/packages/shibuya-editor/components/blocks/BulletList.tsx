@@ -22,12 +22,14 @@ const ListItem = styled.div<Pick<BulletListProps, 'placeholder'>>`
   padding-left: calc(40px + 1.5em * var(--indent));
   box-sizing: border-box;
   position: relative;
+  transition: all 0.3s;
   ::before {
     position: absolute;
     font-family: Arial;
     font-size: 1.5em;
     line-height: 1;
     top: 3px;
+    transition: all 0.3s;
     content: var(--content);
     left: calc(18px + 1em * var(--indent));
   }
@@ -53,12 +55,7 @@ export const BulletList = React.memo(
       const innerText = (headerRef.current as HTMLElement).innerText.replaceAll(/\uFEFF/gi, '');
       setShowPlaceholder(innerText.length < 1);
     }, []);
-    useMutationObserver(headerRef, handleChangeElement, {
-      childList: true,
-      attributes: true,
-      subtree: true,
-      characterData: true,
-    });
+    useMutationObserver(headerRef, handleChangeElement);
 
     React.useEffect(() => {
       handleChangeElement();

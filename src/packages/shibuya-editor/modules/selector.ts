@@ -15,9 +15,9 @@ interface Props {
   editor: EditorController;
 }
 
-interface Position {
-  start: string | null;
-  end: string | null;
+interface Area {
+  start: { top: number; left: number } | null;
+  end: { top: number; left: number } | null;
 }
 
 interface KeyBindingProps {
@@ -41,8 +41,16 @@ export class SelectorModule implements Module {
   private changed = false;
   private selectedBlocks: Block[] = [];
   private bindings: KeyBindingProps[] = [];
+  // area select mode
+  private area: Area = { start: null, end: null };
+  private areaSelecting = false;
+  private areaEl: HTMLDivElement | null = null;
 
   mouseMove = throttle(20, (e: MouseEvent) => {
+    if (this.areaSelecting) {
+      this.areaMove(e);
+      return;
+    }
     if (!this.mousePressed) return;
     const blocks = this.editor.getBlocks();
     const startIndex = blocks.findIndex((v) => v.id === this.startBlockId);
@@ -55,7 +63,6 @@ export class SelectorModule implements Module {
       const startEl = getBlockElementById(blocks[startIndex].id);
       const startTop = startEl?.getBoundingClientRect()?.top ?? 0;
       const isUpward = startTop > e.clientY;
-
       if (isUpward) {
         for (let i = startIndex; i >= 0; i--) {
           const blockEl = getBlockElementById(blocks[i].id);
@@ -210,11 +217,59 @@ export class SelectorModule implements Module {
   }
 
   mouseUp(e: MouseEvent) {
+    if (this.areaSelecting) {
+      this.areaEnd(e);
+      return;
+    }
+
     this.mousePressed = false;
 
     setTimeout(() => {
       this.changed = false;
     });
+  }
+
+  areaStart(e: MouseEvent) {
+    this.area.start = { top: e.clientY, left: e.clientX };
+    this.area.end = null;
+    this.areaSelecting = true;
+    if (!document.getElementById('shibuya-area-selector')) {
+      this.areaEl = document.createElement('div');
+      this.areaEl.setAttribute('id', 'shibuya-area-selector');
+      this.areaEl.style.backgroundColor = 'rgba(46,170,220,0.2)';
+      this.areaEl.style.borderRadius = '8px';
+      this.areaEl.style.position = 'absolute';
+      document.body.appendChild(this.areaEl);
+    }
+  }
+
+  areaMove(e: MouseEvent) {
+    this.area.end = { top: e.clientY, left: e.clientX };
+    if (!this.area.start || !this.areaEl) return;
+    if (this.area.start.top < this.area.end.top) {
+      this.areaEl.style.top = `${this.area.start.top}px`;
+      this.areaEl.style.height = `${this.area.end.top - this.area.start.top}px`;
+    } else {
+      this.areaEl.style.top = `${this.area.end.top}px`;
+      this.areaEl.style.height = `${this.area.start.top - this.area.end.top}px`;
+    }
+    if (this.area.start.left < this.area.end.left) {
+      this.areaEl.style.left = `${this.area.start.left}px`;
+      this.areaEl.style.width = `${this.area.end.left - this.area.start.left}px`;
+    } else {
+      this.areaEl.style.left = `${this.area.end.left}px`;
+      this.areaEl.style.width = `${this.area.start.left - this.area.end.left}px`;
+    }
+  }
+
+  areaEnd(e: MouseEvent) {
+    this.area.start = null;
+    this.area.end = null;
+    this.areaSelecting = false;
+    if (this.areaEl) {
+      this.areaEl.remove();
+      this.areaEl = null;
+    }
   }
 
   reset() {
@@ -390,6 +445,7 @@ export class SelectorModule implements Module {
     editor.render(affectedIds);
     return;
   }
+
   private _handleOutdent(editor: EditorController, event: React.KeyboardEvent) {
     event.preventDefault();
     const blocks = editor.getBlocks();

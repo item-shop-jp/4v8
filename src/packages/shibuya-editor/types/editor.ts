@@ -22,6 +22,7 @@ export interface Settings {
   modules?: ModuleOptions;
   collaborationLevel: 'block' | 'inline';
   indentatableFormats: BlockType[];
+  scrollContainer?: HTMLElement | string;
 }
 
 export interface PositionParams {

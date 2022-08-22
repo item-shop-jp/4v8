@@ -39,7 +39,6 @@ const Overlay = styled.div`
   opacity: 1;
   pointer-events: none;
   background-color: rgba(46, 170, 220, 0.2);
-  animation: ${FadeIn} 0.1s ease;
 `;
 
 export const BlockContainer: React.VFC<BlockProps> = React.memo(

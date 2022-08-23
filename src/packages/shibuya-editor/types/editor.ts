@@ -100,5 +100,5 @@ export interface EditorController {
   removeAllModules(): void;
   getEventEmitter(): EventEmitter;
   getSettings(): Settings;
-  getEditorRef(): HTMLElement | null;
+  getEditorRef(): HTMLElement;
 }

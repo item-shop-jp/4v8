@@ -802,7 +802,7 @@ export function useEditor({
   }, [settings]);
 
   const getEditorRef = React.useCallback(() => {
-    return editorRef.current;
+    return editorRef.current as HTMLDivElement;
   }, []);
 
   const editorController = React.useMemo(() => {

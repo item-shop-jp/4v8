@@ -99,14 +99,14 @@ export const Container: React.FC = React.memo(() => {
       <BasicContainer id="scroll1">
         <Editor settings={settings} formats={formats} readOnly={false} ref={editorRef1} />
       </BasicContainer>
-      <ScrollContainer id="scroll2">
+      {/* <ScrollContainer id="scroll2">
         <StyledEditor
           settings={{ ...settings, scrollContainer: '#scroll2' }}
           formats={formats}
           readOnly={false}
           ref={editorRef2}
         />
-      </ScrollContainer>
+      </ScrollContainer> */}
     </>
   );
 });

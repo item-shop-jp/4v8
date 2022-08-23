@@ -16,7 +16,7 @@ interface Props {
 }
 
 interface Area {
-  start: { top: number; left: number } | null;
+  start: { top: number; left: number; blockIndex: number | null } | null;
   end: { top: number; left: number } | null;
 }
 
@@ -230,7 +230,17 @@ export class SelectorModule implements Module {
   }
 
   areaStart(e: MouseEvent) {
-    this.area.start = { top: e.clientY, left: e.clientX };
+    const blocks = this.editor.getBlocks();
+    let startBlockIndex;
+    for (let i = 0; i < blocks.length; i++) {
+      const blockEl = getBlockElementById(blocks[i].id);
+      const rect = blockEl?.getBoundingClientRect();
+      if (rect && rect.top < e.clientY && rect.top + rect.height > e.clientY) {
+        startBlockIndex = i;
+        break;
+      }
+    }
+    this.area.start = { top: e.clientY, left: e.clientX, blockIndex: startBlockIndex ?? null };
     this.area.end = null;
     this.areaSelecting = true;
     if (!document.getElementById('shibuya-area-selector')) {
@@ -245,11 +255,14 @@ export class SelectorModule implements Module {
 
   areaMove(e: MouseEvent) {
     this.area.end = { top: e.clientY, left: e.clientX };
-    if (!this.area.start || !this.areaEl) return;
+    if (!this.area.start || !this.area.start.blockIndex || !this.areaEl) return;
+    let isUpward = false;
+    let x;
     if (this.area.start.top < this.area.end.top) {
       this.areaEl.style.top = `${this.area.start.top}px`;
       this.areaEl.style.height = `${this.area.end.top - this.area.start.top}px`;
     } else {
+      isUpward = true;
       this.areaEl.style.top = `${this.area.end.top}px`;
       this.areaEl.style.height = `${this.area.start.top - this.area.end.top}px`;
     }
@@ -260,20 +273,61 @@ export class SelectorModule implements Module {
       this.areaEl.style.left = `${this.area.end.left}px`;
       this.areaEl.style.width = `${this.area.start.left - this.area.end.left}px`;
     }
-  }
 
-  areaEnd(e: MouseEvent) {
-    this.area.start = null;
-    this.area.end = null;
-    this.areaSelecting = false;
-    if (this.areaEl) {
-      this.areaEl.remove();
-      this.areaEl = null;
+    const editorRect = this.editor.getEditorRef().getBoundingClientRect();
+    const areaRect = this.areaEl.getBoundingClientRect();
+
+    if (
+      (editorRect.x > areaRect.x && editorRect.x < areaRect.x + areaRect.width) ||
+      (editorRect.x + editorRect.width < areaRect.x + areaRect.width &&
+        editorRect.x + editorRect.width > areaRect.x)
+    ) {
+      const blocks = this.editor.getBlocks();
+      let blockIds: string[] = [];
+      let selectedBlocks: Block[] = [];
+      if (isUpward) {
+        for (let i = this.area.start.blockIndex; i >= 0; i--) {
+          const blockEl = getBlockElementById(blocks[i].id);
+          const rect = blockEl?.getBoundingClientRect();
+
+          if (rect && rect.top + rect.height > e.clientY) {
+            blockIds.push(blocks[i].id);
+          } else {
+            break;
+          }
+        }
+      } else {
+        for (let i = this.area.start.blockIndex; i < blocks.length; i++) {
+          const blockEl = getBlockElementById(blocks[i].id);
+          const rect = blockEl?.getBoundingClientRect();
+          if (rect && rect.top < e.clientY) {
+            blockIds.push(blocks[i].id);
+          } else {
+            break;
+          }
+        }
+      }
+      selectedBlocks = copyObject(blocks.filter((v) => blockIds.includes(v.id)));
+      this.selectBlocks(selectedBlocks);
+    } else {
+      this.selectBlocks([]);
     }
   }
 
+  areaEnd(e: MouseEvent) {
+    setTimeout(() => {
+      this.area.start = null;
+      this.area.end = null;
+      this.areaSelecting = false;
+      if (this.areaEl) {
+        this.areaEl.remove();
+        this.areaEl = null;
+      }
+    }, 10);
+  }
+
   reset() {
-    if (this.changed) return;
+    if (this.changed || this.areaSelecting) return;
     this.mousePressed = false;
     this.enabled = false;
     this.startBlockId = null;

@@ -7,6 +7,7 @@ import { getBlockId, getBlockElementById } from '../utils/block';
 import { KeyCodes, EditorEvents } from '../constants';
 import { Block } from '../types/block';
 import { copyObject } from '../utils/object';
+import { getScrollContainer } from '../utils/dom';
 
 const ShortKey = /Mac/i.test(navigator.platform) ? 'metaKey' : 'ctrlKey';
 
@@ -16,8 +17,14 @@ interface Props {
 }
 
 interface Area {
-  start: { top: number; left: number; blockIndex: number | null } | null;
-  end: { top: number; left: number } | null;
+  start: {
+    top: number;
+    left: number;
+    bodyScrollTop: number;
+    containerScrollTop: number;
+    blockIndex: number | null;
+  } | null;
+  end: { top: number; left: number; bodyScrollTop: number; containerScrollTop: number } | null;
 }
 
 interface KeyBindingProps {
@@ -240,7 +247,19 @@ export class SelectorModule implements Module {
         break;
       }
     }
-    this.area.start = { top: e.clientY, left: e.clientX, blockIndex: startBlockIndex ?? null };
+
+    const container = getScrollContainer(this.editor.getSettings().scrollContainer);
+    const containerScrollTop = container ? container.scrollTop : 0;
+    const scrollEl = document.scrollingElement as HTMLElement;
+    const bodyScrollTop = scrollEl?.scrollTop ?? 0;
+
+    this.area.start = {
+      top: e.clientY,
+      left: e.clientX,
+      bodyScrollTop,
+      containerScrollTop,
+      blockIndex: startBlockIndex ?? null,
+    };
     this.area.end = null;
     this.areaSelecting = true;
     if (!document.getElementById('shibuya-area-selector')) {
@@ -254,39 +273,74 @@ export class SelectorModule implements Module {
   }
 
   areaMove(e: MouseEvent) {
-    this.area.end = { top: e.clientY, left: e.clientX };
-    if (!this.area.start || !this.area.start.blockIndex || !this.areaEl) return;
+    if (!this.area.start) return;
+
     let isUpward = false;
-    let x;
-    if (this.area.start.top < this.area.end.top) {
-      this.areaEl.style.top = `${this.area.start.top}px`;
-      this.areaEl.style.height = `${this.area.end.top - this.area.start.top}px`;
+    const container = getScrollContainer(this.editor.getSettings().scrollContainer);
+    const containerScrollTop = container ? container.scrollTop : 0;
+    const scrollEl = document.scrollingElement as HTMLElement;
+    const bodyScrollTop = scrollEl?.scrollTop ?? 0;
+    this.area.end = { top: e.clientY, left: e.clientX, bodyScrollTop, containerScrollTop };
+
+    const startTop = this.area.start.bodyScrollTop + this.area.start.top;
+    const endTop = bodyScrollTop + this.area.end.top;
+    const startLeft = this.area.start.left;
+    const endLeft = this.area.end.left;
+
+    let area: { left: number; top: number; width: number; height: number } = {
+      left: 0,
+      top: 0,
+      width: 0,
+      height: 0,
+    };
+
+    if (startTop < endTop) {
+      area.top = startTop;
+      area.height = endTop - startTop;
     } else {
-      isUpward = true;
-      this.areaEl.style.top = `${this.area.end.top}px`;
-      this.areaEl.style.height = `${this.area.start.top - this.area.end.top}px`;
+      area.top = endTop;
+      area.height = startTop - endTop;
     }
-    if (this.area.start.left < this.area.end.left) {
-      this.areaEl.style.left = `${this.area.start.left}px`;
-      this.areaEl.style.width = `${this.area.end.left - this.area.start.left}px`;
+    if (startLeft < endLeft) {
+      area.left = startLeft;
+      area.width = endLeft - startLeft;
     } else {
-      this.areaEl.style.left = `${this.area.end.left}px`;
-      this.areaEl.style.width = `${this.area.start.left - this.area.end.left}px`;
+      area.left = endLeft;
+      area.width = startLeft - endLeft;
     }
 
-    const editorRect = this.editor.getEditorRef().getBoundingClientRect();
-    const areaRect = this.areaEl.getBoundingClientRect();
+    if (containerScrollTop + startTop > containerScrollTop + endTop) {
+      isUpward = true;
+    }
+
+    if (this.areaEl) {
+      this.areaEl.style.top = `${area.top}px`;
+      this.areaEl.style.left = `${area.left}px`;
+      this.areaEl.style.height = `${area.height}px`;
+      this.areaEl.style.width = `${area.width}px`;
+    }
+
+    const editorRect = container
+      ? this.editor.getEditorRef().parentElement?.parentElement?.getBoundingClientRect()
+      : this.editor.getEditorRef().getBoundingClientRect();
+    if (!editorRect) return;
 
     if (
-      (editorRect.x > areaRect.x && editorRect.x < areaRect.x + areaRect.width) ||
-      (editorRect.x + editorRect.width < areaRect.x + areaRect.width &&
-        editorRect.x + editorRect.width > areaRect.x)
+      ((editorRect.x < area.left && editorRect.x + editorRect.width > area.left + area.width) ||
+        (editorRect.x > area.left && editorRect.x < area.left + area.width) ||
+        (editorRect.x + editorRect.width < area.left + area.width &&
+          editorRect.x + editorRect.width > area.left)) &&
+      ((editorRect.y < area.top &&
+        editorRect.y + editorRect.height > area.top - bodyScrollTop + area.height) ||
+        (editorRect.y > area.top && editorRect.y < area.top - bodyScrollTop + area.height) ||
+        (editorRect.y + editorRect.height < area.top - bodyScrollTop + area.height &&
+          editorRect.y + editorRect.height > area.top - bodyScrollTop))
     ) {
       const blocks = this.editor.getBlocks();
       let blockIds: string[] = [];
       let selectedBlocks: Block[] = [];
       if (isUpward) {
-        for (let i = this.area.start.blockIndex; i >= 0; i--) {
+        for (let i = this.area.start.blockIndex ?? blocks.length - 1; i >= 0; i--) {
           const blockEl = getBlockElementById(blocks[i].id);
           const rect = blockEl?.getBoundingClientRect();
 
@@ -297,10 +351,10 @@ export class SelectorModule implements Module {
           }
         }
       } else {
-        for (let i = this.area.start.blockIndex; i < blocks.length; i++) {
+        for (let i = this.area.start.blockIndex ?? 0; i < blocks.length; i++) {
           const blockEl = getBlockElementById(blocks[i].id);
           const rect = blockEl?.getBoundingClientRect();
-          if (rect && rect.top < e.clientY) {
+          if (rect && rect.top <= e.clientY) {
             blockIds.push(blocks[i].id);
           } else {
             break;

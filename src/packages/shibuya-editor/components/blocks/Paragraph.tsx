@@ -18,7 +18,6 @@ const P = styled.p`
   margin: 0;
   padding: 2px 12px;
   box-sizing: border-box;
-  transition: all 0.3s;
   padding-left: calc(12px + 1.5em * var(--indent));
 `;
 

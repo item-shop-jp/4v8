@@ -17,12 +17,12 @@ import { UploaderModule } from '../modules/uploader';
 export interface Settings {
   scrollMarginBottom: number;
   scrollMarginTop: number;
-  allowAttributes: string[];
   allowFormats: string[];
   embeddedBlocks: BlockType[];
   modules?: ModuleOptions;
   collaborationLevel: 'block' | 'inline';
   indentatableFormats: BlockType[];
+  scrollContainer?: HTMLElement | string;
 }
 
 export interface PositionParams {
@@ -100,5 +100,5 @@ export interface EditorController {
   removeAllModules(): void;
   getEventEmitter(): EventEmitter;
   getSettings(): Settings;
-  getEditorRef(): HTMLElement | null;
+  getEditorRef(): HTMLElement;
 }

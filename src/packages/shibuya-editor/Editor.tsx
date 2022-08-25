@@ -35,7 +35,6 @@ import { Settings, EditorController } from './types/editor';
 import { UploaderModule } from './modules/uploader';
 
 interface Props {
-  scrollContainer?: HTMLElement | string;
   readOnly?: boolean;
   formats?: { [key: string]: any };
   settings?: Partial<Settings>;
@@ -74,24 +73,20 @@ const Selector = styled.div`
 
 export const Editor = React.memo(
   React.forwardRef<EditorController, Props>(
-    (
-      { readOnly = false, formats, settings = {}, scrollContainer, ...props }: Props,
-      forwardRef,
-    ) => {
+    ({ readOnly = false, formats, settings = {}, ...props }: Props, forwardRef) => {
       const [eventEmitter, eventTool] = useEventEmitter();
       const [editorRef, editor] = useEditor({
         settings: {
           // default settings
           scrollMarginTop: settings.scrollMarginTop ?? 100,
           scrollMarginBottom: settings.scrollMarginBottom ?? 250,
-          allowAttributes: settings.allowAttributes ?? [],
           allowFormats: settings.allowFormats ?? [],
           embeddedBlocks: settings.embeddedBlocks ?? ['IMAGE', 'FILE'],
           collaborationLevel: settings.collaborationLevel ?? 'inline',
           indentatableFormats: settings.indentatableFormats ?? ['ORDEREDLIST', 'BULLETLIST'],
+          scrollContainer: settings.scrollContainer,
         },
         eventEmitter,
-        scrollContainer,
       });
       const containerRef = React.useRef<HTMLDivElement>(null);
       const [blockFormats, setBlockFormats] = React.useState<Formats>({
@@ -268,7 +263,11 @@ export const Editor = React.memo(
 
       React.useEffect(() => {
         const handleMouseDown = (e: MouseEvent) => {
-          editor.getModule('selector').mouseDown(e);
+          if (editorRef.current?.contains(e.target as Element)) {
+            editor.getModule('selector').mouseDown(e);
+          } else {
+            editor.getModule('selector').areaStart(e);
+          }
         };
 
         const handleMouseMove = (e: MouseEvent) => {
@@ -283,7 +282,7 @@ export const Editor = React.memo(
           if (!editorRef.current || editorRef.current.contains(e.target as Node)) {
             return;
           }
-          editor.getModule('selector').reset();
+          editor.getModule('selector').reset(e);
         };
 
         document.addEventListener('mousedown', handleMouseDown);
@@ -360,7 +359,7 @@ export const Editor = React.memo(
           </Inner>
           <MarginBottom onClick={handleContainerClick} />
           <MemoGlobalToolbar editor={memoEditor} />
-          <MemoBubbleToolbar editor={memoEditor} scrollContainer={scrollContainer} />
+          <MemoBubbleToolbar editor={memoEditor} scrollContainer={settings.scrollContainer} />
           <Selector
             contentEditable={true}
             className="clipboard"

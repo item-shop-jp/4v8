@@ -39,31 +39,18 @@ const Overlay = styled.div`
   opacity: 1;
   pointer-events: none;
   background-color: rgba(46, 170, 220, 0.2);
-  animation: ${FadeIn} 0.1s ease;
 `;
 
 export const BlockContainer: React.VFC<BlockProps> = React.memo(
   ({ blockId, editor, selected, readOnly = false, formats, ...props }) => {
-    const [blockFormat, setBlockFormat] = React.useState<string>();
-    const [Container, setContainer] = React.useState<React.FC<any>>(formats['block/paragraph']);
     const block = useBlockRenderer({ blockId, editor });
 
     const memoContents = React.useMemo(() => {
       return InlineContainer({ contents: block?.contents ?? [], formats });
     }, [block?.contents, formats]);
 
-    React.useEffect(() => {
-      const newBlockFormat = `block/${block?.type.toLocaleLowerCase()}`;
-      setBlockFormat(newBlockFormat);
-      setContainer(() => {
-        if (!formats[newBlockFormat]) {
-          // defalut block format
-          return formats['block/paragraph'];
-        } else {
-          return formats[newBlockFormat];
-        }
-      });
-    }, [block?.type]);
+    const blockFormat = `block/${block?.type.toLocaleLowerCase()}`;
+    const Container: React.FC<any> = formats[blockFormat] ?? formats['block/paragraph'];
 
     return (
       <Outer

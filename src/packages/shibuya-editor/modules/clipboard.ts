@@ -61,16 +61,15 @@ export class ClipboardModule implements Module {
     event.preventDefault();
     const caretPosition = this.editor.getCaretPosition();
 
-    // file upload
     const dataTransferItems = event.clipboardData.items ?? [];
-    if (dataTransferItems.length > 0) {
-      const files: File[] = [];
-      for (let i = 0; i < dataTransferItems.length; i++) {
-        const file = dataTransferItems[i].getAsFile();
-        if (!file) return;
-        files.push(file);
-      }
-      console.log(files);
+    const files: File[] = [];
+    for (let i = 0; i < dataTransferItems.length; i++) {
+      const file = dataTransferItems[i].getAsFile();
+      if (file) files.push(file);
+    }
+
+    // file upload
+    if (files.length > 0) {
       this.editor.getModule('uploader').upload(files);
       return;
     }
@@ -90,6 +89,7 @@ export class ClipboardModule implements Module {
           prevBlockId = appendBlock.id;
           return appendBlock.id;
         });
+        this.editor.numberingList();
         this.editor.render(affectedIds);
         setTimeout(() => {
           const textIndex = this.editor.getBlockLength(prevBlockId) ?? 0;

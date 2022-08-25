@@ -282,7 +282,7 @@ export const Editor = React.memo(
           if (!editorRef.current || editorRef.current.contains(e.target as Node)) {
             return;
           }
-          editor.getModule('selector').reset();
+          editor.getModule('selector').reset(e);
         };
 
         document.addEventListener('mousedown', handleMouseDown);

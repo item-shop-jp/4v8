@@ -355,6 +355,12 @@ export class SelectorModule implements Module {
           const blockEl = getBlockElementById(blocks[i].id);
           const rect = blockEl?.getBoundingClientRect();
           if (rect && rect.top <= e.clientY) {
+            if (
+              container &&
+              area.top + this.area.start.containerScrollTop >= rect.top + containerScrollTop
+            ) {
+              continue;
+            }
             blockIds.push(blocks[i].id);
           } else {
             break;
@@ -380,13 +386,19 @@ export class SelectorModule implements Module {
     }, 10);
   }
 
-  reset() {
-    if (this.changed || this.areaSelecting) return;
+  reset(e?: MouseEvent) {
+    if (this.changed) return;
+    if (this.areaSelecting && e && this.area.start) {
+      const movedX = e.clientX - this.area.start.left;
+      const movedY = e.clientY - this.area.start.top;
+      if (!((movedX > -5 || movedX < 5) && (movedY > -5 || movedY < 5))) {
+        return;
+      }
+    }
     this.mousePressed = false;
     this.enabled = false;
     this.startBlockId = null;
-    this.selectedBlocks = [];
-    this.sendBlockSelectedEvent([]);
+    this.selectBlocks([]);
   }
 
   getSelectedBlocks() {

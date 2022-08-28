@@ -45,7 +45,7 @@ const settings = {
       onUpload: async ({ base64 }: { original: File; base64: string | null; isImage: boolean }) => {
         return new Promise((resolve) => {
           setTimeout(() => {
-            resolve(base64);
+            resolve({ original: base64 });
           }, 2000);
         });
       },

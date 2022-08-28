@@ -7,11 +7,12 @@ interface Props {
   eventEmitter: EventEmitter;
   editor: EditorController;
   options: {
-    onUpload: (params: {
-      original: File;
-      base64: string | null;
-      isImage: boolean;
-    }) => string | null;
+    onUpload: (params: { original: File; base64: string | null; isImage: boolean }) => {
+      original: string;
+      thumbnail?: string;
+      fileName?: string;
+      size?: number;
+    } | null;
   };
 }
 
@@ -39,7 +40,7 @@ export class UploaderModule implements Module {
 
     files.forEach((file) => {
       const isImage = !!file.type.match(/^image\/(gif|jpe?g|a?png|svg|webp|bmp)/i);
-      if (isImage) {
+      if (!isImage) {
         const fileReader = new FileReader();
         fileReader.onload = async (event) => {
           const addedBlock = this.editor.getModule('editor').createBlock({
@@ -51,14 +52,55 @@ export class UploaderModule implements Module {
               isUploading: true,
             },
           });
-          const imageUrl = await this.options.onUpload({
+          const res = await this.options.onUpload({
             original: file,
             base64: (<FileReader>event.target).result as string,
             isImage,
           });
+          if (!res) {
+            // todo: error;
+            this.editor.deleteBlock(addedBlock.id);
+            this.editor.render();
+            return;
+          }
           this.editor.updateBlock({
             ...addedBlock,
-            attributes: { thumbnail: imageUrl },
+            attributes: { thumbnail: res?.thumbnail ?? res.original },
+            meta: {
+              isUploading: false,
+            },
+          });
+          this.editor.render([addedBlock.id]);
+        };
+        fileReader.readAsDataURL(file);
+      } else {
+        const fileReader = new FileReader();
+        fileReader.onload = async (event) => {
+          const addedBlock = this.editor.getModule('editor').createBlock({
+            type: 'File',
+            attributes: {
+              fileName: file.name,
+              original: (<FileReader>event.target).result,
+              size: file.size,
+            },
+            meta: {
+              isUploading: true,
+            },
+          });
+          const res = await this.options.onUpload({
+            original: file,
+            base64: (<FileReader>event.target).result as string,
+            isImage,
+          });
+          if (!res) {
+            // todo: error;
+            this.editor.deleteBlock(addedBlock.id);
+            this.editor.render();
+            return;
+          }
+          this.editor.updateBlock({
+            ...addedBlock,
+            // attributes: { thumbnail: res?.thumbnail ?? res.original },
             meta: {
               isUploading: false,
             },

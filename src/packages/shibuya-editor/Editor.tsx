@@ -10,7 +10,8 @@ import {
   BulletList,
   Blockquote,
   Paragraph,
-  ImageEmbed,
+  Image,
+  File,
 } from './components/blocks';
 import { InlineText } from './components/inlines';
 import { Bold, Strike, Underline, InlineCode, Italic } from './components/styles';
@@ -99,7 +100,8 @@ export const Editor = React.memo(
         'block/header2': Header2,
         'block/header3': Header3,
         'block/blockquote': Blockquote,
-        'block/image': ImageEmbed,
+        'block/image': Image,
+        'block/file': File,
         'inline/text': InlineText,
         'inline/style/bold': Bold,
         'inline/style/underline': Underline,

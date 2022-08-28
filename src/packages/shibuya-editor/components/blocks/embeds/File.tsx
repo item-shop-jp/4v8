@@ -1,14 +1,15 @@
 import * as React from 'react';
 import styled from 'styled-components';
+import prettyBytes from 'pretty-bytes';
 import { MutatingDots } from 'react-loader-spinner';
 import { EditorController } from '../../../types/editor';
 import { Formats } from '../../../types/format';
 
-export interface ImageProps {
+export interface FileProps {
   blockId: string;
   formats?: Formats;
   contents: React.ReactNode;
-  attributes: { thumbnail: string; original: string };
+  attributes: { fileName: string; original: string; size: number };
   meta: { isUploading?: boolean };
   editor: EditorController;
 }
@@ -16,11 +17,28 @@ export interface ImageProps {
 const Container = styled.div`
   outline: none;
   display: flex;
-  justify-content: center;
-  img {
-    max-width: 100%;
-  }
 `;
+const IconContainer = styled.div`
+  outline: none;
+  display: flex;
+  flex-shrink: 0;
+  width: 50px;
+`;
+const Inner = styled.div`
+  outline: none;
+  display: flex;
+  flex-shrink: 1;
+  width: 100%;
+`;
+const ButtonContainer = styled.div`
+  outline: none;
+  display: flex;
+  flex-shrink: 0;
+  width: 50px;
+`;
+
+const FileName = styled.div``;
+const Size = styled.div``;
 const Loading = styled.div`
   position: absolute;
   top: 0;
@@ -34,15 +52,15 @@ const Loading = styled.div`
   align-items: center;
 `;
 
-export const Image = React.memo(
+export const File = React.memo(
   ({
     blockId,
     contents,
-    attributes: { thumbnail, original },
+    attributes: { fileName, original, size },
     meta: { isUploading = false },
     editor,
     ...props
-  }: ImageProps) => {
+  }: FileProps) => {
     const imageRef = React.useRef(null);
     const handleClick = React.useCallback((e: React.MouseEvent) => {}, []);
     const handleMouseDown = React.useCallback((e: React.MouseEvent) => {
@@ -51,7 +69,12 @@ export const Image = React.memo(
     }, []);
     return (
       <Container ref={imageRef} {...props} contentEditable={false}>
-        <img src={thumbnail} onClick={handleClick} onMouseDown={handleMouseDown} />
+        <IconContainer></IconContainer>
+        <Inner>
+          <FileName>{fileName}</FileName>
+          <Size>{prettyBytes(size)}</Size>
+        </Inner>
+        <IconContainer></IconContainer>
         {isUploading && (
           <Loading>
             <MutatingDots

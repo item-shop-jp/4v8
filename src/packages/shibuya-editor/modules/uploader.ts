@@ -40,7 +40,7 @@ export class UploaderModule implements Module {
 
     files.forEach((file) => {
       const isImage = !!file.type.match(/^image\/(gif|jpe?g|a?png|svg|webp|bmp)/i);
-      if (!isImage) {
+      if (isImage) {
         const fileReader = new FileReader();
         fileReader.onload = async (event) => {
           const addedBlock = this.editor.getModule('editor').createBlock({
@@ -77,7 +77,7 @@ export class UploaderModule implements Module {
         const fileReader = new FileReader();
         fileReader.onload = async (event) => {
           const addedBlock = this.editor.getModule('editor').createBlock({
-            type: 'File',
+            type: 'FILE',
             attributes: {
               fileName: file.name,
               original: (<FileReader>event.target).result,

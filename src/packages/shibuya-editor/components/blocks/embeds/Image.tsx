@@ -13,13 +13,13 @@ export interface ImageProps {
   editor: EditorController;
 }
 
-const ImageContainer = styled.div`
+const Container = styled.div`
   outline: none;
   display: flex;
   justify-content: center;
-`;
-const Image = styled.img`
-  max-width: 100%;
+  img {
+    max-width: 100%;
+  }
 `;
 const Loading = styled.div`
   position: absolute;
@@ -34,7 +34,7 @@ const Loading = styled.div`
   align-items: center;
 `;
 
-export const ImageEmbed = React.memo(
+export const Image = React.memo(
   ({
     blockId,
     contents,
@@ -50,8 +50,8 @@ export const ImageEmbed = React.memo(
       e.stopPropagation();
     }, []);
     return (
-      <ImageContainer ref={imageRef} {...props} contentEditable={false}>
-        <Image src={thumbnail} onClick={handleClick} onMouseDown={handleMouseDown} />
+      <Container ref={imageRef} {...props} contentEditable={false}>
+        <img src={thumbnail} onClick={handleClick} onMouseDown={handleMouseDown} />
         {isUploading && (
           <Loading>
             <MutatingDots
@@ -65,7 +65,7 @@ export const ImageEmbed = React.memo(
             />
           </Loading>
         )}
-      </ImageContainer>
+      </Container>
     );
   },
 );

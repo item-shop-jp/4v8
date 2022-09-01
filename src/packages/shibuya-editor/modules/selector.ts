@@ -237,6 +237,9 @@ export class SelectorModule implements Module {
   }
 
   areaStart(e: MouseEvent) {
+    const [blockId] = getBlockId(e.target as HTMLElement);
+    if (blockId) return;
+
     const blocks = this.editor.getBlocks();
     let startBlockIndex;
     for (let i = 0; i < blocks.length; i++) {

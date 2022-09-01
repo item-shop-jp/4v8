@@ -7,3 +7,4 @@ export * from './BulletList';
 export * from './Blockquote';
 export * from './Paragraph';
 export * from './embeds/Image';
+export * from './embeds/File';

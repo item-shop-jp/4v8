@@ -27,13 +27,12 @@ import {
   HistoryModule,
   ClipboardModule,
   MarkdownShortcutModule,
+  UploaderModule,
+  DragDropModule,
 } from './modules';
 import { getBlockElementById } from './utils/block';
 import { EditorEvents } from './constants';
-import { Formats } from './types/format';
-import { Block } from './types/block';
-import { Settings, EditorController } from './types/editor';
-import { UploaderModule } from './modules/uploader';
+import { Formats, Block, Settings, EditorController } from './types';
 
 interface Props {
   readOnly?: boolean;
@@ -204,6 +203,7 @@ export const Editor = React.memo(
       const handleDrop = React.useCallback(
         (e: React.DragEvent) => {
           e.preventDefault();
+          editor.getModule('drag-drop').handleDrop(e.nativeEvent);
         },
         [editor],
       );
@@ -242,6 +242,7 @@ export const Editor = React.memo(
             { name: 'clipboard', module: ClipboardModule },
             { name: 'markdown-shortcut', module: MarkdownShortcutModule },
             { name: 'uploader', module: UploaderModule },
+            { name: 'drag-drop', module: DragDropModule },
           ],
           settings?.modules ?? {},
         );

@@ -11,6 +11,7 @@ import {
   HistoryModule,
   LoggerModule,
   MarkdownShortcutModule,
+  DragDropModule,
 } from '../modules';
 import { UploaderModule } from '../modules/uploader';
 
@@ -67,6 +68,7 @@ export interface EditorController {
   getCaretPosition(): CaretPosition | null;
   getNativeRange(): Range | null;
   scrollIntoView(blockId?: string): void;
+  updateCaretPositionRef(caret?: CaretPosition): void;
   updateCaretRect(rect?: DOMRect): DOMRect | null;
   prev(params?: PositionParams): boolean;
   next(params?: PositionParams): boolean;
@@ -94,8 +96,9 @@ export interface EditorController {
   getModule(name: 'selector'): SelectorModule;
   getModule(name: 'history'): HistoryModule;
   getModule(name: 'logger'): LoggerModule;
-  getModule(name: 'markdown'): MarkdownShortcutModule;
+  getModule(name: 'markdown-shortcut'): MarkdownShortcutModule;
   getModule(name: 'uploader'): UploaderModule;
+  getModule(name: 'drag-drop'): DragDropModule;
   getModule<T = any>(name: string): T | null;
   removeAllModules(): void;
   getEventEmitter(): EventEmitter;

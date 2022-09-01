@@ -824,6 +824,7 @@ export function useEditor({
       sync,
       getCaretPosition,
       setCaretPosition,
+      updateCaretPositionRef,
       updateCaretRect,
       scrollIntoView,
       getNativeRange,

@@ -420,6 +420,15 @@ export class KeyBoardModule implements Module {
       if (!block) return;
       // Ignored for null characters
       if (textLength === 0) {
+        const { embeddedBlocks } = editor.getSettings();
+        if (blockIndex > 0 && embeddedBlocks.includes(blocks[blockIndex - 1].type)) {
+          editor.getModule('editor').deleteBlock(blocks[blockIndex - 1].id);
+          setTimeout(() => {
+            editor.setCaretPosition({ blockId: block.id, index: caretIndex });
+            editor.updateCaretRect();
+          }, 10);
+          return;
+        }
         editor.getModule('editor').deleteBlock();
         return;
       }

@@ -213,6 +213,14 @@ export const Editor = React.memo(
         },
         [editor],
       );
+      const handleDragOver = React.useCallback(
+        (e: React.DragEvent) => {
+          if ((e.target as HTMLElement)?.getAttribute('contenteditable') !== 'true') {
+            e.preventDefault();
+          }
+        },
+        [editor],
+      );
 
       const handleContainerClick = React.useCallback(
         (e: React.MouseEvent) => {
@@ -343,6 +351,7 @@ export const Editor = React.memo(
             onCut={handleCut}
             onDrop={handleDrop}
             onDrag={handleDrag}
+            onDragOver={handleDragOver}
           >
             {memoBlocks.map((block, index) => {
               return (

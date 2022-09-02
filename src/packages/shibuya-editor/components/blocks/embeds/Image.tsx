@@ -16,6 +16,7 @@ export interface ImageProps {
 const Container = styled.div`
   outline: none;
   display: flex;
+  margin: 4px 0;
   justify-content: center;
   img {
     max-width: 100%;

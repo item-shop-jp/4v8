@@ -2,6 +2,7 @@ import { Module } from '../types/module';
 import { EventEmitter } from '../utils/event-emitter';
 import { EditorController } from '../types/editor';
 import { caretRangeFromPoint } from '../utils/range';
+import { getBlockId } from '../utils/block';
 
 interface Props {
   eventEmitter: EventEmitter;
@@ -30,19 +31,8 @@ export class DragDropModule implements Module {
 
     if (!e.dataTransfer || !e.dataTransfer.files || e.dataTransfer.files.length < 1) return;
 
-    const selection = document.getSelection();
-    const range = caretRangeFromPoint(e.clientX, e.clientY);
-    if (selection && range) {
-      selection.setBaseAndExtent(
-        range.startContainer,
-        range.startOffset,
-        range.startContainer,
-        range.startOffset,
-      );
-    }
-    this.editor.updateCaretPositionRef();
-
+    const [blockId] = getBlockId(e.target as HTMLElement);
     const files = Array.from(e.dataTransfer.files);
-    this.editor.getModule('uploader').upload(files);
+    this.editor.getModule('uploader').upload(files, blockId);
   }
 }

@@ -362,6 +362,7 @@ export function useEditor({
 
         selection.removeAllRanges();
         selection.addRange(range);
+
         updateCaretPositionRef();
       } catch (e) {
         eventEmitter.warning('Invalid Range', e);

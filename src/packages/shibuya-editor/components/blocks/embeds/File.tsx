@@ -17,10 +17,10 @@ export interface FileProps {
 const Container = styled.div`
   outline: none;
   display: flex;
-  margin: 0 12px;
   padding: 0 12px;
   background: #eee;
   border-radius: 8px;
+  margin: 4px 12px;
 `;
 const IconContainer = styled.div`
   display: flex;

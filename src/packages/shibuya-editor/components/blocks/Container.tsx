@@ -70,6 +70,7 @@ export const BlockContainer: React.VFC<BlockProps> = React.memo(
           attributes={block?.attributes}
           meta={block?.meta}
           contents={memoContents}
+          editor={editor}
           selected={selected}
           {...props}
         />

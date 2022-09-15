@@ -65,7 +65,7 @@ export class MarkdownShortcutModule implements Module {
     this.addShortcut({
       name: 'bullet-list',
       type: 'block',
-      pattern: /^\*$/,
+      pattern: /^(\*|-|\+)$/,
       handler: this._handleBulletList.bind(this),
     });
 

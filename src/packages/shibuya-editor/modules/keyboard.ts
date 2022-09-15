@@ -420,6 +420,25 @@ export class KeyBoardModule implements Module {
       if (!block) return;
       // Ignored for null characters
       if (textLength === 0) {
+        if (block.type !== 'PARAGRAPH') {
+          editor.updateBlock({
+            ...block,
+            attributes: { ...block.attributes, indent: false },
+            type: 'PARAGRAPH',
+          });
+          this.editor.numberingList();
+          this.editor.getModule('history')?.optimizeOp();
+          editor.render([block.id]);
+          setTimeout(() => {
+            this.editor.setCaretPosition({
+              blockId: block.id,
+              index: 0,
+            });
+            this.editor.updateCaretRect();
+          }, 10);
+          return;
+        }
+
         const { embeddedBlocks } = editor.getSettings();
         if (blockIndex > 0 && embeddedBlocks.includes(blocks[blockIndex - 1].type)) {
           editor.getModule('editor').deleteBlock(blocks[blockIndex - 1].id);

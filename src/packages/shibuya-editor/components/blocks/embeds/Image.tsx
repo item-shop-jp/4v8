@@ -124,15 +124,15 @@ export const Image = React.memo(
         let width = 0;
         if (dragParams.type === 'left') {
           if (e.clientX < dragParams.left) {
-            width = dragParams.width - (e.clientX - dragParams.left);
+            width = dragParams.width - (e.clientX - dragParams.left) * 2;
           } else {
-            width = dragParams.width + (dragParams.left - e.clientX);
+            width = dragParams.width + (dragParams.left - e.clientX) * 2;
           }
         } else if (dragParams.type === 'right') {
           if (e.clientX > dragParams.left) {
-            width = dragParams.width + (e.clientX - dragParams.left);
+            width = dragParams.width + (e.clientX - dragParams.left) * 2;
           } else {
-            width = dragParams.width - (dragParams.left - e.clientX);
+            width = dragParams.width - (dragParams.left - e.clientX) * 2;
           }
         }
         if (width < 100) {

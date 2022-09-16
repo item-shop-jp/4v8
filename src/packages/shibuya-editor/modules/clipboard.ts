@@ -13,6 +13,8 @@ import {
   splitInlineContents,
 } from '../utils/block';
 import { Inline } from '../types/inline';
+import stringLength from 'string-length';
+import { createInline } from '../utils/inline';
 
 interface Props {
   eventEmitter: EventEmitter;
@@ -102,7 +104,12 @@ export class ClipboardModule implements Module {
       } else if (type === 'inlines') {
         const inlineContents = data as Inline[];
         const [first, last] = splitInlineContents(prevBlock.contents, caretPosition.index);
-        const appendTextLength = inlineContents.map((v) => v.text).join('').length;
+        const appendTextLength = stringLength(
+          inlineContents
+            .map((v) => v.text)
+            .join('')
+            .replaceAll(/\uFEFF/gi, ''),
+        );
         this.editor.updateBlock({
           ...prevBlock,
           contents: [
@@ -122,6 +129,26 @@ export class ClipboardModule implements Module {
           this.editor.updateCaretRect();
         }, 10);
       }
+      return;
+    }
+
+    const clipboardText = event.clipboardData.getData('text/plain');
+    if (prevBlock && caretPosition && clipboardText.length > 0) {
+      const [first, last] = splitInlineContents(prevBlock.contents, caretPosition.index);
+      const appendContent = createInline('TEXT', clipboardText);
+      this.editor.updateBlock({
+        ...prevBlock,
+        contents: [...first, appendContent, ...last],
+      });
+      this.editor.render([prevBlock.id]);
+      setTimeout(() => {
+        this.editor.setCaretPosition({
+          blockId: prevBlock.id,
+          index: caretPosition.index + stringLength(clipboardText),
+        });
+        this.editor.updateCaretRect();
+      }, 10);
+      return;
     }
   }
 

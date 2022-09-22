@@ -107,6 +107,18 @@ export const BubbleToolbar = React.memo(
       [formats],
     );
 
+    const handleColor = React.useCallback(
+      (event: React.MouseEvent) => {
+        event.preventDefault();
+        if (formats?.color) {
+          editor.getModule('toolbar').formatInline({ color: false });
+        } else {
+          editor.getModule('toolbar').formatInline({ color: 'red' });
+        }
+      },
+      [formats],
+    );
+
     React.useEffect(() => {
       const subs = new Subscription();
       const eventEmitter = editor.getEventEmitter();
@@ -160,6 +172,9 @@ export const BubbleToolbar = React.memo(
             </Button>
             <Button href="#" onClick={handleInlineCode} active={!!formats?.code}>
               code
+            </Button>
+            <Button href="#" onClick={handleColor} active={!!formats?.color}>
+              color
             </Button>
             <Button href="#" onClick={handleLink} active={!!formats?.link}>
               L

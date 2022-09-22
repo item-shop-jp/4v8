@@ -9,7 +9,7 @@ import {
   setAttributesForInlineContents,
   splitInlineContents,
 } from '../utils/block';
-import { BlockType } from '../types/block';
+import { BlockAttributes, BlockType } from '../types/block';
 import { InlineAttributes } from '../types/inline';
 import { copyObject } from '../utils/object';
 import { EventSources } from '../constants';
@@ -65,8 +65,15 @@ export class MarkdownShortcutModule implements Module {
     this.addShortcut({
       name: 'bullet-list',
       type: 'block',
-      pattern: /^\*$/,
+      pattern: /^(\*|-|\+)$/,
       handler: this._handleBulletList.bind(this),
+    });
+
+    this.addShortcut({
+      name: 'image',
+      type: 'block',
+      pattern: /^(?:!\[(.+?)\])(?:\((.+?)(?:\s"(.+?)")?\))$/,
+      handler: this._handleImage.bind(this),
     });
 
     this.addShortcut({
@@ -177,12 +184,22 @@ export class MarkdownShortcutModule implements Module {
     }, 10);
   }
 
-  formatBlock(blockId: string, type: BlockType, index: number, length: number) {
+  formatBlock(
+    blockId: string,
+    type: BlockType,
+    index: number,
+    length: number,
+    attributes: BlockAttributes = {},
+  ) {
     const block = this.editor.getBlock(blockId);
     if (!block) return;
     this.editor.updateBlock({
       ...block,
       contents: deleteInlineContents(block.contents, index, length),
+      attributes: {
+        ...block.attributes,
+        ...attributes,
+      },
       type,
     });
     this.editor.numberingList();
@@ -205,6 +222,15 @@ export class MarkdownShortcutModule implements Module {
 
   private _handleBulletList(caret: CaretPosition, match: RegExpMatchArray) {
     this.formatBlock(caret.blockId, 'BULLETLIST', 0, stringLength(match[0]));
+  }
+
+  private _handleImage(caret: CaretPosition, match: RegExpMatchArray) {
+    this.formatBlock(caret.blockId, 'IMAGE', 0, stringLength(match[0]), {
+      thumbnail: match[2],
+      original: match[2],
+      alt: match[1] ?? '',
+      title: match[3] ?? '',
+    });
   }
 
   private _handleHeader(caret: CaretPosition, match: RegExpMatchArray) {

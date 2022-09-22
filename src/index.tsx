@@ -45,7 +45,7 @@ const settings = {
       onUpload: async ({ base64 }: { original: File; base64: string | null; isImage: boolean }) => {
         return new Promise((resolve) => {
           setTimeout(() => {
-            resolve(base64);
+            resolve({ original: base64 });
           }, 2000);
         });
       },
@@ -53,7 +53,6 @@ const settings = {
   },
   scrollMarginBottom: 150,
   scrollMarginTop: 50,
-  allowAttributes: ['bold', 'strike'],
   allowFormats: [],
   indentatableFormats: [
     'ORDEREDLIST',
@@ -100,15 +99,14 @@ export const Container: React.FC = React.memo(() => {
       <BasicContainer id="scroll1">
         <Editor settings={settings} formats={formats} readOnly={false} ref={editorRef1} />
       </BasicContainer>
-      {/* <ScrollContainer id="scroll2">
+      <ScrollContainer id="scroll2">
         <StyledEditor
-          scrollContainer={'#scroll2'}
-          settings={settings}
+          settings={{ ...settings, scrollContainer: '#scroll2' }}
           formats={formats}
           readOnly={false}
           ref={editorRef2}
         />
-      </ScrollContainer> */}
+      </ScrollContainer>
     </>
   );
 });

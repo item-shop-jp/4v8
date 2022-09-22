@@ -56,7 +56,38 @@ function __rest(s, e) {
     return t;
 }
 
+function __awaiter(thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+}
+
 var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
+
+function getAugmentedNamespace(n) {
+  var f = n.default;
+	if (typeof f == "function") {
+		var a = function () {
+			return f.apply(this, arguments);
+		};
+		a.prototype = f.prototype;
+  } else a = {};
+  Object.defineProperty(a, '__esModule', {value: true});
+	Object.keys(n).forEach(function (k) {
+		var d = Object.getOwnPropertyDescriptor(n, k);
+		Object.defineProperty(a, k, d.get ? d : {
+			enumerable: true,
+			get: function () {
+				return n[k];
+			}
+		});
+	});
+	return a;
+}
 
 var jsxRuntime = {exports: {}};
 
@@ -71,8 +102,16 @@ var reactJsxRuntime_production_min = {};
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-var f$2=React__default["default"],k$3=Symbol.for("react.element"),l$2=Symbol.for("react.fragment"),m$2=Object.prototype.hasOwnProperty,n$2=f$2.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED.ReactCurrentOwner,p$2={key:!0,ref:!0,__self:!0,__source:!0};
-function q$3(c,a,g){var b,d={},e=null,h=null;void 0!==g&&(e=""+g);void 0!==a.key&&(e=""+a.key);void 0!==a.ref&&(h=a.ref);for(b in a)m$2.call(a,b)&&!p$2.hasOwnProperty(b)&&(d[b]=a[b]);if(c&&c.defaultProps)for(b in a=c.defaultProps,a)void 0===d[b]&&(d[b]=a[b]);return {$$typeof:k$3,type:c,key:e,ref:h,props:d,_owner:n$2.current}}reactJsxRuntime_production_min.Fragment=l$2;reactJsxRuntime_production_min.jsx=q$3;reactJsxRuntime_production_min.jsxs=q$3;
+
+var hasRequiredReactJsxRuntime_production_min;
+
+function requireReactJsxRuntime_production_min () {
+	if (hasRequiredReactJsxRuntime_production_min) return reactJsxRuntime_production_min;
+	hasRequiredReactJsxRuntime_production_min = 1;
+var f=React__default["default"],k=Symbol.for("react.element"),l=Symbol.for("react.fragment"),m=Object.prototype.hasOwnProperty,n=f.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED.ReactCurrentOwner,p={key:!0,ref:!0,__self:!0,__source:!0};
+	function q(c,a,g){var b,d={},e=null,h=null;void 0!==g&&(e=""+g);void 0!==a.key&&(e=""+a.key);void 0!==a.ref&&(h=a.ref);for(b in a)m.call(a,b)&&!p.hasOwnProperty(b)&&(d[b]=a[b]);if(c&&c.defaultProps)for(b in a=c.defaultProps,a)void 0===d[b]&&(d[b]=a[b]);return {$$typeof:k,type:c,key:e,ref:h,props:d,_owner:n.current}}reactJsxRuntime_production_min.Fragment=l;reactJsxRuntime_production_min.jsx=q;reactJsxRuntime_production_min.jsxs=q;
+	return reactJsxRuntime_production_min;
+}
 
 var reactJsxRuntime_development = {};
 
@@ -86,1308 +125,1324 @@ var reactJsxRuntime_development = {};
  * LICENSE file in the root directory of this source tree.
  */
 
-if (process.env.NODE_ENV !== "production") {
-  (function() {
+var hasRequiredReactJsxRuntime_development;
 
-var React = React__default["default"];
+function requireReactJsxRuntime_development () {
+	if (hasRequiredReactJsxRuntime_development) return reactJsxRuntime_development;
+	hasRequiredReactJsxRuntime_development = 1;
 
-// ATTENTION
-// When adding new symbols to this file,
-// Please consider also adding to 'react-devtools-shared/src/backend/ReactSymbols'
-// The Symbol used to tag the ReactElement-like types.
-var REACT_ELEMENT_TYPE = Symbol.for('react.element');
-var REACT_PORTAL_TYPE = Symbol.for('react.portal');
-var REACT_FRAGMENT_TYPE = Symbol.for('react.fragment');
-var REACT_STRICT_MODE_TYPE = Symbol.for('react.strict_mode');
-var REACT_PROFILER_TYPE = Symbol.for('react.profiler');
-var REACT_PROVIDER_TYPE = Symbol.for('react.provider');
-var REACT_CONTEXT_TYPE = Symbol.for('react.context');
-var REACT_FORWARD_REF_TYPE = Symbol.for('react.forward_ref');
-var REACT_SUSPENSE_TYPE = Symbol.for('react.suspense');
-var REACT_SUSPENSE_LIST_TYPE = Symbol.for('react.suspense_list');
-var REACT_MEMO_TYPE = Symbol.for('react.memo');
-var REACT_LAZY_TYPE = Symbol.for('react.lazy');
-var REACT_OFFSCREEN_TYPE = Symbol.for('react.offscreen');
-var MAYBE_ITERATOR_SYMBOL = Symbol.iterator;
-var FAUX_ITERATOR_SYMBOL = '@@iterator';
-function getIteratorFn(maybeIterable) {
-  if (maybeIterable === null || typeof maybeIterable !== 'object') {
-    return null;
-  }
+	if (process.env.NODE_ENV !== "production") {
+	  (function() {
 
-  var maybeIterator = MAYBE_ITERATOR_SYMBOL && maybeIterable[MAYBE_ITERATOR_SYMBOL] || maybeIterable[FAUX_ITERATOR_SYMBOL];
+	var React = React__default["default"];
 
-  if (typeof maybeIterator === 'function') {
-    return maybeIterator;
-  }
+	// ATTENTION
+	// When adding new symbols to this file,
+	// Please consider also adding to 'react-devtools-shared/src/backend/ReactSymbols'
+	// The Symbol used to tag the ReactElement-like types.
+	var REACT_ELEMENT_TYPE = Symbol.for('react.element');
+	var REACT_PORTAL_TYPE = Symbol.for('react.portal');
+	var REACT_FRAGMENT_TYPE = Symbol.for('react.fragment');
+	var REACT_STRICT_MODE_TYPE = Symbol.for('react.strict_mode');
+	var REACT_PROFILER_TYPE = Symbol.for('react.profiler');
+	var REACT_PROVIDER_TYPE = Symbol.for('react.provider');
+	var REACT_CONTEXT_TYPE = Symbol.for('react.context');
+	var REACT_FORWARD_REF_TYPE = Symbol.for('react.forward_ref');
+	var REACT_SUSPENSE_TYPE = Symbol.for('react.suspense');
+	var REACT_SUSPENSE_LIST_TYPE = Symbol.for('react.suspense_list');
+	var REACT_MEMO_TYPE = Symbol.for('react.memo');
+	var REACT_LAZY_TYPE = Symbol.for('react.lazy');
+	var REACT_OFFSCREEN_TYPE = Symbol.for('react.offscreen');
+	var MAYBE_ITERATOR_SYMBOL = Symbol.iterator;
+	var FAUX_ITERATOR_SYMBOL = '@@iterator';
+	function getIteratorFn(maybeIterable) {
+	  if (maybeIterable === null || typeof maybeIterable !== 'object') {
+	    return null;
+	  }
 
-  return null;
+	  var maybeIterator = MAYBE_ITERATOR_SYMBOL && maybeIterable[MAYBE_ITERATOR_SYMBOL] || maybeIterable[FAUX_ITERATOR_SYMBOL];
+
+	  if (typeof maybeIterator === 'function') {
+	    return maybeIterator;
+	  }
+
+	  return null;
+	}
+
+	var ReactSharedInternals = React.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
+
+	function error(format) {
+	  {
+	    {
+	      for (var _len2 = arguments.length, args = new Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
+	        args[_key2 - 1] = arguments[_key2];
+	      }
+
+	      printWarning('error', format, args);
+	    }
+	  }
+	}
+
+	function printWarning(level, format, args) {
+	  // When changing this logic, you might want to also
+	  // update consoleWithStackDev.www.js as well.
+	  {
+	    var ReactDebugCurrentFrame = ReactSharedInternals.ReactDebugCurrentFrame;
+	    var stack = ReactDebugCurrentFrame.getStackAddendum();
+
+	    if (stack !== '') {
+	      format += '%s';
+	      args = args.concat([stack]);
+	    } // eslint-disable-next-line react-internal/safe-string-coercion
+
+
+	    var argsWithFormat = args.map(function (item) {
+	      return String(item);
+	    }); // Careful: RN currently depends on this prefix
+
+	    argsWithFormat.unshift('Warning: ' + format); // We intentionally don't use spread (or .apply) directly because it
+	    // breaks IE9: https://github.com/facebook/react/issues/13610
+	    // eslint-disable-next-line react-internal/no-production-logging
+
+	    Function.prototype.apply.call(console[level], console, argsWithFormat);
+	  }
+	}
+
+	// -----------------------------------------------------------------------------
+
+	var enableScopeAPI = false; // Experimental Create Event Handle API.
+	var enableCacheElement = false;
+	var enableTransitionTracing = false; // No known bugs, but needs performance testing
+
+	var enableLegacyHidden = false; // Enables unstable_avoidThisFallback feature in Fiber
+	// stuff. Intended to enable React core members to more easily debug scheduling
+	// issues in DEV builds.
+
+	var enableDebugTracing = false; // Track which Fiber(s) schedule render work.
+
+	var REACT_MODULE_REFERENCE;
+
+	{
+	  REACT_MODULE_REFERENCE = Symbol.for('react.module.reference');
+	}
+
+	function isValidElementType(type) {
+	  if (typeof type === 'string' || typeof type === 'function') {
+	    return true;
+	  } // Note: typeof might be other than 'symbol' or 'number' (e.g. if it's a polyfill).
+
+
+	  if (type === REACT_FRAGMENT_TYPE || type === REACT_PROFILER_TYPE || enableDebugTracing  || type === REACT_STRICT_MODE_TYPE || type === REACT_SUSPENSE_TYPE || type === REACT_SUSPENSE_LIST_TYPE || enableLegacyHidden  || type === REACT_OFFSCREEN_TYPE || enableScopeAPI  || enableCacheElement  || enableTransitionTracing ) {
+	    return true;
+	  }
+
+	  if (typeof type === 'object' && type !== null) {
+	    if (type.$$typeof === REACT_LAZY_TYPE || type.$$typeof === REACT_MEMO_TYPE || type.$$typeof === REACT_PROVIDER_TYPE || type.$$typeof === REACT_CONTEXT_TYPE || type.$$typeof === REACT_FORWARD_REF_TYPE || // This needs to include all possible module reference object
+	    // types supported by any Flight configuration anywhere since
+	    // we don't know which Flight build this will end up being used
+	    // with.
+	    type.$$typeof === REACT_MODULE_REFERENCE || type.getModuleId !== undefined) {
+	      return true;
+	    }
+	  }
+
+	  return false;
+	}
+
+	function getWrappedName(outerType, innerType, wrapperName) {
+	  var displayName = outerType.displayName;
+
+	  if (displayName) {
+	    return displayName;
+	  }
+
+	  var functionName = innerType.displayName || innerType.name || '';
+	  return functionName !== '' ? wrapperName + "(" + functionName + ")" : wrapperName;
+	} // Keep in sync with react-reconciler/getComponentNameFromFiber
+
+
+	function getContextName(type) {
+	  return type.displayName || 'Context';
+	} // Note that the reconciler package should generally prefer to use getComponentNameFromFiber() instead.
+
+
+	function getComponentNameFromType(type) {
+	  if (type == null) {
+	    // Host root, text node or just invalid type.
+	    return null;
+	  }
+
+	  {
+	    if (typeof type.tag === 'number') {
+	      error('Received an unexpected object in getComponentNameFromType(). ' + 'This is likely a bug in React. Please file an issue.');
+	    }
+	  }
+
+	  if (typeof type === 'function') {
+	    return type.displayName || type.name || null;
+	  }
+
+	  if (typeof type === 'string') {
+	    return type;
+	  }
+
+	  switch (type) {
+	    case REACT_FRAGMENT_TYPE:
+	      return 'Fragment';
+
+	    case REACT_PORTAL_TYPE:
+	      return 'Portal';
+
+	    case REACT_PROFILER_TYPE:
+	      return 'Profiler';
+
+	    case REACT_STRICT_MODE_TYPE:
+	      return 'StrictMode';
+
+	    case REACT_SUSPENSE_TYPE:
+	      return 'Suspense';
+
+	    case REACT_SUSPENSE_LIST_TYPE:
+	      return 'SuspenseList';
+
+	  }
+
+	  if (typeof type === 'object') {
+	    switch (type.$$typeof) {
+	      case REACT_CONTEXT_TYPE:
+	        var context = type;
+	        return getContextName(context) + '.Consumer';
+
+	      case REACT_PROVIDER_TYPE:
+	        var provider = type;
+	        return getContextName(provider._context) + '.Provider';
+
+	      case REACT_FORWARD_REF_TYPE:
+	        return getWrappedName(type, type.render, 'ForwardRef');
+
+	      case REACT_MEMO_TYPE:
+	        var outerName = type.displayName || null;
+
+	        if (outerName !== null) {
+	          return outerName;
+	        }
+
+	        return getComponentNameFromType(type.type) || 'Memo';
+
+	      case REACT_LAZY_TYPE:
+	        {
+	          var lazyComponent = type;
+	          var payload = lazyComponent._payload;
+	          var init = lazyComponent._init;
+
+	          try {
+	            return getComponentNameFromType(init(payload));
+	          } catch (x) {
+	            return null;
+	          }
+	        }
+
+	      // eslint-disable-next-line no-fallthrough
+	    }
+	  }
+
+	  return null;
+	}
+
+	var assign = Object.assign;
+
+	// Helpers to patch console.logs to avoid logging during side-effect free
+	// replaying on render function. This currently only patches the object
+	// lazily which won't cover if the log function was extracted eagerly.
+	// We could also eagerly patch the method.
+	var disabledDepth = 0;
+	var prevLog;
+	var prevInfo;
+	var prevWarn;
+	var prevError;
+	var prevGroup;
+	var prevGroupCollapsed;
+	var prevGroupEnd;
+
+	function disabledLog() {}
+
+	disabledLog.__reactDisabledLog = true;
+	function disableLogs() {
+	  {
+	    if (disabledDepth === 0) {
+	      /* eslint-disable react-internal/no-production-logging */
+	      prevLog = console.log;
+	      prevInfo = console.info;
+	      prevWarn = console.warn;
+	      prevError = console.error;
+	      prevGroup = console.group;
+	      prevGroupCollapsed = console.groupCollapsed;
+	      prevGroupEnd = console.groupEnd; // https://github.com/facebook/react/issues/19099
+
+	      var props = {
+	        configurable: true,
+	        enumerable: true,
+	        value: disabledLog,
+	        writable: true
+	      }; // $FlowFixMe Flow thinks console is immutable.
+
+	      Object.defineProperties(console, {
+	        info: props,
+	        log: props,
+	        warn: props,
+	        error: props,
+	        group: props,
+	        groupCollapsed: props,
+	        groupEnd: props
+	      });
+	      /* eslint-enable react-internal/no-production-logging */
+	    }
+
+	    disabledDepth++;
+	  }
+	}
+	function reenableLogs() {
+	  {
+	    disabledDepth--;
+
+	    if (disabledDepth === 0) {
+	      /* eslint-disable react-internal/no-production-logging */
+	      var props = {
+	        configurable: true,
+	        enumerable: true,
+	        writable: true
+	      }; // $FlowFixMe Flow thinks console is immutable.
+
+	      Object.defineProperties(console, {
+	        log: assign({}, props, {
+	          value: prevLog
+	        }),
+	        info: assign({}, props, {
+	          value: prevInfo
+	        }),
+	        warn: assign({}, props, {
+	          value: prevWarn
+	        }),
+	        error: assign({}, props, {
+	          value: prevError
+	        }),
+	        group: assign({}, props, {
+	          value: prevGroup
+	        }),
+	        groupCollapsed: assign({}, props, {
+	          value: prevGroupCollapsed
+	        }),
+	        groupEnd: assign({}, props, {
+	          value: prevGroupEnd
+	        })
+	      });
+	      /* eslint-enable react-internal/no-production-logging */
+	    }
+
+	    if (disabledDepth < 0) {
+	      error('disabledDepth fell below zero. ' + 'This is a bug in React. Please file an issue.');
+	    }
+	  }
+	}
+
+	var ReactCurrentDispatcher = ReactSharedInternals.ReactCurrentDispatcher;
+	var prefix;
+	function describeBuiltInComponentFrame(name, source, ownerFn) {
+	  {
+	    if (prefix === undefined) {
+	      // Extract the VM specific prefix used by each line.
+	      try {
+	        throw Error();
+	      } catch (x) {
+	        var match = x.stack.trim().match(/\n( *(at )?)/);
+	        prefix = match && match[1] || '';
+	      }
+	    } // We use the prefix to ensure our stacks line up with native stack frames.
+
+
+	    return '\n' + prefix + name;
+	  }
+	}
+	var reentry = false;
+	var componentFrameCache;
+
+	{
+	  var PossiblyWeakMap = typeof WeakMap === 'function' ? WeakMap : Map;
+	  componentFrameCache = new PossiblyWeakMap();
+	}
+
+	function describeNativeComponentFrame(fn, construct) {
+	  // If something asked for a stack inside a fake render, it should get ignored.
+	  if ( !fn || reentry) {
+	    return '';
+	  }
+
+	  {
+	    var frame = componentFrameCache.get(fn);
+
+	    if (frame !== undefined) {
+	      return frame;
+	    }
+	  }
+
+	  var control;
+	  reentry = true;
+	  var previousPrepareStackTrace = Error.prepareStackTrace; // $FlowFixMe It does accept undefined.
+
+	  Error.prepareStackTrace = undefined;
+	  var previousDispatcher;
+
+	  {
+	    previousDispatcher = ReactCurrentDispatcher.current; // Set the dispatcher in DEV because this might be call in the render function
+	    // for warnings.
+
+	    ReactCurrentDispatcher.current = null;
+	    disableLogs();
+	  }
+
+	  try {
+	    // This should throw.
+	    if (construct) {
+	      // Something should be setting the props in the constructor.
+	      var Fake = function () {
+	        throw Error();
+	      }; // $FlowFixMe
+
+
+	      Object.defineProperty(Fake.prototype, 'props', {
+	        set: function () {
+	          // We use a throwing setter instead of frozen or non-writable props
+	          // because that won't throw in a non-strict mode function.
+	          throw Error();
+	        }
+	      });
+
+	      if (typeof Reflect === 'object' && Reflect.construct) {
+	        // We construct a different control for this case to include any extra
+	        // frames added by the construct call.
+	        try {
+	          Reflect.construct(Fake, []);
+	        } catch (x) {
+	          control = x;
+	        }
+
+	        Reflect.construct(fn, [], Fake);
+	      } else {
+	        try {
+	          Fake.call();
+	        } catch (x) {
+	          control = x;
+	        }
+
+	        fn.call(Fake.prototype);
+	      }
+	    } else {
+	      try {
+	        throw Error();
+	      } catch (x) {
+	        control = x;
+	      }
+
+	      fn();
+	    }
+	  } catch (sample) {
+	    // This is inlined manually because closure doesn't do it for us.
+	    if (sample && control && typeof sample.stack === 'string') {
+	      // This extracts the first frame from the sample that isn't also in the control.
+	      // Skipping one frame that we assume is the frame that calls the two.
+	      var sampleLines = sample.stack.split('\n');
+	      var controlLines = control.stack.split('\n');
+	      var s = sampleLines.length - 1;
+	      var c = controlLines.length - 1;
+
+	      while (s >= 1 && c >= 0 && sampleLines[s] !== controlLines[c]) {
+	        // We expect at least one stack frame to be shared.
+	        // Typically this will be the root most one. However, stack frames may be
+	        // cut off due to maximum stack limits. In this case, one maybe cut off
+	        // earlier than the other. We assume that the sample is longer or the same
+	        // and there for cut off earlier. So we should find the root most frame in
+	        // the sample somewhere in the control.
+	        c--;
+	      }
+
+	      for (; s >= 1 && c >= 0; s--, c--) {
+	        // Next we find the first one that isn't the same which should be the
+	        // frame that called our sample function and the control.
+	        if (sampleLines[s] !== controlLines[c]) {
+	          // In V8, the first line is describing the message but other VMs don't.
+	          // If we're about to return the first line, and the control is also on the same
+	          // line, that's a pretty good indicator that our sample threw at same line as
+	          // the control. I.e. before we entered the sample frame. So we ignore this result.
+	          // This can happen if you passed a class to function component, or non-function.
+	          if (s !== 1 || c !== 1) {
+	            do {
+	              s--;
+	              c--; // We may still have similar intermediate frames from the construct call.
+	              // The next one that isn't the same should be our match though.
+
+	              if (c < 0 || sampleLines[s] !== controlLines[c]) {
+	                // V8 adds a "new" prefix for native classes. Let's remove it to make it prettier.
+	                var _frame = '\n' + sampleLines[s].replace(' at new ', ' at '); // If our component frame is labeled "<anonymous>"
+	                // but we have a user-provided "displayName"
+	                // splice it in to make the stack more readable.
+
+
+	                if (fn.displayName && _frame.includes('<anonymous>')) {
+	                  _frame = _frame.replace('<anonymous>', fn.displayName);
+	                }
+
+	                {
+	                  if (typeof fn === 'function') {
+	                    componentFrameCache.set(fn, _frame);
+	                  }
+	                } // Return the line we found.
+
+
+	                return _frame;
+	              }
+	            } while (s >= 1 && c >= 0);
+	          }
+
+	          break;
+	        }
+	      }
+	    }
+	  } finally {
+	    reentry = false;
+
+	    {
+	      ReactCurrentDispatcher.current = previousDispatcher;
+	      reenableLogs();
+	    }
+
+	    Error.prepareStackTrace = previousPrepareStackTrace;
+	  } // Fallback to just using the name if we couldn't make it throw.
+
+
+	  var name = fn ? fn.displayName || fn.name : '';
+	  var syntheticFrame = name ? describeBuiltInComponentFrame(name) : '';
+
+	  {
+	    if (typeof fn === 'function') {
+	      componentFrameCache.set(fn, syntheticFrame);
+	    }
+	  }
+
+	  return syntheticFrame;
+	}
+	function describeFunctionComponentFrame(fn, source, ownerFn) {
+	  {
+	    return describeNativeComponentFrame(fn, false);
+	  }
+	}
+
+	function shouldConstruct(Component) {
+	  var prototype = Component.prototype;
+	  return !!(prototype && prototype.isReactComponent);
+	}
+
+	function describeUnknownElementTypeFrameInDEV(type, source, ownerFn) {
+
+	  if (type == null) {
+	    return '';
+	  }
+
+	  if (typeof type === 'function') {
+	    {
+	      return describeNativeComponentFrame(type, shouldConstruct(type));
+	    }
+	  }
+
+	  if (typeof type === 'string') {
+	    return describeBuiltInComponentFrame(type);
+	  }
+
+	  switch (type) {
+	    case REACT_SUSPENSE_TYPE:
+	      return describeBuiltInComponentFrame('Suspense');
+
+	    case REACT_SUSPENSE_LIST_TYPE:
+	      return describeBuiltInComponentFrame('SuspenseList');
+	  }
+
+	  if (typeof type === 'object') {
+	    switch (type.$$typeof) {
+	      case REACT_FORWARD_REF_TYPE:
+	        return describeFunctionComponentFrame(type.render);
+
+	      case REACT_MEMO_TYPE:
+	        // Memo may contain any component type so we recursively resolve it.
+	        return describeUnknownElementTypeFrameInDEV(type.type, source, ownerFn);
+
+	      case REACT_LAZY_TYPE:
+	        {
+	          var lazyComponent = type;
+	          var payload = lazyComponent._payload;
+	          var init = lazyComponent._init;
+
+	          try {
+	            // Lazy may contain any component type so we recursively resolve it.
+	            return describeUnknownElementTypeFrameInDEV(init(payload), source, ownerFn);
+	          } catch (x) {}
+	        }
+	    }
+	  }
+
+	  return '';
+	}
+
+	var hasOwnProperty = Object.prototype.hasOwnProperty;
+
+	var loggedTypeFailures = {};
+	var ReactDebugCurrentFrame = ReactSharedInternals.ReactDebugCurrentFrame;
+
+	function setCurrentlyValidatingElement(element) {
+	  {
+	    if (element) {
+	      var owner = element._owner;
+	      var stack = describeUnknownElementTypeFrameInDEV(element.type, element._source, owner ? owner.type : null);
+	      ReactDebugCurrentFrame.setExtraStackFrame(stack);
+	    } else {
+	      ReactDebugCurrentFrame.setExtraStackFrame(null);
+	    }
+	  }
+	}
+
+	function checkPropTypes(typeSpecs, values, location, componentName, element) {
+	  {
+	    // $FlowFixMe This is okay but Flow doesn't know it.
+	    var has = Function.call.bind(hasOwnProperty);
+
+	    for (var typeSpecName in typeSpecs) {
+	      if (has(typeSpecs, typeSpecName)) {
+	        var error$1 = void 0; // Prop type validation may throw. In case they do, we don't want to
+	        // fail the render phase where it didn't fail before. So we log it.
+	        // After these have been cleaned up, we'll let them throw.
+
+	        try {
+	          // This is intentionally an invariant that gets caught. It's the same
+	          // behavior as without this statement except with a better message.
+	          if (typeof typeSpecs[typeSpecName] !== 'function') {
+	            // eslint-disable-next-line react-internal/prod-error-codes
+	            var err = Error((componentName || 'React class') + ': ' + location + ' type `' + typeSpecName + '` is invalid; ' + 'it must be a function, usually from the `prop-types` package, but received `' + typeof typeSpecs[typeSpecName] + '`.' + 'This often happens because of typos such as `PropTypes.function` instead of `PropTypes.func`.');
+	            err.name = 'Invariant Violation';
+	            throw err;
+	          }
+
+	          error$1 = typeSpecs[typeSpecName](values, typeSpecName, componentName, location, null, 'SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED');
+	        } catch (ex) {
+	          error$1 = ex;
+	        }
+
+	        if (error$1 && !(error$1 instanceof Error)) {
+	          setCurrentlyValidatingElement(element);
+
+	          error('%s: type specification of %s' + ' `%s` is invalid; the type checker ' + 'function must return `null` or an `Error` but returned a %s. ' + 'You may have forgotten to pass an argument to the type checker ' + 'creator (arrayOf, instanceOf, objectOf, oneOf, oneOfType, and ' + 'shape all require an argument).', componentName || 'React class', location, typeSpecName, typeof error$1);
+
+	          setCurrentlyValidatingElement(null);
+	        }
+
+	        if (error$1 instanceof Error && !(error$1.message in loggedTypeFailures)) {
+	          // Only monitor this failure once because there tends to be a lot of the
+	          // same error.
+	          loggedTypeFailures[error$1.message] = true;
+	          setCurrentlyValidatingElement(element);
+
+	          error('Failed %s type: %s', location, error$1.message);
+
+	          setCurrentlyValidatingElement(null);
+	        }
+	      }
+	    }
+	  }
+	}
+
+	var isArrayImpl = Array.isArray; // eslint-disable-next-line no-redeclare
+
+	function isArray(a) {
+	  return isArrayImpl(a);
+	}
+
+	/*
+	 * The `'' + value` pattern (used in in perf-sensitive code) throws for Symbol
+	 * and Temporal.* types. See https://github.com/facebook/react/pull/22064.
+	 *
+	 * The functions in this module will throw an easier-to-understand,
+	 * easier-to-debug exception with a clear errors message message explaining the
+	 * problem. (Instead of a confusing exception thrown inside the implementation
+	 * of the `value` object).
+	 */
+	// $FlowFixMe only called in DEV, so void return is not possible.
+	function typeName(value) {
+	  {
+	    // toStringTag is needed for namespaced types like Temporal.Instant
+	    var hasToStringTag = typeof Symbol === 'function' && Symbol.toStringTag;
+	    var type = hasToStringTag && value[Symbol.toStringTag] || value.constructor.name || 'Object';
+	    return type;
+	  }
+	} // $FlowFixMe only called in DEV, so void return is not possible.
+
+
+	function willCoercionThrow(value) {
+	  {
+	    try {
+	      testStringCoercion(value);
+	      return false;
+	    } catch (e) {
+	      return true;
+	    }
+	  }
+	}
+
+	function testStringCoercion(value) {
+	  // If you ended up here by following an exception call stack, here's what's
+	  // happened: you supplied an object or symbol value to React (as a prop, key,
+	  // DOM attribute, CSS property, string ref, etc.) and when React tried to
+	  // coerce it to a string using `'' + value`, an exception was thrown.
+	  //
+	  // The most common types that will cause this exception are `Symbol` instances
+	  // and Temporal objects like `Temporal.Instant`. But any object that has a
+	  // `valueOf` or `[Symbol.toPrimitive]` method that throws will also cause this
+	  // exception. (Library authors do this to prevent users from using built-in
+	  // numeric operators like `+` or comparison operators like `>=` because custom
+	  // methods are needed to perform accurate arithmetic or comparison.)
+	  //
+	  // To fix the problem, coerce this object or symbol value to a string before
+	  // passing it to React. The most reliable way is usually `String(value)`.
+	  //
+	  // To find which value is throwing, check the browser or debugger console.
+	  // Before this exception was thrown, there should be `console.error` output
+	  // that shows the type (Symbol, Temporal.PlainDate, etc.) that caused the
+	  // problem and how that type was used: key, atrribute, input value prop, etc.
+	  // In most cases, this console output also shows the component and its
+	  // ancestor components where the exception happened.
+	  //
+	  // eslint-disable-next-line react-internal/safe-string-coercion
+	  return '' + value;
+	}
+	function checkKeyStringCoercion(value) {
+	  {
+	    if (willCoercionThrow(value)) {
+	      error('The provided key is an unsupported type %s.' + ' This value must be coerced to a string before before using it here.', typeName(value));
+
+	      return testStringCoercion(value); // throw (to help callers find troubleshooting comments)
+	    }
+	  }
+	}
+
+	var ReactCurrentOwner = ReactSharedInternals.ReactCurrentOwner;
+	var RESERVED_PROPS = {
+	  key: true,
+	  ref: true,
+	  __self: true,
+	  __source: true
+	};
+	var specialPropKeyWarningShown;
+	var specialPropRefWarningShown;
+	var didWarnAboutStringRefs;
+
+	{
+	  didWarnAboutStringRefs = {};
+	}
+
+	function hasValidRef(config) {
+	  {
+	    if (hasOwnProperty.call(config, 'ref')) {
+	      var getter = Object.getOwnPropertyDescriptor(config, 'ref').get;
+
+	      if (getter && getter.isReactWarning) {
+	        return false;
+	      }
+	    }
+	  }
+
+	  return config.ref !== undefined;
+	}
+
+	function hasValidKey(config) {
+	  {
+	    if (hasOwnProperty.call(config, 'key')) {
+	      var getter = Object.getOwnPropertyDescriptor(config, 'key').get;
+
+	      if (getter && getter.isReactWarning) {
+	        return false;
+	      }
+	    }
+	  }
+
+	  return config.key !== undefined;
+	}
+
+	function warnIfStringRefCannotBeAutoConverted(config, self) {
+	  {
+	    if (typeof config.ref === 'string' && ReactCurrentOwner.current && self && ReactCurrentOwner.current.stateNode !== self) {
+	      var componentName = getComponentNameFromType(ReactCurrentOwner.current.type);
+
+	      if (!didWarnAboutStringRefs[componentName]) {
+	        error('Component "%s" contains the string ref "%s". ' + 'Support for string refs will be removed in a future major release. ' + 'This case cannot be automatically converted to an arrow function. ' + 'We ask you to manually fix this case by using useRef() or createRef() instead. ' + 'Learn more about using refs safely here: ' + 'https://reactjs.org/link/strict-mode-string-ref', getComponentNameFromType(ReactCurrentOwner.current.type), config.ref);
+
+	        didWarnAboutStringRefs[componentName] = true;
+	      }
+	    }
+	  }
+	}
+
+	function defineKeyPropWarningGetter(props, displayName) {
+	  {
+	    var warnAboutAccessingKey = function () {
+	      if (!specialPropKeyWarningShown) {
+	        specialPropKeyWarningShown = true;
+
+	        error('%s: `key` is not a prop. Trying to access it will result ' + 'in `undefined` being returned. If you need to access the same ' + 'value within the child component, you should pass it as a different ' + 'prop. (https://reactjs.org/link/special-props)', displayName);
+	      }
+	    };
+
+	    warnAboutAccessingKey.isReactWarning = true;
+	    Object.defineProperty(props, 'key', {
+	      get: warnAboutAccessingKey,
+	      configurable: true
+	    });
+	  }
+	}
+
+	function defineRefPropWarningGetter(props, displayName) {
+	  {
+	    var warnAboutAccessingRef = function () {
+	      if (!specialPropRefWarningShown) {
+	        specialPropRefWarningShown = true;
+
+	        error('%s: `ref` is not a prop. Trying to access it will result ' + 'in `undefined` being returned. If you need to access the same ' + 'value within the child component, you should pass it as a different ' + 'prop. (https://reactjs.org/link/special-props)', displayName);
+	      }
+	    };
+
+	    warnAboutAccessingRef.isReactWarning = true;
+	    Object.defineProperty(props, 'ref', {
+	      get: warnAboutAccessingRef,
+	      configurable: true
+	    });
+	  }
+	}
+	/**
+	 * Factory method to create a new React element. This no longer adheres to
+	 * the class pattern, so do not use new to call it. Also, instanceof check
+	 * will not work. Instead test $$typeof field against Symbol.for('react.element') to check
+	 * if something is a React Element.
+	 *
+	 * @param {*} type
+	 * @param {*} props
+	 * @param {*} key
+	 * @param {string|object} ref
+	 * @param {*} owner
+	 * @param {*} self A *temporary* helper to detect places where `this` is
+	 * different from the `owner` when React.createElement is called, so that we
+	 * can warn. We want to get rid of owner and replace string `ref`s with arrow
+	 * functions, and as long as `this` and owner are the same, there will be no
+	 * change in behavior.
+	 * @param {*} source An annotation object (added by a transpiler or otherwise)
+	 * indicating filename, line number, and/or other information.
+	 * @internal
+	 */
+
+
+	var ReactElement = function (type, key, ref, self, source, owner, props) {
+	  var element = {
+	    // This tag allows us to uniquely identify this as a React Element
+	    $$typeof: REACT_ELEMENT_TYPE,
+	    // Built-in properties that belong on the element
+	    type: type,
+	    key: key,
+	    ref: ref,
+	    props: props,
+	    // Record the component responsible for creating this element.
+	    _owner: owner
+	  };
+
+	  {
+	    // The validation flag is currently mutative. We put it on
+	    // an external backing store so that we can freeze the whole object.
+	    // This can be replaced with a WeakMap once they are implemented in
+	    // commonly used development environments.
+	    element._store = {}; // To make comparing ReactElements easier for testing purposes, we make
+	    // the validation flag non-enumerable (where possible, which should
+	    // include every environment we run tests in), so the test framework
+	    // ignores it.
+
+	    Object.defineProperty(element._store, 'validated', {
+	      configurable: false,
+	      enumerable: false,
+	      writable: true,
+	      value: false
+	    }); // self and source are DEV only properties.
+
+	    Object.defineProperty(element, '_self', {
+	      configurable: false,
+	      enumerable: false,
+	      writable: false,
+	      value: self
+	    }); // Two elements created in two different places should be considered
+	    // equal for testing purposes and therefore we hide it from enumeration.
+
+	    Object.defineProperty(element, '_source', {
+	      configurable: false,
+	      enumerable: false,
+	      writable: false,
+	      value: source
+	    });
+
+	    if (Object.freeze) {
+	      Object.freeze(element.props);
+	      Object.freeze(element);
+	    }
+	  }
+
+	  return element;
+	};
+	/**
+	 * https://github.com/reactjs/rfcs/pull/107
+	 * @param {*} type
+	 * @param {object} props
+	 * @param {string} key
+	 */
+
+	function jsxDEV(type, config, maybeKey, source, self) {
+	  {
+	    var propName; // Reserved names are extracted
+
+	    var props = {};
+	    var key = null;
+	    var ref = null; // Currently, key can be spread in as a prop. This causes a potential
+	    // issue if key is also explicitly declared (ie. <div {...props} key="Hi" />
+	    // or <div key="Hi" {...props} /> ). We want to deprecate key spread,
+	    // but as an intermediary step, we will use jsxDEV for everything except
+	    // <div {...props} key="Hi" />, because we aren't currently able to tell if
+	    // key is explicitly declared to be undefined or not.
+
+	    if (maybeKey !== undefined) {
+	      {
+	        checkKeyStringCoercion(maybeKey);
+	      }
+
+	      key = '' + maybeKey;
+	    }
+
+	    if (hasValidKey(config)) {
+	      {
+	        checkKeyStringCoercion(config.key);
+	      }
+
+	      key = '' + config.key;
+	    }
+
+	    if (hasValidRef(config)) {
+	      ref = config.ref;
+	      warnIfStringRefCannotBeAutoConverted(config, self);
+	    } // Remaining properties are added to a new props object
+
+
+	    for (propName in config) {
+	      if (hasOwnProperty.call(config, propName) && !RESERVED_PROPS.hasOwnProperty(propName)) {
+	        props[propName] = config[propName];
+	      }
+	    } // Resolve default props
+
+
+	    if (type && type.defaultProps) {
+	      var defaultProps = type.defaultProps;
+
+	      for (propName in defaultProps) {
+	        if (props[propName] === undefined) {
+	          props[propName] = defaultProps[propName];
+	        }
+	      }
+	    }
+
+	    if (key || ref) {
+	      var displayName = typeof type === 'function' ? type.displayName || type.name || 'Unknown' : type;
+
+	      if (key) {
+	        defineKeyPropWarningGetter(props, displayName);
+	      }
+
+	      if (ref) {
+	        defineRefPropWarningGetter(props, displayName);
+	      }
+	    }
+
+	    return ReactElement(type, key, ref, self, source, ReactCurrentOwner.current, props);
+	  }
+	}
+
+	var ReactCurrentOwner$1 = ReactSharedInternals.ReactCurrentOwner;
+	var ReactDebugCurrentFrame$1 = ReactSharedInternals.ReactDebugCurrentFrame;
+
+	function setCurrentlyValidatingElement$1(element) {
+	  {
+	    if (element) {
+	      var owner = element._owner;
+	      var stack = describeUnknownElementTypeFrameInDEV(element.type, element._source, owner ? owner.type : null);
+	      ReactDebugCurrentFrame$1.setExtraStackFrame(stack);
+	    } else {
+	      ReactDebugCurrentFrame$1.setExtraStackFrame(null);
+	    }
+	  }
+	}
+
+	var propTypesMisspellWarningShown;
+
+	{
+	  propTypesMisspellWarningShown = false;
+	}
+	/**
+	 * Verifies the object is a ReactElement.
+	 * See https://reactjs.org/docs/react-api.html#isvalidelement
+	 * @param {?object} object
+	 * @return {boolean} True if `object` is a ReactElement.
+	 * @final
+	 */
+
+
+	function isValidElement(object) {
+	  {
+	    return typeof object === 'object' && object !== null && object.$$typeof === REACT_ELEMENT_TYPE;
+	  }
+	}
+
+	function getDeclarationErrorAddendum() {
+	  {
+	    if (ReactCurrentOwner$1.current) {
+	      var name = getComponentNameFromType(ReactCurrentOwner$1.current.type);
+
+	      if (name) {
+	        return '\n\nCheck the render method of `' + name + '`.';
+	      }
+	    }
+
+	    return '';
+	  }
+	}
+
+	function getSourceInfoErrorAddendum(source) {
+	  {
+	    if (source !== undefined) {
+	      var fileName = source.fileName.replace(/^.*[\\\/]/, '');
+	      var lineNumber = source.lineNumber;
+	      return '\n\nCheck your code at ' + fileName + ':' + lineNumber + '.';
+	    }
+
+	    return '';
+	  }
+	}
+	/**
+	 * Warn if there's no key explicitly set on dynamic arrays of children or
+	 * object keys are not valid. This allows us to keep track of children between
+	 * updates.
+	 */
+
+
+	var ownerHasKeyUseWarning = {};
+
+	function getCurrentComponentErrorInfo(parentType) {
+	  {
+	    var info = getDeclarationErrorAddendum();
+
+	    if (!info) {
+	      var parentName = typeof parentType === 'string' ? parentType : parentType.displayName || parentType.name;
+
+	      if (parentName) {
+	        info = "\n\nCheck the top-level render call using <" + parentName + ">.";
+	      }
+	    }
+
+	    return info;
+	  }
+	}
+	/**
+	 * Warn if the element doesn't have an explicit key assigned to it.
+	 * This element is in an array. The array could grow and shrink or be
+	 * reordered. All children that haven't already been validated are required to
+	 * have a "key" property assigned to it. Error statuses are cached so a warning
+	 * will only be shown once.
+	 *
+	 * @internal
+	 * @param {ReactElement} element Element that requires a key.
+	 * @param {*} parentType element's parent's type.
+	 */
+
+
+	function validateExplicitKey(element, parentType) {
+	  {
+	    if (!element._store || element._store.validated || element.key != null) {
+	      return;
+	    }
+
+	    element._store.validated = true;
+	    var currentComponentErrorInfo = getCurrentComponentErrorInfo(parentType);
+
+	    if (ownerHasKeyUseWarning[currentComponentErrorInfo]) {
+	      return;
+	    }
+
+	    ownerHasKeyUseWarning[currentComponentErrorInfo] = true; // Usually the current owner is the offender, but if it accepts children as a
+	    // property, it may be the creator of the child that's responsible for
+	    // assigning it a key.
+
+	    var childOwner = '';
+
+	    if (element && element._owner && element._owner !== ReactCurrentOwner$1.current) {
+	      // Give the component that originally created this child.
+	      childOwner = " It was passed a child from " + getComponentNameFromType(element._owner.type) + ".";
+	    }
+
+	    setCurrentlyValidatingElement$1(element);
+
+	    error('Each child in a list should have a unique "key" prop.' + '%s%s See https://reactjs.org/link/warning-keys for more information.', currentComponentErrorInfo, childOwner);
+
+	    setCurrentlyValidatingElement$1(null);
+	  }
+	}
+	/**
+	 * Ensure that every element either is passed in a static location, in an
+	 * array with an explicit keys property defined, or in an object literal
+	 * with valid key property.
+	 *
+	 * @internal
+	 * @param {ReactNode} node Statically passed child of any type.
+	 * @param {*} parentType node's parent's type.
+	 */
+
+
+	function validateChildKeys(node, parentType) {
+	  {
+	    if (typeof node !== 'object') {
+	      return;
+	    }
+
+	    if (isArray(node)) {
+	      for (var i = 0; i < node.length; i++) {
+	        var child = node[i];
+
+	        if (isValidElement(child)) {
+	          validateExplicitKey(child, parentType);
+	        }
+	      }
+	    } else if (isValidElement(node)) {
+	      // This element was passed in a valid location.
+	      if (node._store) {
+	        node._store.validated = true;
+	      }
+	    } else if (node) {
+	      var iteratorFn = getIteratorFn(node);
+
+	      if (typeof iteratorFn === 'function') {
+	        // Entry iterators used to provide implicit keys,
+	        // but now we print a separate warning for them later.
+	        if (iteratorFn !== node.entries) {
+	          var iterator = iteratorFn.call(node);
+	          var step;
+
+	          while (!(step = iterator.next()).done) {
+	            if (isValidElement(step.value)) {
+	              validateExplicitKey(step.value, parentType);
+	            }
+	          }
+	        }
+	      }
+	    }
+	  }
+	}
+	/**
+	 * Given an element, validate that its props follow the propTypes definition,
+	 * provided by the type.
+	 *
+	 * @param {ReactElement} element
+	 */
+
+
+	function validatePropTypes(element) {
+	  {
+	    var type = element.type;
+
+	    if (type === null || type === undefined || typeof type === 'string') {
+	      return;
+	    }
+
+	    var propTypes;
+
+	    if (typeof type === 'function') {
+	      propTypes = type.propTypes;
+	    } else if (typeof type === 'object' && (type.$$typeof === REACT_FORWARD_REF_TYPE || // Note: Memo only checks outer props here.
+	    // Inner props are checked in the reconciler.
+	    type.$$typeof === REACT_MEMO_TYPE)) {
+	      propTypes = type.propTypes;
+	    } else {
+	      return;
+	    }
+
+	    if (propTypes) {
+	      // Intentionally inside to avoid triggering lazy initializers:
+	      var name = getComponentNameFromType(type);
+	      checkPropTypes(propTypes, element.props, 'prop', name, element);
+	    } else if (type.PropTypes !== undefined && !propTypesMisspellWarningShown) {
+	      propTypesMisspellWarningShown = true; // Intentionally inside to avoid triggering lazy initializers:
+
+	      var _name = getComponentNameFromType(type);
+
+	      error('Component %s declared `PropTypes` instead of `propTypes`. Did you misspell the property assignment?', _name || 'Unknown');
+	    }
+
+	    if (typeof type.getDefaultProps === 'function' && !type.getDefaultProps.isReactClassApproved) {
+	      error('getDefaultProps is only used on classic React.createClass ' + 'definitions. Use a static property named `defaultProps` instead.');
+	    }
+	  }
+	}
+	/**
+	 * Given a fragment, validate that it can only be provided with fragment props
+	 * @param {ReactElement} fragment
+	 */
+
+
+	function validateFragmentProps(fragment) {
+	  {
+	    var keys = Object.keys(fragment.props);
+
+	    for (var i = 0; i < keys.length; i++) {
+	      var key = keys[i];
+
+	      if (key !== 'children' && key !== 'key') {
+	        setCurrentlyValidatingElement$1(fragment);
+
+	        error('Invalid prop `%s` supplied to `React.Fragment`. ' + 'React.Fragment can only have `key` and `children` props.', key);
+
+	        setCurrentlyValidatingElement$1(null);
+	        break;
+	      }
+	    }
+
+	    if (fragment.ref !== null) {
+	      setCurrentlyValidatingElement$1(fragment);
+
+	      error('Invalid attribute `ref` supplied to `React.Fragment`.');
+
+	      setCurrentlyValidatingElement$1(null);
+	    }
+	  }
+	}
+
+	function jsxWithValidation(type, props, key, isStaticChildren, source, self) {
+	  {
+	    var validType = isValidElementType(type); // We warn in this case but don't throw. We expect the element creation to
+	    // succeed and there will likely be errors in render.
+
+	    if (!validType) {
+	      var info = '';
+
+	      if (type === undefined || typeof type === 'object' && type !== null && Object.keys(type).length === 0) {
+	        info += ' You likely forgot to export your component from the file ' + "it's defined in, or you might have mixed up default and named imports.";
+	      }
+
+	      var sourceInfo = getSourceInfoErrorAddendum(source);
+
+	      if (sourceInfo) {
+	        info += sourceInfo;
+	      } else {
+	        info += getDeclarationErrorAddendum();
+	      }
+
+	      var typeString;
+
+	      if (type === null) {
+	        typeString = 'null';
+	      } else if (isArray(type)) {
+	        typeString = 'array';
+	      } else if (type !== undefined && type.$$typeof === REACT_ELEMENT_TYPE) {
+	        typeString = "<" + (getComponentNameFromType(type.type) || 'Unknown') + " />";
+	        info = ' Did you accidentally export a JSX literal instead of a component?';
+	      } else {
+	        typeString = typeof type;
+	      }
+
+	      error('React.jsx: type is invalid -- expected a string (for ' + 'built-in components) or a class/function (for composite ' + 'components) but got: %s.%s', typeString, info);
+	    }
+
+	    var element = jsxDEV(type, props, key, source, self); // The result can be nullish if a mock or a custom function is used.
+	    // TODO: Drop this when these are no longer allowed as the type argument.
+
+	    if (element == null) {
+	      return element;
+	    } // Skip key warning if the type isn't valid since our key validation logic
+	    // doesn't expect a non-string/function type and can throw confusing errors.
+	    // We don't want exception behavior to differ between dev and prod.
+	    // (Rendering will throw with a helpful message and as soon as the type is
+	    // fixed, the key warnings will appear.)
+
+
+	    if (validType) {
+	      var children = props.children;
+
+	      if (children !== undefined) {
+	        if (isStaticChildren) {
+	          if (isArray(children)) {
+	            for (var i = 0; i < children.length; i++) {
+	              validateChildKeys(children[i], type);
+	            }
+
+	            if (Object.freeze) {
+	              Object.freeze(children);
+	            }
+	          } else {
+	            error('React.jsx: Static children should always be an array. ' + 'You are likely explicitly calling React.jsxs or React.jsxDEV. ' + 'Use the Babel transform instead.');
+	          }
+	        } else {
+	          validateChildKeys(children, type);
+	        }
+	      }
+	    }
+
+	    if (type === REACT_FRAGMENT_TYPE) {
+	      validateFragmentProps(element);
+	    } else {
+	      validatePropTypes(element);
+	    }
+
+	    return element;
+	  }
+	} // These two functions exist to still get child warnings in dev
+	// even with the prod transform. This means that jsxDEV is purely
+	// opt-in behavior for better messages but that we won't stop
+	// giving you warnings if you use production apis.
+
+	function jsxWithValidationStatic(type, props, key) {
+	  {
+	    return jsxWithValidation(type, props, key, true);
+	  }
+	}
+	function jsxWithValidationDynamic(type, props, key) {
+	  {
+	    return jsxWithValidation(type, props, key, false);
+	  }
+	}
+
+	var jsx =  jsxWithValidationDynamic ; // we may want to special case jsxs internally to take advantage of static children.
+	// for now we can ship identical prod functions
+
+	var jsxs =  jsxWithValidationStatic ;
+
+	reactJsxRuntime_development.Fragment = REACT_FRAGMENT_TYPE;
+	reactJsxRuntime_development.jsx = jsx;
+	reactJsxRuntime_development.jsxs = jsxs;
+	  })();
+	}
+	return reactJsxRuntime_development;
 }
 
-var ReactSharedInternals = React.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
-
-function error(format) {
-  {
-    {
-      for (var _len2 = arguments.length, args = new Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
-        args[_key2 - 1] = arguments[_key2];
-      }
-
-      printWarning('error', format, args);
-    }
-  }
-}
-
-function printWarning(level, format, args) {
-  // When changing this logic, you might want to also
-  // update consoleWithStackDev.www.js as well.
-  {
-    var ReactDebugCurrentFrame = ReactSharedInternals.ReactDebugCurrentFrame;
-    var stack = ReactDebugCurrentFrame.getStackAddendum();
-
-    if (stack !== '') {
-      format += '%s';
-      args = args.concat([stack]);
-    } // eslint-disable-next-line react-internal/safe-string-coercion
-
-
-    var argsWithFormat = args.map(function (item) {
-      return String(item);
-    }); // Careful: RN currently depends on this prefix
-
-    argsWithFormat.unshift('Warning: ' + format); // We intentionally don't use spread (or .apply) directly because it
-    // breaks IE9: https://github.com/facebook/react/issues/13610
-    // eslint-disable-next-line react-internal/no-production-logging
-
-    Function.prototype.apply.call(console[level], console, argsWithFormat);
-  }
-}
-
-// -----------------------------------------------------------------------------
-
-var enableScopeAPI = false; // Experimental Create Event Handle API.
-var enableCacheElement = false;
-var enableTransitionTracing = false; // No known bugs, but needs performance testing
-
-var enableLegacyHidden = false; // Enables unstable_avoidThisFallback feature in Fiber
-// stuff. Intended to enable React core members to more easily debug scheduling
-// issues in DEV builds.
-
-var enableDebugTracing = false; // Track which Fiber(s) schedule render work.
-
-var REACT_MODULE_REFERENCE = Symbol.for('react.module.reference');
-function isValidElementType(type) {
-  if (typeof type === 'string' || typeof type === 'function') {
-    return true;
-  } // Note: typeof might be other than 'symbol' or 'number' (e.g. if it's a polyfill).
-
-
-  if (type === REACT_FRAGMENT_TYPE || type === REACT_PROFILER_TYPE || enableDebugTracing  || type === REACT_STRICT_MODE_TYPE || type === REACT_SUSPENSE_TYPE || type === REACT_SUSPENSE_LIST_TYPE || enableLegacyHidden  || type === REACT_OFFSCREEN_TYPE || enableScopeAPI  || enableCacheElement  || enableTransitionTracing ) {
-    return true;
-  }
-
-  if (typeof type === 'object' && type !== null) {
-    if (type.$$typeof === REACT_LAZY_TYPE || type.$$typeof === REACT_MEMO_TYPE || type.$$typeof === REACT_PROVIDER_TYPE || type.$$typeof === REACT_CONTEXT_TYPE || type.$$typeof === REACT_FORWARD_REF_TYPE || // This needs to include all possible module reference object
-    // types supported by any Flight configuration anywhere since
-    // we don't know which Flight build this will end up being used
-    // with.
-    type.$$typeof === REACT_MODULE_REFERENCE || type.getModuleId !== undefined) {
-      return true;
-    }
-  }
-
-  return false;
-}
-
-function getWrappedName(outerType, innerType, wrapperName) {
-  var displayName = outerType.displayName;
-
-  if (displayName) {
-    return displayName;
-  }
-
-  var functionName = innerType.displayName || innerType.name || '';
-  return functionName !== '' ? wrapperName + "(" + functionName + ")" : wrapperName;
-} // Keep in sync with react-reconciler/getComponentNameFromFiber
-
-
-function getContextName(type) {
-  return type.displayName || 'Context';
-} // Note that the reconciler package should generally prefer to use getComponentNameFromFiber() instead.
-
-
-function getComponentNameFromType(type) {
-  if (type == null) {
-    // Host root, text node or just invalid type.
-    return null;
-  }
-
-  {
-    if (typeof type.tag === 'number') {
-      error('Received an unexpected object in getComponentNameFromType(). ' + 'This is likely a bug in React. Please file an issue.');
-    }
-  }
-
-  if (typeof type === 'function') {
-    return type.displayName || type.name || null;
-  }
-
-  if (typeof type === 'string') {
-    return type;
-  }
-
-  switch (type) {
-    case REACT_FRAGMENT_TYPE:
-      return 'Fragment';
-
-    case REACT_PORTAL_TYPE:
-      return 'Portal';
-
-    case REACT_PROFILER_TYPE:
-      return 'Profiler';
-
-    case REACT_STRICT_MODE_TYPE:
-      return 'StrictMode';
-
-    case REACT_SUSPENSE_TYPE:
-      return 'Suspense';
-
-    case REACT_SUSPENSE_LIST_TYPE:
-      return 'SuspenseList';
-
-  }
-
-  if (typeof type === 'object') {
-    switch (type.$$typeof) {
-      case REACT_CONTEXT_TYPE:
-        var context = type;
-        return getContextName(context) + '.Consumer';
-
-      case REACT_PROVIDER_TYPE:
-        var provider = type;
-        return getContextName(provider._context) + '.Provider';
-
-      case REACT_FORWARD_REF_TYPE:
-        return getWrappedName(type, type.render, 'ForwardRef');
-
-      case REACT_MEMO_TYPE:
-        var outerName = type.displayName || null;
-
-        if (outerName !== null) {
-          return outerName;
-        }
-
-        return getComponentNameFromType(type.type) || 'Memo';
-
-      case REACT_LAZY_TYPE:
-        {
-          var lazyComponent = type;
-          var payload = lazyComponent._payload;
-          var init = lazyComponent._init;
-
-          try {
-            return getComponentNameFromType(init(payload));
-          } catch (x) {
-            return null;
-          }
-        }
-
-      // eslint-disable-next-line no-fallthrough
-    }
-  }
-
-  return null;
-}
-
-var assign = Object.assign;
-
-// Helpers to patch console.logs to avoid logging during side-effect free
-// replaying on render function. This currently only patches the object
-// lazily which won't cover if the log function was extracted eagerly.
-// We could also eagerly patch the method.
-var disabledDepth = 0;
-var prevLog;
-var prevInfo;
-var prevWarn;
-var prevError;
-var prevGroup;
-var prevGroupCollapsed;
-var prevGroupEnd;
-
-function disabledLog() {}
-
-disabledLog.__reactDisabledLog = true;
-function disableLogs() {
-  {
-    if (disabledDepth === 0) {
-      /* eslint-disable react-internal/no-production-logging */
-      prevLog = console.log;
-      prevInfo = console.info;
-      prevWarn = console.warn;
-      prevError = console.error;
-      prevGroup = console.group;
-      prevGroupCollapsed = console.groupCollapsed;
-      prevGroupEnd = console.groupEnd; // https://github.com/facebook/react/issues/19099
-
-      var props = {
-        configurable: true,
-        enumerable: true,
-        value: disabledLog,
-        writable: true
-      }; // $FlowFixMe Flow thinks console is immutable.
-
-      Object.defineProperties(console, {
-        info: props,
-        log: props,
-        warn: props,
-        error: props,
-        group: props,
-        groupCollapsed: props,
-        groupEnd: props
-      });
-      /* eslint-enable react-internal/no-production-logging */
-    }
-
-    disabledDepth++;
-  }
-}
-function reenableLogs() {
-  {
-    disabledDepth--;
-
-    if (disabledDepth === 0) {
-      /* eslint-disable react-internal/no-production-logging */
-      var props = {
-        configurable: true,
-        enumerable: true,
-        writable: true
-      }; // $FlowFixMe Flow thinks console is immutable.
-
-      Object.defineProperties(console, {
-        log: assign({}, props, {
-          value: prevLog
-        }),
-        info: assign({}, props, {
-          value: prevInfo
-        }),
-        warn: assign({}, props, {
-          value: prevWarn
-        }),
-        error: assign({}, props, {
-          value: prevError
-        }),
-        group: assign({}, props, {
-          value: prevGroup
-        }),
-        groupCollapsed: assign({}, props, {
-          value: prevGroupCollapsed
-        }),
-        groupEnd: assign({}, props, {
-          value: prevGroupEnd
-        })
-      });
-      /* eslint-enable react-internal/no-production-logging */
-    }
-
-    if (disabledDepth < 0) {
-      error('disabledDepth fell below zero. ' + 'This is a bug in React. Please file an issue.');
-    }
-  }
-}
-
-var ReactCurrentDispatcher = ReactSharedInternals.ReactCurrentDispatcher;
-var prefix;
-function describeBuiltInComponentFrame(name, source, ownerFn) {
-  {
-    if (prefix === undefined) {
-      // Extract the VM specific prefix used by each line.
-      try {
-        throw Error();
-      } catch (x) {
-        var match = x.stack.trim().match(/\n( *(at )?)/);
-        prefix = match && match[1] || '';
-      }
-    } // We use the prefix to ensure our stacks line up with native stack frames.
-
-
-    return '\n' + prefix + name;
-  }
-}
-var reentry = false;
-var componentFrameCache;
-
-{
-  var PossiblyWeakMap = typeof WeakMap === 'function' ? WeakMap : Map;
-  componentFrameCache = new PossiblyWeakMap();
-}
-
-function describeNativeComponentFrame(fn, construct) {
-  // If something asked for a stack inside a fake render, it should get ignored.
-  if ( !fn || reentry) {
-    return '';
-  }
-
-  {
-    var frame = componentFrameCache.get(fn);
-
-    if (frame !== undefined) {
-      return frame;
-    }
-  }
-
-  var control;
-  reentry = true;
-  var previousPrepareStackTrace = Error.prepareStackTrace; // $FlowFixMe It does accept undefined.
-
-  Error.prepareStackTrace = undefined;
-  var previousDispatcher;
-
-  {
-    previousDispatcher = ReactCurrentDispatcher.current; // Set the dispatcher in DEV because this might be call in the render function
-    // for warnings.
-
-    ReactCurrentDispatcher.current = null;
-    disableLogs();
-  }
-
-  try {
-    // This should throw.
-    if (construct) {
-      // Something should be setting the props in the constructor.
-      var Fake = function () {
-        throw Error();
-      }; // $FlowFixMe
-
-
-      Object.defineProperty(Fake.prototype, 'props', {
-        set: function () {
-          // We use a throwing setter instead of frozen or non-writable props
-          // because that won't throw in a non-strict mode function.
-          throw Error();
-        }
-      });
-
-      if (typeof Reflect === 'object' && Reflect.construct) {
-        // We construct a different control for this case to include any extra
-        // frames added by the construct call.
-        try {
-          Reflect.construct(Fake, []);
-        } catch (x) {
-          control = x;
-        }
-
-        Reflect.construct(fn, [], Fake);
-      } else {
-        try {
-          Fake.call();
-        } catch (x) {
-          control = x;
-        }
-
-        fn.call(Fake.prototype);
-      }
-    } else {
-      try {
-        throw Error();
-      } catch (x) {
-        control = x;
-      }
-
-      fn();
-    }
-  } catch (sample) {
-    // This is inlined manually because closure doesn't do it for us.
-    if (sample && control && typeof sample.stack === 'string') {
-      // This extracts the first frame from the sample that isn't also in the control.
-      // Skipping one frame that we assume is the frame that calls the two.
-      var sampleLines = sample.stack.split('\n');
-      var controlLines = control.stack.split('\n');
-      var s = sampleLines.length - 1;
-      var c = controlLines.length - 1;
-
-      while (s >= 1 && c >= 0 && sampleLines[s] !== controlLines[c]) {
-        // We expect at least one stack frame to be shared.
-        // Typically this will be the root most one. However, stack frames may be
-        // cut off due to maximum stack limits. In this case, one maybe cut off
-        // earlier than the other. We assume that the sample is longer or the same
-        // and there for cut off earlier. So we should find the root most frame in
-        // the sample somewhere in the control.
-        c--;
-      }
-
-      for (; s >= 1 && c >= 0; s--, c--) {
-        // Next we find the first one that isn't the same which should be the
-        // frame that called our sample function and the control.
-        if (sampleLines[s] !== controlLines[c]) {
-          // In V8, the first line is describing the message but other VMs don't.
-          // If we're about to return the first line, and the control is also on the same
-          // line, that's a pretty good indicator that our sample threw at same line as
-          // the control. I.e. before we entered the sample frame. So we ignore this result.
-          // This can happen if you passed a class to function component, or non-function.
-          if (s !== 1 || c !== 1) {
-            do {
-              s--;
-              c--; // We may still have similar intermediate frames from the construct call.
-              // The next one that isn't the same should be our match though.
-
-              if (c < 0 || sampleLines[s] !== controlLines[c]) {
-                // V8 adds a "new" prefix for native classes. Let's remove it to make it prettier.
-                var _frame = '\n' + sampleLines[s].replace(' at new ', ' at '); // If our component frame is labeled "<anonymous>"
-                // but we have a user-provided "displayName"
-                // splice it in to make the stack more readable.
-
-
-                if (fn.displayName && _frame.includes('<anonymous>')) {
-                  _frame = _frame.replace('<anonymous>', fn.displayName);
-                }
-
-                {
-                  if (typeof fn === 'function') {
-                    componentFrameCache.set(fn, _frame);
-                  }
-                } // Return the line we found.
-
-
-                return _frame;
-              }
-            } while (s >= 1 && c >= 0);
-          }
-
-          break;
-        }
-      }
-    }
-  } finally {
-    reentry = false;
-
-    {
-      ReactCurrentDispatcher.current = previousDispatcher;
-      reenableLogs();
-    }
-
-    Error.prepareStackTrace = previousPrepareStackTrace;
-  } // Fallback to just using the name if we couldn't make it throw.
-
-
-  var name = fn ? fn.displayName || fn.name : '';
-  var syntheticFrame = name ? describeBuiltInComponentFrame(name) : '';
-
-  {
-    if (typeof fn === 'function') {
-      componentFrameCache.set(fn, syntheticFrame);
-    }
-  }
-
-  return syntheticFrame;
-}
-function describeFunctionComponentFrame(fn, source, ownerFn) {
-  {
-    return describeNativeComponentFrame(fn, false);
-  }
-}
-
-function shouldConstruct(Component) {
-  var prototype = Component.prototype;
-  return !!(prototype && prototype.isReactComponent);
-}
-
-function describeUnknownElementTypeFrameInDEV(type, source, ownerFn) {
-
-  if (type == null) {
-    return '';
-  }
-
-  if (typeof type === 'function') {
-    {
-      return describeNativeComponentFrame(type, shouldConstruct(type));
-    }
-  }
-
-  if (typeof type === 'string') {
-    return describeBuiltInComponentFrame(type);
-  }
-
-  switch (type) {
-    case REACT_SUSPENSE_TYPE:
-      return describeBuiltInComponentFrame('Suspense');
-
-    case REACT_SUSPENSE_LIST_TYPE:
-      return describeBuiltInComponentFrame('SuspenseList');
-  }
-
-  if (typeof type === 'object') {
-    switch (type.$$typeof) {
-      case REACT_FORWARD_REF_TYPE:
-        return describeFunctionComponentFrame(type.render);
-
-      case REACT_MEMO_TYPE:
-        // Memo may contain any component type so we recursively resolve it.
-        return describeUnknownElementTypeFrameInDEV(type.type, source, ownerFn);
-
-      case REACT_LAZY_TYPE:
-        {
-          var lazyComponent = type;
-          var payload = lazyComponent._payload;
-          var init = lazyComponent._init;
-
-          try {
-            // Lazy may contain any component type so we recursively resolve it.
-            return describeUnknownElementTypeFrameInDEV(init(payload), source, ownerFn);
-          } catch (x) {}
-        }
-    }
-  }
-
-  return '';
-}
-
-var hasOwnProperty = Object.prototype.hasOwnProperty;
-
-var loggedTypeFailures = {};
-var ReactDebugCurrentFrame = ReactSharedInternals.ReactDebugCurrentFrame;
-
-function setCurrentlyValidatingElement(element) {
-  {
-    if (element) {
-      var owner = element._owner;
-      var stack = describeUnknownElementTypeFrameInDEV(element.type, element._source, owner ? owner.type : null);
-      ReactDebugCurrentFrame.setExtraStackFrame(stack);
-    } else {
-      ReactDebugCurrentFrame.setExtraStackFrame(null);
-    }
-  }
-}
-
-function checkPropTypes(typeSpecs, values, location, componentName, element) {
-  {
-    // $FlowFixMe This is okay but Flow doesn't know it.
-    var has = Function.call.bind(hasOwnProperty);
-
-    for (var typeSpecName in typeSpecs) {
-      if (has(typeSpecs, typeSpecName)) {
-        var error$1 = void 0; // Prop type validation may throw. In case they do, we don't want to
-        // fail the render phase where it didn't fail before. So we log it.
-        // After these have been cleaned up, we'll let them throw.
-
-        try {
-          // This is intentionally an invariant that gets caught. It's the same
-          // behavior as without this statement except with a better message.
-          if (typeof typeSpecs[typeSpecName] !== 'function') {
-            // eslint-disable-next-line react-internal/prod-error-codes
-            var err = Error((componentName || 'React class') + ': ' + location + ' type `' + typeSpecName + '` is invalid; ' + 'it must be a function, usually from the `prop-types` package, but received `' + typeof typeSpecs[typeSpecName] + '`.' + 'This often happens because of typos such as `PropTypes.function` instead of `PropTypes.func`.');
-            err.name = 'Invariant Violation';
-            throw err;
-          }
-
-          error$1 = typeSpecs[typeSpecName](values, typeSpecName, componentName, location, null, 'SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED');
-        } catch (ex) {
-          error$1 = ex;
-        }
-
-        if (error$1 && !(error$1 instanceof Error)) {
-          setCurrentlyValidatingElement(element);
-
-          error('%s: type specification of %s' + ' `%s` is invalid; the type checker ' + 'function must return `null` or an `Error` but returned a %s. ' + 'You may have forgotten to pass an argument to the type checker ' + 'creator (arrayOf, instanceOf, objectOf, oneOf, oneOfType, and ' + 'shape all require an argument).', componentName || 'React class', location, typeSpecName, typeof error$1);
-
-          setCurrentlyValidatingElement(null);
-        }
-
-        if (error$1 instanceof Error && !(error$1.message in loggedTypeFailures)) {
-          // Only monitor this failure once because there tends to be a lot of the
-          // same error.
-          loggedTypeFailures[error$1.message] = true;
-          setCurrentlyValidatingElement(element);
-
-          error('Failed %s type: %s', location, error$1.message);
-
-          setCurrentlyValidatingElement(null);
-        }
-      }
-    }
-  }
-}
-
-var isArrayImpl = Array.isArray; // eslint-disable-next-line no-redeclare
-
-function isArray(a) {
-  return isArrayImpl(a);
-}
-
-/*
- * The `'' + value` pattern (used in in perf-sensitive code) throws for Symbol
- * and Temporal.* types. See https://github.com/facebook/react/pull/22064.
- *
- * The functions in this module will throw an easier-to-understand,
- * easier-to-debug exception with a clear errors message message explaining the
- * problem. (Instead of a confusing exception thrown inside the implementation
- * of the `value` object).
- */
-// $FlowFixMe only called in DEV, so void return is not possible.
-function typeName(value) {
-  {
-    // toStringTag is needed for namespaced types like Temporal.Instant
-    var hasToStringTag = typeof Symbol === 'function' && Symbol.toStringTag;
-    var type = hasToStringTag && value[Symbol.toStringTag] || value.constructor.name || 'Object';
-    return type;
-  }
-} // $FlowFixMe only called in DEV, so void return is not possible.
-
-
-function willCoercionThrow(value) {
-  {
-    try {
-      testStringCoercion(value);
-      return false;
-    } catch (e) {
-      return true;
-    }
-  }
-}
-
-function testStringCoercion(value) {
-  // If you ended up here by following an exception call stack, here's what's
-  // happened: you supplied an object or symbol value to React (as a prop, key,
-  // DOM attribute, CSS property, string ref, etc.) and when React tried to
-  // coerce it to a string using `'' + value`, an exception was thrown.
-  //
-  // The most common types that will cause this exception are `Symbol` instances
-  // and Temporal objects like `Temporal.Instant`. But any object that has a
-  // `valueOf` or `[Symbol.toPrimitive]` method that throws will also cause this
-  // exception. (Library authors do this to prevent users from using built-in
-  // numeric operators like `+` or comparison operators like `>=` because custom
-  // methods are needed to perform accurate arithmetic or comparison.)
-  //
-  // To fix the problem, coerce this object or symbol value to a string before
-  // passing it to React. The most reliable way is usually `String(value)`.
-  //
-  // To find which value is throwing, check the browser or debugger console.
-  // Before this exception was thrown, there should be `console.error` output
-  // that shows the type (Symbol, Temporal.PlainDate, etc.) that caused the
-  // problem and how that type was used: key, atrribute, input value prop, etc.
-  // In most cases, this console output also shows the component and its
-  // ancestor components where the exception happened.
-  //
-  // eslint-disable-next-line react-internal/safe-string-coercion
-  return '' + value;
-}
-function checkKeyStringCoercion(value) {
-  {
-    if (willCoercionThrow(value)) {
-      error('The provided key is an unsupported type %s.' + ' This value must be coerced to a string before before using it here.', typeName(value));
-
-      return testStringCoercion(value); // throw (to help callers find troubleshooting comments)
-    }
-  }
-}
-
-var ReactCurrentOwner = ReactSharedInternals.ReactCurrentOwner;
-var RESERVED_PROPS = {
-  key: true,
-  ref: true,
-  __self: true,
-  __source: true
-};
-var specialPropKeyWarningShown;
-var specialPropRefWarningShown;
-var didWarnAboutStringRefs;
-
-{
-  didWarnAboutStringRefs = {};
-}
-
-function hasValidRef(config) {
-  {
-    if (hasOwnProperty.call(config, 'ref')) {
-      var getter = Object.getOwnPropertyDescriptor(config, 'ref').get;
-
-      if (getter && getter.isReactWarning) {
-        return false;
-      }
-    }
-  }
-
-  return config.ref !== undefined;
-}
-
-function hasValidKey(config) {
-  {
-    if (hasOwnProperty.call(config, 'key')) {
-      var getter = Object.getOwnPropertyDescriptor(config, 'key').get;
-
-      if (getter && getter.isReactWarning) {
-        return false;
-      }
-    }
-  }
-
-  return config.key !== undefined;
-}
-
-function warnIfStringRefCannotBeAutoConverted(config, self) {
-  {
-    if (typeof config.ref === 'string' && ReactCurrentOwner.current && self && ReactCurrentOwner.current.stateNode !== self) {
-      var componentName = getComponentNameFromType(ReactCurrentOwner.current.type);
-
-      if (!didWarnAboutStringRefs[componentName]) {
-        error('Component "%s" contains the string ref "%s". ' + 'Support for string refs will be removed in a future major release. ' + 'This case cannot be automatically converted to an arrow function. ' + 'We ask you to manually fix this case by using useRef() or createRef() instead. ' + 'Learn more about using refs safely here: ' + 'https://reactjs.org/link/strict-mode-string-ref', getComponentNameFromType(ReactCurrentOwner.current.type), config.ref);
-
-        didWarnAboutStringRefs[componentName] = true;
-      }
-    }
-  }
-}
-
-function defineKeyPropWarningGetter(props, displayName) {
-  {
-    var warnAboutAccessingKey = function () {
-      if (!specialPropKeyWarningShown) {
-        specialPropKeyWarningShown = true;
-
-        error('%s: `key` is not a prop. Trying to access it will result ' + 'in `undefined` being returned. If you need to access the same ' + 'value within the child component, you should pass it as a different ' + 'prop. (https://reactjs.org/link/special-props)', displayName);
-      }
-    };
-
-    warnAboutAccessingKey.isReactWarning = true;
-    Object.defineProperty(props, 'key', {
-      get: warnAboutAccessingKey,
-      configurable: true
-    });
-  }
-}
-
-function defineRefPropWarningGetter(props, displayName) {
-  {
-    var warnAboutAccessingRef = function () {
-      if (!specialPropRefWarningShown) {
-        specialPropRefWarningShown = true;
-
-        error('%s: `ref` is not a prop. Trying to access it will result ' + 'in `undefined` being returned. If you need to access the same ' + 'value within the child component, you should pass it as a different ' + 'prop. (https://reactjs.org/link/special-props)', displayName);
-      }
-    };
-
-    warnAboutAccessingRef.isReactWarning = true;
-    Object.defineProperty(props, 'ref', {
-      get: warnAboutAccessingRef,
-      configurable: true
-    });
-  }
-}
-/**
- * Factory method to create a new React element. This no longer adheres to
- * the class pattern, so do not use new to call it. Also, instanceof check
- * will not work. Instead test $$typeof field against Symbol.for('react.element') to check
- * if something is a React Element.
- *
- * @param {*} type
- * @param {*} props
- * @param {*} key
- * @param {string|object} ref
- * @param {*} owner
- * @param {*} self A *temporary* helper to detect places where `this` is
- * different from the `owner` when React.createElement is called, so that we
- * can warn. We want to get rid of owner and replace string `ref`s with arrow
- * functions, and as long as `this` and owner are the same, there will be no
- * change in behavior.
- * @param {*} source An annotation object (added by a transpiler or otherwise)
- * indicating filename, line number, and/or other information.
- * @internal
- */
-
-
-var ReactElement = function (type, key, ref, self, source, owner, props) {
-  var element = {
-    // This tag allows us to uniquely identify this as a React Element
-    $$typeof: REACT_ELEMENT_TYPE,
-    // Built-in properties that belong on the element
-    type: type,
-    key: key,
-    ref: ref,
-    props: props,
-    // Record the component responsible for creating this element.
-    _owner: owner
-  };
-
-  {
-    // The validation flag is currently mutative. We put it on
-    // an external backing store so that we can freeze the whole object.
-    // This can be replaced with a WeakMap once they are implemented in
-    // commonly used development environments.
-    element._store = {}; // To make comparing ReactElements easier for testing purposes, we make
-    // the validation flag non-enumerable (where possible, which should
-    // include every environment we run tests in), so the test framework
-    // ignores it.
-
-    Object.defineProperty(element._store, 'validated', {
-      configurable: false,
-      enumerable: false,
-      writable: true,
-      value: false
-    }); // self and source are DEV only properties.
-
-    Object.defineProperty(element, '_self', {
-      configurable: false,
-      enumerable: false,
-      writable: false,
-      value: self
-    }); // Two elements created in two different places should be considered
-    // equal for testing purposes and therefore we hide it from enumeration.
-
-    Object.defineProperty(element, '_source', {
-      configurable: false,
-      enumerable: false,
-      writable: false,
-      value: source
-    });
-
-    if (Object.freeze) {
-      Object.freeze(element.props);
-      Object.freeze(element);
-    }
-  }
-
-  return element;
-};
-/**
- * https://github.com/reactjs/rfcs/pull/107
- * @param {*} type
- * @param {object} props
- * @param {string} key
- */
-
-function jsxDEV(type, config, maybeKey, source, self) {
-  {
-    var propName; // Reserved names are extracted
-
-    var props = {};
-    var key = null;
-    var ref = null; // Currently, key can be spread in as a prop. This causes a potential
-    // issue if key is also explicitly declared (ie. <div {...props} key="Hi" />
-    // or <div key="Hi" {...props} /> ). We want to deprecate key spread,
-    // but as an intermediary step, we will use jsxDEV for everything except
-    // <div {...props} key="Hi" />, because we aren't currently able to tell if
-    // key is explicitly declared to be undefined or not.
-
-    if (maybeKey !== undefined) {
-      {
-        checkKeyStringCoercion(maybeKey);
-      }
-
-      key = '' + maybeKey;
-    }
-
-    if (hasValidKey(config)) {
-      {
-        checkKeyStringCoercion(config.key);
-      }
-
-      key = '' + config.key;
-    }
-
-    if (hasValidRef(config)) {
-      ref = config.ref;
-      warnIfStringRefCannotBeAutoConverted(config, self);
-    } // Remaining properties are added to a new props object
-
-
-    for (propName in config) {
-      if (hasOwnProperty.call(config, propName) && !RESERVED_PROPS.hasOwnProperty(propName)) {
-        props[propName] = config[propName];
-      }
-    } // Resolve default props
-
-
-    if (type && type.defaultProps) {
-      var defaultProps = type.defaultProps;
-
-      for (propName in defaultProps) {
-        if (props[propName] === undefined) {
-          props[propName] = defaultProps[propName];
-        }
-      }
-    }
-
-    if (key || ref) {
-      var displayName = typeof type === 'function' ? type.displayName || type.name || 'Unknown' : type;
-
-      if (key) {
-        defineKeyPropWarningGetter(props, displayName);
-      }
-
-      if (ref) {
-        defineRefPropWarningGetter(props, displayName);
-      }
-    }
-
-    return ReactElement(type, key, ref, self, source, ReactCurrentOwner.current, props);
-  }
-}
-
-var ReactCurrentOwner$1 = ReactSharedInternals.ReactCurrentOwner;
-var ReactDebugCurrentFrame$1 = ReactSharedInternals.ReactDebugCurrentFrame;
-
-function setCurrentlyValidatingElement$1(element) {
-  {
-    if (element) {
-      var owner = element._owner;
-      var stack = describeUnknownElementTypeFrameInDEV(element.type, element._source, owner ? owner.type : null);
-      ReactDebugCurrentFrame$1.setExtraStackFrame(stack);
-    } else {
-      ReactDebugCurrentFrame$1.setExtraStackFrame(null);
-    }
-  }
-}
-
-var propTypesMisspellWarningShown;
-
-{
-  propTypesMisspellWarningShown = false;
-}
-/**
- * Verifies the object is a ReactElement.
- * See https://reactjs.org/docs/react-api.html#isvalidelement
- * @param {?object} object
- * @return {boolean} True if `object` is a ReactElement.
- * @final
- */
-
-
-function isValidElement(object) {
-  {
-    return typeof object === 'object' && object !== null && object.$$typeof === REACT_ELEMENT_TYPE;
-  }
-}
-
-function getDeclarationErrorAddendum() {
-  {
-    if (ReactCurrentOwner$1.current) {
-      var name = getComponentNameFromType(ReactCurrentOwner$1.current.type);
-
-      if (name) {
-        return '\n\nCheck the render method of `' + name + '`.';
-      }
-    }
-
-    return '';
-  }
-}
-
-function getSourceInfoErrorAddendum(source) {
-  {
-    if (source !== undefined) {
-      var fileName = source.fileName.replace(/^.*[\\\/]/, '');
-      var lineNumber = source.lineNumber;
-      return '\n\nCheck your code at ' + fileName + ':' + lineNumber + '.';
-    }
-
-    return '';
-  }
-}
-/**
- * Warn if there's no key explicitly set on dynamic arrays of children or
- * object keys are not valid. This allows us to keep track of children between
- * updates.
- */
-
-
-var ownerHasKeyUseWarning = {};
-
-function getCurrentComponentErrorInfo(parentType) {
-  {
-    var info = getDeclarationErrorAddendum();
-
-    if (!info) {
-      var parentName = typeof parentType === 'string' ? parentType : parentType.displayName || parentType.name;
-
-      if (parentName) {
-        info = "\n\nCheck the top-level render call using <" + parentName + ">.";
-      }
-    }
-
-    return info;
-  }
-}
-/**
- * Warn if the element doesn't have an explicit key assigned to it.
- * This element is in an array. The array could grow and shrink or be
- * reordered. All children that haven't already been validated are required to
- * have a "key" property assigned to it. Error statuses are cached so a warning
- * will only be shown once.
- *
- * @internal
- * @param {ReactElement} element Element that requires a key.
- * @param {*} parentType element's parent's type.
- */
-
-
-function validateExplicitKey(element, parentType) {
-  {
-    if (!element._store || element._store.validated || element.key != null) {
-      return;
-    }
-
-    element._store.validated = true;
-    var currentComponentErrorInfo = getCurrentComponentErrorInfo(parentType);
-
-    if (ownerHasKeyUseWarning[currentComponentErrorInfo]) {
-      return;
-    }
-
-    ownerHasKeyUseWarning[currentComponentErrorInfo] = true; // Usually the current owner is the offender, but if it accepts children as a
-    // property, it may be the creator of the child that's responsible for
-    // assigning it a key.
-
-    var childOwner = '';
-
-    if (element && element._owner && element._owner !== ReactCurrentOwner$1.current) {
-      // Give the component that originally created this child.
-      childOwner = " It was passed a child from " + getComponentNameFromType(element._owner.type) + ".";
-    }
-
-    setCurrentlyValidatingElement$1(element);
-
-    error('Each child in a list should have a unique "key" prop.' + '%s%s See https://reactjs.org/link/warning-keys for more information.', currentComponentErrorInfo, childOwner);
-
-    setCurrentlyValidatingElement$1(null);
-  }
-}
-/**
- * Ensure that every element either is passed in a static location, in an
- * array with an explicit keys property defined, or in an object literal
- * with valid key property.
- *
- * @internal
- * @param {ReactNode} node Statically passed child of any type.
- * @param {*} parentType node's parent's type.
- */
-
-
-function validateChildKeys(node, parentType) {
-  {
-    if (typeof node !== 'object') {
-      return;
-    }
-
-    if (isArray(node)) {
-      for (var i = 0; i < node.length; i++) {
-        var child = node[i];
-
-        if (isValidElement(child)) {
-          validateExplicitKey(child, parentType);
-        }
-      }
-    } else if (isValidElement(node)) {
-      // This element was passed in a valid location.
-      if (node._store) {
-        node._store.validated = true;
-      }
-    } else if (node) {
-      var iteratorFn = getIteratorFn(node);
-
-      if (typeof iteratorFn === 'function') {
-        // Entry iterators used to provide implicit keys,
-        // but now we print a separate warning for them later.
-        if (iteratorFn !== node.entries) {
-          var iterator = iteratorFn.call(node);
-          var step;
-
-          while (!(step = iterator.next()).done) {
-            if (isValidElement(step.value)) {
-              validateExplicitKey(step.value, parentType);
-            }
-          }
-        }
-      }
-    }
-  }
-}
-/**
- * Given an element, validate that its props follow the propTypes definition,
- * provided by the type.
- *
- * @param {ReactElement} element
- */
-
-
-function validatePropTypes(element) {
-  {
-    var type = element.type;
-
-    if (type === null || type === undefined || typeof type === 'string') {
-      return;
-    }
-
-    var propTypes;
-
-    if (typeof type === 'function') {
-      propTypes = type.propTypes;
-    } else if (typeof type === 'object' && (type.$$typeof === REACT_FORWARD_REF_TYPE || // Note: Memo only checks outer props here.
-    // Inner props are checked in the reconciler.
-    type.$$typeof === REACT_MEMO_TYPE)) {
-      propTypes = type.propTypes;
-    } else {
-      return;
-    }
-
-    if (propTypes) {
-      // Intentionally inside to avoid triggering lazy initializers:
-      var name = getComponentNameFromType(type);
-      checkPropTypes(propTypes, element.props, 'prop', name, element);
-    } else if (type.PropTypes !== undefined && !propTypesMisspellWarningShown) {
-      propTypesMisspellWarningShown = true; // Intentionally inside to avoid triggering lazy initializers:
-
-      var _name = getComponentNameFromType(type);
-
-      error('Component %s declared `PropTypes` instead of `propTypes`. Did you misspell the property assignment?', _name || 'Unknown');
-    }
-
-    if (typeof type.getDefaultProps === 'function' && !type.getDefaultProps.isReactClassApproved) {
-      error('getDefaultProps is only used on classic React.createClass ' + 'definitions. Use a static property named `defaultProps` instead.');
-    }
-  }
-}
-/**
- * Given a fragment, validate that it can only be provided with fragment props
- * @param {ReactElement} fragment
- */
-
-
-function validateFragmentProps(fragment) {
-  {
-    var keys = Object.keys(fragment.props);
-
-    for (var i = 0; i < keys.length; i++) {
-      var key = keys[i];
-
-      if (key !== 'children' && key !== 'key') {
-        setCurrentlyValidatingElement$1(fragment);
-
-        error('Invalid prop `%s` supplied to `React.Fragment`. ' + 'React.Fragment can only have `key` and `children` props.', key);
-
-        setCurrentlyValidatingElement$1(null);
-        break;
-      }
-    }
-
-    if (fragment.ref !== null) {
-      setCurrentlyValidatingElement$1(fragment);
-
-      error('Invalid attribute `ref` supplied to `React.Fragment`.');
-
-      setCurrentlyValidatingElement$1(null);
-    }
-  }
-}
-
-function jsxWithValidation(type, props, key, isStaticChildren, source, self) {
-  {
-    var validType = isValidElementType(type); // We warn in this case but don't throw. We expect the element creation to
-    // succeed and there will likely be errors in render.
-
-    if (!validType) {
-      var info = '';
-
-      if (type === undefined || typeof type === 'object' && type !== null && Object.keys(type).length === 0) {
-        info += ' You likely forgot to export your component from the file ' + "it's defined in, or you might have mixed up default and named imports.";
-      }
-
-      var sourceInfo = getSourceInfoErrorAddendum(source);
-
-      if (sourceInfo) {
-        info += sourceInfo;
-      } else {
-        info += getDeclarationErrorAddendum();
-      }
-
-      var typeString;
-
-      if (type === null) {
-        typeString = 'null';
-      } else if (isArray(type)) {
-        typeString = 'array';
-      } else if (type !== undefined && type.$$typeof === REACT_ELEMENT_TYPE) {
-        typeString = "<" + (getComponentNameFromType(type.type) || 'Unknown') + " />";
-        info = ' Did you accidentally export a JSX literal instead of a component?';
-      } else {
-        typeString = typeof type;
-      }
-
-      error('React.jsx: type is invalid -- expected a string (for ' + 'built-in components) or a class/function (for composite ' + 'components) but got: %s.%s', typeString, info);
-    }
-
-    var element = jsxDEV(type, props, key, source, self); // The result can be nullish if a mock or a custom function is used.
-    // TODO: Drop this when these are no longer allowed as the type argument.
-
-    if (element == null) {
-      return element;
-    } // Skip key warning if the type isn't valid since our key validation logic
-    // doesn't expect a non-string/function type and can throw confusing errors.
-    // We don't want exception behavior to differ between dev and prod.
-    // (Rendering will throw with a helpful message and as soon as the type is
-    // fixed, the key warnings will appear.)
-
-
-    if (validType) {
-      var children = props.children;
-
-      if (children !== undefined) {
-        if (isStaticChildren) {
-          if (isArray(children)) {
-            for (var i = 0; i < children.length; i++) {
-              validateChildKeys(children[i], type);
-            }
-
-            if (Object.freeze) {
-              Object.freeze(children);
-            }
-          } else {
-            error('React.jsx: Static children should always be an array. ' + 'You are likely explicitly calling React.jsxs or React.jsxDEV. ' + 'Use the Babel transform instead.');
-          }
-        } else {
-          validateChildKeys(children, type);
-        }
-      }
-    }
-
-    if (type === REACT_FRAGMENT_TYPE) {
-      validateFragmentProps(element);
-    } else {
-      validatePropTypes(element);
-    }
-
-    return element;
-  }
-} // These two functions exist to still get child warnings in dev
-// even with the prod transform. This means that jsxDEV is purely
-// opt-in behavior for better messages but that we won't stop
-// giving you warnings if you use production apis.
-
-function jsxWithValidationStatic(type, props, key) {
-  {
-    return jsxWithValidation(type, props, key, true);
-  }
-}
-function jsxWithValidationDynamic(type, props, key) {
-  {
-    return jsxWithValidation(type, props, key, false);
-  }
-}
-
-var jsx =  jsxWithValidationDynamic ; // we may want to special case jsxs internally to take advantage of static children.
-// for now we can ship identical prod functions
-
-var jsxs =  jsxWithValidationStatic ;
-
-reactJsxRuntime_development.Fragment = REACT_FRAGMENT_TYPE;
-reactJsxRuntime_development.jsx = jsx;
-reactJsxRuntime_development.jsxs = jsxs;
-  })();
-}
-
-if (process.env.NODE_ENV === 'production') {
-  jsxRuntime.exports = reactJsxRuntime_production_min;
-} else {
-  jsxRuntime.exports = reactJsxRuntime_development;
-}
+(function (module) {
+
+	if (process.env.NODE_ENV === 'production') {
+	  module.exports = requireReactJsxRuntime_production_min();
+	} else {
+	  module.exports = requireReactJsxRuntime_development();
+	}
+} (jsxRuntime));
 
 var reactIs$2 = {exports: {}};
 
@@ -1401,12 +1456,20 @@ var reactIs_production_min$1 = {};
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-var b$2=60103,c$1=60106,d$1=60107,e$1=60108,f$1=60114,g$2=60109,h$1=60110,k$2=60112,l$1=60113,m$1=60120,n$1=60115,p$1=60116,q$2=60121,r$1=60122,u=60117,v$2=60129,w$2=60131;
-if("function"===typeof Symbol&&Symbol.for){var x$2=Symbol.for;b$2=x$2("react.element");c$1=x$2("react.portal");d$1=x$2("react.fragment");e$1=x$2("react.strict_mode");f$1=x$2("react.profiler");g$2=x$2("react.provider");h$1=x$2("react.context");k$2=x$2("react.forward_ref");l$1=x$2("react.suspense");m$1=x$2("react.suspense_list");n$1=x$2("react.memo");p$1=x$2("react.lazy");q$2=x$2("react.block");r$1=x$2("react.server.block");u=x$2("react.fundamental");v$2=x$2("react.debug_trace_mode");w$2=x$2("react.legacy_hidden");}
-function y$1(a){if("object"===typeof a&&null!==a){var t=a.$$typeof;switch(t){case b$2:switch(a=a.type,a){case d$1:case f$1:case e$1:case l$1:case m$1:return a;default:switch(a=a&&a.$$typeof,a){case h$1:case k$2:case p$1:case n$1:case g$2:return a;default:return t}}case c$1:return t}}}var z$2=g$2,A$2=b$2,B$1=k$2,C=d$1,D$1=p$1,E$1=n$1,F$1=c$1,G$1=f$1,H$1=e$1,I$1=l$1;reactIs_production_min$1.ContextConsumer=h$1;reactIs_production_min$1.ContextProvider=z$2;reactIs_production_min$1.Element=A$2;reactIs_production_min$1.ForwardRef=B$1;reactIs_production_min$1.Fragment=C;reactIs_production_min$1.Lazy=D$1;reactIs_production_min$1.Memo=E$1;reactIs_production_min$1.Portal=F$1;reactIs_production_min$1.Profiler=G$1;reactIs_production_min$1.StrictMode=H$1;
-reactIs_production_min$1.Suspense=I$1;reactIs_production_min$1.isAsyncMode=function(){return !1};reactIs_production_min$1.isConcurrentMode=function(){return !1};reactIs_production_min$1.isContextConsumer=function(a){return y$1(a)===h$1};reactIs_production_min$1.isContextProvider=function(a){return y$1(a)===g$2};reactIs_production_min$1.isElement=function(a){return "object"===typeof a&&null!==a&&a.$$typeof===b$2};reactIs_production_min$1.isForwardRef=function(a){return y$1(a)===k$2};reactIs_production_min$1.isFragment=function(a){return y$1(a)===d$1};reactIs_production_min$1.isLazy=function(a){return y$1(a)===p$1};reactIs_production_min$1.isMemo=function(a){return y$1(a)===n$1};
-reactIs_production_min$1.isPortal=function(a){return y$1(a)===c$1};reactIs_production_min$1.isProfiler=function(a){return y$1(a)===f$1};reactIs_production_min$1.isStrictMode=function(a){return y$1(a)===e$1};reactIs_production_min$1.isSuspense=function(a){return y$1(a)===l$1};reactIs_production_min$1.isValidElementType=function(a){return "string"===typeof a||"function"===typeof a||a===d$1||a===f$1||a===v$2||a===e$1||a===l$1||a===m$1||a===w$2||"object"===typeof a&&null!==a&&(a.$$typeof===p$1||a.$$typeof===n$1||a.$$typeof===g$2||a.$$typeof===h$1||a.$$typeof===k$2||a.$$typeof===u||a.$$typeof===q$2||a[0]===r$1)?!0:!1};
-reactIs_production_min$1.typeOf=y$1;
+
+var hasRequiredReactIs_production_min$1;
+
+function requireReactIs_production_min$1 () {
+	if (hasRequiredReactIs_production_min$1) return reactIs_production_min$1;
+	hasRequiredReactIs_production_min$1 = 1;
+var b=60103,c=60106,d=60107,e=60108,f=60114,g=60109,h=60110,k=60112,l=60113,m=60120,n=60115,p=60116,q=60121,r=60122,u=60117,v=60129,w=60131;
+	if("function"===typeof Symbol&&Symbol.for){var x=Symbol.for;b=x("react.element");c=x("react.portal");d=x("react.fragment");e=x("react.strict_mode");f=x("react.profiler");g=x("react.provider");h=x("react.context");k=x("react.forward_ref");l=x("react.suspense");m=x("react.suspense_list");n=x("react.memo");p=x("react.lazy");q=x("react.block");r=x("react.server.block");u=x("react.fundamental");v=x("react.debug_trace_mode");w=x("react.legacy_hidden");}
+	function y(a){if("object"===typeof a&&null!==a){var t=a.$$typeof;switch(t){case b:switch(a=a.type,a){case d:case f:case e:case l:case m:return a;default:switch(a=a&&a.$$typeof,a){case h:case k:case p:case n:case g:return a;default:return t}}case c:return t}}}var z=g,A=b,B=k,C=d,D=p,E=n,F=c,G=f,H=e,I=l;reactIs_production_min$1.ContextConsumer=h;reactIs_production_min$1.ContextProvider=z;reactIs_production_min$1.Element=A;reactIs_production_min$1.ForwardRef=B;reactIs_production_min$1.Fragment=C;reactIs_production_min$1.Lazy=D;reactIs_production_min$1.Memo=E;reactIs_production_min$1.Portal=F;reactIs_production_min$1.Profiler=G;reactIs_production_min$1.StrictMode=H;
+	reactIs_production_min$1.Suspense=I;reactIs_production_min$1.isAsyncMode=function(){return !1};reactIs_production_min$1.isConcurrentMode=function(){return !1};reactIs_production_min$1.isContextConsumer=function(a){return y(a)===h};reactIs_production_min$1.isContextProvider=function(a){return y(a)===g};reactIs_production_min$1.isElement=function(a){return "object"===typeof a&&null!==a&&a.$$typeof===b};reactIs_production_min$1.isForwardRef=function(a){return y(a)===k};reactIs_production_min$1.isFragment=function(a){return y(a)===d};reactIs_production_min$1.isLazy=function(a){return y(a)===p};reactIs_production_min$1.isMemo=function(a){return y(a)===n};
+	reactIs_production_min$1.isPortal=function(a){return y(a)===c};reactIs_production_min$1.isProfiler=function(a){return y(a)===f};reactIs_production_min$1.isStrictMode=function(a){return y(a)===e};reactIs_production_min$1.isSuspense=function(a){return y(a)===l};reactIs_production_min$1.isValidElementType=function(a){return "string"===typeof a||"function"===typeof a||a===d||a===f||a===v||a===e||a===l||a===m||a===w||"object"===typeof a&&null!==a&&(a.$$typeof===p||a.$$typeof===n||a.$$typeof===g||a.$$typeof===h||a.$$typeof===k||a.$$typeof===u||a.$$typeof===q||a[0]===r)?!0:!1};
+	reactIs_production_min$1.typeOf=y;
+	return reactIs_production_min$1;
+}
 
 var reactIs_development$1 = {};
 
@@ -1419,223 +1482,234 @@ var reactIs_development$1 = {};
  * LICENSE file in the root directory of this source tree.
  */
 
-if (process.env.NODE_ENV !== "production") {
-  (function() {
+var hasRequiredReactIs_development$1;
 
-// ATTENTION
-// When adding new symbols to this file,
-// Please consider also adding to 'react-devtools-shared/src/backend/ReactSymbols'
-// The Symbol used to tag the ReactElement-like types. If there is no native Symbol
-// nor polyfill, then a plain number is used for performance.
-var REACT_ELEMENT_TYPE = 0xeac7;
-var REACT_PORTAL_TYPE = 0xeaca;
-var REACT_FRAGMENT_TYPE = 0xeacb;
-var REACT_STRICT_MODE_TYPE = 0xeacc;
-var REACT_PROFILER_TYPE = 0xead2;
-var REACT_PROVIDER_TYPE = 0xeacd;
-var REACT_CONTEXT_TYPE = 0xeace;
-var REACT_FORWARD_REF_TYPE = 0xead0;
-var REACT_SUSPENSE_TYPE = 0xead1;
-var REACT_SUSPENSE_LIST_TYPE = 0xead8;
-var REACT_MEMO_TYPE = 0xead3;
-var REACT_LAZY_TYPE = 0xead4;
-var REACT_BLOCK_TYPE = 0xead9;
-var REACT_SERVER_BLOCK_TYPE = 0xeada;
-var REACT_FUNDAMENTAL_TYPE = 0xead5;
-var REACT_DEBUG_TRACING_MODE_TYPE = 0xeae1;
-var REACT_LEGACY_HIDDEN_TYPE = 0xeae3;
+function requireReactIs_development$1 () {
+	if (hasRequiredReactIs_development$1) return reactIs_development$1;
+	hasRequiredReactIs_development$1 = 1;
 
-if (typeof Symbol === 'function' && Symbol.for) {
-  var symbolFor = Symbol.for;
-  REACT_ELEMENT_TYPE = symbolFor('react.element');
-  REACT_PORTAL_TYPE = symbolFor('react.portal');
-  REACT_FRAGMENT_TYPE = symbolFor('react.fragment');
-  REACT_STRICT_MODE_TYPE = symbolFor('react.strict_mode');
-  REACT_PROFILER_TYPE = symbolFor('react.profiler');
-  REACT_PROVIDER_TYPE = symbolFor('react.provider');
-  REACT_CONTEXT_TYPE = symbolFor('react.context');
-  REACT_FORWARD_REF_TYPE = symbolFor('react.forward_ref');
-  REACT_SUSPENSE_TYPE = symbolFor('react.suspense');
-  REACT_SUSPENSE_LIST_TYPE = symbolFor('react.suspense_list');
-  REACT_MEMO_TYPE = symbolFor('react.memo');
-  REACT_LAZY_TYPE = symbolFor('react.lazy');
-  REACT_BLOCK_TYPE = symbolFor('react.block');
-  REACT_SERVER_BLOCK_TYPE = symbolFor('react.server.block');
-  REACT_FUNDAMENTAL_TYPE = symbolFor('react.fundamental');
-  symbolFor('react.scope');
-  symbolFor('react.opaque.id');
-  REACT_DEBUG_TRACING_MODE_TYPE = symbolFor('react.debug_trace_mode');
-  symbolFor('react.offscreen');
-  REACT_LEGACY_HIDDEN_TYPE = symbolFor('react.legacy_hidden');
+	if (process.env.NODE_ENV !== "production") {
+	  (function() {
+
+	// ATTENTION
+	// When adding new symbols to this file,
+	// Please consider also adding to 'react-devtools-shared/src/backend/ReactSymbols'
+	// The Symbol used to tag the ReactElement-like types. If there is no native Symbol
+	// nor polyfill, then a plain number is used for performance.
+	var REACT_ELEMENT_TYPE = 0xeac7;
+	var REACT_PORTAL_TYPE = 0xeaca;
+	var REACT_FRAGMENT_TYPE = 0xeacb;
+	var REACT_STRICT_MODE_TYPE = 0xeacc;
+	var REACT_PROFILER_TYPE = 0xead2;
+	var REACT_PROVIDER_TYPE = 0xeacd;
+	var REACT_CONTEXT_TYPE = 0xeace;
+	var REACT_FORWARD_REF_TYPE = 0xead0;
+	var REACT_SUSPENSE_TYPE = 0xead1;
+	var REACT_SUSPENSE_LIST_TYPE = 0xead8;
+	var REACT_MEMO_TYPE = 0xead3;
+	var REACT_LAZY_TYPE = 0xead4;
+	var REACT_BLOCK_TYPE = 0xead9;
+	var REACT_SERVER_BLOCK_TYPE = 0xeada;
+	var REACT_FUNDAMENTAL_TYPE = 0xead5;
+	var REACT_DEBUG_TRACING_MODE_TYPE = 0xeae1;
+	var REACT_LEGACY_HIDDEN_TYPE = 0xeae3;
+
+	if (typeof Symbol === 'function' && Symbol.for) {
+	  var symbolFor = Symbol.for;
+	  REACT_ELEMENT_TYPE = symbolFor('react.element');
+	  REACT_PORTAL_TYPE = symbolFor('react.portal');
+	  REACT_FRAGMENT_TYPE = symbolFor('react.fragment');
+	  REACT_STRICT_MODE_TYPE = symbolFor('react.strict_mode');
+	  REACT_PROFILER_TYPE = symbolFor('react.profiler');
+	  REACT_PROVIDER_TYPE = symbolFor('react.provider');
+	  REACT_CONTEXT_TYPE = symbolFor('react.context');
+	  REACT_FORWARD_REF_TYPE = symbolFor('react.forward_ref');
+	  REACT_SUSPENSE_TYPE = symbolFor('react.suspense');
+	  REACT_SUSPENSE_LIST_TYPE = symbolFor('react.suspense_list');
+	  REACT_MEMO_TYPE = symbolFor('react.memo');
+	  REACT_LAZY_TYPE = symbolFor('react.lazy');
+	  REACT_BLOCK_TYPE = symbolFor('react.block');
+	  REACT_SERVER_BLOCK_TYPE = symbolFor('react.server.block');
+	  REACT_FUNDAMENTAL_TYPE = symbolFor('react.fundamental');
+	  symbolFor('react.scope');
+	  symbolFor('react.opaque.id');
+	  REACT_DEBUG_TRACING_MODE_TYPE = symbolFor('react.debug_trace_mode');
+	  symbolFor('react.offscreen');
+	  REACT_LEGACY_HIDDEN_TYPE = symbolFor('react.legacy_hidden');
+	}
+
+	// Filter certain DOM attributes (e.g. src, href) if their values are empty strings.
+
+	var enableScopeAPI = false; // Experimental Create Event Handle API.
+
+	function isValidElementType(type) {
+	  if (typeof type === 'string' || typeof type === 'function') {
+	    return true;
+	  } // Note: typeof might be other than 'symbol' or 'number' (e.g. if it's a polyfill).
+
+
+	  if (type === REACT_FRAGMENT_TYPE || type === REACT_PROFILER_TYPE || type === REACT_DEBUG_TRACING_MODE_TYPE || type === REACT_STRICT_MODE_TYPE || type === REACT_SUSPENSE_TYPE || type === REACT_SUSPENSE_LIST_TYPE || type === REACT_LEGACY_HIDDEN_TYPE || enableScopeAPI ) {
+	    return true;
+	  }
+
+	  if (typeof type === 'object' && type !== null) {
+	    if (type.$$typeof === REACT_LAZY_TYPE || type.$$typeof === REACT_MEMO_TYPE || type.$$typeof === REACT_PROVIDER_TYPE || type.$$typeof === REACT_CONTEXT_TYPE || type.$$typeof === REACT_FORWARD_REF_TYPE || type.$$typeof === REACT_FUNDAMENTAL_TYPE || type.$$typeof === REACT_BLOCK_TYPE || type[0] === REACT_SERVER_BLOCK_TYPE) {
+	      return true;
+	    }
+	  }
+
+	  return false;
+	}
+
+	function typeOf(object) {
+	  if (typeof object === 'object' && object !== null) {
+	    var $$typeof = object.$$typeof;
+
+	    switch ($$typeof) {
+	      case REACT_ELEMENT_TYPE:
+	        var type = object.type;
+
+	        switch (type) {
+	          case REACT_FRAGMENT_TYPE:
+	          case REACT_PROFILER_TYPE:
+	          case REACT_STRICT_MODE_TYPE:
+	          case REACT_SUSPENSE_TYPE:
+	          case REACT_SUSPENSE_LIST_TYPE:
+	            return type;
+
+	          default:
+	            var $$typeofType = type && type.$$typeof;
+
+	            switch ($$typeofType) {
+	              case REACT_CONTEXT_TYPE:
+	              case REACT_FORWARD_REF_TYPE:
+	              case REACT_LAZY_TYPE:
+	              case REACT_MEMO_TYPE:
+	              case REACT_PROVIDER_TYPE:
+	                return $$typeofType;
+
+	              default:
+	                return $$typeof;
+	            }
+
+	        }
+
+	      case REACT_PORTAL_TYPE:
+	        return $$typeof;
+	    }
+	  }
+
+	  return undefined;
+	}
+	var ContextConsumer = REACT_CONTEXT_TYPE;
+	var ContextProvider = REACT_PROVIDER_TYPE;
+	var Element = REACT_ELEMENT_TYPE;
+	var ForwardRef = REACT_FORWARD_REF_TYPE;
+	var Fragment = REACT_FRAGMENT_TYPE;
+	var Lazy = REACT_LAZY_TYPE;
+	var Memo = REACT_MEMO_TYPE;
+	var Portal = REACT_PORTAL_TYPE;
+	var Profiler = REACT_PROFILER_TYPE;
+	var StrictMode = REACT_STRICT_MODE_TYPE;
+	var Suspense = REACT_SUSPENSE_TYPE;
+	var hasWarnedAboutDeprecatedIsAsyncMode = false;
+	var hasWarnedAboutDeprecatedIsConcurrentMode = false; // AsyncMode should be deprecated
+
+	function isAsyncMode(object) {
+	  {
+	    if (!hasWarnedAboutDeprecatedIsAsyncMode) {
+	      hasWarnedAboutDeprecatedIsAsyncMode = true; // Using console['warn'] to evade Babel and ESLint
+
+	      console['warn']('The ReactIs.isAsyncMode() alias has been deprecated, ' + 'and will be removed in React 18+.');
+	    }
+	  }
+
+	  return false;
+	}
+	function isConcurrentMode(object) {
+	  {
+	    if (!hasWarnedAboutDeprecatedIsConcurrentMode) {
+	      hasWarnedAboutDeprecatedIsConcurrentMode = true; // Using console['warn'] to evade Babel and ESLint
+
+	      console['warn']('The ReactIs.isConcurrentMode() alias has been deprecated, ' + 'and will be removed in React 18+.');
+	    }
+	  }
+
+	  return false;
+	}
+	function isContextConsumer(object) {
+	  return typeOf(object) === REACT_CONTEXT_TYPE;
+	}
+	function isContextProvider(object) {
+	  return typeOf(object) === REACT_PROVIDER_TYPE;
+	}
+	function isElement(object) {
+	  return typeof object === 'object' && object !== null && object.$$typeof === REACT_ELEMENT_TYPE;
+	}
+	function isForwardRef(object) {
+	  return typeOf(object) === REACT_FORWARD_REF_TYPE;
+	}
+	function isFragment(object) {
+	  return typeOf(object) === REACT_FRAGMENT_TYPE;
+	}
+	function isLazy(object) {
+	  return typeOf(object) === REACT_LAZY_TYPE;
+	}
+	function isMemo(object) {
+	  return typeOf(object) === REACT_MEMO_TYPE;
+	}
+	function isPortal(object) {
+	  return typeOf(object) === REACT_PORTAL_TYPE;
+	}
+	function isProfiler(object) {
+	  return typeOf(object) === REACT_PROFILER_TYPE;
+	}
+	function isStrictMode(object) {
+	  return typeOf(object) === REACT_STRICT_MODE_TYPE;
+	}
+	function isSuspense(object) {
+	  return typeOf(object) === REACT_SUSPENSE_TYPE;
+	}
+
+	reactIs_development$1.ContextConsumer = ContextConsumer;
+	reactIs_development$1.ContextProvider = ContextProvider;
+	reactIs_development$1.Element = Element;
+	reactIs_development$1.ForwardRef = ForwardRef;
+	reactIs_development$1.Fragment = Fragment;
+	reactIs_development$1.Lazy = Lazy;
+	reactIs_development$1.Memo = Memo;
+	reactIs_development$1.Portal = Portal;
+	reactIs_development$1.Profiler = Profiler;
+	reactIs_development$1.StrictMode = StrictMode;
+	reactIs_development$1.Suspense = Suspense;
+	reactIs_development$1.isAsyncMode = isAsyncMode;
+	reactIs_development$1.isConcurrentMode = isConcurrentMode;
+	reactIs_development$1.isContextConsumer = isContextConsumer;
+	reactIs_development$1.isContextProvider = isContextProvider;
+	reactIs_development$1.isElement = isElement;
+	reactIs_development$1.isForwardRef = isForwardRef;
+	reactIs_development$1.isFragment = isFragment;
+	reactIs_development$1.isLazy = isLazy;
+	reactIs_development$1.isMemo = isMemo;
+	reactIs_development$1.isPortal = isPortal;
+	reactIs_development$1.isProfiler = isProfiler;
+	reactIs_development$1.isStrictMode = isStrictMode;
+	reactIs_development$1.isSuspense = isSuspense;
+	reactIs_development$1.isValidElementType = isValidElementType;
+	reactIs_development$1.typeOf = typeOf;
+	  })();
+	}
+	return reactIs_development$1;
 }
 
-// Filter certain DOM attributes (e.g. src, href) if their values are empty strings.
+(function (module) {
 
-var enableScopeAPI = false; // Experimental Create Event Handle API.
-
-function isValidElementType(type) {
-  if (typeof type === 'string' || typeof type === 'function') {
-    return true;
-  } // Note: typeof might be other than 'symbol' or 'number' (e.g. if it's a polyfill).
-
-
-  if (type === REACT_FRAGMENT_TYPE || type === REACT_PROFILER_TYPE || type === REACT_DEBUG_TRACING_MODE_TYPE || type === REACT_STRICT_MODE_TYPE || type === REACT_SUSPENSE_TYPE || type === REACT_SUSPENSE_LIST_TYPE || type === REACT_LEGACY_HIDDEN_TYPE || enableScopeAPI ) {
-    return true;
-  }
-
-  if (typeof type === 'object' && type !== null) {
-    if (type.$$typeof === REACT_LAZY_TYPE || type.$$typeof === REACT_MEMO_TYPE || type.$$typeof === REACT_PROVIDER_TYPE || type.$$typeof === REACT_CONTEXT_TYPE || type.$$typeof === REACT_FORWARD_REF_TYPE || type.$$typeof === REACT_FUNDAMENTAL_TYPE || type.$$typeof === REACT_BLOCK_TYPE || type[0] === REACT_SERVER_BLOCK_TYPE) {
-      return true;
-    }
-  }
-
-  return false;
-}
-
-function typeOf(object) {
-  if (typeof object === 'object' && object !== null) {
-    var $$typeof = object.$$typeof;
-
-    switch ($$typeof) {
-      case REACT_ELEMENT_TYPE:
-        var type = object.type;
-
-        switch (type) {
-          case REACT_FRAGMENT_TYPE:
-          case REACT_PROFILER_TYPE:
-          case REACT_STRICT_MODE_TYPE:
-          case REACT_SUSPENSE_TYPE:
-          case REACT_SUSPENSE_LIST_TYPE:
-            return type;
-
-          default:
-            var $$typeofType = type && type.$$typeof;
-
-            switch ($$typeofType) {
-              case REACT_CONTEXT_TYPE:
-              case REACT_FORWARD_REF_TYPE:
-              case REACT_LAZY_TYPE:
-              case REACT_MEMO_TYPE:
-              case REACT_PROVIDER_TYPE:
-                return $$typeofType;
-
-              default:
-                return $$typeof;
-            }
-
-        }
-
-      case REACT_PORTAL_TYPE:
-        return $$typeof;
-    }
-  }
-
-  return undefined;
-}
-var ContextConsumer = REACT_CONTEXT_TYPE;
-var ContextProvider = REACT_PROVIDER_TYPE;
-var Element = REACT_ELEMENT_TYPE;
-var ForwardRef = REACT_FORWARD_REF_TYPE;
-var Fragment = REACT_FRAGMENT_TYPE;
-var Lazy = REACT_LAZY_TYPE;
-var Memo = REACT_MEMO_TYPE;
-var Portal = REACT_PORTAL_TYPE;
-var Profiler = REACT_PROFILER_TYPE;
-var StrictMode = REACT_STRICT_MODE_TYPE;
-var Suspense = REACT_SUSPENSE_TYPE;
-var hasWarnedAboutDeprecatedIsAsyncMode = false;
-var hasWarnedAboutDeprecatedIsConcurrentMode = false; // AsyncMode should be deprecated
-
-function isAsyncMode(object) {
-  {
-    if (!hasWarnedAboutDeprecatedIsAsyncMode) {
-      hasWarnedAboutDeprecatedIsAsyncMode = true; // Using console['warn'] to evade Babel and ESLint
-
-      console['warn']('The ReactIs.isAsyncMode() alias has been deprecated, ' + 'and will be removed in React 18+.');
-    }
-  }
-
-  return false;
-}
-function isConcurrentMode(object) {
-  {
-    if (!hasWarnedAboutDeprecatedIsConcurrentMode) {
-      hasWarnedAboutDeprecatedIsConcurrentMode = true; // Using console['warn'] to evade Babel and ESLint
-
-      console['warn']('The ReactIs.isConcurrentMode() alias has been deprecated, ' + 'and will be removed in React 18+.');
-    }
-  }
-
-  return false;
-}
-function isContextConsumer(object) {
-  return typeOf(object) === REACT_CONTEXT_TYPE;
-}
-function isContextProvider(object) {
-  return typeOf(object) === REACT_PROVIDER_TYPE;
-}
-function isElement(object) {
-  return typeof object === 'object' && object !== null && object.$$typeof === REACT_ELEMENT_TYPE;
-}
-function isForwardRef(object) {
-  return typeOf(object) === REACT_FORWARD_REF_TYPE;
-}
-function isFragment(object) {
-  return typeOf(object) === REACT_FRAGMENT_TYPE;
-}
-function isLazy(object) {
-  return typeOf(object) === REACT_LAZY_TYPE;
-}
-function isMemo(object) {
-  return typeOf(object) === REACT_MEMO_TYPE;
-}
-function isPortal(object) {
-  return typeOf(object) === REACT_PORTAL_TYPE;
-}
-function isProfiler(object) {
-  return typeOf(object) === REACT_PROFILER_TYPE;
-}
-function isStrictMode(object) {
-  return typeOf(object) === REACT_STRICT_MODE_TYPE;
-}
-function isSuspense(object) {
-  return typeOf(object) === REACT_SUSPENSE_TYPE;
-}
-
-reactIs_development$1.ContextConsumer = ContextConsumer;
-reactIs_development$1.ContextProvider = ContextProvider;
-reactIs_development$1.Element = Element;
-reactIs_development$1.ForwardRef = ForwardRef;
-reactIs_development$1.Fragment = Fragment;
-reactIs_development$1.Lazy = Lazy;
-reactIs_development$1.Memo = Memo;
-reactIs_development$1.Portal = Portal;
-reactIs_development$1.Profiler = Profiler;
-reactIs_development$1.StrictMode = StrictMode;
-reactIs_development$1.Suspense = Suspense;
-reactIs_development$1.isAsyncMode = isAsyncMode;
-reactIs_development$1.isConcurrentMode = isConcurrentMode;
-reactIs_development$1.isContextConsumer = isContextConsumer;
-reactIs_development$1.isContextProvider = isContextProvider;
-reactIs_development$1.isElement = isElement;
-reactIs_development$1.isForwardRef = isForwardRef;
-reactIs_development$1.isFragment = isFragment;
-reactIs_development$1.isLazy = isLazy;
-reactIs_development$1.isMemo = isMemo;
-reactIs_development$1.isPortal = isPortal;
-reactIs_development$1.isProfiler = isProfiler;
-reactIs_development$1.isStrictMode = isStrictMode;
-reactIs_development$1.isSuspense = isSuspense;
-reactIs_development$1.isValidElementType = isValidElementType;
-reactIs_development$1.typeOf = typeOf;
-  })();
-}
-
-if (process.env.NODE_ENV === 'production') {
-  reactIs$2.exports = reactIs_production_min$1;
-} else {
-  reactIs$2.exports = reactIs_development$1;
-}
+	if (process.env.NODE_ENV === 'production') {
+	  module.exports = requireReactIs_production_min$1();
+	} else {
+	  module.exports = requireReactIs_development$1();
+	}
+} (reactIs$2));
 
 function stylis_min (W) {
   function M(d, c, e, h, a) {
@@ -2332,12 +2406,20 @@ var reactIs_production_min = {};
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-var b$1="function"===typeof Symbol&&Symbol.for,c=b$1?Symbol.for("react.element"):60103,d=b$1?Symbol.for("react.portal"):60106,e=b$1?Symbol.for("react.fragment"):60107,f=b$1?Symbol.for("react.strict_mode"):60108,g$1=b$1?Symbol.for("react.profiler"):60114,h=b$1?Symbol.for("react.provider"):60109,k$1=b$1?Symbol.for("react.context"):60110,l=b$1?Symbol.for("react.async_mode"):60111,m=b$1?Symbol.for("react.concurrent_mode"):60111,n=b$1?Symbol.for("react.forward_ref"):60112,p=b$1?Symbol.for("react.suspense"):60113,q$1=b$1?
-Symbol.for("react.suspense_list"):60120,r=b$1?Symbol.for("react.memo"):60115,t=b$1?Symbol.for("react.lazy"):60116,v$1=b$1?Symbol.for("react.block"):60121,w$1=b$1?Symbol.for("react.fundamental"):60117,x$1=b$1?Symbol.for("react.responder"):60118,y=b$1?Symbol.for("react.scope"):60119;
-function z$1(a){if("object"===typeof a&&null!==a){var u=a.$$typeof;switch(u){case c:switch(a=a.type,a){case l:case m:case e:case g$1:case f:case p:return a;default:switch(a=a&&a.$$typeof,a){case k$1:case n:case t:case r:case h:return a;default:return u}}case d:return u}}}function A$1(a){return z$1(a)===m}reactIs_production_min.AsyncMode=l;reactIs_production_min.ConcurrentMode=m;reactIs_production_min.ContextConsumer=k$1;reactIs_production_min.ContextProvider=h;reactIs_production_min.Element=c;reactIs_production_min.ForwardRef=n;reactIs_production_min.Fragment=e;reactIs_production_min.Lazy=t;reactIs_production_min.Memo=r;reactIs_production_min.Portal=d;
-reactIs_production_min.Profiler=g$1;reactIs_production_min.StrictMode=f;reactIs_production_min.Suspense=p;reactIs_production_min.isAsyncMode=function(a){return A$1(a)||z$1(a)===l};reactIs_production_min.isConcurrentMode=A$1;reactIs_production_min.isContextConsumer=function(a){return z$1(a)===k$1};reactIs_production_min.isContextProvider=function(a){return z$1(a)===h};reactIs_production_min.isElement=function(a){return "object"===typeof a&&null!==a&&a.$$typeof===c};reactIs_production_min.isForwardRef=function(a){return z$1(a)===n};reactIs_production_min.isFragment=function(a){return z$1(a)===e};reactIs_production_min.isLazy=function(a){return z$1(a)===t};
-reactIs_production_min.isMemo=function(a){return z$1(a)===r};reactIs_production_min.isPortal=function(a){return z$1(a)===d};reactIs_production_min.isProfiler=function(a){return z$1(a)===g$1};reactIs_production_min.isStrictMode=function(a){return z$1(a)===f};reactIs_production_min.isSuspense=function(a){return z$1(a)===p};
-reactIs_production_min.isValidElementType=function(a){return "string"===typeof a||"function"===typeof a||a===e||a===m||a===g$1||a===f||a===p||a===q$1||"object"===typeof a&&null!==a&&(a.$$typeof===t||a.$$typeof===r||a.$$typeof===h||a.$$typeof===k$1||a.$$typeof===n||a.$$typeof===w$1||a.$$typeof===x$1||a.$$typeof===y||a.$$typeof===v$1)};reactIs_production_min.typeOf=z$1;
+
+var hasRequiredReactIs_production_min;
+
+function requireReactIs_production_min () {
+	if (hasRequiredReactIs_production_min) return reactIs_production_min;
+	hasRequiredReactIs_production_min = 1;
+var b="function"===typeof Symbol&&Symbol.for,c=b?Symbol.for("react.element"):60103,d=b?Symbol.for("react.portal"):60106,e=b?Symbol.for("react.fragment"):60107,f=b?Symbol.for("react.strict_mode"):60108,g=b?Symbol.for("react.profiler"):60114,h=b?Symbol.for("react.provider"):60109,k=b?Symbol.for("react.context"):60110,l=b?Symbol.for("react.async_mode"):60111,m=b?Symbol.for("react.concurrent_mode"):60111,n=b?Symbol.for("react.forward_ref"):60112,p=b?Symbol.for("react.suspense"):60113,q=b?
+	Symbol.for("react.suspense_list"):60120,r=b?Symbol.for("react.memo"):60115,t=b?Symbol.for("react.lazy"):60116,v=b?Symbol.for("react.block"):60121,w=b?Symbol.for("react.fundamental"):60117,x=b?Symbol.for("react.responder"):60118,y=b?Symbol.for("react.scope"):60119;
+	function z(a){if("object"===typeof a&&null!==a){var u=a.$$typeof;switch(u){case c:switch(a=a.type,a){case l:case m:case e:case g:case f:case p:return a;default:switch(a=a&&a.$$typeof,a){case k:case n:case t:case r:case h:return a;default:return u}}case d:return u}}}function A(a){return z(a)===m}reactIs_production_min.AsyncMode=l;reactIs_production_min.ConcurrentMode=m;reactIs_production_min.ContextConsumer=k;reactIs_production_min.ContextProvider=h;reactIs_production_min.Element=c;reactIs_production_min.ForwardRef=n;reactIs_production_min.Fragment=e;reactIs_production_min.Lazy=t;reactIs_production_min.Memo=r;reactIs_production_min.Portal=d;
+	reactIs_production_min.Profiler=g;reactIs_production_min.StrictMode=f;reactIs_production_min.Suspense=p;reactIs_production_min.isAsyncMode=function(a){return A(a)||z(a)===l};reactIs_production_min.isConcurrentMode=A;reactIs_production_min.isContextConsumer=function(a){return z(a)===k};reactIs_production_min.isContextProvider=function(a){return z(a)===h};reactIs_production_min.isElement=function(a){return "object"===typeof a&&null!==a&&a.$$typeof===c};reactIs_production_min.isForwardRef=function(a){return z(a)===n};reactIs_production_min.isFragment=function(a){return z(a)===e};reactIs_production_min.isLazy=function(a){return z(a)===t};
+	reactIs_production_min.isMemo=function(a){return z(a)===r};reactIs_production_min.isPortal=function(a){return z(a)===d};reactIs_production_min.isProfiler=function(a){return z(a)===g};reactIs_production_min.isStrictMode=function(a){return z(a)===f};reactIs_production_min.isSuspense=function(a){return z(a)===p};
+	reactIs_production_min.isValidElementType=function(a){return "string"===typeof a||"function"===typeof a||a===e||a===m||a===g||a===f||a===p||a===q||"object"===typeof a&&null!==a&&(a.$$typeof===t||a.$$typeof===r||a.$$typeof===h||a.$$typeof===k||a.$$typeof===n||a.$$typeof===w||a.$$typeof===x||a.$$typeof===y||a.$$typeof===v)};reactIs_production_min.typeOf=z;
+	return reactIs_production_min;
+}
 
 var reactIs_development = {};
 
@@ -2350,181 +2432,192 @@ var reactIs_development = {};
  * LICENSE file in the root directory of this source tree.
  */
 
+var hasRequiredReactIs_development;
+
+function requireReactIs_development () {
+	if (hasRequiredReactIs_development) return reactIs_development;
+	hasRequiredReactIs_development = 1;
 
 
-if (process.env.NODE_ENV !== "production") {
-  (function() {
 
-// The Symbol used to tag the ReactElement-like types. If there is no native Symbol
-// nor polyfill, then a plain number is used for performance.
-var hasSymbol = typeof Symbol === 'function' && Symbol.for;
-var REACT_ELEMENT_TYPE = hasSymbol ? Symbol.for('react.element') : 0xeac7;
-var REACT_PORTAL_TYPE = hasSymbol ? Symbol.for('react.portal') : 0xeaca;
-var REACT_FRAGMENT_TYPE = hasSymbol ? Symbol.for('react.fragment') : 0xeacb;
-var REACT_STRICT_MODE_TYPE = hasSymbol ? Symbol.for('react.strict_mode') : 0xeacc;
-var REACT_PROFILER_TYPE = hasSymbol ? Symbol.for('react.profiler') : 0xead2;
-var REACT_PROVIDER_TYPE = hasSymbol ? Symbol.for('react.provider') : 0xeacd;
-var REACT_CONTEXT_TYPE = hasSymbol ? Symbol.for('react.context') : 0xeace; // TODO: We don't use AsyncMode or ConcurrentMode anymore. They were temporary
-// (unstable) APIs that have been removed. Can we remove the symbols?
+	if (process.env.NODE_ENV !== "production") {
+	  (function() {
 
-var REACT_ASYNC_MODE_TYPE = hasSymbol ? Symbol.for('react.async_mode') : 0xeacf;
-var REACT_CONCURRENT_MODE_TYPE = hasSymbol ? Symbol.for('react.concurrent_mode') : 0xeacf;
-var REACT_FORWARD_REF_TYPE = hasSymbol ? Symbol.for('react.forward_ref') : 0xead0;
-var REACT_SUSPENSE_TYPE = hasSymbol ? Symbol.for('react.suspense') : 0xead1;
-var REACT_SUSPENSE_LIST_TYPE = hasSymbol ? Symbol.for('react.suspense_list') : 0xead8;
-var REACT_MEMO_TYPE = hasSymbol ? Symbol.for('react.memo') : 0xead3;
-var REACT_LAZY_TYPE = hasSymbol ? Symbol.for('react.lazy') : 0xead4;
-var REACT_BLOCK_TYPE = hasSymbol ? Symbol.for('react.block') : 0xead9;
-var REACT_FUNDAMENTAL_TYPE = hasSymbol ? Symbol.for('react.fundamental') : 0xead5;
-var REACT_RESPONDER_TYPE = hasSymbol ? Symbol.for('react.responder') : 0xead6;
-var REACT_SCOPE_TYPE = hasSymbol ? Symbol.for('react.scope') : 0xead7;
+	// The Symbol used to tag the ReactElement-like types. If there is no native Symbol
+	// nor polyfill, then a plain number is used for performance.
+	var hasSymbol = typeof Symbol === 'function' && Symbol.for;
+	var REACT_ELEMENT_TYPE = hasSymbol ? Symbol.for('react.element') : 0xeac7;
+	var REACT_PORTAL_TYPE = hasSymbol ? Symbol.for('react.portal') : 0xeaca;
+	var REACT_FRAGMENT_TYPE = hasSymbol ? Symbol.for('react.fragment') : 0xeacb;
+	var REACT_STRICT_MODE_TYPE = hasSymbol ? Symbol.for('react.strict_mode') : 0xeacc;
+	var REACT_PROFILER_TYPE = hasSymbol ? Symbol.for('react.profiler') : 0xead2;
+	var REACT_PROVIDER_TYPE = hasSymbol ? Symbol.for('react.provider') : 0xeacd;
+	var REACT_CONTEXT_TYPE = hasSymbol ? Symbol.for('react.context') : 0xeace; // TODO: We don't use AsyncMode or ConcurrentMode anymore. They were temporary
+	// (unstable) APIs that have been removed. Can we remove the symbols?
 
-function isValidElementType(type) {
-  return typeof type === 'string' || typeof type === 'function' || // Note: its typeof might be other than 'symbol' or 'number' if it's a polyfill.
-  type === REACT_FRAGMENT_TYPE || type === REACT_CONCURRENT_MODE_TYPE || type === REACT_PROFILER_TYPE || type === REACT_STRICT_MODE_TYPE || type === REACT_SUSPENSE_TYPE || type === REACT_SUSPENSE_LIST_TYPE || typeof type === 'object' && type !== null && (type.$$typeof === REACT_LAZY_TYPE || type.$$typeof === REACT_MEMO_TYPE || type.$$typeof === REACT_PROVIDER_TYPE || type.$$typeof === REACT_CONTEXT_TYPE || type.$$typeof === REACT_FORWARD_REF_TYPE || type.$$typeof === REACT_FUNDAMENTAL_TYPE || type.$$typeof === REACT_RESPONDER_TYPE || type.$$typeof === REACT_SCOPE_TYPE || type.$$typeof === REACT_BLOCK_TYPE);
+	var REACT_ASYNC_MODE_TYPE = hasSymbol ? Symbol.for('react.async_mode') : 0xeacf;
+	var REACT_CONCURRENT_MODE_TYPE = hasSymbol ? Symbol.for('react.concurrent_mode') : 0xeacf;
+	var REACT_FORWARD_REF_TYPE = hasSymbol ? Symbol.for('react.forward_ref') : 0xead0;
+	var REACT_SUSPENSE_TYPE = hasSymbol ? Symbol.for('react.suspense') : 0xead1;
+	var REACT_SUSPENSE_LIST_TYPE = hasSymbol ? Symbol.for('react.suspense_list') : 0xead8;
+	var REACT_MEMO_TYPE = hasSymbol ? Symbol.for('react.memo') : 0xead3;
+	var REACT_LAZY_TYPE = hasSymbol ? Symbol.for('react.lazy') : 0xead4;
+	var REACT_BLOCK_TYPE = hasSymbol ? Symbol.for('react.block') : 0xead9;
+	var REACT_FUNDAMENTAL_TYPE = hasSymbol ? Symbol.for('react.fundamental') : 0xead5;
+	var REACT_RESPONDER_TYPE = hasSymbol ? Symbol.for('react.responder') : 0xead6;
+	var REACT_SCOPE_TYPE = hasSymbol ? Symbol.for('react.scope') : 0xead7;
+
+	function isValidElementType(type) {
+	  return typeof type === 'string' || typeof type === 'function' || // Note: its typeof might be other than 'symbol' or 'number' if it's a polyfill.
+	  type === REACT_FRAGMENT_TYPE || type === REACT_CONCURRENT_MODE_TYPE || type === REACT_PROFILER_TYPE || type === REACT_STRICT_MODE_TYPE || type === REACT_SUSPENSE_TYPE || type === REACT_SUSPENSE_LIST_TYPE || typeof type === 'object' && type !== null && (type.$$typeof === REACT_LAZY_TYPE || type.$$typeof === REACT_MEMO_TYPE || type.$$typeof === REACT_PROVIDER_TYPE || type.$$typeof === REACT_CONTEXT_TYPE || type.$$typeof === REACT_FORWARD_REF_TYPE || type.$$typeof === REACT_FUNDAMENTAL_TYPE || type.$$typeof === REACT_RESPONDER_TYPE || type.$$typeof === REACT_SCOPE_TYPE || type.$$typeof === REACT_BLOCK_TYPE);
+	}
+
+	function typeOf(object) {
+	  if (typeof object === 'object' && object !== null) {
+	    var $$typeof = object.$$typeof;
+
+	    switch ($$typeof) {
+	      case REACT_ELEMENT_TYPE:
+	        var type = object.type;
+
+	        switch (type) {
+	          case REACT_ASYNC_MODE_TYPE:
+	          case REACT_CONCURRENT_MODE_TYPE:
+	          case REACT_FRAGMENT_TYPE:
+	          case REACT_PROFILER_TYPE:
+	          case REACT_STRICT_MODE_TYPE:
+	          case REACT_SUSPENSE_TYPE:
+	            return type;
+
+	          default:
+	            var $$typeofType = type && type.$$typeof;
+
+	            switch ($$typeofType) {
+	              case REACT_CONTEXT_TYPE:
+	              case REACT_FORWARD_REF_TYPE:
+	              case REACT_LAZY_TYPE:
+	              case REACT_MEMO_TYPE:
+	              case REACT_PROVIDER_TYPE:
+	                return $$typeofType;
+
+	              default:
+	                return $$typeof;
+	            }
+
+	        }
+
+	      case REACT_PORTAL_TYPE:
+	        return $$typeof;
+	    }
+	  }
+
+	  return undefined;
+	} // AsyncMode is deprecated along with isAsyncMode
+
+	var AsyncMode = REACT_ASYNC_MODE_TYPE;
+	var ConcurrentMode = REACT_CONCURRENT_MODE_TYPE;
+	var ContextConsumer = REACT_CONTEXT_TYPE;
+	var ContextProvider = REACT_PROVIDER_TYPE;
+	var Element = REACT_ELEMENT_TYPE;
+	var ForwardRef = REACT_FORWARD_REF_TYPE;
+	var Fragment = REACT_FRAGMENT_TYPE;
+	var Lazy = REACT_LAZY_TYPE;
+	var Memo = REACT_MEMO_TYPE;
+	var Portal = REACT_PORTAL_TYPE;
+	var Profiler = REACT_PROFILER_TYPE;
+	var StrictMode = REACT_STRICT_MODE_TYPE;
+	var Suspense = REACT_SUSPENSE_TYPE;
+	var hasWarnedAboutDeprecatedIsAsyncMode = false; // AsyncMode should be deprecated
+
+	function isAsyncMode(object) {
+	  {
+	    if (!hasWarnedAboutDeprecatedIsAsyncMode) {
+	      hasWarnedAboutDeprecatedIsAsyncMode = true; // Using console['warn'] to evade Babel and ESLint
+
+	      console['warn']('The ReactIs.isAsyncMode() alias has been deprecated, ' + 'and will be removed in React 17+. Update your code to use ' + 'ReactIs.isConcurrentMode() instead. It has the exact same API.');
+	    }
+	  }
+
+	  return isConcurrentMode(object) || typeOf(object) === REACT_ASYNC_MODE_TYPE;
+	}
+	function isConcurrentMode(object) {
+	  return typeOf(object) === REACT_CONCURRENT_MODE_TYPE;
+	}
+	function isContextConsumer(object) {
+	  return typeOf(object) === REACT_CONTEXT_TYPE;
+	}
+	function isContextProvider(object) {
+	  return typeOf(object) === REACT_PROVIDER_TYPE;
+	}
+	function isElement(object) {
+	  return typeof object === 'object' && object !== null && object.$$typeof === REACT_ELEMENT_TYPE;
+	}
+	function isForwardRef(object) {
+	  return typeOf(object) === REACT_FORWARD_REF_TYPE;
+	}
+	function isFragment(object) {
+	  return typeOf(object) === REACT_FRAGMENT_TYPE;
+	}
+	function isLazy(object) {
+	  return typeOf(object) === REACT_LAZY_TYPE;
+	}
+	function isMemo(object) {
+	  return typeOf(object) === REACT_MEMO_TYPE;
+	}
+	function isPortal(object) {
+	  return typeOf(object) === REACT_PORTAL_TYPE;
+	}
+	function isProfiler(object) {
+	  return typeOf(object) === REACT_PROFILER_TYPE;
+	}
+	function isStrictMode(object) {
+	  return typeOf(object) === REACT_STRICT_MODE_TYPE;
+	}
+	function isSuspense(object) {
+	  return typeOf(object) === REACT_SUSPENSE_TYPE;
+	}
+
+	reactIs_development.AsyncMode = AsyncMode;
+	reactIs_development.ConcurrentMode = ConcurrentMode;
+	reactIs_development.ContextConsumer = ContextConsumer;
+	reactIs_development.ContextProvider = ContextProvider;
+	reactIs_development.Element = Element;
+	reactIs_development.ForwardRef = ForwardRef;
+	reactIs_development.Fragment = Fragment;
+	reactIs_development.Lazy = Lazy;
+	reactIs_development.Memo = Memo;
+	reactIs_development.Portal = Portal;
+	reactIs_development.Profiler = Profiler;
+	reactIs_development.StrictMode = StrictMode;
+	reactIs_development.Suspense = Suspense;
+	reactIs_development.isAsyncMode = isAsyncMode;
+	reactIs_development.isConcurrentMode = isConcurrentMode;
+	reactIs_development.isContextConsumer = isContextConsumer;
+	reactIs_development.isContextProvider = isContextProvider;
+	reactIs_development.isElement = isElement;
+	reactIs_development.isForwardRef = isForwardRef;
+	reactIs_development.isFragment = isFragment;
+	reactIs_development.isLazy = isLazy;
+	reactIs_development.isMemo = isMemo;
+	reactIs_development.isPortal = isPortal;
+	reactIs_development.isProfiler = isProfiler;
+	reactIs_development.isStrictMode = isStrictMode;
+	reactIs_development.isSuspense = isSuspense;
+	reactIs_development.isValidElementType = isValidElementType;
+	reactIs_development.typeOf = typeOf;
+	  })();
+	}
+	return reactIs_development;
 }
 
-function typeOf(object) {
-  if (typeof object === 'object' && object !== null) {
-    var $$typeof = object.$$typeof;
+(function (module) {
 
-    switch ($$typeof) {
-      case REACT_ELEMENT_TYPE:
-        var type = object.type;
-
-        switch (type) {
-          case REACT_ASYNC_MODE_TYPE:
-          case REACT_CONCURRENT_MODE_TYPE:
-          case REACT_FRAGMENT_TYPE:
-          case REACT_PROFILER_TYPE:
-          case REACT_STRICT_MODE_TYPE:
-          case REACT_SUSPENSE_TYPE:
-            return type;
-
-          default:
-            var $$typeofType = type && type.$$typeof;
-
-            switch ($$typeofType) {
-              case REACT_CONTEXT_TYPE:
-              case REACT_FORWARD_REF_TYPE:
-              case REACT_LAZY_TYPE:
-              case REACT_MEMO_TYPE:
-              case REACT_PROVIDER_TYPE:
-                return $$typeofType;
-
-              default:
-                return $$typeof;
-            }
-
-        }
-
-      case REACT_PORTAL_TYPE:
-        return $$typeof;
-    }
-  }
-
-  return undefined;
-} // AsyncMode is deprecated along with isAsyncMode
-
-var AsyncMode = REACT_ASYNC_MODE_TYPE;
-var ConcurrentMode = REACT_CONCURRENT_MODE_TYPE;
-var ContextConsumer = REACT_CONTEXT_TYPE;
-var ContextProvider = REACT_PROVIDER_TYPE;
-var Element = REACT_ELEMENT_TYPE;
-var ForwardRef = REACT_FORWARD_REF_TYPE;
-var Fragment = REACT_FRAGMENT_TYPE;
-var Lazy = REACT_LAZY_TYPE;
-var Memo = REACT_MEMO_TYPE;
-var Portal = REACT_PORTAL_TYPE;
-var Profiler = REACT_PROFILER_TYPE;
-var StrictMode = REACT_STRICT_MODE_TYPE;
-var Suspense = REACT_SUSPENSE_TYPE;
-var hasWarnedAboutDeprecatedIsAsyncMode = false; // AsyncMode should be deprecated
-
-function isAsyncMode(object) {
-  {
-    if (!hasWarnedAboutDeprecatedIsAsyncMode) {
-      hasWarnedAboutDeprecatedIsAsyncMode = true; // Using console['warn'] to evade Babel and ESLint
-
-      console['warn']('The ReactIs.isAsyncMode() alias has been deprecated, ' + 'and will be removed in React 17+. Update your code to use ' + 'ReactIs.isConcurrentMode() instead. It has the exact same API.');
-    }
-  }
-
-  return isConcurrentMode(object) || typeOf(object) === REACT_ASYNC_MODE_TYPE;
-}
-function isConcurrentMode(object) {
-  return typeOf(object) === REACT_CONCURRENT_MODE_TYPE;
-}
-function isContextConsumer(object) {
-  return typeOf(object) === REACT_CONTEXT_TYPE;
-}
-function isContextProvider(object) {
-  return typeOf(object) === REACT_PROVIDER_TYPE;
-}
-function isElement(object) {
-  return typeof object === 'object' && object !== null && object.$$typeof === REACT_ELEMENT_TYPE;
-}
-function isForwardRef(object) {
-  return typeOf(object) === REACT_FORWARD_REF_TYPE;
-}
-function isFragment(object) {
-  return typeOf(object) === REACT_FRAGMENT_TYPE;
-}
-function isLazy(object) {
-  return typeOf(object) === REACT_LAZY_TYPE;
-}
-function isMemo(object) {
-  return typeOf(object) === REACT_MEMO_TYPE;
-}
-function isPortal(object) {
-  return typeOf(object) === REACT_PORTAL_TYPE;
-}
-function isProfiler(object) {
-  return typeOf(object) === REACT_PROFILER_TYPE;
-}
-function isStrictMode(object) {
-  return typeOf(object) === REACT_STRICT_MODE_TYPE;
-}
-function isSuspense(object) {
-  return typeOf(object) === REACT_SUSPENSE_TYPE;
-}
-
-reactIs_development.AsyncMode = AsyncMode;
-reactIs_development.ConcurrentMode = ConcurrentMode;
-reactIs_development.ContextConsumer = ContextConsumer;
-reactIs_development.ContextProvider = ContextProvider;
-reactIs_development.Element = Element;
-reactIs_development.ForwardRef = ForwardRef;
-reactIs_development.Fragment = Fragment;
-reactIs_development.Lazy = Lazy;
-reactIs_development.Memo = Memo;
-reactIs_development.Portal = Portal;
-reactIs_development.Profiler = Profiler;
-reactIs_development.StrictMode = StrictMode;
-reactIs_development.Suspense = Suspense;
-reactIs_development.isAsyncMode = isAsyncMode;
-reactIs_development.isConcurrentMode = isConcurrentMode;
-reactIs_development.isContextConsumer = isContextConsumer;
-reactIs_development.isContextProvider = isContextProvider;
-reactIs_development.isElement = isElement;
-reactIs_development.isForwardRef = isForwardRef;
-reactIs_development.isFragment = isFragment;
-reactIs_development.isLazy = isLazy;
-reactIs_development.isMemo = isMemo;
-reactIs_development.isPortal = isPortal;
-reactIs_development.isProfiler = isProfiler;
-reactIs_development.isStrictMode = isStrictMode;
-reactIs_development.isSuspense = isSuspense;
-reactIs_development.isValidElementType = isValidElementType;
-reactIs_development.typeOf = typeOf;
-  })();
-}
-
-if (process.env.NODE_ENV === 'production') {
-  reactIs$1.exports = reactIs_production_min;
-} else {
-  reactIs$1.exports = reactIs_development;
-}
+	if (process.env.NODE_ENV === 'production') {
+	  module.exports = requireReactIs_production_min();
+	} else {
+	  module.exports = requireReactIs_development();
+	}
+} (reactIs$1));
 
 var reactIs = reactIs$1.exports;
 
@@ -2628,7 +2721,7 @@ function hoistNonReactStatics(targetComponent, sourceComponent, blacklist) {
 
 var hoistNonReactStatics_cjs = hoistNonReactStatics;
 
-function v(){return (v=Object.assign||function(e){for(var t=1;t<arguments.length;t++){var n=arguments[t];for(var r in n)Object.prototype.hasOwnProperty.call(n,r)&&(e[r]=n[r]);}return e}).apply(this,arguments)}var g=function(e,t){for(var n=[e[0]],r=0,o=t.length;r<o;r+=1)n.push(t[r],e[r+1]);return n},S=function(t){return null!==t&&"object"==typeof t&&"[object Object]"===(t.toString?t.toString():Object.prototype.toString.call(t))&&!reactIs$2.exports.typeOf(t)},w=Object.freeze([]),E=Object.freeze({});function b(e){return "function"==typeof e}function _(e){return "production"!==process.env.NODE_ENV&&"string"==typeof e&&e||e.displayName||e.name||"Component"}function N(e){return e&&"string"==typeof e.styledComponentId}var A="undefined"!=typeof process&&(process.env.REACT_APP_SC_ATTR||process.env.SC_ATTR)||"data-styled",I="undefined"!=typeof window&&"HTMLElement"in window,P$1=Boolean("boolean"==typeof SC_DISABLE_SPEEDY?SC_DISABLE_SPEEDY:"undefined"!=typeof process&&void 0!==process.env.REACT_APP_SC_DISABLE_SPEEDY&&""!==process.env.REACT_APP_SC_DISABLE_SPEEDY?"false"!==process.env.REACT_APP_SC_DISABLE_SPEEDY&&process.env.REACT_APP_SC_DISABLE_SPEEDY:"undefined"!=typeof process&&void 0!==process.env.SC_DISABLE_SPEEDY&&""!==process.env.SC_DISABLE_SPEEDY?"false"!==process.env.SC_DISABLE_SPEEDY&&process.env.SC_DISABLE_SPEEDY:"production"!==process.env.NODE_ENV),R="production"!==process.env.NODE_ENV?{1:"Cannot create styled-component for component: %s.\n\n",2:"Can't collect styles once you've consumed a `ServerStyleSheet`'s styles! `ServerStyleSheet` is a one off instance for each server-side render cycle.\n\n- Are you trying to reuse it across renders?\n- Are you accidentally calling collectStyles twice?\n\n",3:"Streaming SSR is only supported in a Node.js environment; Please do not try to call this method in the browser.\n\n",4:"The `StyleSheetManager` expects a valid target or sheet prop!\n\n- Does this error occur on the client and is your target falsy?\n- Does this error occur on the server and is the sheet falsy?\n\n",5:"The clone method cannot be used on the client!\n\n- Are you running in a client-like environment on the server?\n- Are you trying to run SSR on the client?\n\n",6:"Trying to insert a new style tag, but the given Node is unmounted!\n\n- Are you using a custom target that isn't mounted?\n- Does your document not have a valid head element?\n- Have you accidentally removed a style tag manually?\n\n",7:'ThemeProvider: Please return an object from your "theme" prop function, e.g.\n\n```js\ntheme={() => ({})}\n```\n\n',8:'ThemeProvider: Please make your "theme" prop an object.\n\n',9:"Missing document `<head>`\n\n",10:"Cannot find a StyleSheet instance. Usually this happens if there are multiple copies of styled-components loaded at once. Check out this issue for how to troubleshoot and fix the common cases where this situation can happen: https://github.com/styled-components/styled-components/issues/1941#issuecomment-417862021\n\n",11:"_This error was replaced with a dev-time warning, it will be deleted for v4 final._ [createGlobalStyle] received children which will not be rendered. Please use the component without passing children elements.\n\n",12:"It seems you are interpolating a keyframe declaration (%s) into an untagged string. This was supported in styled-components v3, but is not longer supported in v4 as keyframes are now injected on-demand. Please wrap your string in the css\\`\\` helper which ensures the styles are injected correctly. See https://www.styled-components.com/docs/api#css\n\n",13:"%s is not a styled component and cannot be referred to via component selector. See https://www.styled-components.com/docs/advanced#referring-to-other-components for more details.\n\n",14:'ThemeProvider: "theme" prop is required.\n\n',15:"A stylis plugin has been supplied that is not named. We need a name for each plugin to be able to prevent styling collisions between different stylis configurations within the same app. Before you pass your plugin to `<StyleSheetManager stylisPlugins={[]}>`, please make sure each plugin is uniquely-named, e.g.\n\n```js\nObject.defineProperty(importedPlugin, 'name', { value: 'some-unique-name' });\n```\n\n",16:"Reached the limit of how many styled components may be created at group %s.\nYou may only create up to 1,073,741,824 components. If you're creating components dynamically,\nas for instance in your render method then you may be running into this limitation.\n\n",17:"CSSStyleSheet could not be found on HTMLStyleElement.\nHas styled-components' style tag been unmounted or altered by another script?\n"}:{};function D(){for(var e=arguments.length<=0?void 0:arguments[0],t=[],n=1,r=arguments.length;n<r;n+=1)t.push(n<0||arguments.length<=n?void 0:arguments[n]);return t.forEach((function(t){e=e.replace(/%[a-z]/,t);})),e}function j(e){for(var t=arguments.length,n=new Array(t>1?t-1:0),r=1;r<t;r++)n[r-1]=arguments[r];throw "production"===process.env.NODE_ENV?new Error("An error occurred. See https://git.io/JUIaE#"+e+" for more information."+(n.length>0?" Args: "+n.join(", "):"")):new Error(D.apply(void 0,[R[e]].concat(n)).trim())}var T=function(){function e(e){this.groupSizes=new Uint32Array(512),this.length=512,this.tag=e;}var t=e.prototype;return t.indexOfGroup=function(e){for(var t=0,n=0;n<e;n++)t+=this.groupSizes[n];return t},t.insertRules=function(e,t){if(e>=this.groupSizes.length){for(var n=this.groupSizes,r=n.length,o=r;e>=o;)(o<<=1)<0&&j(16,""+e);this.groupSizes=new Uint32Array(o),this.groupSizes.set(n),this.length=o;for(var s=r;s<o;s++)this.groupSizes[s]=0;}for(var i=this.indexOfGroup(e+1),a=0,c=t.length;a<c;a++)this.tag.insertRule(i,t[a])&&(this.groupSizes[e]++,i++);},t.clearGroup=function(e){if(e<this.length){var t=this.groupSizes[e],n=this.indexOfGroup(e),r=n+t;this.groupSizes[e]=0;for(var o=n;o<r;o++)this.tag.deleteRule(n);}},t.getGroup=function(e){var t="";if(e>=this.length||0===this.groupSizes[e])return t;for(var n=this.groupSizes[e],r=this.indexOfGroup(e),o=r+n,s=r;s<o;s++)t+=this.tag.getRule(s)+"/*!sc*/\n";return t},e}(),x=new Map,k=new Map,V=1,B=function(e){if(x.has(e))return x.get(e);for(;k.has(V);)V++;var t=V++;return "production"!==process.env.NODE_ENV&&((0|t)<0||t>1<<30)&&j(16,""+t),x.set(e,t),k.set(t,e),t},z=function(e){return k.get(e)},M=function(e,t){t>=V&&(V=t+1),x.set(e,t),k.set(t,e);},G="style["+A+'][data-styled-version="5.3.5"]',L=new RegExp("^"+A+'\\.g(\\d+)\\[id="([\\w\\d-]+)"\\].*?"([^"]*)'),F=function(e,t,n){for(var r,o=n.split(","),s=0,i=o.length;s<i;s++)(r=o[s])&&e.registerName(t,r);},Y=function(e,t){for(var n=(t.textContent||"").split("/*!sc*/\n"),r=[],o=0,s=n.length;o<s;o++){var i=n[o].trim();if(i){var a=i.match(L);if(a){var c=0|parseInt(a[1],10),u=a[2];0!==c&&(M(u,c),F(e,u,a[3]),e.getTag().insertRules(c,r)),r.length=0;}else r.push(i);}}},q=function(){return "undefined"!=typeof window&&void 0!==window.__webpack_nonce__?window.__webpack_nonce__:null},H=function(e){var t=document.head,n=e||t,r=document.createElement("style"),o=function(e){for(var t=e.childNodes,n=t.length;n>=0;n--){var r=t[n];if(r&&1===r.nodeType&&r.hasAttribute(A))return r}}(n),s=void 0!==o?o.nextSibling:null;r.setAttribute(A,"active"),r.setAttribute("data-styled-version","5.3.5");var i=q();return i&&r.setAttribute("nonce",i),n.insertBefore(r,s),r},$=function(){function e(e){var t=this.element=H(e);t.appendChild(document.createTextNode("")),this.sheet=function(e){if(e.sheet)return e.sheet;for(var t=document.styleSheets,n=0,r=t.length;n<r;n++){var o=t[n];if(o.ownerNode===e)return o}j(17);}(t),this.length=0;}var t=e.prototype;return t.insertRule=function(e,t){try{return this.sheet.insertRule(t,e),this.length++,!0}catch(e){return !1}},t.deleteRule=function(e){this.sheet.deleteRule(e),this.length--;},t.getRule=function(e){var t=this.sheet.cssRules[e];return void 0!==t&&"string"==typeof t.cssText?t.cssText:""},e}(),W=function(){function e(e){var t=this.element=H(e);this.nodes=t.childNodes,this.length=0;}var t=e.prototype;return t.insertRule=function(e,t){if(e<=this.length&&e>=0){var n=document.createTextNode(t),r=this.nodes[e];return this.element.insertBefore(n,r||null),this.length++,!0}return !1},t.deleteRule=function(e){this.element.removeChild(this.nodes[e]),this.length--;},t.getRule=function(e){return e<this.length?this.nodes[e].textContent:""},e}(),U=function(){function e(e){this.rules=[],this.length=0;}var t=e.prototype;return t.insertRule=function(e,t){return e<=this.length&&(this.rules.splice(e,0,t),this.length++,!0)},t.deleteRule=function(e){this.rules.splice(e,1),this.length--;},t.getRule=function(e){return e<this.length?this.rules[e]:""},e}(),J=I,X={isServer:!I,useCSSOMInjection:!P$1},Z=function(){function e(e,t,n){void 0===e&&(e=E),void 0===t&&(t={}),this.options=v({},X,{},e),this.gs=t,this.names=new Map(n),this.server=!!e.isServer,!this.server&&I&&J&&(J=!1,function(e){for(var t=document.querySelectorAll(G),n=0,r=t.length;n<r;n++){var o=t[n];o&&"active"!==o.getAttribute(A)&&(Y(e,o),o.parentNode&&o.parentNode.removeChild(o));}}(this));}e.registerId=function(e){return B(e)};var t=e.prototype;return t.reconstructWithOptions=function(t,n){return void 0===n&&(n=!0),new e(v({},this.options,{},t),this.gs,n&&this.names||void 0)},t.allocateGSInstance=function(e){return this.gs[e]=(this.gs[e]||0)+1},t.getTag=function(){return this.tag||(this.tag=(n=(t=this.options).isServer,r=t.useCSSOMInjection,o=t.target,e=n?new U(o):r?new $(o):new W(o),new T(e)));var e,t,n,r,o;},t.hasNameForId=function(e,t){return this.names.has(e)&&this.names.get(e).has(t)},t.registerName=function(e,t){if(B(e),this.names.has(e))this.names.get(e).add(t);else {var n=new Set;n.add(t),this.names.set(e,n);}},t.insertRules=function(e,t,n){this.registerName(e,t),this.getTag().insertRules(B(e),n);},t.clearNames=function(e){this.names.has(e)&&this.names.get(e).clear();},t.clearRules=function(e){this.getTag().clearGroup(B(e)),this.clearNames(e);},t.clearTag=function(){this.tag=void 0;},t.toString=function(){return function(e){for(var t=e.getTag(),n=t.length,r="",o=0;o<n;o++){var s=z(o);if(void 0!==s){var i=e.names.get(s),a=t.getGroup(o);if(i&&a&&i.size){var c=A+".g"+o+'[id="'+s+'"]',u="";void 0!==i&&i.forEach((function(e){e.length>0&&(u+=e+",");})),r+=""+a+c+'{content:"'+u+'"}/*!sc*/\n';}}}return r}(this)},e}(),K=/(a)(d)/gi,Q=function(e){return String.fromCharCode(e+(e>25?39:97))};function ee(e){var t,n="";for(t=Math.abs(e);t>52;t=t/52|0)n=Q(t%52)+n;return (Q(t%52)+n).replace(K,"$1-$2")}var te=function(e,t){for(var n=t.length;n;)e=33*e^t.charCodeAt(--n);return e},ne=function(e){return te(5381,e)};function re(e){for(var t=0;t<e.length;t+=1){var n=e[t];if(b(n)&&!N(n))return !1}return !0}var oe=ne("5.3.5"),se=function(){function e(e,t,n){this.rules=e,this.staticRulesId="",this.isStatic="production"===process.env.NODE_ENV&&(void 0===n||n.isStatic)&&re(e),this.componentId=t,this.baseHash=te(oe,t),this.baseStyle=n,Z.registerId(t);}return e.prototype.generateAndInjectStyles=function(e,t,n){var r=this.componentId,o=[];if(this.baseStyle&&o.push(this.baseStyle.generateAndInjectStyles(e,t,n)),this.isStatic&&!n.hash)if(this.staticRulesId&&t.hasNameForId(r,this.staticRulesId))o.push(this.staticRulesId);else {var s=Ne(this.rules,e,t,n).join(""),i=ee(te(this.baseHash,s)>>>0);if(!t.hasNameForId(r,i)){var a=n(s,"."+i,void 0,r);t.insertRules(r,i,a);}o.push(i),this.staticRulesId=i;}else {for(var c=this.rules.length,u=te(this.baseHash,n.hash),l="",d=0;d<c;d++){var h=this.rules[d];if("string"==typeof h)l+=h,"production"!==process.env.NODE_ENV&&(u=te(u,h+d));else if(h){var p=Ne(h,e,t,n),f=Array.isArray(p)?p.join(""):p;u=te(u,f+d),l+=f;}}if(l){var m=ee(u>>>0);if(!t.hasNameForId(r,m)){var y=n(l,"."+m,void 0,r);t.insertRules(r,m,y);}o.push(m);}}return o.join(" ")},e}(),ie=/^\s*\/\/.*$/gm,ae=[":","[",".","#"];function ce(e){var t,n,r,o,s=void 0===e?E:e,i=s.options,a=void 0===i?E:i,c=s.plugins,u=void 0===c?w:c,l=new stylis_min(a),d=[],h=function(e){function t(t){if(t)try{e(t+"}");}catch(e){}}return function(n,r,o,s,i,a,c,u,l,d){switch(n){case 1:if(0===l&&64===r.charCodeAt(0))return e(r+";"),"";break;case 2:if(0===u)return r+"/*|*/";break;case 3:switch(u){case 102:case 112:return e(o[0]+r),"";default:return r+(0===d?"/*|*/":"")}case-2:r.split("/*|*/}").forEach(t);}}}((function(e){d.push(e);})),f=function(e,r,s){return 0===r&&-1!==ae.indexOf(s[n.length])||s.match(o)?e:"."+t};function m(e,s,i,a){void 0===a&&(a="&");var c=e.replace(ie,""),u=s&&i?i+" "+s+" { "+c+" }":c;return t=a,n=s,r=new RegExp("\\"+n+"\\b","g"),o=new RegExp("(\\"+n+"\\b){2,}"),l(i||!s?"":s,u)}return l.use([].concat(u,[function(e,t,o){2===e&&o.length&&o[0].lastIndexOf(n)>0&&(o[0]=o[0].replace(r,f));},h,function(e){if(-2===e){var t=d;return d=[],t}}])),m.hash=u.length?u.reduce((function(e,t){return t.name||j(15),te(e,t.name)}),5381).toString():"",m}var ue=React__default["default"].createContext();ue.Consumer;var de=React__default["default"].createContext(),he=(de.Consumer,new Z),pe=ce();function fe(){return React.useContext(ue)||he}function me(){return React.useContext(de)||pe}var ve=function(){function e(e,t){var n=this;this.inject=function(e,t){void 0===t&&(t=pe);var r=n.name+t.hash;e.hasNameForId(n.id,r)||e.insertRules(n.id,r,t(n.rules,r,"@keyframes"));},this.toString=function(){return j(12,String(n.name))},this.name=e,this.id="sc-keyframes-"+e,this.rules=t;}return e.prototype.getName=function(e){return void 0===e&&(e=pe),this.name+e.hash},e}(),ge=/([A-Z])/,Se=/([A-Z])/g,we=/^ms-/,Ee=function(e){return "-"+e.toLowerCase()};function be(e){return ge.test(e)?e.replace(Se,Ee).replace(we,"-ms-"):e}var _e=function(e){return null==e||!1===e||""===e};function Ne(e,n,r,o){if(Array.isArray(e)){for(var s,i=[],a=0,c=e.length;a<c;a+=1)""!==(s=Ne(e[a],n,r,o))&&(Array.isArray(s)?i.push.apply(i,s):i.push(s));return i}if(_e(e))return "";if(N(e))return "."+e.styledComponentId;if(b(e)){if("function"!=typeof(l=e)||l.prototype&&l.prototype.isReactComponent||!n)return e;var u=e(n);return "production"!==process.env.NODE_ENV&&reactIs$2.exports.isElement(u)&&console.warn(_(e)+" is not a styled component and cannot be referred to via component selector. See https://www.styled-components.com/docs/advanced#referring-to-other-components for more details."),Ne(u,n,r,o)}var l;return e instanceof ve?r?(e.inject(r,o),e.getName(o)):e:S(e)?function e(t,n){var r,o,s=[];for(var i in t)t.hasOwnProperty(i)&&!_e(t[i])&&(Array.isArray(t[i])&&t[i].isCss||b(t[i])?s.push(be(i)+":",t[i],";"):S(t[i])?s.push.apply(s,e(t[i],i)):s.push(be(i)+": "+(r=i,null==(o=t[i])||"boolean"==typeof o||""===o?"":"number"!=typeof o||0===o||r in unitlessKeys?String(o).trim():o+"px")+";"));return n?[n+" {"].concat(s,["}"]):s}(e):e.toString()}var Ae=function(e){return Array.isArray(e)&&(e.isCss=!0),e};function Ce(e){for(var t=arguments.length,n=new Array(t>1?t-1:0),r=1;r<t;r++)n[r-1]=arguments[r];return b(e)||S(e)?Ae(Ne(g(w,[e].concat(n)))):0===n.length&&1===e.length&&"string"==typeof e[0]?e:Ae(Ne(g(e,n)))}var Ie=/invalid hook call/i,Pe=new Set,Oe=function(e,t){if("production"!==process.env.NODE_ENV){var n="The component "+e+(t?' with the id of "'+t+'"':"")+" has been created dynamically.\nYou may see this warning because you've called styled inside another component.\nTo resolve this only create new StyledComponents outside of any render method and function component.",r=console.error;try{var o=!0;console.error=function(e){if(Ie.test(e))o=!1,Pe.delete(n);else {for(var t=arguments.length,s=new Array(t>1?t-1:0),i=1;i<t;i++)s[i-1]=arguments[i];r.apply(void 0,[e].concat(s));}},React.useRef(),o&&!Pe.has(n)&&(console.warn(n),Pe.add(n));}catch(e){Ie.test(e.message)&&Pe.delete(n);}finally{console.error=r;}}},Re=function(e,t,n){return void 0===n&&(n=E),e.theme!==n.theme&&e.theme||t||n.theme},De=/[!"#$%&'()*+,./:;<=>?@[\\\]^`{|}~-]+/g,je=/(^-|-$)/g;function Te(e){return e.replace(De,"-").replace(je,"")}var xe=function(e){return ee(ne(e)>>>0)};function ke(e){return "string"==typeof e&&("production"===process.env.NODE_ENV||e.charAt(0)===e.charAt(0).toLowerCase())}var Ve=function(e){return "function"==typeof e||"object"==typeof e&&null!==e&&!Array.isArray(e)},Be=function(e){return "__proto__"!==e&&"constructor"!==e&&"prototype"!==e};function ze(e,t,n){var r=e[n];Ve(t)&&Ve(r)?Me(r,t):e[n]=t;}function Me(e){for(var t=arguments.length,n=new Array(t>1?t-1:0),r=1;r<t;r++)n[r-1]=arguments[r];for(var o=0,s=n;o<s.length;o++){var i=s[o];if(Ve(i))for(var a in i)Be(a)&&ze(e,i[a],a);}return e}var Ge=React__default["default"].createContext();Ge.Consumer;var Ye={};function qe(e,t,n){var o=N(e),i=!ke(e),a=t.attrs,c=void 0===a?w:a,d=t.componentId,h=void 0===d?function(e,t){var n="string"!=typeof e?"sc":Te(e);Ye[n]=(Ye[n]||0)+1;var r=n+"-"+xe("5.3.5"+n+Ye[n]);return t?t+"-"+r:r}(t.displayName,t.parentComponentId):d,p=t.displayName,f=void 0===p?function(e){return ke(e)?"styled."+e:"Styled("+_(e)+")"}(e):p,g=t.displayName&&t.componentId?Te(t.displayName)+"-"+t.componentId:t.componentId||h,S=o&&e.attrs?Array.prototype.concat(e.attrs,c).filter(Boolean):c,A=t.shouldForwardProp;o&&e.shouldForwardProp&&(A=t.shouldForwardProp?function(n,r,o){return e.shouldForwardProp(n,r,o)&&t.shouldForwardProp(n,r,o)}:e.shouldForwardProp);var C,I=new se(n,g,o?e.componentStyle:void 0),P=I.isStatic&&0===c.length,O=function(e,t){return function(e,t,n,r){var o=e.attrs,i=e.componentStyle,a=e.defaultProps,c=e.foldedComponentIds,d=e.shouldForwardProp,h=e.styledComponentId,p=e.target;"production"!==process.env.NODE_ENV&&React.useDebugValue(h);var f=function(e,t,n){void 0===e&&(e=E);var r=v({},t,{theme:e}),o={};return n.forEach((function(e){var t,n,s,i=e;for(t in b(i)&&(i=i(r)),i)r[t]=o[t]="className"===t?(n=o[t],s=i[t],n&&s?n+" "+s:n||s):i[t];})),[r,o]}(Re(t,React.useContext(Ge),a)||E,t,o),y=f[0],g=f[1],S=function(e,t,n,r){var o=fe(),s=me(),i=t?e.generateAndInjectStyles(E,o,s):e.generateAndInjectStyles(n,o,s);return "production"!==process.env.NODE_ENV&&React.useDebugValue(i),"production"!==process.env.NODE_ENV&&!t&&r&&r(i),i}(i,r,y,"production"!==process.env.NODE_ENV?e.warnTooManyClasses:void 0),w=n,_=g.$as||t.$as||g.as||t.as||p,N=ke(_),A=g!==t?v({},t,{},g):t,C={};for(var I in A)"$"!==I[0]&&"as"!==I&&("forwardedAs"===I?C.as=A[I]:(d?d(I,isPropValid,_):!N||isPropValid(I))&&(C[I]=A[I]));return t.style&&g.style!==t.style&&(C.style=v({},t.style,{},g.style)),C.className=Array.prototype.concat(c,h,S!==h?S:null,t.className,g.className).filter(Boolean).join(" "),C.ref=w,React.createElement(_,C)}(C,e,t,P)};return O.displayName=f,(C=React__default["default"].forwardRef(O)).attrs=S,C.componentStyle=I,C.displayName=f,C.shouldForwardProp=A,C.foldedComponentIds=o?Array.prototype.concat(e.foldedComponentIds,e.styledComponentId):w,C.styledComponentId=g,C.target=o?e.target:e,C.withComponent=function(e){var r=t.componentId,o=function(e,t){if(null==e)return {};var n,r,o={},s=Object.keys(e);for(r=0;r<s.length;r++)n=s[r],t.indexOf(n)>=0||(o[n]=e[n]);return o}(t,["componentId"]),s=r&&r+"-"+(ke(e)?e:Te(_(e)));return qe(e,v({},o,{attrs:S,componentId:s}),n)},Object.defineProperty(C,"defaultProps",{get:function(){return this._foldedDefaultProps},set:function(t){this._foldedDefaultProps=o?Me({},e.defaultProps,t):t;}}),"production"!==process.env.NODE_ENV&&(Oe(f,g),C.warnTooManyClasses=function(e,t){var n={},r=!1;return function(o){if(!r&&(n[o]=!0,Object.keys(n).length>=200)){var s=t?' with the id of "'+t+'"':"";console.warn("Over 200 classes were generated for component "+e+s+".\nConsider using the attrs method, together with a style object for frequently changed styles.\nExample:\n  const Component = styled.div.attrs(props => ({\n    style: {\n      background: props.background,\n    },\n  }))`width: 100%;`\n\n  <Component />"),r=!0,n={};}}}(f,g)),C.toString=function(){return "."+C.styledComponentId},i&&hoistNonReactStatics_cjs(C,e,{attrs:!0,componentStyle:!0,displayName:!0,foldedComponentIds:!0,shouldForwardProp:!0,styledComponentId:!0,target:!0,withComponent:!0}),C}var He=function(e){return function e(t,r,o){if(void 0===o&&(o=E),!reactIs$2.exports.isValidElementType(r))return j(1,String(r));var s=function(){return t(r,o,Ce.apply(void 0,arguments))};return s.withConfig=function(n){return e(t,r,v({},o,{},n))},s.attrs=function(n){return e(t,r,v({},o,{attrs:Array.prototype.concat(o.attrs,n).filter(Boolean)}))},s}(qe,e)};["a","abbr","address","area","article","aside","audio","b","base","bdi","bdo","big","blockquote","body","br","button","canvas","caption","cite","code","col","colgroup","data","datalist","dd","del","details","dfn","dialog","div","dl","dt","em","embed","fieldset","figcaption","figure","footer","form","h1","h2","h3","h4","h5","h6","head","header","hgroup","hr","html","i","iframe","img","input","ins","kbd","keygen","label","legend","li","link","main","map","mark","marquee","menu","menuitem","meta","meter","nav","noscript","object","ol","optgroup","option","output","p","param","picture","pre","progress","q","rp","rt","ruby","s","samp","script","section","select","small","source","span","strong","style","sub","summary","sup","table","tbody","td","textarea","tfoot","th","thead","time","title","tr","track","u","ul","var","video","wbr","circle","clipPath","defs","ellipse","foreignObject","g","image","line","linearGradient","marker","mask","path","pattern","polygon","polyline","radialGradient","rect","stop","svg","text","textPath","tspan"].forEach((function(e){He[e]=He(e);}));function Ue(e){"production"!==process.env.NODE_ENV&&"undefined"!=typeof navigator&&"ReactNative"===navigator.product&&console.warn("`keyframes` cannot be used on ReactNative, only on the web. To do animation in ReactNative please use Animated.");for(var t=arguments.length,n=new Array(t>1?t-1:0),r=1;r<t;r++)n[r-1]=arguments[r];var o=Ce.apply(void 0,[e].concat(n)).join(""),s=xe(o);return new ve(s,o)}"production"!==process.env.NODE_ENV&&"undefined"!=typeof navigator&&"ReactNative"===navigator.product&&console.warn("It looks like you've imported 'styled-components' on React Native.\nPerhaps you're looking to import 'styled-components/native'?\nRead more about this at https://www.styled-components.com/docs/basics#react-native"),"production"!==process.env.NODE_ENV&&"test"!==process.env.NODE_ENV&&"undefined"!=typeof window&&(window["__styled-components-init__"]=window["__styled-components-init__"]||0,1===window["__styled-components-init__"]&&console.warn("It looks like there are several instances of 'styled-components' initialized in this application. This may cause dynamic styles to not render properly, errors during the rehydration process, a missing theme prop, and makes your application bigger without good reason.\n\nSee https://s-c.sh/2BAXzed for more info."),window["__styled-components-init__"]+=1);var styled = He;
+function v(){return (v=Object.assign||function(e){for(var t=1;t<arguments.length;t++){var n=arguments[t];for(var r in n)Object.prototype.hasOwnProperty.call(n,r)&&(e[r]=n[r]);}return e}).apply(this,arguments)}var g=function(e,t){for(var n=[e[0]],r=0,o=t.length;r<o;r+=1)n.push(t[r],e[r+1]);return n},S=function(t){return null!==t&&"object"==typeof t&&"[object Object]"===(t.toString?t.toString():Object.prototype.toString.call(t))&&!reactIs$2.exports.typeOf(t)},w=Object.freeze([]),E=Object.freeze({});function b(e){return "function"==typeof e}function _(e){return "production"!==process.env.NODE_ENV&&"string"==typeof e&&e||e.displayName||e.name||"Component"}function N(e){return e&&"string"==typeof e.styledComponentId}var A="undefined"!=typeof process&&(process.env.REACT_APP_SC_ATTR||process.env.SC_ATTR)||"data-styled",I="undefined"!=typeof window&&"HTMLElement"in window,P$1=Boolean("boolean"==typeof SC_DISABLE_SPEEDY?SC_DISABLE_SPEEDY:"undefined"!=typeof process&&void 0!==process.env.REACT_APP_SC_DISABLE_SPEEDY&&""!==process.env.REACT_APP_SC_DISABLE_SPEEDY?"false"!==process.env.REACT_APP_SC_DISABLE_SPEEDY&&process.env.REACT_APP_SC_DISABLE_SPEEDY:"undefined"!=typeof process&&void 0!==process.env.SC_DISABLE_SPEEDY&&""!==process.env.SC_DISABLE_SPEEDY?"false"!==process.env.SC_DISABLE_SPEEDY&&process.env.SC_DISABLE_SPEEDY:"production"!==process.env.NODE_ENV),R="production"!==process.env.NODE_ENV?{1:"Cannot create styled-component for component: %s.\n\n",2:"Can't collect styles once you've consumed a `ServerStyleSheet`'s styles! `ServerStyleSheet` is a one off instance for each server-side render cycle.\n\n- Are you trying to reuse it across renders?\n- Are you accidentally calling collectStyles twice?\n\n",3:"Streaming SSR is only supported in a Node.js environment; Please do not try to call this method in the browser.\n\n",4:"The `StyleSheetManager` expects a valid target or sheet prop!\n\n- Does this error occur on the client and is your target falsy?\n- Does this error occur on the server and is the sheet falsy?\n\n",5:"The clone method cannot be used on the client!\n\n- Are you running in a client-like environment on the server?\n- Are you trying to run SSR on the client?\n\n",6:"Trying to insert a new style tag, but the given Node is unmounted!\n\n- Are you using a custom target that isn't mounted?\n- Does your document not have a valid head element?\n- Have you accidentally removed a style tag manually?\n\n",7:'ThemeProvider: Please return an object from your "theme" prop function, e.g.\n\n```js\ntheme={() => ({})}\n```\n\n',8:'ThemeProvider: Please make your "theme" prop an object.\n\n',9:"Missing document `<head>`\n\n",10:"Cannot find a StyleSheet instance. Usually this happens if there are multiple copies of styled-components loaded at once. Check out this issue for how to troubleshoot and fix the common cases where this situation can happen: https://github.com/styled-components/styled-components/issues/1941#issuecomment-417862021\n\n",11:"_This error was replaced with a dev-time warning, it will be deleted for v4 final._ [createGlobalStyle] received children which will not be rendered. Please use the component without passing children elements.\n\n",12:"It seems you are interpolating a keyframe declaration (%s) into an untagged string. This was supported in styled-components v3, but is not longer supported in v4 as keyframes are now injected on-demand. Please wrap your string in the css\\`\\` helper which ensures the styles are injected correctly. See https://www.styled-components.com/docs/api#css\n\n",13:"%s is not a styled component and cannot be referred to via component selector. See https://www.styled-components.com/docs/advanced#referring-to-other-components for more details.\n\n",14:'ThemeProvider: "theme" prop is required.\n\n',15:"A stylis plugin has been supplied that is not named. We need a name for each plugin to be able to prevent styling collisions between different stylis configurations within the same app. Before you pass your plugin to `<StyleSheetManager stylisPlugins={[]}>`, please make sure each plugin is uniquely-named, e.g.\n\n```js\nObject.defineProperty(importedPlugin, 'name', { value: 'some-unique-name' });\n```\n\n",16:"Reached the limit of how many styled components may be created at group %s.\nYou may only create up to 1,073,741,824 components. If you're creating components dynamically,\nas for instance in your render method then you may be running into this limitation.\n\n",17:"CSSStyleSheet could not be found on HTMLStyleElement.\nHas styled-components' style tag been unmounted or altered by another script?\n"}:{};function D(){for(var e=arguments.length<=0?void 0:arguments[0],t=[],n=1,r=arguments.length;n<r;n+=1)t.push(n<0||arguments.length<=n?void 0:arguments[n]);return t.forEach((function(t){e=e.replace(/%[a-z]/,t);})),e}function j(e){for(var t=arguments.length,n=new Array(t>1?t-1:0),r=1;r<t;r++)n[r-1]=arguments[r];throw "production"===process.env.NODE_ENV?new Error("An error occurred. See https://git.io/JUIaE#"+e+" for more information."+(n.length>0?" Args: "+n.join(", "):"")):new Error(D.apply(void 0,[R[e]].concat(n)).trim())}var T=function(){function e(e){this.groupSizes=new Uint32Array(512),this.length=512,this.tag=e;}var t=e.prototype;return t.indexOfGroup=function(e){for(var t=0,n=0;n<e;n++)t+=this.groupSizes[n];return t},t.insertRules=function(e,t){if(e>=this.groupSizes.length){for(var n=this.groupSizes,r=n.length,o=r;e>=o;)(o<<=1)<0&&j(16,""+e);this.groupSizes=new Uint32Array(o),this.groupSizes.set(n),this.length=o;for(var s=r;s<o;s++)this.groupSizes[s]=0;}for(var i=this.indexOfGroup(e+1),a=0,c=t.length;a<c;a++)this.tag.insertRule(i,t[a])&&(this.groupSizes[e]++,i++);},t.clearGroup=function(e){if(e<this.length){var t=this.groupSizes[e],n=this.indexOfGroup(e),r=n+t;this.groupSizes[e]=0;for(var o=n;o<r;o++)this.tag.deleteRule(n);}},t.getGroup=function(e){var t="";if(e>=this.length||0===this.groupSizes[e])return t;for(var n=this.groupSizes[e],r=this.indexOfGroup(e),o=r+n,s=r;s<o;s++)t+=this.tag.getRule(s)+"/*!sc*/\n";return t},e}(),x=new Map,k=new Map,V=1,B=function(e){if(x.has(e))return x.get(e);for(;k.has(V);)V++;var t=V++;return "production"!==process.env.NODE_ENV&&((0|t)<0||t>1<<30)&&j(16,""+t),x.set(e,t),k.set(t,e),t},z=function(e){return k.get(e)},M=function(e,t){t>=V&&(V=t+1),x.set(e,t),k.set(t,e);},G="style["+A+'][data-styled-version="5.3.5"]',L=new RegExp("^"+A+'\\.g(\\d+)\\[id="([\\w\\d-]+)"\\].*?"([^"]*)'),F=function(e,t,n){for(var r,o=n.split(","),s=0,i=o.length;s<i;s++)(r=o[s])&&e.registerName(t,r);},Y=function(e,t){for(var n=(t.textContent||"").split("/*!sc*/\n"),r=[],o=0,s=n.length;o<s;o++){var i=n[o].trim();if(i){var a=i.match(L);if(a){var c=0|parseInt(a[1],10),u=a[2];0!==c&&(M(u,c),F(e,u,a[3]),e.getTag().insertRules(c,r)),r.length=0;}else r.push(i);}}},q=function(){return "undefined"!=typeof window&&void 0!==window.__webpack_nonce__?window.__webpack_nonce__:null},H=function(e){var t=document.head,n=e||t,r=document.createElement("style"),o=function(e){for(var t=e.childNodes,n=t.length;n>=0;n--){var r=t[n];if(r&&1===r.nodeType&&r.hasAttribute(A))return r}}(n),s=void 0!==o?o.nextSibling:null;r.setAttribute(A,"active"),r.setAttribute("data-styled-version","5.3.5");var i=q();return i&&r.setAttribute("nonce",i),n.insertBefore(r,s),r},$=function(){function e(e){var t=this.element=H(e);t.appendChild(document.createTextNode("")),this.sheet=function(e){if(e.sheet)return e.sheet;for(var t=document.styleSheets,n=0,r=t.length;n<r;n++){var o=t[n];if(o.ownerNode===e)return o}j(17);}(t),this.length=0;}var t=e.prototype;return t.insertRule=function(e,t){try{return this.sheet.insertRule(t,e),this.length++,!0}catch(e){return !1}},t.deleteRule=function(e){this.sheet.deleteRule(e),this.length--;},t.getRule=function(e){var t=this.sheet.cssRules[e];return void 0!==t&&"string"==typeof t.cssText?t.cssText:""},e}(),W=function(){function e(e){var t=this.element=H(e);this.nodes=t.childNodes,this.length=0;}var t=e.prototype;return t.insertRule=function(e,t){if(e<=this.length&&e>=0){var n=document.createTextNode(t),r=this.nodes[e];return this.element.insertBefore(n,r||null),this.length++,!0}return !1},t.deleteRule=function(e){this.element.removeChild(this.nodes[e]),this.length--;},t.getRule=function(e){return e<this.length?this.nodes[e].textContent:""},e}(),U=function(){function e(e){this.rules=[],this.length=0;}var t=e.prototype;return t.insertRule=function(e,t){return e<=this.length&&(this.rules.splice(e,0,t),this.length++,!0)},t.deleteRule=function(e){this.rules.splice(e,1),this.length--;},t.getRule=function(e){return e<this.length?this.rules[e]:""},e}(),J=I,X={isServer:!I,useCSSOMInjection:!P$1},Z=function(){function e(e,t,n){void 0===e&&(e=E),void 0===t&&(t={}),this.options=v({},X,{},e),this.gs=t,this.names=new Map(n),this.server=!!e.isServer,!this.server&&I&&J&&(J=!1,function(e){for(var t=document.querySelectorAll(G),n=0,r=t.length;n<r;n++){var o=t[n];o&&"active"!==o.getAttribute(A)&&(Y(e,o),o.parentNode&&o.parentNode.removeChild(o));}}(this));}e.registerId=function(e){return B(e)};var t=e.prototype;return t.reconstructWithOptions=function(t,n){return void 0===n&&(n=!0),new e(v({},this.options,{},t),this.gs,n&&this.names||void 0)},t.allocateGSInstance=function(e){return this.gs[e]=(this.gs[e]||0)+1},t.getTag=function(){return this.tag||(this.tag=(n=(t=this.options).isServer,r=t.useCSSOMInjection,o=t.target,e=n?new U(o):r?new $(o):new W(o),new T(e)));var e,t,n,r,o;},t.hasNameForId=function(e,t){return this.names.has(e)&&this.names.get(e).has(t)},t.registerName=function(e,t){if(B(e),this.names.has(e))this.names.get(e).add(t);else {var n=new Set;n.add(t),this.names.set(e,n);}},t.insertRules=function(e,t,n){this.registerName(e,t),this.getTag().insertRules(B(e),n);},t.clearNames=function(e){this.names.has(e)&&this.names.get(e).clear();},t.clearRules=function(e){this.getTag().clearGroup(B(e)),this.clearNames(e);},t.clearTag=function(){this.tag=void 0;},t.toString=function(){return function(e){for(var t=e.getTag(),n=t.length,r="",o=0;o<n;o++){var s=z(o);if(void 0!==s){var i=e.names.get(s),a=t.getGroup(o);if(i&&a&&i.size){var c=A+".g"+o+'[id="'+s+'"]',u="";void 0!==i&&i.forEach((function(e){e.length>0&&(u+=e+",");})),r+=""+a+c+'{content:"'+u+'"}/*!sc*/\n';}}}return r}(this)},e}(),K=/(a)(d)/gi,Q=function(e){return String.fromCharCode(e+(e>25?39:97))};function ee(e){var t,n="";for(t=Math.abs(e);t>52;t=t/52|0)n=Q(t%52)+n;return (Q(t%52)+n).replace(K,"$1-$2")}var te=function(e,t){for(var n=t.length;n;)e=33*e^t.charCodeAt(--n);return e},ne=function(e){return te(5381,e)};function re(e){for(var t=0;t<e.length;t+=1){var n=e[t];if(b(n)&&!N(n))return !1}return !0}var oe=ne("5.3.5"),se=function(){function e(e,t,n){this.rules=e,this.staticRulesId="",this.isStatic="production"===process.env.NODE_ENV&&(void 0===n||n.isStatic)&&re(e),this.componentId=t,this.baseHash=te(oe,t),this.baseStyle=n,Z.registerId(t);}return e.prototype.generateAndInjectStyles=function(e,t,n){var r=this.componentId,o=[];if(this.baseStyle&&o.push(this.baseStyle.generateAndInjectStyles(e,t,n)),this.isStatic&&!n.hash)if(this.staticRulesId&&t.hasNameForId(r,this.staticRulesId))o.push(this.staticRulesId);else {var s=Ne(this.rules,e,t,n).join(""),i=ee(te(this.baseHash,s)>>>0);if(!t.hasNameForId(r,i)){var a=n(s,"."+i,void 0,r);t.insertRules(r,i,a);}o.push(i),this.staticRulesId=i;}else {for(var c=this.rules.length,u=te(this.baseHash,n.hash),l="",d=0;d<c;d++){var h=this.rules[d];if("string"==typeof h)l+=h,"production"!==process.env.NODE_ENV&&(u=te(u,h+d));else if(h){var p=Ne(h,e,t,n),f=Array.isArray(p)?p.join(""):p;u=te(u,f+d),l+=f;}}if(l){var m=ee(u>>>0);if(!t.hasNameForId(r,m)){var y=n(l,"."+m,void 0,r);t.insertRules(r,m,y);}o.push(m);}}return o.join(" ")},e}(),ie=/^\s*\/\/.*$/gm,ae=[":","[",".","#"];function ce(e){var t,n,r,o,s=void 0===e?E:e,i=s.options,a=void 0===i?E:i,c=s.plugins,u=void 0===c?w:c,l=new stylis_min(a),d=[],h=function(e){function t(t){if(t)try{e(t+"}");}catch(e){}}return function(n,r,o,s,i,a,c,u,l,d){switch(n){case 1:if(0===l&&64===r.charCodeAt(0))return e(r+";"),"";break;case 2:if(0===u)return r+"/*|*/";break;case 3:switch(u){case 102:case 112:return e(o[0]+r),"";default:return r+(0===d?"/*|*/":"")}case-2:r.split("/*|*/}").forEach(t);}}}((function(e){d.push(e);})),f=function(e,r,s){return 0===r&&-1!==ae.indexOf(s[n.length])||s.match(o)?e:"."+t};function m(e,s,i,a){void 0===a&&(a="&");var c=e.replace(ie,""),u=s&&i?i+" "+s+" { "+c+" }":c;return t=a,n=s,r=new RegExp("\\"+n+"\\b","g"),o=new RegExp("(\\"+n+"\\b){2,}"),l(i||!s?"":s,u)}return l.use([].concat(u,[function(e,t,o){2===e&&o.length&&o[0].lastIndexOf(n)>0&&(o[0]=o[0].replace(r,f));},h,function(e){if(-2===e){var t=d;return d=[],t}}])),m.hash=u.length?u.reduce((function(e,t){return t.name||j(15),te(e,t.name)}),5381).toString():"",m}var ue=React__default["default"].createContext();ue.Consumer;var de=React__default["default"].createContext(),he=(de.Consumer,new Z),pe=ce();function fe(){return React.useContext(ue)||he}function me(){return React.useContext(de)||pe}var ve=function(){function e(e,t){var n=this;this.inject=function(e,t){void 0===t&&(t=pe);var r=n.name+t.hash;e.hasNameForId(n.id,r)||e.insertRules(n.id,r,t(n.rules,r,"@keyframes"));},this.toString=function(){return j(12,String(n.name))},this.name=e,this.id="sc-keyframes-"+e,this.rules=t;}return e.prototype.getName=function(e){return void 0===e&&(e=pe),this.name+e.hash},e}(),ge=/([A-Z])/,Se=/([A-Z])/g,we=/^ms-/,Ee=function(e){return "-"+e.toLowerCase()};function be(e){return ge.test(e)?e.replace(Se,Ee).replace(we,"-ms-"):e}var _e=function(e){return null==e||!1===e||""===e};function Ne(e,n,r,o){if(Array.isArray(e)){for(var s,i=[],a=0,c=e.length;a<c;a+=1)""!==(s=Ne(e[a],n,r,o))&&(Array.isArray(s)?i.push.apply(i,s):i.push(s));return i}if(_e(e))return "";if(N(e))return "."+e.styledComponentId;if(b(e)){if("function"!=typeof(l=e)||l.prototype&&l.prototype.isReactComponent||!n)return e;var u=e(n);return "production"!==process.env.NODE_ENV&&reactIs$2.exports.isElement(u)&&console.warn(_(e)+" is not a styled component and cannot be referred to via component selector. See https://www.styled-components.com/docs/advanced#referring-to-other-components for more details."),Ne(u,n,r,o)}var l;return e instanceof ve?r?(e.inject(r,o),e.getName(o)):e:S(e)?function e(t,n){var r,o,s=[];for(var i in t)t.hasOwnProperty(i)&&!_e(t[i])&&(Array.isArray(t[i])&&t[i].isCss||b(t[i])?s.push(be(i)+":",t[i],";"):S(t[i])?s.push.apply(s,e(t[i],i)):s.push(be(i)+": "+(r=i,null==(o=t[i])||"boolean"==typeof o||""===o?"":"number"!=typeof o||0===o||r in unitlessKeys?String(o).trim():o+"px")+";"));return n?[n+" {"].concat(s,["}"]):s}(e):e.toString()}var Ae=function(e){return Array.isArray(e)&&(e.isCss=!0),e};function Ce(e){for(var t=arguments.length,n=new Array(t>1?t-1:0),r=1;r<t;r++)n[r-1]=arguments[r];return b(e)||S(e)?Ae(Ne(g(w,[e].concat(n)))):0===n.length&&1===e.length&&"string"==typeof e[0]?e:Ae(Ne(g(e,n)))}var Ie=/invalid hook call/i,Pe=new Set,Oe=function(e,t){if("production"!==process.env.NODE_ENV){var n="The component "+e+(t?' with the id of "'+t+'"':"")+" has been created dynamically.\nYou may see this warning because you've called styled inside another component.\nTo resolve this only create new StyledComponents outside of any render method and function component.",r=console.error;try{var o=!0;console.error=function(e){if(Ie.test(e))o=!1,Pe.delete(n);else {for(var t=arguments.length,s=new Array(t>1?t-1:0),i=1;i<t;i++)s[i-1]=arguments[i];r.apply(void 0,[e].concat(s));}},React.useRef(),o&&!Pe.has(n)&&(console.warn(n),Pe.add(n));}catch(e){Ie.test(e.message)&&Pe.delete(n);}finally{console.error=r;}}},Re=function(e,t,n){return void 0===n&&(n=E),e.theme!==n.theme&&e.theme||t||n.theme},De=/[!"#$%&'()*+,./:;<=>?@[\\\]^`{|}~-]+/g,je=/(^-|-$)/g;function Te(e){return e.replace(De,"-").replace(je,"")}var xe=function(e){return ee(ne(e)>>>0)};function ke(e){return "string"==typeof e&&("production"===process.env.NODE_ENV||e.charAt(0)===e.charAt(0).toLowerCase())}var Ve=function(e){return "function"==typeof e||"object"==typeof e&&null!==e&&!Array.isArray(e)},Be=function(e){return "__proto__"!==e&&"constructor"!==e&&"prototype"!==e};function ze(e,t,n){var r=e[n];Ve(t)&&Ve(r)?Me(r,t):e[n]=t;}function Me(e){for(var t=arguments.length,n=new Array(t>1?t-1:0),r=1;r<t;r++)n[r-1]=arguments[r];for(var o=0,s=n;o<s.length;o++){var i=s[o];if(Ve(i))for(var a in i)Be(a)&&ze(e,i[a],a);}return e}var Ge=React__default["default"].createContext();Ge.Consumer;var Ye={};function qe(e,t,n){var o=N(e),i=!ke(e),a=t.attrs,c=void 0===a?w:a,d=t.componentId,h=void 0===d?function(e,t){var n="string"!=typeof e?"sc":Te(e);Ye[n]=(Ye[n]||0)+1;var r=n+"-"+xe("5.3.5"+n+Ye[n]);return t?t+"-"+r:r}(t.displayName,t.parentComponentId):d,p=t.displayName,f=void 0===p?function(e){return ke(e)?"styled."+e:"Styled("+_(e)+")"}(e):p,g=t.displayName&&t.componentId?Te(t.displayName)+"-"+t.componentId:t.componentId||h,S=o&&e.attrs?Array.prototype.concat(e.attrs,c).filter(Boolean):c,A=t.shouldForwardProp;o&&e.shouldForwardProp&&(A=t.shouldForwardProp?function(n,r,o){return e.shouldForwardProp(n,r,o)&&t.shouldForwardProp(n,r,o)}:e.shouldForwardProp);var C,I=new se(n,g,o?e.componentStyle:void 0),P=I.isStatic&&0===c.length,O=function(e,t){return function(e,t,n,r){var o=e.attrs,i=e.componentStyle,a=e.defaultProps,c=e.foldedComponentIds,d=e.shouldForwardProp,h=e.styledComponentId,p=e.target;"production"!==process.env.NODE_ENV&&React.useDebugValue(h);var f=function(e,t,n){void 0===e&&(e=E);var r=v({},t,{theme:e}),o={};return n.forEach((function(e){var t,n,s,i=e;for(t in b(i)&&(i=i(r)),i)r[t]=o[t]="className"===t?(n=o[t],s=i[t],n&&s?n+" "+s:n||s):i[t];})),[r,o]}(Re(t,React.useContext(Ge),a)||E,t,o),y=f[0],g=f[1],S=function(e,t,n,r){var o=fe(),s=me(),i=t?e.generateAndInjectStyles(E,o,s):e.generateAndInjectStyles(n,o,s);return "production"!==process.env.NODE_ENV&&React.useDebugValue(i),"production"!==process.env.NODE_ENV&&!t&&r&&r(i),i}(i,r,y,"production"!==process.env.NODE_ENV?e.warnTooManyClasses:void 0),w=n,_=g.$as||t.$as||g.as||t.as||p,N=ke(_),A=g!==t?v({},t,{},g):t,C={};for(var I in A)"$"!==I[0]&&"as"!==I&&("forwardedAs"===I?C.as=A[I]:(d?d(I,isPropValid,_):!N||isPropValid(I))&&(C[I]=A[I]));return t.style&&g.style!==t.style&&(C.style=v({},t.style,{},g.style)),C.className=Array.prototype.concat(c,h,S!==h?S:null,t.className,g.className).filter(Boolean).join(" "),C.ref=w,React.createElement(_,C)}(C,e,t,P)};return O.displayName=f,(C=React__default["default"].forwardRef(O)).attrs=S,C.componentStyle=I,C.displayName=f,C.shouldForwardProp=A,C.foldedComponentIds=o?Array.prototype.concat(e.foldedComponentIds,e.styledComponentId):w,C.styledComponentId=g,C.target=o?e.target:e,C.withComponent=function(e){var r=t.componentId,o=function(e,t){if(null==e)return {};var n,r,o={},s=Object.keys(e);for(r=0;r<s.length;r++)n=s[r],t.indexOf(n)>=0||(o[n]=e[n]);return o}(t,["componentId"]),s=r&&r+"-"+(ke(e)?e:Te(_(e)));return qe(e,v({},o,{attrs:S,componentId:s}),n)},Object.defineProperty(C,"defaultProps",{get:function(){return this._foldedDefaultProps},set:function(t){this._foldedDefaultProps=o?Me({},e.defaultProps,t):t;}}),"production"!==process.env.NODE_ENV&&(Oe(f,g),C.warnTooManyClasses=function(e,t){var n={},r=!1;return function(o){if(!r&&(n[o]=!0,Object.keys(n).length>=200)){var s=t?' with the id of "'+t+'"':"";console.warn("Over 200 classes were generated for component "+e+s+".\nConsider using the attrs method, together with a style object for frequently changed styles.\nExample:\n  const Component = styled.div.attrs(props => ({\n    style: {\n      background: props.background,\n    },\n  }))`width: 100%;`\n\n  <Component />"),r=!0,n={};}}}(f,g)),C.toString=function(){return "."+C.styledComponentId},i&&hoistNonReactStatics_cjs(C,e,{attrs:!0,componentStyle:!0,displayName:!0,foldedComponentIds:!0,shouldForwardProp:!0,styledComponentId:!0,target:!0,withComponent:!0}),C}var He=function(e){return function e(t,r,o){if(void 0===o&&(o=E),!reactIs$2.exports.isValidElementType(r))return j(1,String(r));var s=function(){return t(r,o,Ce.apply(void 0,arguments))};return s.withConfig=function(n){return e(t,r,v({},o,{},n))},s.attrs=function(n){return e(t,r,v({},o,{attrs:Array.prototype.concat(o.attrs,n).filter(Boolean)}))},s}(qe,e)};["a","abbr","address","area","article","aside","audio","b","base","bdi","bdo","big","blockquote","body","br","button","canvas","caption","cite","code","col","colgroup","data","datalist","dd","del","details","dfn","dialog","div","dl","dt","em","embed","fieldset","figcaption","figure","footer","form","h1","h2","h3","h4","h5","h6","head","header","hgroup","hr","html","i","iframe","img","input","ins","kbd","keygen","label","legend","li","link","main","map","mark","marquee","menu","menuitem","meta","meter","nav","noscript","object","ol","optgroup","option","output","p","param","picture","pre","progress","q","rp","rt","ruby","s","samp","script","section","select","small","source","span","strong","style","sub","summary","sup","table","tbody","td","textarea","tfoot","th","thead","time","title","tr","track","u","ul","var","video","wbr","circle","clipPath","defs","ellipse","foreignObject","g","image","line","linearGradient","marker","mask","path","pattern","polygon","polyline","radialGradient","rect","stop","svg","text","textPath","tspan"].forEach((function(e){He[e]=He(e);}));function Ue(e){"production"!==process.env.NODE_ENV&&"undefined"!=typeof navigator&&"ReactNative"===navigator.product&&console.warn("`keyframes` cannot be used on ReactNative, only on the web. To do animation in ReactNative please use Animated.");for(var t=arguments.length,n=new Array(t>1?t-1:0),r=1;r<t;r++)n[r-1]=arguments[r];var o=Ce.apply(void 0,[e].concat(n)).join(""),s=xe(o);return new ve(s,o)}"production"!==process.env.NODE_ENV&&"undefined"!=typeof navigator&&"ReactNative"===navigator.product&&console.warn("It looks like you've imported 'styled-components' on React Native.\nPerhaps you're looking to import 'styled-components/native'?\nRead more about this at https://www.styled-components.com/docs/basics#react-native"),"production"!==process.env.NODE_ENV&&"test"!==process.env.NODE_ENV&&"undefined"!=typeof window&&(window["__styled-components-init__"]=window["__styled-components-init__"]||0,1===window["__styled-components-init__"]&&console.warn("It looks like there are several instances of 'styled-components' initialized in this application. This may cause dynamic styles to not render properly, errors during the rehydration process, a missing theme prop, and makes your application bigger without good reason.\n\nSee https://s-c.sh/2BAXzed for more info."),window["__styled-components-init__"]+=1);
 
 /*! *****************************************************************************
 Copyright (c) Microsoft Corporation.
@@ -2885,15 +2978,10 @@ var timeoutProvider = {
         for (var _i = 2; _i < arguments.length; _i++) {
             args[_i - 2] = arguments[_i];
         }
-        var delegate = timeoutProvider.delegate;
-        if (delegate === null || delegate === void 0 ? void 0 : delegate.setTimeout) {
-            return delegate.setTimeout.apply(delegate, __spreadArray([handler, timeout], __read(args)));
-        }
         return setTimeout.apply(void 0, __spreadArray([handler, timeout], __read(args)));
     },
     clearTimeout: function (handle) {
-        var delegate = timeoutProvider.delegate;
-        return ((delegate === null || delegate === void 0 ? void 0 : delegate.clearTimeout) || clearTimeout)(handle);
+        return (clearTimeout)(handle);
     },
     delegate: undefined,
 };
@@ -2908,38 +2996,8 @@ function reportUnhandledError(err) {
 
 function noop() { }
 
-var COMPLETE_NOTIFICATION = (function () { return createNotification('C', undefined, undefined); })();
-function errorNotification(error) {
-    return createNotification('E', undefined, error);
-}
-function nextNotification(value) {
-    return createNotification('N', value, undefined);
-}
-function createNotification(kind, value, error) {
-    return {
-        kind: kind,
-        value: value,
-        error: error,
-    };
-}
-
-var context = null;
 function errorContext(cb) {
-    if (config.useDeprecatedSynchronousErrorHandling) {
-        var isRoot = !context;
-        if (isRoot) {
-            context = { errorThrown: false, error: null };
-        }
-        cb();
-        if (isRoot) {
-            var _a = context, errorThrown = _a.errorThrown, error = _a.error;
-            context = null;
-            if (errorThrown) {
-                throw error;
-            }
-        }
-    }
-    else {
+    {
         cb();
     }
 }
@@ -2964,26 +3022,20 @@ var Subscriber = (function (_super) {
         return new SafeSubscriber(next, error, complete);
     };
     Subscriber.prototype.next = function (value) {
-        if (this.isStopped) {
-            handleStoppedNotification(nextNotification(value), this);
-        }
+        if (this.isStopped) ;
         else {
             this._next(value);
         }
     };
     Subscriber.prototype.error = function (err) {
-        if (this.isStopped) {
-            handleStoppedNotification(errorNotification(err), this);
-        }
+        if (this.isStopped) ;
         else {
             this.isStopped = true;
             this._error(err);
         }
     };
     Subscriber.prototype.complete = function () {
-        if (this.isStopped) {
-            handleStoppedNotification(COMPLETE_NOTIFICATION, this);
-        }
+        if (this.isStopped) ;
         else {
             this.isStopped = true;
             this._complete();
@@ -3070,7 +3122,7 @@ var SafeSubscriber = (function (_super) {
         var partialObserver;
         if (isFunction(observerOrNext) || !observerOrNext) {
             partialObserver = {
-                next: observerOrNext !== null && observerOrNext !== void 0 ? observerOrNext : undefined,
+                next: (observerOrNext !== null && observerOrNext !== void 0 ? observerOrNext : undefined),
                 error: error !== null && error !== void 0 ? error : undefined,
                 complete: complete !== null && complete !== void 0 ? complete : undefined,
             };
@@ -3102,10 +3154,6 @@ function handleUnhandledError(error) {
 }
 function defaultErrorHandler(err) {
     throw err;
-}
-function handleStoppedNotification(notification, subscriber) {
-    var onStoppedNotification = config.onStoppedNotification;
-    onStoppedNotification && timeoutProvider.setTimeout(function () { return onStoppedNotification(notification, subscriber); });
 }
 var EMPTY_OBSERVER = {
     closed: true,
@@ -3303,6 +3351,143 @@ var OperatorSubscriber = (function (_super) {
     return OperatorSubscriber;
 }(Subscriber));
 
+function refCount() {
+    return operate(function (source, subscriber) {
+        var connection = null;
+        source._refCount++;
+        var refCounter = createOperatorSubscriber(subscriber, undefined, undefined, undefined, function () {
+            if (!source || source._refCount <= 0 || 0 < --source._refCount) {
+                connection = null;
+                return;
+            }
+            var sharedConnection = source._connection;
+            var conn = connection;
+            connection = null;
+            if (sharedConnection && (!conn || sharedConnection === conn)) {
+                sharedConnection.unsubscribe();
+            }
+            subscriber.unsubscribe();
+        });
+        source.subscribe(refCounter);
+        if (!refCounter.closed) {
+            connection = source.connect();
+        }
+    });
+}
+
+((function (_super) {
+    __extends(ConnectableObservable, _super);
+    function ConnectableObservable(source, subjectFactory) {
+        var _this = _super.call(this) || this;
+        _this.source = source;
+        _this.subjectFactory = subjectFactory;
+        _this._subject = null;
+        _this._refCount = 0;
+        _this._connection = null;
+        if (hasLift(source)) {
+            _this.lift = source.lift;
+        }
+        return _this;
+    }
+    ConnectableObservable.prototype._subscribe = function (subscriber) {
+        return this.getSubject().subscribe(subscriber);
+    };
+    ConnectableObservable.prototype.getSubject = function () {
+        var subject = this._subject;
+        if (!subject || subject.isStopped) {
+            this._subject = this.subjectFactory();
+        }
+        return this._subject;
+    };
+    ConnectableObservable.prototype._teardown = function () {
+        this._refCount = 0;
+        var _connection = this._connection;
+        this._subject = this._connection = null;
+        _connection === null || _connection === void 0 ? void 0 : _connection.unsubscribe();
+    };
+    ConnectableObservable.prototype.connect = function () {
+        var _this = this;
+        var connection = this._connection;
+        if (!connection) {
+            connection = this._connection = new Subscription();
+            var subject_1 = this.getSubject();
+            connection.add(this.source.subscribe(createOperatorSubscriber(subject_1, undefined, function () {
+                _this._teardown();
+                subject_1.complete();
+            }, function (err) {
+                _this._teardown();
+                subject_1.error(err);
+            }, function () { return _this._teardown(); })));
+            if (connection.closed) {
+                this._connection = null;
+                connection = Subscription.EMPTY;
+            }
+        }
+        return connection;
+    };
+    ConnectableObservable.prototype.refCount = function () {
+        return refCount()(this);
+    };
+    return ConnectableObservable;
+})(Observable));
+
+var performanceTimestampProvider = {
+    now: function () {
+        return (performanceTimestampProvider.delegate || performance).now();
+    },
+    delegate: undefined,
+};
+
+var animationFrameProvider = {
+    schedule: function (callback) {
+        var request = requestAnimationFrame;
+        var cancel = cancelAnimationFrame;
+        var handle = request(function (timestamp) {
+            cancel = undefined;
+            callback(timestamp);
+        });
+        return new Subscription(function () { return cancel === null || cancel === void 0 ? void 0 : cancel(handle); });
+    },
+    requestAnimationFrame: function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        var delegate = animationFrameProvider.delegate;
+        return ((delegate === null || delegate === void 0 ? void 0 : delegate.requestAnimationFrame) || requestAnimationFrame).apply(void 0, __spreadArray([], __read(args)));
+    },
+    cancelAnimationFrame: function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        return (cancelAnimationFrame).apply(void 0, __spreadArray([], __read(args)));
+    },
+    delegate: undefined,
+};
+
+function animationFramesFactory(timestampProvider) {
+    var schedule = animationFrameProvider.schedule;
+    return new Observable(function (subscriber) {
+        var subscription = new Subscription();
+        var provider = timestampProvider || performanceTimestampProvider;
+        var start = provider.now();
+        var run = function (timestamp) {
+            var now = provider.now();
+            subscriber.next({
+                timestamp: timestampProvider ? now : timestamp,
+                elapsed: now - start,
+            });
+            if (!subscriber.closed) {
+                subscription.add(schedule(run));
+            }
+        };
+        subscription.add(schedule(run));
+        return subscription;
+    });
+}
+animationFramesFactory();
+
 var ObjectUnsubscribedError = createErrorClass(function (_super) {
     return function ObjectUnsubscribedErrorImpl() {
         _super(this);
@@ -3465,6 +3650,643 @@ var AnonymousSubject = (function (_super) {
     return AnonymousSubject;
 }(Subject));
 
+((function (_super) {
+    __extends(BehaviorSubject, _super);
+    function BehaviorSubject(_value) {
+        var _this = _super.call(this) || this;
+        _this._value = _value;
+        return _this;
+    }
+    Object.defineProperty(BehaviorSubject.prototype, "value", {
+        get: function () {
+            return this.getValue();
+        },
+        enumerable: false,
+        configurable: true
+    });
+    BehaviorSubject.prototype._subscribe = function (subscriber) {
+        var subscription = _super.prototype._subscribe.call(this, subscriber);
+        !subscription.closed && subscriber.next(this._value);
+        return subscription;
+    };
+    BehaviorSubject.prototype.getValue = function () {
+        var _a = this, hasError = _a.hasError, thrownError = _a.thrownError, _value = _a._value;
+        if (hasError) {
+            throw thrownError;
+        }
+        this._throwIfClosed();
+        return _value;
+    };
+    BehaviorSubject.prototype.next = function (value) {
+        _super.prototype.next.call(this, (this._value = value));
+    };
+    return BehaviorSubject;
+})(Subject));
+
+var dateTimestampProvider = {
+    now: function () {
+        return (dateTimestampProvider.delegate || Date).now();
+    },
+    delegate: undefined,
+};
+
+((function (_super) {
+    __extends(ReplaySubject, _super);
+    function ReplaySubject(_bufferSize, _windowTime, _timestampProvider) {
+        if (_bufferSize === void 0) { _bufferSize = Infinity; }
+        if (_windowTime === void 0) { _windowTime = Infinity; }
+        if (_timestampProvider === void 0) { _timestampProvider = dateTimestampProvider; }
+        var _this = _super.call(this) || this;
+        _this._bufferSize = _bufferSize;
+        _this._windowTime = _windowTime;
+        _this._timestampProvider = _timestampProvider;
+        _this._buffer = [];
+        _this._infiniteTimeWindow = true;
+        _this._infiniteTimeWindow = _windowTime === Infinity;
+        _this._bufferSize = Math.max(1, _bufferSize);
+        _this._windowTime = Math.max(1, _windowTime);
+        return _this;
+    }
+    ReplaySubject.prototype.next = function (value) {
+        var _a = this, isStopped = _a.isStopped, _buffer = _a._buffer, _infiniteTimeWindow = _a._infiniteTimeWindow, _timestampProvider = _a._timestampProvider, _windowTime = _a._windowTime;
+        if (!isStopped) {
+            _buffer.push(value);
+            !_infiniteTimeWindow && _buffer.push(_timestampProvider.now() + _windowTime);
+        }
+        this._trimBuffer();
+        _super.prototype.next.call(this, value);
+    };
+    ReplaySubject.prototype._subscribe = function (subscriber) {
+        this._throwIfClosed();
+        this._trimBuffer();
+        var subscription = this._innerSubscribe(subscriber);
+        var _a = this, _infiniteTimeWindow = _a._infiniteTimeWindow, _buffer = _a._buffer;
+        var copy = _buffer.slice();
+        for (var i = 0; i < copy.length && !subscriber.closed; i += _infiniteTimeWindow ? 1 : 2) {
+            subscriber.next(copy[i]);
+        }
+        this._checkFinalizedStatuses(subscriber);
+        return subscription;
+    };
+    ReplaySubject.prototype._trimBuffer = function () {
+        var _a = this, _bufferSize = _a._bufferSize, _timestampProvider = _a._timestampProvider, _buffer = _a._buffer, _infiniteTimeWindow = _a._infiniteTimeWindow;
+        var adjustedBufferSize = (_infiniteTimeWindow ? 1 : 2) * _bufferSize;
+        _bufferSize < Infinity && adjustedBufferSize < _buffer.length && _buffer.splice(0, _buffer.length - adjustedBufferSize);
+        if (!_infiniteTimeWindow) {
+            var now = _timestampProvider.now();
+            var last = 0;
+            for (var i = 1; i < _buffer.length && _buffer[i] <= now; i += 2) {
+                last = i;
+            }
+            last && _buffer.splice(0, last + 1);
+        }
+    };
+    return ReplaySubject;
+})(Subject));
+
+((function (_super) {
+    __extends(AsyncSubject, _super);
+    function AsyncSubject() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this._value = null;
+        _this._hasValue = false;
+        _this._isComplete = false;
+        return _this;
+    }
+    AsyncSubject.prototype._checkFinalizedStatuses = function (subscriber) {
+        var _a = this, hasError = _a.hasError, _hasValue = _a._hasValue, _value = _a._value, thrownError = _a.thrownError, isStopped = _a.isStopped, _isComplete = _a._isComplete;
+        if (hasError) {
+            subscriber.error(thrownError);
+        }
+        else if (isStopped || _isComplete) {
+            _hasValue && subscriber.next(_value);
+            subscriber.complete();
+        }
+    };
+    AsyncSubject.prototype.next = function (value) {
+        if (!this.isStopped) {
+            this._value = value;
+            this._hasValue = true;
+        }
+    };
+    AsyncSubject.prototype.complete = function () {
+        var _a = this, _hasValue = _a._hasValue, _value = _a._value, _isComplete = _a._isComplete;
+        if (!_isComplete) {
+            this._isComplete = true;
+            _hasValue && _super.prototype.next.call(this, _value);
+            _super.prototype.complete.call(this);
+        }
+    };
+    return AsyncSubject;
+})(Subject));
+
+var Action = (function (_super) {
+    __extends(Action, _super);
+    function Action(scheduler, work) {
+        return _super.call(this) || this;
+    }
+    Action.prototype.schedule = function (state, delay) {
+        return this;
+    };
+    return Action;
+}(Subscription));
+
+var intervalProvider = {
+    setInterval: function (handler, timeout) {
+        var args = [];
+        for (var _i = 2; _i < arguments.length; _i++) {
+            args[_i - 2] = arguments[_i];
+        }
+        return setInterval.apply(void 0, __spreadArray([handler, timeout], __read(args)));
+    },
+    clearInterval: function (handle) {
+        return (clearInterval)(handle);
+    },
+    delegate: undefined,
+};
+
+var AsyncAction = (function (_super) {
+    __extends(AsyncAction, _super);
+    function AsyncAction(scheduler, work) {
+        var _this = _super.call(this, scheduler, work) || this;
+        _this.scheduler = scheduler;
+        _this.work = work;
+        _this.pending = false;
+        return _this;
+    }
+    AsyncAction.prototype.schedule = function (state, delay) {
+        if (delay === void 0) { delay = 0; }
+        if (this.closed) {
+            return this;
+        }
+        this.state = state;
+        var id = this.id;
+        var scheduler = this.scheduler;
+        if (id != null) {
+            this.id = this.recycleAsyncId(scheduler, id, delay);
+        }
+        this.pending = true;
+        this.delay = delay;
+        this.id = this.id || this.requestAsyncId(scheduler, this.id, delay);
+        return this;
+    };
+    AsyncAction.prototype.requestAsyncId = function (scheduler, _id, delay) {
+        if (delay === void 0) { delay = 0; }
+        return intervalProvider.setInterval(scheduler.flush.bind(scheduler, this), delay);
+    };
+    AsyncAction.prototype.recycleAsyncId = function (_scheduler, id, delay) {
+        if (delay === void 0) { delay = 0; }
+        if (delay != null && this.delay === delay && this.pending === false) {
+            return id;
+        }
+        intervalProvider.clearInterval(id);
+        return undefined;
+    };
+    AsyncAction.prototype.execute = function (state, delay) {
+        if (this.closed) {
+            return new Error('executing a cancelled action');
+        }
+        this.pending = false;
+        var error = this._execute(state, delay);
+        if (error) {
+            return error;
+        }
+        else if (this.pending === false && this.id != null) {
+            this.id = this.recycleAsyncId(this.scheduler, this.id, null);
+        }
+    };
+    AsyncAction.prototype._execute = function (state, _delay) {
+        var errored = false;
+        var errorValue;
+        try {
+            this.work(state);
+        }
+        catch (e) {
+            errored = true;
+            errorValue = e ? e : new Error('Scheduled action threw falsy error');
+        }
+        if (errored) {
+            this.unsubscribe();
+            return errorValue;
+        }
+    };
+    AsyncAction.prototype.unsubscribe = function () {
+        if (!this.closed) {
+            var _a = this, id = _a.id, scheduler = _a.scheduler;
+            var actions = scheduler.actions;
+            this.work = this.state = this.scheduler = null;
+            this.pending = false;
+            arrRemove(actions, this);
+            if (id != null) {
+                this.id = this.recycleAsyncId(scheduler, id, null);
+            }
+            this.delay = null;
+            _super.prototype.unsubscribe.call(this);
+        }
+    };
+    return AsyncAction;
+}(Action));
+
+var nextHandle = 1;
+var resolved;
+var activeHandles = {};
+function findAndClearHandle(handle) {
+    if (handle in activeHandles) {
+        delete activeHandles[handle];
+        return true;
+    }
+    return false;
+}
+var Immediate = {
+    setImmediate: function (cb) {
+        var handle = nextHandle++;
+        activeHandles[handle] = true;
+        if (!resolved) {
+            resolved = Promise.resolve();
+        }
+        resolved.then(function () { return findAndClearHandle(handle) && cb(); });
+        return handle;
+    },
+    clearImmediate: function (handle) {
+        findAndClearHandle(handle);
+    },
+};
+
+var setImmediate = Immediate.setImmediate, clearImmediate = Immediate.clearImmediate;
+var immediateProvider = {
+    setImmediate: function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        var delegate = immediateProvider.delegate;
+        return ((delegate === null || delegate === void 0 ? void 0 : delegate.setImmediate) || setImmediate).apply(void 0, __spreadArray([], __read(args)));
+    },
+    clearImmediate: function (handle) {
+        return (clearImmediate)(handle);
+    },
+    delegate: undefined,
+};
+
+var AsapAction = (function (_super) {
+    __extends(AsapAction, _super);
+    function AsapAction(scheduler, work) {
+        var _this = _super.call(this, scheduler, work) || this;
+        _this.scheduler = scheduler;
+        _this.work = work;
+        return _this;
+    }
+    AsapAction.prototype.requestAsyncId = function (scheduler, id, delay) {
+        if (delay === void 0) { delay = 0; }
+        if (delay !== null && delay > 0) {
+            return _super.prototype.requestAsyncId.call(this, scheduler, id, delay);
+        }
+        scheduler.actions.push(this);
+        return scheduler._scheduled || (scheduler._scheduled = immediateProvider.setImmediate(scheduler.flush.bind(scheduler, undefined)));
+    };
+    AsapAction.prototype.recycleAsyncId = function (scheduler, id, delay) {
+        if (delay === void 0) { delay = 0; }
+        if ((delay != null && delay > 0) || (delay == null && this.delay > 0)) {
+            return _super.prototype.recycleAsyncId.call(this, scheduler, id, delay);
+        }
+        if (!scheduler.actions.some(function (action) { return action.id === id; })) {
+            immediateProvider.clearImmediate(id);
+            scheduler._scheduled = undefined;
+        }
+        return undefined;
+    };
+    return AsapAction;
+}(AsyncAction));
+
+var Scheduler = (function () {
+    function Scheduler(schedulerActionCtor, now) {
+        if (now === void 0) { now = Scheduler.now; }
+        this.schedulerActionCtor = schedulerActionCtor;
+        this.now = now;
+    }
+    Scheduler.prototype.schedule = function (work, delay, state) {
+        if (delay === void 0) { delay = 0; }
+        return new this.schedulerActionCtor(this, work).schedule(state, delay);
+    };
+    Scheduler.now = dateTimestampProvider.now;
+    return Scheduler;
+}());
+
+var AsyncScheduler = (function (_super) {
+    __extends(AsyncScheduler, _super);
+    function AsyncScheduler(SchedulerAction, now) {
+        if (now === void 0) { now = Scheduler.now; }
+        var _this = _super.call(this, SchedulerAction, now) || this;
+        _this.actions = [];
+        _this._active = false;
+        _this._scheduled = undefined;
+        return _this;
+    }
+    AsyncScheduler.prototype.flush = function (action) {
+        var actions = this.actions;
+        if (this._active) {
+            actions.push(action);
+            return;
+        }
+        var error;
+        this._active = true;
+        do {
+            if ((error = action.execute(action.state, action.delay))) {
+                break;
+            }
+        } while ((action = actions.shift()));
+        this._active = false;
+        if (error) {
+            while ((action = actions.shift())) {
+                action.unsubscribe();
+            }
+            throw error;
+        }
+    };
+    return AsyncScheduler;
+}(Scheduler));
+
+var AsapScheduler = (function (_super) {
+    __extends(AsapScheduler, _super);
+    function AsapScheduler() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    AsapScheduler.prototype.flush = function (action) {
+        this._active = true;
+        var flushId = this._scheduled;
+        this._scheduled = undefined;
+        var actions = this.actions;
+        var error;
+        action = action || actions.shift();
+        do {
+            if ((error = action.execute(action.state, action.delay))) {
+                break;
+            }
+        } while ((action = actions[0]) && action.id === flushId && actions.shift());
+        this._active = false;
+        if (error) {
+            while ((action = actions[0]) && action.id === flushId && actions.shift()) {
+                action.unsubscribe();
+            }
+            throw error;
+        }
+    };
+    return AsapScheduler;
+}(AsyncScheduler));
+
+new AsapScheduler(AsapAction);
+
+new AsyncScheduler(AsyncAction);
+
+var QueueAction = (function (_super) {
+    __extends(QueueAction, _super);
+    function QueueAction(scheduler, work) {
+        var _this = _super.call(this, scheduler, work) || this;
+        _this.scheduler = scheduler;
+        _this.work = work;
+        return _this;
+    }
+    QueueAction.prototype.schedule = function (state, delay) {
+        if (delay === void 0) { delay = 0; }
+        if (delay > 0) {
+            return _super.prototype.schedule.call(this, state, delay);
+        }
+        this.delay = delay;
+        this.state = state;
+        this.scheduler.flush(this);
+        return this;
+    };
+    QueueAction.prototype.execute = function (state, delay) {
+        return (delay > 0 || this.closed) ?
+            _super.prototype.execute.call(this, state, delay) :
+            this._execute(state, delay);
+    };
+    QueueAction.prototype.requestAsyncId = function (scheduler, id, delay) {
+        if (delay === void 0) { delay = 0; }
+        if ((delay != null && delay > 0) || (delay == null && this.delay > 0)) {
+            return _super.prototype.requestAsyncId.call(this, scheduler, id, delay);
+        }
+        return scheduler.flush(this);
+    };
+    return QueueAction;
+}(AsyncAction));
+
+var QueueScheduler = (function (_super) {
+    __extends(QueueScheduler, _super);
+    function QueueScheduler() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    return QueueScheduler;
+}(AsyncScheduler));
+
+new QueueScheduler(QueueAction);
+
+var AnimationFrameAction = (function (_super) {
+    __extends(AnimationFrameAction, _super);
+    function AnimationFrameAction(scheduler, work) {
+        var _this = _super.call(this, scheduler, work) || this;
+        _this.scheduler = scheduler;
+        _this.work = work;
+        return _this;
+    }
+    AnimationFrameAction.prototype.requestAsyncId = function (scheduler, id, delay) {
+        if (delay === void 0) { delay = 0; }
+        if (delay !== null && delay > 0) {
+            return _super.prototype.requestAsyncId.call(this, scheduler, id, delay);
+        }
+        scheduler.actions.push(this);
+        return scheduler._scheduled || (scheduler._scheduled = animationFrameProvider.requestAnimationFrame(function () { return scheduler.flush(undefined); }));
+    };
+    AnimationFrameAction.prototype.recycleAsyncId = function (scheduler, id, delay) {
+        if (delay === void 0) { delay = 0; }
+        if ((delay != null && delay > 0) || (delay == null && this.delay > 0)) {
+            return _super.prototype.recycleAsyncId.call(this, scheduler, id, delay);
+        }
+        if (!scheduler.actions.some(function (action) { return action.id === id; })) {
+            animationFrameProvider.cancelAnimationFrame(id);
+            scheduler._scheduled = undefined;
+        }
+        return undefined;
+    };
+    return AnimationFrameAction;
+}(AsyncAction));
+
+var AnimationFrameScheduler = (function (_super) {
+    __extends(AnimationFrameScheduler, _super);
+    function AnimationFrameScheduler() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    AnimationFrameScheduler.prototype.flush = function (action) {
+        this._active = true;
+        var flushId = this._scheduled;
+        this._scheduled = undefined;
+        var actions = this.actions;
+        var error;
+        action = action || actions.shift();
+        do {
+            if ((error = action.execute(action.state, action.delay))) {
+                break;
+            }
+        } while ((action = actions[0]) && action.id === flushId && actions.shift());
+        this._active = false;
+        if (error) {
+            while ((action = actions[0]) && action.id === flushId && actions.shift()) {
+                action.unsubscribe();
+            }
+            throw error;
+        }
+    };
+    return AnimationFrameScheduler;
+}(AsyncScheduler));
+
+new AnimationFrameScheduler(AnimationFrameAction);
+
+((function (_super) {
+    __extends(VirtualTimeScheduler, _super);
+    function VirtualTimeScheduler(schedulerActionCtor, maxFrames) {
+        if (schedulerActionCtor === void 0) { schedulerActionCtor = VirtualAction; }
+        if (maxFrames === void 0) { maxFrames = Infinity; }
+        var _this = _super.call(this, schedulerActionCtor, function () { return _this.frame; }) || this;
+        _this.maxFrames = maxFrames;
+        _this.frame = 0;
+        _this.index = -1;
+        return _this;
+    }
+    VirtualTimeScheduler.prototype.flush = function () {
+        var _a = this, actions = _a.actions, maxFrames = _a.maxFrames;
+        var error;
+        var action;
+        while ((action = actions[0]) && action.delay <= maxFrames) {
+            actions.shift();
+            this.frame = action.delay;
+            if ((error = action.execute(action.state, action.delay))) {
+                break;
+            }
+        }
+        if (error) {
+            while ((action = actions.shift())) {
+                action.unsubscribe();
+            }
+            throw error;
+        }
+    };
+    VirtualTimeScheduler.frameTimeFactor = 10;
+    return VirtualTimeScheduler;
+})(AsyncScheduler));
+var VirtualAction = (function (_super) {
+    __extends(VirtualAction, _super);
+    function VirtualAction(scheduler, work, index) {
+        if (index === void 0) { index = (scheduler.index += 1); }
+        var _this = _super.call(this, scheduler, work) || this;
+        _this.scheduler = scheduler;
+        _this.work = work;
+        _this.index = index;
+        _this.active = true;
+        _this.index = scheduler.index = index;
+        return _this;
+    }
+    VirtualAction.prototype.schedule = function (state, delay) {
+        if (delay === void 0) { delay = 0; }
+        if (Number.isFinite(delay)) {
+            if (!this.id) {
+                return _super.prototype.schedule.call(this, state, delay);
+            }
+            this.active = false;
+            var action = new VirtualAction(this.scheduler, this.work);
+            this.add(action);
+            return action.schedule(state, delay);
+        }
+        else {
+            return Subscription.EMPTY;
+        }
+    };
+    VirtualAction.prototype.requestAsyncId = function (scheduler, id, delay) {
+        if (delay === void 0) { delay = 0; }
+        this.delay = scheduler.frame + delay;
+        var actions = scheduler.actions;
+        actions.push(this);
+        actions.sort(VirtualAction.sortActions);
+        return true;
+    };
+    VirtualAction.prototype.recycleAsyncId = function (scheduler, id, delay) {
+        return undefined;
+    };
+    VirtualAction.prototype._execute = function (state, delay) {
+        if (this.active === true) {
+            return _super.prototype._execute.call(this, state, delay);
+        }
+    };
+    VirtualAction.sortActions = function (a, b) {
+        if (a.delay === b.delay) {
+            if (a.index === b.index) {
+                return 0;
+            }
+            else if (a.index > b.index) {
+                return 1;
+            }
+            else {
+                return -1;
+            }
+        }
+        else if (a.delay > b.delay) {
+            return 1;
+        }
+        else {
+            return -1;
+        }
+    };
+    return VirtualAction;
+}(AsyncAction));
+
+new Observable(function (subscriber) { return subscriber.complete(); });
+
+var NotificationKind;
+(function (NotificationKind) {
+    NotificationKind["NEXT"] = "N";
+    NotificationKind["ERROR"] = "E";
+    NotificationKind["COMPLETE"] = "C";
+})(NotificationKind || (NotificationKind = {}));
+
+createErrorClass(function (_super) { return function EmptyErrorImpl() {
+    _super(this);
+    this.name = 'EmptyError';
+    this.message = 'no elements in sequence';
+}; });
+
+createErrorClass(function (_super) {
+    return function ArgumentOutOfRangeErrorImpl() {
+        _super(this);
+        this.name = 'ArgumentOutOfRangeError';
+        this.message = 'argument out of range';
+    };
+});
+
+createErrorClass(function (_super) {
+    return function NotFoundErrorImpl(message) {
+        _super(this);
+        this.name = 'NotFoundError';
+        this.message = message;
+    };
+});
+
+createErrorClass(function (_super) {
+    return function SequenceErrorImpl(message) {
+        _super(this);
+        this.name = 'SequenceError';
+        this.message = message;
+    };
+});
+
+createErrorClass(function (_super) {
+    return function TimeoutErrorImpl(info) {
+        if (info === void 0) { info = null; }
+        _super(this);
+        this.message = 'Timeout has occurred';
+        this.name = 'TimeoutError';
+        this.info = info;
+    };
+});
+
 function map(project, thisArg) {
     return operate(function (source, subscriber) {
         var index = 0;
@@ -3473,6 +4295,8 @@ function map(project, thisArg) {
         }));
     });
 }
+
+new Observable(noop);
 
 function filter(predicate, thisArg) {
     return operate(function (source, subscriber) {
@@ -3493,1846 +4317,1846 @@ var lodash_isequal = {exports: {}};
  */
 
 (function (module, exports) {
-/** Used as the size to enable large array optimizations. */
-var LARGE_ARRAY_SIZE = 200;
-
-/** Used to stand-in for `undefined` hash values. */
-var HASH_UNDEFINED = '__lodash_hash_undefined__';
-
-/** Used to compose bitmasks for value comparisons. */
-var COMPARE_PARTIAL_FLAG = 1,
-    COMPARE_UNORDERED_FLAG = 2;
-
-/** Used as references for various `Number` constants. */
-var MAX_SAFE_INTEGER = 9007199254740991;
-
-/** `Object#toString` result references. */
-var argsTag = '[object Arguments]',
-    arrayTag = '[object Array]',
-    asyncTag = '[object AsyncFunction]',
-    boolTag = '[object Boolean]',
-    dateTag = '[object Date]',
-    errorTag = '[object Error]',
-    funcTag = '[object Function]',
-    genTag = '[object GeneratorFunction]',
-    mapTag = '[object Map]',
-    numberTag = '[object Number]',
-    nullTag = '[object Null]',
-    objectTag = '[object Object]',
-    promiseTag = '[object Promise]',
-    proxyTag = '[object Proxy]',
-    regexpTag = '[object RegExp]',
-    setTag = '[object Set]',
-    stringTag = '[object String]',
-    symbolTag = '[object Symbol]',
-    undefinedTag = '[object Undefined]',
-    weakMapTag = '[object WeakMap]';
-
-var arrayBufferTag = '[object ArrayBuffer]',
-    dataViewTag = '[object DataView]',
-    float32Tag = '[object Float32Array]',
-    float64Tag = '[object Float64Array]',
-    int8Tag = '[object Int8Array]',
-    int16Tag = '[object Int16Array]',
-    int32Tag = '[object Int32Array]',
-    uint8Tag = '[object Uint8Array]',
-    uint8ClampedTag = '[object Uint8ClampedArray]',
-    uint16Tag = '[object Uint16Array]',
-    uint32Tag = '[object Uint32Array]';
-
-/**
- * Used to match `RegExp`
- * [syntax characters](http://ecma-international.org/ecma-262/7.0/#sec-patterns).
- */
-var reRegExpChar = /[\\^$.*+?()[\]{}|]/g;
-
-/** Used to detect host constructors (Safari). */
-var reIsHostCtor = /^\[object .+?Constructor\]$/;
-
-/** Used to detect unsigned integer values. */
-var reIsUint = /^(?:0|[1-9]\d*)$/;
-
-/** Used to identify `toStringTag` values of typed arrays. */
-var typedArrayTags = {};
-typedArrayTags[float32Tag] = typedArrayTags[float64Tag] =
-typedArrayTags[int8Tag] = typedArrayTags[int16Tag] =
-typedArrayTags[int32Tag] = typedArrayTags[uint8Tag] =
-typedArrayTags[uint8ClampedTag] = typedArrayTags[uint16Tag] =
-typedArrayTags[uint32Tag] = true;
-typedArrayTags[argsTag] = typedArrayTags[arrayTag] =
-typedArrayTags[arrayBufferTag] = typedArrayTags[boolTag] =
-typedArrayTags[dataViewTag] = typedArrayTags[dateTag] =
-typedArrayTags[errorTag] = typedArrayTags[funcTag] =
-typedArrayTags[mapTag] = typedArrayTags[numberTag] =
-typedArrayTags[objectTag] = typedArrayTags[regexpTag] =
-typedArrayTags[setTag] = typedArrayTags[stringTag] =
-typedArrayTags[weakMapTag] = false;
-
-/** Detect free variable `global` from Node.js. */
-var freeGlobal = typeof commonjsGlobal == 'object' && commonjsGlobal && commonjsGlobal.Object === Object && commonjsGlobal;
-
-/** Detect free variable `self`. */
-var freeSelf = typeof self == 'object' && self && self.Object === Object && self;
-
-/** Used as a reference to the global object. */
-var root = freeGlobal || freeSelf || Function('return this')();
-
-/** Detect free variable `exports`. */
-var freeExports = exports && !exports.nodeType && exports;
-
-/** Detect free variable `module`. */
-var freeModule = freeExports && 'object' == 'object' && module && !module.nodeType && module;
-
-/** Detect the popular CommonJS extension `module.exports`. */
-var moduleExports = freeModule && freeModule.exports === freeExports;
-
-/** Detect free variable `process` from Node.js. */
-var freeProcess = moduleExports && freeGlobal.process;
-
-/** Used to access faster Node.js helpers. */
-var nodeUtil = (function() {
-  try {
-    return freeProcess && freeProcess.binding && freeProcess.binding('util');
-  } catch (e) {}
-}());
-
-/* Node.js helper references. */
-var nodeIsTypedArray = nodeUtil && nodeUtil.isTypedArray;
-
-/**
- * A specialized version of `_.filter` for arrays without support for
- * iteratee shorthands.
- *
- * @private
- * @param {Array} [array] The array to iterate over.
- * @param {Function} predicate The function invoked per iteration.
- * @returns {Array} Returns the new filtered array.
- */
-function arrayFilter(array, predicate) {
-  var index = -1,
-      length = array == null ? 0 : array.length,
-      resIndex = 0,
-      result = [];
-
-  while (++index < length) {
-    var value = array[index];
-    if (predicate(value, index, array)) {
-      result[resIndex++] = value;
-    }
-  }
-  return result;
-}
-
-/**
- * Appends the elements of `values` to `array`.
- *
- * @private
- * @param {Array} array The array to modify.
- * @param {Array} values The values to append.
- * @returns {Array} Returns `array`.
- */
-function arrayPush(array, values) {
-  var index = -1,
-      length = values.length,
-      offset = array.length;
-
-  while (++index < length) {
-    array[offset + index] = values[index];
-  }
-  return array;
-}
-
-/**
- * A specialized version of `_.some` for arrays without support for iteratee
- * shorthands.
- *
- * @private
- * @param {Array} [array] The array to iterate over.
- * @param {Function} predicate The function invoked per iteration.
- * @returns {boolean} Returns `true` if any element passes the predicate check,
- *  else `false`.
- */
-function arraySome(array, predicate) {
-  var index = -1,
-      length = array == null ? 0 : array.length;
-
-  while (++index < length) {
-    if (predicate(array[index], index, array)) {
-      return true;
-    }
-  }
-  return false;
-}
-
-/**
- * The base implementation of `_.times` without support for iteratee shorthands
- * or max array length checks.
- *
- * @private
- * @param {number} n The number of times to invoke `iteratee`.
- * @param {Function} iteratee The function invoked per iteration.
- * @returns {Array} Returns the array of results.
- */
-function baseTimes(n, iteratee) {
-  var index = -1,
-      result = Array(n);
-
-  while (++index < n) {
-    result[index] = iteratee(index);
-  }
-  return result;
-}
-
-/**
- * The base implementation of `_.unary` without support for storing metadata.
- *
- * @private
- * @param {Function} func The function to cap arguments for.
- * @returns {Function} Returns the new capped function.
- */
-function baseUnary(func) {
-  return function(value) {
-    return func(value);
-  };
-}
-
-/**
- * Checks if a `cache` value for `key` exists.
- *
- * @private
- * @param {Object} cache The cache to query.
- * @param {string} key The key of the entry to check.
- * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
- */
-function cacheHas(cache, key) {
-  return cache.has(key);
-}
-
-/**
- * Gets the value at `key` of `object`.
- *
- * @private
- * @param {Object} [object] The object to query.
- * @param {string} key The key of the property to get.
- * @returns {*} Returns the property value.
- */
-function getValue(object, key) {
-  return object == null ? undefined : object[key];
-}
-
-/**
- * Converts `map` to its key-value pairs.
- *
- * @private
- * @param {Object} map The map to convert.
- * @returns {Array} Returns the key-value pairs.
- */
-function mapToArray(map) {
-  var index = -1,
-      result = Array(map.size);
-
-  map.forEach(function(value, key) {
-    result[++index] = [key, value];
-  });
-  return result;
-}
-
-/**
- * Creates a unary function that invokes `func` with its argument transformed.
- *
- * @private
- * @param {Function} func The function to wrap.
- * @param {Function} transform The argument transform.
- * @returns {Function} Returns the new function.
- */
-function overArg(func, transform) {
-  return function(arg) {
-    return func(transform(arg));
-  };
-}
-
-/**
- * Converts `set` to an array of its values.
- *
- * @private
- * @param {Object} set The set to convert.
- * @returns {Array} Returns the values.
- */
-function setToArray(set) {
-  var index = -1,
-      result = Array(set.size);
-
-  set.forEach(function(value) {
-    result[++index] = value;
-  });
-  return result;
-}
-
-/** Used for built-in method references. */
-var arrayProto = Array.prototype,
-    funcProto = Function.prototype,
-    objectProto = Object.prototype;
-
-/** Used to detect overreaching core-js shims. */
-var coreJsData = root['__core-js_shared__'];
-
-/** Used to resolve the decompiled source of functions. */
-var funcToString = funcProto.toString;
-
-/** Used to check objects for own properties. */
-var hasOwnProperty = objectProto.hasOwnProperty;
-
-/** Used to detect methods masquerading as native. */
-var maskSrcKey = (function() {
-  var uid = /[^.]+$/.exec(coreJsData && coreJsData.keys && coreJsData.keys.IE_PROTO || '');
-  return uid ? ('Symbol(src)_1.' + uid) : '';
-}());
-
-/**
- * Used to resolve the
- * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
- * of values.
- */
-var nativeObjectToString = objectProto.toString;
-
-/** Used to detect if a method is native. */
-var reIsNative = RegExp('^' +
-  funcToString.call(hasOwnProperty).replace(reRegExpChar, '\\$&')
-  .replace(/hasOwnProperty|(function).*?(?=\\\()| for .+?(?=\\\])/g, '$1.*?') + '$'
-);
-
-/** Built-in value references. */
-var Buffer = moduleExports ? root.Buffer : undefined,
-    Symbol = root.Symbol,
-    Uint8Array = root.Uint8Array,
-    propertyIsEnumerable = objectProto.propertyIsEnumerable,
-    splice = arrayProto.splice,
-    symToStringTag = Symbol ? Symbol.toStringTag : undefined;
-
-/* Built-in method references for those with the same name as other `lodash` methods. */
-var nativeGetSymbols = Object.getOwnPropertySymbols,
-    nativeIsBuffer = Buffer ? Buffer.isBuffer : undefined,
-    nativeKeys = overArg(Object.keys, Object);
-
-/* Built-in method references that are verified to be native. */
-var DataView = getNative(root, 'DataView'),
-    Map = getNative(root, 'Map'),
-    Promise = getNative(root, 'Promise'),
-    Set = getNative(root, 'Set'),
-    WeakMap = getNative(root, 'WeakMap'),
-    nativeCreate = getNative(Object, 'create');
-
-/** Used to detect maps, sets, and weakmaps. */
-var dataViewCtorString = toSource(DataView),
-    mapCtorString = toSource(Map),
-    promiseCtorString = toSource(Promise),
-    setCtorString = toSource(Set),
-    weakMapCtorString = toSource(WeakMap);
-
-/** Used to convert symbols to primitives and strings. */
-var symbolProto = Symbol ? Symbol.prototype : undefined,
-    symbolValueOf = symbolProto ? symbolProto.valueOf : undefined;
-
-/**
- * Creates a hash object.
- *
- * @private
- * @constructor
- * @param {Array} [entries] The key-value pairs to cache.
- */
-function Hash(entries) {
-  var index = -1,
-      length = entries == null ? 0 : entries.length;
-
-  this.clear();
-  while (++index < length) {
-    var entry = entries[index];
-    this.set(entry[0], entry[1]);
-  }
-}
-
-/**
- * Removes all key-value entries from the hash.
- *
- * @private
- * @name clear
- * @memberOf Hash
- */
-function hashClear() {
-  this.__data__ = nativeCreate ? nativeCreate(null) : {};
-  this.size = 0;
-}
-
-/**
- * Removes `key` and its value from the hash.
- *
- * @private
- * @name delete
- * @memberOf Hash
- * @param {Object} hash The hash to modify.
- * @param {string} key The key of the value to remove.
- * @returns {boolean} Returns `true` if the entry was removed, else `false`.
- */
-function hashDelete(key) {
-  var result = this.has(key) && delete this.__data__[key];
-  this.size -= result ? 1 : 0;
-  return result;
-}
-
-/**
- * Gets the hash value for `key`.
- *
- * @private
- * @name get
- * @memberOf Hash
- * @param {string} key The key of the value to get.
- * @returns {*} Returns the entry value.
- */
-function hashGet(key) {
-  var data = this.__data__;
-  if (nativeCreate) {
-    var result = data[key];
-    return result === HASH_UNDEFINED ? undefined : result;
-  }
-  return hasOwnProperty.call(data, key) ? data[key] : undefined;
-}
-
-/**
- * Checks if a hash value for `key` exists.
- *
- * @private
- * @name has
- * @memberOf Hash
- * @param {string} key The key of the entry to check.
- * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
- */
-function hashHas(key) {
-  var data = this.__data__;
-  return nativeCreate ? (data[key] !== undefined) : hasOwnProperty.call(data, key);
-}
-
-/**
- * Sets the hash `key` to `value`.
- *
- * @private
- * @name set
- * @memberOf Hash
- * @param {string} key The key of the value to set.
- * @param {*} value The value to set.
- * @returns {Object} Returns the hash instance.
- */
-function hashSet(key, value) {
-  var data = this.__data__;
-  this.size += this.has(key) ? 0 : 1;
-  data[key] = (nativeCreate && value === undefined) ? HASH_UNDEFINED : value;
-  return this;
-}
-
-// Add methods to `Hash`.
-Hash.prototype.clear = hashClear;
-Hash.prototype['delete'] = hashDelete;
-Hash.prototype.get = hashGet;
-Hash.prototype.has = hashHas;
-Hash.prototype.set = hashSet;
-
-/**
- * Creates an list cache object.
- *
- * @private
- * @constructor
- * @param {Array} [entries] The key-value pairs to cache.
- */
-function ListCache(entries) {
-  var index = -1,
-      length = entries == null ? 0 : entries.length;
-
-  this.clear();
-  while (++index < length) {
-    var entry = entries[index];
-    this.set(entry[0], entry[1]);
-  }
-}
-
-/**
- * Removes all key-value entries from the list cache.
- *
- * @private
- * @name clear
- * @memberOf ListCache
- */
-function listCacheClear() {
-  this.__data__ = [];
-  this.size = 0;
-}
-
-/**
- * Removes `key` and its value from the list cache.
- *
- * @private
- * @name delete
- * @memberOf ListCache
- * @param {string} key The key of the value to remove.
- * @returns {boolean} Returns `true` if the entry was removed, else `false`.
- */
-function listCacheDelete(key) {
-  var data = this.__data__,
-      index = assocIndexOf(data, key);
-
-  if (index < 0) {
-    return false;
-  }
-  var lastIndex = data.length - 1;
-  if (index == lastIndex) {
-    data.pop();
-  } else {
-    splice.call(data, index, 1);
-  }
-  --this.size;
-  return true;
-}
-
-/**
- * Gets the list cache value for `key`.
- *
- * @private
- * @name get
- * @memberOf ListCache
- * @param {string} key The key of the value to get.
- * @returns {*} Returns the entry value.
- */
-function listCacheGet(key) {
-  var data = this.__data__,
-      index = assocIndexOf(data, key);
-
-  return index < 0 ? undefined : data[index][1];
-}
-
-/**
- * Checks if a list cache value for `key` exists.
- *
- * @private
- * @name has
- * @memberOf ListCache
- * @param {string} key The key of the entry to check.
- * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
- */
-function listCacheHas(key) {
-  return assocIndexOf(this.__data__, key) > -1;
-}
-
-/**
- * Sets the list cache `key` to `value`.
- *
- * @private
- * @name set
- * @memberOf ListCache
- * @param {string} key The key of the value to set.
- * @param {*} value The value to set.
- * @returns {Object} Returns the list cache instance.
- */
-function listCacheSet(key, value) {
-  var data = this.__data__,
-      index = assocIndexOf(data, key);
-
-  if (index < 0) {
-    ++this.size;
-    data.push([key, value]);
-  } else {
-    data[index][1] = value;
-  }
-  return this;
-}
-
-// Add methods to `ListCache`.
-ListCache.prototype.clear = listCacheClear;
-ListCache.prototype['delete'] = listCacheDelete;
-ListCache.prototype.get = listCacheGet;
-ListCache.prototype.has = listCacheHas;
-ListCache.prototype.set = listCacheSet;
-
-/**
- * Creates a map cache object to store key-value pairs.
- *
- * @private
- * @constructor
- * @param {Array} [entries] The key-value pairs to cache.
- */
-function MapCache(entries) {
-  var index = -1,
-      length = entries == null ? 0 : entries.length;
-
-  this.clear();
-  while (++index < length) {
-    var entry = entries[index];
-    this.set(entry[0], entry[1]);
-  }
-}
-
-/**
- * Removes all key-value entries from the map.
- *
- * @private
- * @name clear
- * @memberOf MapCache
- */
-function mapCacheClear() {
-  this.size = 0;
-  this.__data__ = {
-    'hash': new Hash,
-    'map': new (Map || ListCache),
-    'string': new Hash
-  };
-}
-
-/**
- * Removes `key` and its value from the map.
- *
- * @private
- * @name delete
- * @memberOf MapCache
- * @param {string} key The key of the value to remove.
- * @returns {boolean} Returns `true` if the entry was removed, else `false`.
- */
-function mapCacheDelete(key) {
-  var result = getMapData(this, key)['delete'](key);
-  this.size -= result ? 1 : 0;
-  return result;
-}
-
-/**
- * Gets the map value for `key`.
- *
- * @private
- * @name get
- * @memberOf MapCache
- * @param {string} key The key of the value to get.
- * @returns {*} Returns the entry value.
- */
-function mapCacheGet(key) {
-  return getMapData(this, key).get(key);
-}
-
-/**
- * Checks if a map value for `key` exists.
- *
- * @private
- * @name has
- * @memberOf MapCache
- * @param {string} key The key of the entry to check.
- * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
- */
-function mapCacheHas(key) {
-  return getMapData(this, key).has(key);
-}
-
-/**
- * Sets the map `key` to `value`.
- *
- * @private
- * @name set
- * @memberOf MapCache
- * @param {string} key The key of the value to set.
- * @param {*} value The value to set.
- * @returns {Object} Returns the map cache instance.
- */
-function mapCacheSet(key, value) {
-  var data = getMapData(this, key),
-      size = data.size;
-
-  data.set(key, value);
-  this.size += data.size == size ? 0 : 1;
-  return this;
-}
-
-// Add methods to `MapCache`.
-MapCache.prototype.clear = mapCacheClear;
-MapCache.prototype['delete'] = mapCacheDelete;
-MapCache.prototype.get = mapCacheGet;
-MapCache.prototype.has = mapCacheHas;
-MapCache.prototype.set = mapCacheSet;
-
-/**
- *
- * Creates an array cache object to store unique values.
- *
- * @private
- * @constructor
- * @param {Array} [values] The values to cache.
- */
-function SetCache(values) {
-  var index = -1,
-      length = values == null ? 0 : values.length;
-
-  this.__data__ = new MapCache;
-  while (++index < length) {
-    this.add(values[index]);
-  }
-}
-
-/**
- * Adds `value` to the array cache.
- *
- * @private
- * @name add
- * @memberOf SetCache
- * @alias push
- * @param {*} value The value to cache.
- * @returns {Object} Returns the cache instance.
- */
-function setCacheAdd(value) {
-  this.__data__.set(value, HASH_UNDEFINED);
-  return this;
-}
-
-/**
- * Checks if `value` is in the array cache.
- *
- * @private
- * @name has
- * @memberOf SetCache
- * @param {*} value The value to search for.
- * @returns {number} Returns `true` if `value` is found, else `false`.
- */
-function setCacheHas(value) {
-  return this.__data__.has(value);
-}
-
-// Add methods to `SetCache`.
-SetCache.prototype.add = SetCache.prototype.push = setCacheAdd;
-SetCache.prototype.has = setCacheHas;
-
-/**
- * Creates a stack cache object to store key-value pairs.
- *
- * @private
- * @constructor
- * @param {Array} [entries] The key-value pairs to cache.
- */
-function Stack(entries) {
-  var data = this.__data__ = new ListCache(entries);
-  this.size = data.size;
-}
-
-/**
- * Removes all key-value entries from the stack.
- *
- * @private
- * @name clear
- * @memberOf Stack
- */
-function stackClear() {
-  this.__data__ = new ListCache;
-  this.size = 0;
-}
-
-/**
- * Removes `key` and its value from the stack.
- *
- * @private
- * @name delete
- * @memberOf Stack
- * @param {string} key The key of the value to remove.
- * @returns {boolean} Returns `true` if the entry was removed, else `false`.
- */
-function stackDelete(key) {
-  var data = this.__data__,
-      result = data['delete'](key);
-
-  this.size = data.size;
-  return result;
-}
-
-/**
- * Gets the stack value for `key`.
- *
- * @private
- * @name get
- * @memberOf Stack
- * @param {string} key The key of the value to get.
- * @returns {*} Returns the entry value.
- */
-function stackGet(key) {
-  return this.__data__.get(key);
-}
-
-/**
- * Checks if a stack value for `key` exists.
- *
- * @private
- * @name has
- * @memberOf Stack
- * @param {string} key The key of the entry to check.
- * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
- */
-function stackHas(key) {
-  return this.__data__.has(key);
-}
-
-/**
- * Sets the stack `key` to `value`.
- *
- * @private
- * @name set
- * @memberOf Stack
- * @param {string} key The key of the value to set.
- * @param {*} value The value to set.
- * @returns {Object} Returns the stack cache instance.
- */
-function stackSet(key, value) {
-  var data = this.__data__;
-  if (data instanceof ListCache) {
-    var pairs = data.__data__;
-    if (!Map || (pairs.length < LARGE_ARRAY_SIZE - 1)) {
-      pairs.push([key, value]);
-      this.size = ++data.size;
-      return this;
-    }
-    data = this.__data__ = new MapCache(pairs);
-  }
-  data.set(key, value);
-  this.size = data.size;
-  return this;
-}
-
-// Add methods to `Stack`.
-Stack.prototype.clear = stackClear;
-Stack.prototype['delete'] = stackDelete;
-Stack.prototype.get = stackGet;
-Stack.prototype.has = stackHas;
-Stack.prototype.set = stackSet;
-
-/**
- * Creates an array of the enumerable property names of the array-like `value`.
- *
- * @private
- * @param {*} value The value to query.
- * @param {boolean} inherited Specify returning inherited property names.
- * @returns {Array} Returns the array of property names.
- */
-function arrayLikeKeys(value, inherited) {
-  var isArr = isArray(value),
-      isArg = !isArr && isArguments(value),
-      isBuff = !isArr && !isArg && isBuffer(value),
-      isType = !isArr && !isArg && !isBuff && isTypedArray(value),
-      skipIndexes = isArr || isArg || isBuff || isType,
-      result = skipIndexes ? baseTimes(value.length, String) : [],
-      length = result.length;
-
-  for (var key in value) {
-    if ((inherited || hasOwnProperty.call(value, key)) &&
-        !(skipIndexes && (
-           // Safari 9 has enumerable `arguments.length` in strict mode.
-           key == 'length' ||
-           // Node.js 0.10 has enumerable non-index properties on buffers.
-           (isBuff && (key == 'offset' || key == 'parent')) ||
-           // PhantomJS 2 has enumerable non-index properties on typed arrays.
-           (isType && (key == 'buffer' || key == 'byteLength' || key == 'byteOffset')) ||
-           // Skip index properties.
-           isIndex(key, length)
-        ))) {
-      result.push(key);
-    }
-  }
-  return result;
-}
-
-/**
- * Gets the index at which the `key` is found in `array` of key-value pairs.
- *
- * @private
- * @param {Array} array The array to inspect.
- * @param {*} key The key to search for.
- * @returns {number} Returns the index of the matched value, else `-1`.
- */
-function assocIndexOf(array, key) {
-  var length = array.length;
-  while (length--) {
-    if (eq(array[length][0], key)) {
-      return length;
-    }
-  }
-  return -1;
-}
-
-/**
- * The base implementation of `getAllKeys` and `getAllKeysIn` which uses
- * `keysFunc` and `symbolsFunc` to get the enumerable property names and
- * symbols of `object`.
- *
- * @private
- * @param {Object} object The object to query.
- * @param {Function} keysFunc The function to get the keys of `object`.
- * @param {Function} symbolsFunc The function to get the symbols of `object`.
- * @returns {Array} Returns the array of property names and symbols.
- */
-function baseGetAllKeys(object, keysFunc, symbolsFunc) {
-  var result = keysFunc(object);
-  return isArray(object) ? result : arrayPush(result, symbolsFunc(object));
-}
-
-/**
- * The base implementation of `getTag` without fallbacks for buggy environments.
- *
- * @private
- * @param {*} value The value to query.
- * @returns {string} Returns the `toStringTag`.
- */
-function baseGetTag(value) {
-  if (value == null) {
-    return value === undefined ? undefinedTag : nullTag;
-  }
-  return (symToStringTag && symToStringTag in Object(value))
-    ? getRawTag(value)
-    : objectToString(value);
-}
-
-/**
- * The base implementation of `_.isArguments`.
- *
- * @private
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is an `arguments` object,
- */
-function baseIsArguments(value) {
-  return isObjectLike(value) && baseGetTag(value) == argsTag;
-}
-
-/**
- * The base implementation of `_.isEqual` which supports partial comparisons
- * and tracks traversed objects.
- *
- * @private
- * @param {*} value The value to compare.
- * @param {*} other The other value to compare.
- * @param {boolean} bitmask The bitmask flags.
- *  1 - Unordered comparison
- *  2 - Partial comparison
- * @param {Function} [customizer] The function to customize comparisons.
- * @param {Object} [stack] Tracks traversed `value` and `other` objects.
- * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
- */
-function baseIsEqual(value, other, bitmask, customizer, stack) {
-  if (value === other) {
-    return true;
-  }
-  if (value == null || other == null || (!isObjectLike(value) && !isObjectLike(other))) {
-    return value !== value && other !== other;
-  }
-  return baseIsEqualDeep(value, other, bitmask, customizer, baseIsEqual, stack);
-}
-
-/**
- * A specialized version of `baseIsEqual` for arrays and objects which performs
- * deep comparisons and tracks traversed objects enabling objects with circular
- * references to be compared.
- *
- * @private
- * @param {Object} object The object to compare.
- * @param {Object} other The other object to compare.
- * @param {number} bitmask The bitmask flags. See `baseIsEqual` for more details.
- * @param {Function} customizer The function to customize comparisons.
- * @param {Function} equalFunc The function to determine equivalents of values.
- * @param {Object} [stack] Tracks traversed `object` and `other` objects.
- * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
- */
-function baseIsEqualDeep(object, other, bitmask, customizer, equalFunc, stack) {
-  var objIsArr = isArray(object),
-      othIsArr = isArray(other),
-      objTag = objIsArr ? arrayTag : getTag(object),
-      othTag = othIsArr ? arrayTag : getTag(other);
-
-  objTag = objTag == argsTag ? objectTag : objTag;
-  othTag = othTag == argsTag ? objectTag : othTag;
-
-  var objIsObj = objTag == objectTag,
-      othIsObj = othTag == objectTag,
-      isSameTag = objTag == othTag;
-
-  if (isSameTag && isBuffer(object)) {
-    if (!isBuffer(other)) {
-      return false;
-    }
-    objIsArr = true;
-    objIsObj = false;
-  }
-  if (isSameTag && !objIsObj) {
-    stack || (stack = new Stack);
-    return (objIsArr || isTypedArray(object))
-      ? equalArrays(object, other, bitmask, customizer, equalFunc, stack)
-      : equalByTag(object, other, objTag, bitmask, customizer, equalFunc, stack);
-  }
-  if (!(bitmask & COMPARE_PARTIAL_FLAG)) {
-    var objIsWrapped = objIsObj && hasOwnProperty.call(object, '__wrapped__'),
-        othIsWrapped = othIsObj && hasOwnProperty.call(other, '__wrapped__');
-
-    if (objIsWrapped || othIsWrapped) {
-      var objUnwrapped = objIsWrapped ? object.value() : object,
-          othUnwrapped = othIsWrapped ? other.value() : other;
-
-      stack || (stack = new Stack);
-      return equalFunc(objUnwrapped, othUnwrapped, bitmask, customizer, stack);
-    }
-  }
-  if (!isSameTag) {
-    return false;
-  }
-  stack || (stack = new Stack);
-  return equalObjects(object, other, bitmask, customizer, equalFunc, stack);
-}
-
-/**
- * The base implementation of `_.isNative` without bad shim checks.
- *
- * @private
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a native function,
- *  else `false`.
- */
-function baseIsNative(value) {
-  if (!isObject(value) || isMasked(value)) {
-    return false;
-  }
-  var pattern = isFunction(value) ? reIsNative : reIsHostCtor;
-  return pattern.test(toSource(value));
-}
-
-/**
- * The base implementation of `_.isTypedArray` without Node.js optimizations.
- *
- * @private
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a typed array, else `false`.
- */
-function baseIsTypedArray(value) {
-  return isObjectLike(value) &&
-    isLength(value.length) && !!typedArrayTags[baseGetTag(value)];
-}
-
-/**
- * The base implementation of `_.keys` which doesn't treat sparse arrays as dense.
- *
- * @private
- * @param {Object} object The object to query.
- * @returns {Array} Returns the array of property names.
- */
-function baseKeys(object) {
-  if (!isPrototype(object)) {
-    return nativeKeys(object);
-  }
-  var result = [];
-  for (var key in Object(object)) {
-    if (hasOwnProperty.call(object, key) && key != 'constructor') {
-      result.push(key);
-    }
-  }
-  return result;
-}
-
-/**
- * A specialized version of `baseIsEqualDeep` for arrays with support for
- * partial deep comparisons.
- *
- * @private
- * @param {Array} array The array to compare.
- * @param {Array} other The other array to compare.
- * @param {number} bitmask The bitmask flags. See `baseIsEqual` for more details.
- * @param {Function} customizer The function to customize comparisons.
- * @param {Function} equalFunc The function to determine equivalents of values.
- * @param {Object} stack Tracks traversed `array` and `other` objects.
- * @returns {boolean} Returns `true` if the arrays are equivalent, else `false`.
- */
-function equalArrays(array, other, bitmask, customizer, equalFunc, stack) {
-  var isPartial = bitmask & COMPARE_PARTIAL_FLAG,
-      arrLength = array.length,
-      othLength = other.length;
-
-  if (arrLength != othLength && !(isPartial && othLength > arrLength)) {
-    return false;
-  }
-  // Assume cyclic values are equal.
-  var stacked = stack.get(array);
-  if (stacked && stack.get(other)) {
-    return stacked == other;
-  }
-  var index = -1,
-      result = true,
-      seen = (bitmask & COMPARE_UNORDERED_FLAG) ? new SetCache : undefined;
-
-  stack.set(array, other);
-  stack.set(other, array);
-
-  // Ignore non-index properties.
-  while (++index < arrLength) {
-    var arrValue = array[index],
-        othValue = other[index];
-
-    if (customizer) {
-      var compared = isPartial
-        ? customizer(othValue, arrValue, index, other, array, stack)
-        : customizer(arrValue, othValue, index, array, other, stack);
-    }
-    if (compared !== undefined) {
-      if (compared) {
-        continue;
-      }
-      result = false;
-      break;
-    }
-    // Recursively compare arrays (susceptible to call stack limits).
-    if (seen) {
-      if (!arraySome(other, function(othValue, othIndex) {
-            if (!cacheHas(seen, othIndex) &&
-                (arrValue === othValue || equalFunc(arrValue, othValue, bitmask, customizer, stack))) {
-              return seen.push(othIndex);
-            }
-          })) {
-        result = false;
-        break;
-      }
-    } else if (!(
-          arrValue === othValue ||
-            equalFunc(arrValue, othValue, bitmask, customizer, stack)
-        )) {
-      result = false;
-      break;
-    }
-  }
-  stack['delete'](array);
-  stack['delete'](other);
-  return result;
-}
-
-/**
- * A specialized version of `baseIsEqualDeep` for comparing objects of
- * the same `toStringTag`.
- *
- * **Note:** This function only supports comparing values with tags of
- * `Boolean`, `Date`, `Error`, `Number`, `RegExp`, or `String`.
- *
- * @private
- * @param {Object} object The object to compare.
- * @param {Object} other The other object to compare.
- * @param {string} tag The `toStringTag` of the objects to compare.
- * @param {number} bitmask The bitmask flags. See `baseIsEqual` for more details.
- * @param {Function} customizer The function to customize comparisons.
- * @param {Function} equalFunc The function to determine equivalents of values.
- * @param {Object} stack Tracks traversed `object` and `other` objects.
- * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
- */
-function equalByTag(object, other, tag, bitmask, customizer, equalFunc, stack) {
-  switch (tag) {
-    case dataViewTag:
-      if ((object.byteLength != other.byteLength) ||
-          (object.byteOffset != other.byteOffset)) {
-        return false;
-      }
-      object = object.buffer;
-      other = other.buffer;
-
-    case arrayBufferTag:
-      if ((object.byteLength != other.byteLength) ||
-          !equalFunc(new Uint8Array(object), new Uint8Array(other))) {
-        return false;
-      }
-      return true;
-
-    case boolTag:
-    case dateTag:
-    case numberTag:
-      // Coerce booleans to `1` or `0` and dates to milliseconds.
-      // Invalid dates are coerced to `NaN`.
-      return eq(+object, +other);
-
-    case errorTag:
-      return object.name == other.name && object.message == other.message;
-
-    case regexpTag:
-    case stringTag:
-      // Coerce regexes to strings and treat strings, primitives and objects,
-      // as equal. See http://www.ecma-international.org/ecma-262/7.0/#sec-regexp.prototype.tostring
-      // for more details.
-      return object == (other + '');
-
-    case mapTag:
-      var convert = mapToArray;
-
-    case setTag:
-      var isPartial = bitmask & COMPARE_PARTIAL_FLAG;
-      convert || (convert = setToArray);
-
-      if (object.size != other.size && !isPartial) {
-        return false;
-      }
-      // Assume cyclic values are equal.
-      var stacked = stack.get(object);
-      if (stacked) {
-        return stacked == other;
-      }
-      bitmask |= COMPARE_UNORDERED_FLAG;
-
-      // Recursively compare objects (susceptible to call stack limits).
-      stack.set(object, other);
-      var result = equalArrays(convert(object), convert(other), bitmask, customizer, equalFunc, stack);
-      stack['delete'](object);
-      return result;
-
-    case symbolTag:
-      if (symbolValueOf) {
-        return symbolValueOf.call(object) == symbolValueOf.call(other);
-      }
-  }
-  return false;
-}
-
-/**
- * A specialized version of `baseIsEqualDeep` for objects with support for
- * partial deep comparisons.
- *
- * @private
- * @param {Object} object The object to compare.
- * @param {Object} other The other object to compare.
- * @param {number} bitmask The bitmask flags. See `baseIsEqual` for more details.
- * @param {Function} customizer The function to customize comparisons.
- * @param {Function} equalFunc The function to determine equivalents of values.
- * @param {Object} stack Tracks traversed `object` and `other` objects.
- * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
- */
-function equalObjects(object, other, bitmask, customizer, equalFunc, stack) {
-  var isPartial = bitmask & COMPARE_PARTIAL_FLAG,
-      objProps = getAllKeys(object),
-      objLength = objProps.length,
-      othProps = getAllKeys(other),
-      othLength = othProps.length;
-
-  if (objLength != othLength && !isPartial) {
-    return false;
-  }
-  var index = objLength;
-  while (index--) {
-    var key = objProps[index];
-    if (!(isPartial ? key in other : hasOwnProperty.call(other, key))) {
-      return false;
-    }
-  }
-  // Assume cyclic values are equal.
-  var stacked = stack.get(object);
-  if (stacked && stack.get(other)) {
-    return stacked == other;
-  }
-  var result = true;
-  stack.set(object, other);
-  stack.set(other, object);
-
-  var skipCtor = isPartial;
-  while (++index < objLength) {
-    key = objProps[index];
-    var objValue = object[key],
-        othValue = other[key];
-
-    if (customizer) {
-      var compared = isPartial
-        ? customizer(othValue, objValue, key, other, object, stack)
-        : customizer(objValue, othValue, key, object, other, stack);
-    }
-    // Recursively compare objects (susceptible to call stack limits).
-    if (!(compared === undefined
-          ? (objValue === othValue || equalFunc(objValue, othValue, bitmask, customizer, stack))
-          : compared
-        )) {
-      result = false;
-      break;
-    }
-    skipCtor || (skipCtor = key == 'constructor');
-  }
-  if (result && !skipCtor) {
-    var objCtor = object.constructor,
-        othCtor = other.constructor;
-
-    // Non `Object` object instances with different constructors are not equal.
-    if (objCtor != othCtor &&
-        ('constructor' in object && 'constructor' in other) &&
-        !(typeof objCtor == 'function' && objCtor instanceof objCtor &&
-          typeof othCtor == 'function' && othCtor instanceof othCtor)) {
-      result = false;
-    }
-  }
-  stack['delete'](object);
-  stack['delete'](other);
-  return result;
-}
-
-/**
- * Creates an array of own enumerable property names and symbols of `object`.
- *
- * @private
- * @param {Object} object The object to query.
- * @returns {Array} Returns the array of property names and symbols.
- */
-function getAllKeys(object) {
-  return baseGetAllKeys(object, keys, getSymbols);
-}
-
-/**
- * Gets the data for `map`.
- *
- * @private
- * @param {Object} map The map to query.
- * @param {string} key The reference key.
- * @returns {*} Returns the map data.
- */
-function getMapData(map, key) {
-  var data = map.__data__;
-  return isKeyable(key)
-    ? data[typeof key == 'string' ? 'string' : 'hash']
-    : data.map;
-}
-
-/**
- * Gets the native function at `key` of `object`.
- *
- * @private
- * @param {Object} object The object to query.
- * @param {string} key The key of the method to get.
- * @returns {*} Returns the function if it's native, else `undefined`.
- */
-function getNative(object, key) {
-  var value = getValue(object, key);
-  return baseIsNative(value) ? value : undefined;
-}
-
-/**
- * A specialized version of `baseGetTag` which ignores `Symbol.toStringTag` values.
- *
- * @private
- * @param {*} value The value to query.
- * @returns {string} Returns the raw `toStringTag`.
- */
-function getRawTag(value) {
-  var isOwn = hasOwnProperty.call(value, symToStringTag),
-      tag = value[symToStringTag];
-
-  try {
-    value[symToStringTag] = undefined;
-    var unmasked = true;
-  } catch (e) {}
-
-  var result = nativeObjectToString.call(value);
-  if (unmasked) {
-    if (isOwn) {
-      value[symToStringTag] = tag;
-    } else {
-      delete value[symToStringTag];
-    }
-  }
-  return result;
-}
-
-/**
- * Creates an array of the own enumerable symbols of `object`.
- *
- * @private
- * @param {Object} object The object to query.
- * @returns {Array} Returns the array of symbols.
- */
-var getSymbols = !nativeGetSymbols ? stubArray : function(object) {
-  if (object == null) {
-    return [];
-  }
-  object = Object(object);
-  return arrayFilter(nativeGetSymbols(object), function(symbol) {
-    return propertyIsEnumerable.call(object, symbol);
-  });
-};
-
-/**
- * Gets the `toStringTag` of `value`.
- *
- * @private
- * @param {*} value The value to query.
- * @returns {string} Returns the `toStringTag`.
- */
-var getTag = baseGetTag;
-
-// Fallback for data views, maps, sets, and weak maps in IE 11 and promises in Node.js < 6.
-if ((DataView && getTag(new DataView(new ArrayBuffer(1))) != dataViewTag) ||
-    (Map && getTag(new Map) != mapTag) ||
-    (Promise && getTag(Promise.resolve()) != promiseTag) ||
-    (Set && getTag(new Set) != setTag) ||
-    (WeakMap && getTag(new WeakMap) != weakMapTag)) {
-  getTag = function(value) {
-    var result = baseGetTag(value),
-        Ctor = result == objectTag ? value.constructor : undefined,
-        ctorString = Ctor ? toSource(Ctor) : '';
-
-    if (ctorString) {
-      switch (ctorString) {
-        case dataViewCtorString: return dataViewTag;
-        case mapCtorString: return mapTag;
-        case promiseCtorString: return promiseTag;
-        case setCtorString: return setTag;
-        case weakMapCtorString: return weakMapTag;
-      }
-    }
-    return result;
-  };
-}
-
-/**
- * Checks if `value` is a valid array-like index.
- *
- * @private
- * @param {*} value The value to check.
- * @param {number} [length=MAX_SAFE_INTEGER] The upper bounds of a valid index.
- * @returns {boolean} Returns `true` if `value` is a valid index, else `false`.
- */
-function isIndex(value, length) {
-  length = length == null ? MAX_SAFE_INTEGER : length;
-  return !!length &&
-    (typeof value == 'number' || reIsUint.test(value)) &&
-    (value > -1 && value % 1 == 0 && value < length);
-}
-
-/**
- * Checks if `value` is suitable for use as unique object key.
- *
- * @private
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is suitable, else `false`.
- */
-function isKeyable(value) {
-  var type = typeof value;
-  return (type == 'string' || type == 'number' || type == 'symbol' || type == 'boolean')
-    ? (value !== '__proto__')
-    : (value === null);
-}
-
-/**
- * Checks if `func` has its source masked.
- *
- * @private
- * @param {Function} func The function to check.
- * @returns {boolean} Returns `true` if `func` is masked, else `false`.
- */
-function isMasked(func) {
-  return !!maskSrcKey && (maskSrcKey in func);
-}
-
-/**
- * Checks if `value` is likely a prototype object.
- *
- * @private
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a prototype, else `false`.
- */
-function isPrototype(value) {
-  var Ctor = value && value.constructor,
-      proto = (typeof Ctor == 'function' && Ctor.prototype) || objectProto;
-
-  return value === proto;
-}
-
-/**
- * Converts `value` to a string using `Object.prototype.toString`.
- *
- * @private
- * @param {*} value The value to convert.
- * @returns {string} Returns the converted string.
- */
-function objectToString(value) {
-  return nativeObjectToString.call(value);
-}
-
-/**
- * Converts `func` to its source code.
- *
- * @private
- * @param {Function} func The function to convert.
- * @returns {string} Returns the source code.
- */
-function toSource(func) {
-  if (func != null) {
-    try {
-      return funcToString.call(func);
-    } catch (e) {}
-    try {
-      return (func + '');
-    } catch (e) {}
-  }
-  return '';
-}
-
-/**
- * Performs a
- * [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
- * comparison between two values to determine if they are equivalent.
- *
- * @static
- * @memberOf _
- * @since 4.0.0
- * @category Lang
- * @param {*} value The value to compare.
- * @param {*} other The other value to compare.
- * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
- * @example
- *
- * var object = { 'a': 1 };
- * var other = { 'a': 1 };
- *
- * _.eq(object, object);
- * // => true
- *
- * _.eq(object, other);
- * // => false
- *
- * _.eq('a', 'a');
- * // => true
- *
- * _.eq('a', Object('a'));
- * // => false
- *
- * _.eq(NaN, NaN);
- * // => true
- */
-function eq(value, other) {
-  return value === other || (value !== value && other !== other);
-}
-
-/**
- * Checks if `value` is likely an `arguments` object.
- *
- * @static
- * @memberOf _
- * @since 0.1.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is an `arguments` object,
- *  else `false`.
- * @example
- *
- * _.isArguments(function() { return arguments; }());
- * // => true
- *
- * _.isArguments([1, 2, 3]);
- * // => false
- */
-var isArguments = baseIsArguments(function() { return arguments; }()) ? baseIsArguments : function(value) {
-  return isObjectLike(value) && hasOwnProperty.call(value, 'callee') &&
-    !propertyIsEnumerable.call(value, 'callee');
-};
-
-/**
- * Checks if `value` is classified as an `Array` object.
- *
- * @static
- * @memberOf _
- * @since 0.1.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is an array, else `false`.
- * @example
- *
- * _.isArray([1, 2, 3]);
- * // => true
- *
- * _.isArray(document.body.children);
- * // => false
- *
- * _.isArray('abc');
- * // => false
- *
- * _.isArray(_.noop);
- * // => false
- */
-var isArray = Array.isArray;
-
-/**
- * Checks if `value` is array-like. A value is considered array-like if it's
- * not a function and has a `value.length` that's an integer greater than or
- * equal to `0` and less than or equal to `Number.MAX_SAFE_INTEGER`.
- *
- * @static
- * @memberOf _
- * @since 4.0.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is array-like, else `false`.
- * @example
- *
- * _.isArrayLike([1, 2, 3]);
- * // => true
- *
- * _.isArrayLike(document.body.children);
- * // => true
- *
- * _.isArrayLike('abc');
- * // => true
- *
- * _.isArrayLike(_.noop);
- * // => false
- */
-function isArrayLike(value) {
-  return value != null && isLength(value.length) && !isFunction(value);
-}
-
-/**
- * Checks if `value` is a buffer.
- *
- * @static
- * @memberOf _
- * @since 4.3.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a buffer, else `false`.
- * @example
- *
- * _.isBuffer(new Buffer(2));
- * // => true
- *
- * _.isBuffer(new Uint8Array(2));
- * // => false
- */
-var isBuffer = nativeIsBuffer || stubFalse;
-
-/**
- * Performs a deep comparison between two values to determine if they are
- * equivalent.
- *
- * **Note:** This method supports comparing arrays, array buffers, booleans,
- * date objects, error objects, maps, numbers, `Object` objects, regexes,
- * sets, strings, symbols, and typed arrays. `Object` objects are compared
- * by their own, not inherited, enumerable properties. Functions and DOM
- * nodes are compared by strict equality, i.e. `===`.
- *
- * @static
- * @memberOf _
- * @since 0.1.0
- * @category Lang
- * @param {*} value The value to compare.
- * @param {*} other The other value to compare.
- * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
- * @example
- *
- * var object = { 'a': 1 };
- * var other = { 'a': 1 };
- *
- * _.isEqual(object, other);
- * // => true
- *
- * object === other;
- * // => false
- */
-function isEqual(value, other) {
-  return baseIsEqual(value, other);
-}
-
-/**
- * Checks if `value` is classified as a `Function` object.
- *
- * @static
- * @memberOf _
- * @since 0.1.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a function, else `false`.
- * @example
- *
- * _.isFunction(_);
- * // => true
- *
- * _.isFunction(/abc/);
- * // => false
- */
-function isFunction(value) {
-  if (!isObject(value)) {
-    return false;
-  }
-  // The use of `Object#toString` avoids issues with the `typeof` operator
-  // in Safari 9 which returns 'object' for typed arrays and other constructors.
-  var tag = baseGetTag(value);
-  return tag == funcTag || tag == genTag || tag == asyncTag || tag == proxyTag;
-}
-
-/**
- * Checks if `value` is a valid array-like length.
- *
- * **Note:** This method is loosely based on
- * [`ToLength`](http://ecma-international.org/ecma-262/7.0/#sec-tolength).
- *
- * @static
- * @memberOf _
- * @since 4.0.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a valid length, else `false`.
- * @example
- *
- * _.isLength(3);
- * // => true
- *
- * _.isLength(Number.MIN_VALUE);
- * // => false
- *
- * _.isLength(Infinity);
- * // => false
- *
- * _.isLength('3');
- * // => false
- */
-function isLength(value) {
-  return typeof value == 'number' &&
-    value > -1 && value % 1 == 0 && value <= MAX_SAFE_INTEGER;
-}
-
-/**
- * Checks if `value` is the
- * [language type](http://www.ecma-international.org/ecma-262/7.0/#sec-ecmascript-language-types)
- * of `Object`. (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
- *
- * @static
- * @memberOf _
- * @since 0.1.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is an object, else `false`.
- * @example
- *
- * _.isObject({});
- * // => true
- *
- * _.isObject([1, 2, 3]);
- * // => true
- *
- * _.isObject(_.noop);
- * // => true
- *
- * _.isObject(null);
- * // => false
- */
-function isObject(value) {
-  var type = typeof value;
-  return value != null && (type == 'object' || type == 'function');
-}
-
-/**
- * Checks if `value` is object-like. A value is object-like if it's not `null`
- * and has a `typeof` result of "object".
- *
- * @static
- * @memberOf _
- * @since 4.0.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
- * @example
- *
- * _.isObjectLike({});
- * // => true
- *
- * _.isObjectLike([1, 2, 3]);
- * // => true
- *
- * _.isObjectLike(_.noop);
- * // => false
- *
- * _.isObjectLike(null);
- * // => false
- */
-function isObjectLike(value) {
-  return value != null && typeof value == 'object';
-}
-
-/**
- * Checks if `value` is classified as a typed array.
- *
- * @static
- * @memberOf _
- * @since 3.0.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a typed array, else `false`.
- * @example
- *
- * _.isTypedArray(new Uint8Array);
- * // => true
- *
- * _.isTypedArray([]);
- * // => false
- */
-var isTypedArray = nodeIsTypedArray ? baseUnary(nodeIsTypedArray) : baseIsTypedArray;
-
-/**
- * Creates an array of the own enumerable property names of `object`.
- *
- * **Note:** Non-object values are coerced to objects. See the
- * [ES spec](http://ecma-international.org/ecma-262/7.0/#sec-object.keys)
- * for more details.
- *
- * @static
- * @since 0.1.0
- * @memberOf _
- * @category Object
- * @param {Object} object The object to query.
- * @returns {Array} Returns the array of property names.
- * @example
- *
- * function Foo() {
- *   this.a = 1;
- *   this.b = 2;
- * }
- *
- * Foo.prototype.c = 3;
- *
- * _.keys(new Foo);
- * // => ['a', 'b'] (iteration order is not guaranteed)
- *
- * _.keys('hi');
- * // => ['0', '1']
- */
-function keys(object) {
-  return isArrayLike(object) ? arrayLikeKeys(object) : baseKeys(object);
-}
-
-/**
- * This method returns a new empty array.
- *
- * @static
- * @memberOf _
- * @since 4.13.0
- * @category Util
- * @returns {Array} Returns the new empty array.
- * @example
- *
- * var arrays = _.times(2, _.stubArray);
- *
- * console.log(arrays);
- * // => [[], []]
- *
- * console.log(arrays[0] === arrays[1]);
- * // => false
- */
-function stubArray() {
-  return [];
-}
-
-/**
- * This method returns `false`.
- *
- * @static
- * @memberOf _
- * @since 4.13.0
- * @category Util
- * @returns {boolean} Returns `false`.
- * @example
- *
- * _.times(2, _.stubFalse);
- * // => [false, false]
- */
-function stubFalse() {
-  return false;
-}
-
-module.exports = isEqual;
-}(lodash_isequal, lodash_isequal.exports));
+	/** Used as the size to enable large array optimizations. */
+	var LARGE_ARRAY_SIZE = 200;
+
+	/** Used to stand-in for `undefined` hash values. */
+	var HASH_UNDEFINED = '__lodash_hash_undefined__';
+
+	/** Used to compose bitmasks for value comparisons. */
+	var COMPARE_PARTIAL_FLAG = 1,
+	    COMPARE_UNORDERED_FLAG = 2;
+
+	/** Used as references for various `Number` constants. */
+	var MAX_SAFE_INTEGER = 9007199254740991;
+
+	/** `Object#toString` result references. */
+	var argsTag = '[object Arguments]',
+	    arrayTag = '[object Array]',
+	    asyncTag = '[object AsyncFunction]',
+	    boolTag = '[object Boolean]',
+	    dateTag = '[object Date]',
+	    errorTag = '[object Error]',
+	    funcTag = '[object Function]',
+	    genTag = '[object GeneratorFunction]',
+	    mapTag = '[object Map]',
+	    numberTag = '[object Number]',
+	    nullTag = '[object Null]',
+	    objectTag = '[object Object]',
+	    promiseTag = '[object Promise]',
+	    proxyTag = '[object Proxy]',
+	    regexpTag = '[object RegExp]',
+	    setTag = '[object Set]',
+	    stringTag = '[object String]',
+	    symbolTag = '[object Symbol]',
+	    undefinedTag = '[object Undefined]',
+	    weakMapTag = '[object WeakMap]';
+
+	var arrayBufferTag = '[object ArrayBuffer]',
+	    dataViewTag = '[object DataView]',
+	    float32Tag = '[object Float32Array]',
+	    float64Tag = '[object Float64Array]',
+	    int8Tag = '[object Int8Array]',
+	    int16Tag = '[object Int16Array]',
+	    int32Tag = '[object Int32Array]',
+	    uint8Tag = '[object Uint8Array]',
+	    uint8ClampedTag = '[object Uint8ClampedArray]',
+	    uint16Tag = '[object Uint16Array]',
+	    uint32Tag = '[object Uint32Array]';
+
+	/**
+	 * Used to match `RegExp`
+	 * [syntax characters](http://ecma-international.org/ecma-262/7.0/#sec-patterns).
+	 */
+	var reRegExpChar = /[\\^$.*+?()[\]{}|]/g;
+
+	/** Used to detect host constructors (Safari). */
+	var reIsHostCtor = /^\[object .+?Constructor\]$/;
+
+	/** Used to detect unsigned integer values. */
+	var reIsUint = /^(?:0|[1-9]\d*)$/;
+
+	/** Used to identify `toStringTag` values of typed arrays. */
+	var typedArrayTags = {};
+	typedArrayTags[float32Tag] = typedArrayTags[float64Tag] =
+	typedArrayTags[int8Tag] = typedArrayTags[int16Tag] =
+	typedArrayTags[int32Tag] = typedArrayTags[uint8Tag] =
+	typedArrayTags[uint8ClampedTag] = typedArrayTags[uint16Tag] =
+	typedArrayTags[uint32Tag] = true;
+	typedArrayTags[argsTag] = typedArrayTags[arrayTag] =
+	typedArrayTags[arrayBufferTag] = typedArrayTags[boolTag] =
+	typedArrayTags[dataViewTag] = typedArrayTags[dateTag] =
+	typedArrayTags[errorTag] = typedArrayTags[funcTag] =
+	typedArrayTags[mapTag] = typedArrayTags[numberTag] =
+	typedArrayTags[objectTag] = typedArrayTags[regexpTag] =
+	typedArrayTags[setTag] = typedArrayTags[stringTag] =
+	typedArrayTags[weakMapTag] = false;
+
+	/** Detect free variable `global` from Node.js. */
+	var freeGlobal = typeof commonjsGlobal == 'object' && commonjsGlobal && commonjsGlobal.Object === Object && commonjsGlobal;
+
+	/** Detect free variable `self`. */
+	var freeSelf = typeof self == 'object' && self && self.Object === Object && self;
+
+	/** Used as a reference to the global object. */
+	var root = freeGlobal || freeSelf || Function('return this')();
+
+	/** Detect free variable `exports`. */
+	var freeExports = exports && !exports.nodeType && exports;
+
+	/** Detect free variable `module`. */
+	var freeModule = freeExports && 'object' == 'object' && module && !module.nodeType && module;
+
+	/** Detect the popular CommonJS extension `module.exports`. */
+	var moduleExports = freeModule && freeModule.exports === freeExports;
+
+	/** Detect free variable `process` from Node.js. */
+	var freeProcess = moduleExports && freeGlobal.process;
+
+	/** Used to access faster Node.js helpers. */
+	var nodeUtil = (function() {
+	  try {
+	    return freeProcess && freeProcess.binding && freeProcess.binding('util');
+	  } catch (e) {}
+	}());
+
+	/* Node.js helper references. */
+	var nodeIsTypedArray = nodeUtil && nodeUtil.isTypedArray;
+
+	/**
+	 * A specialized version of `_.filter` for arrays without support for
+	 * iteratee shorthands.
+	 *
+	 * @private
+	 * @param {Array} [array] The array to iterate over.
+	 * @param {Function} predicate The function invoked per iteration.
+	 * @returns {Array} Returns the new filtered array.
+	 */
+	function arrayFilter(array, predicate) {
+	  var index = -1,
+	      length = array == null ? 0 : array.length,
+	      resIndex = 0,
+	      result = [];
+
+	  while (++index < length) {
+	    var value = array[index];
+	    if (predicate(value, index, array)) {
+	      result[resIndex++] = value;
+	    }
+	  }
+	  return result;
+	}
+
+	/**
+	 * Appends the elements of `values` to `array`.
+	 *
+	 * @private
+	 * @param {Array} array The array to modify.
+	 * @param {Array} values The values to append.
+	 * @returns {Array} Returns `array`.
+	 */
+	function arrayPush(array, values) {
+	  var index = -1,
+	      length = values.length,
+	      offset = array.length;
+
+	  while (++index < length) {
+	    array[offset + index] = values[index];
+	  }
+	  return array;
+	}
+
+	/**
+	 * A specialized version of `_.some` for arrays without support for iteratee
+	 * shorthands.
+	 *
+	 * @private
+	 * @param {Array} [array] The array to iterate over.
+	 * @param {Function} predicate The function invoked per iteration.
+	 * @returns {boolean} Returns `true` if any element passes the predicate check,
+	 *  else `false`.
+	 */
+	function arraySome(array, predicate) {
+	  var index = -1,
+	      length = array == null ? 0 : array.length;
+
+	  while (++index < length) {
+	    if (predicate(array[index], index, array)) {
+	      return true;
+	    }
+	  }
+	  return false;
+	}
+
+	/**
+	 * The base implementation of `_.times` without support for iteratee shorthands
+	 * or max array length checks.
+	 *
+	 * @private
+	 * @param {number} n The number of times to invoke `iteratee`.
+	 * @param {Function} iteratee The function invoked per iteration.
+	 * @returns {Array} Returns the array of results.
+	 */
+	function baseTimes(n, iteratee) {
+	  var index = -1,
+	      result = Array(n);
+
+	  while (++index < n) {
+	    result[index] = iteratee(index);
+	  }
+	  return result;
+	}
+
+	/**
+	 * The base implementation of `_.unary` without support for storing metadata.
+	 *
+	 * @private
+	 * @param {Function} func The function to cap arguments for.
+	 * @returns {Function} Returns the new capped function.
+	 */
+	function baseUnary(func) {
+	  return function(value) {
+	    return func(value);
+	  };
+	}
+
+	/**
+	 * Checks if a `cache` value for `key` exists.
+	 *
+	 * @private
+	 * @param {Object} cache The cache to query.
+	 * @param {string} key The key of the entry to check.
+	 * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+	 */
+	function cacheHas(cache, key) {
+	  return cache.has(key);
+	}
+
+	/**
+	 * Gets the value at `key` of `object`.
+	 *
+	 * @private
+	 * @param {Object} [object] The object to query.
+	 * @param {string} key The key of the property to get.
+	 * @returns {*} Returns the property value.
+	 */
+	function getValue(object, key) {
+	  return object == null ? undefined : object[key];
+	}
+
+	/**
+	 * Converts `map` to its key-value pairs.
+	 *
+	 * @private
+	 * @param {Object} map The map to convert.
+	 * @returns {Array} Returns the key-value pairs.
+	 */
+	function mapToArray(map) {
+	  var index = -1,
+	      result = Array(map.size);
+
+	  map.forEach(function(value, key) {
+	    result[++index] = [key, value];
+	  });
+	  return result;
+	}
+
+	/**
+	 * Creates a unary function that invokes `func` with its argument transformed.
+	 *
+	 * @private
+	 * @param {Function} func The function to wrap.
+	 * @param {Function} transform The argument transform.
+	 * @returns {Function} Returns the new function.
+	 */
+	function overArg(func, transform) {
+	  return function(arg) {
+	    return func(transform(arg));
+	  };
+	}
+
+	/**
+	 * Converts `set` to an array of its values.
+	 *
+	 * @private
+	 * @param {Object} set The set to convert.
+	 * @returns {Array} Returns the values.
+	 */
+	function setToArray(set) {
+	  var index = -1,
+	      result = Array(set.size);
+
+	  set.forEach(function(value) {
+	    result[++index] = value;
+	  });
+	  return result;
+	}
+
+	/** Used for built-in method references. */
+	var arrayProto = Array.prototype,
+	    funcProto = Function.prototype,
+	    objectProto = Object.prototype;
+
+	/** Used to detect overreaching core-js shims. */
+	var coreJsData = root['__core-js_shared__'];
+
+	/** Used to resolve the decompiled source of functions. */
+	var funcToString = funcProto.toString;
+
+	/** Used to check objects for own properties. */
+	var hasOwnProperty = objectProto.hasOwnProperty;
+
+	/** Used to detect methods masquerading as native. */
+	var maskSrcKey = (function() {
+	  var uid = /[^.]+$/.exec(coreJsData && coreJsData.keys && coreJsData.keys.IE_PROTO || '');
+	  return uid ? ('Symbol(src)_1.' + uid) : '';
+	}());
+
+	/**
+	 * Used to resolve the
+	 * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
+	 * of values.
+	 */
+	var nativeObjectToString = objectProto.toString;
+
+	/** Used to detect if a method is native. */
+	var reIsNative = RegExp('^' +
+	  funcToString.call(hasOwnProperty).replace(reRegExpChar, '\\$&')
+	  .replace(/hasOwnProperty|(function).*?(?=\\\()| for .+?(?=\\\])/g, '$1.*?') + '$'
+	);
+
+	/** Built-in value references. */
+	var Buffer = moduleExports ? root.Buffer : undefined,
+	    Symbol = root.Symbol,
+	    Uint8Array = root.Uint8Array,
+	    propertyIsEnumerable = objectProto.propertyIsEnumerable,
+	    splice = arrayProto.splice,
+	    symToStringTag = Symbol ? Symbol.toStringTag : undefined;
+
+	/* Built-in method references for those with the same name as other `lodash` methods. */
+	var nativeGetSymbols = Object.getOwnPropertySymbols,
+	    nativeIsBuffer = Buffer ? Buffer.isBuffer : undefined,
+	    nativeKeys = overArg(Object.keys, Object);
+
+	/* Built-in method references that are verified to be native. */
+	var DataView = getNative(root, 'DataView'),
+	    Map = getNative(root, 'Map'),
+	    Promise = getNative(root, 'Promise'),
+	    Set = getNative(root, 'Set'),
+	    WeakMap = getNative(root, 'WeakMap'),
+	    nativeCreate = getNative(Object, 'create');
+
+	/** Used to detect maps, sets, and weakmaps. */
+	var dataViewCtorString = toSource(DataView),
+	    mapCtorString = toSource(Map),
+	    promiseCtorString = toSource(Promise),
+	    setCtorString = toSource(Set),
+	    weakMapCtorString = toSource(WeakMap);
+
+	/** Used to convert symbols to primitives and strings. */
+	var symbolProto = Symbol ? Symbol.prototype : undefined,
+	    symbolValueOf = symbolProto ? symbolProto.valueOf : undefined;
+
+	/**
+	 * Creates a hash object.
+	 *
+	 * @private
+	 * @constructor
+	 * @param {Array} [entries] The key-value pairs to cache.
+	 */
+	function Hash(entries) {
+	  var index = -1,
+	      length = entries == null ? 0 : entries.length;
+
+	  this.clear();
+	  while (++index < length) {
+	    var entry = entries[index];
+	    this.set(entry[0], entry[1]);
+	  }
+	}
+
+	/**
+	 * Removes all key-value entries from the hash.
+	 *
+	 * @private
+	 * @name clear
+	 * @memberOf Hash
+	 */
+	function hashClear() {
+	  this.__data__ = nativeCreate ? nativeCreate(null) : {};
+	  this.size = 0;
+	}
+
+	/**
+	 * Removes `key` and its value from the hash.
+	 *
+	 * @private
+	 * @name delete
+	 * @memberOf Hash
+	 * @param {Object} hash The hash to modify.
+	 * @param {string} key The key of the value to remove.
+	 * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+	 */
+	function hashDelete(key) {
+	  var result = this.has(key) && delete this.__data__[key];
+	  this.size -= result ? 1 : 0;
+	  return result;
+	}
+
+	/**
+	 * Gets the hash value for `key`.
+	 *
+	 * @private
+	 * @name get
+	 * @memberOf Hash
+	 * @param {string} key The key of the value to get.
+	 * @returns {*} Returns the entry value.
+	 */
+	function hashGet(key) {
+	  var data = this.__data__;
+	  if (nativeCreate) {
+	    var result = data[key];
+	    return result === HASH_UNDEFINED ? undefined : result;
+	  }
+	  return hasOwnProperty.call(data, key) ? data[key] : undefined;
+	}
+
+	/**
+	 * Checks if a hash value for `key` exists.
+	 *
+	 * @private
+	 * @name has
+	 * @memberOf Hash
+	 * @param {string} key The key of the entry to check.
+	 * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+	 */
+	function hashHas(key) {
+	  var data = this.__data__;
+	  return nativeCreate ? (data[key] !== undefined) : hasOwnProperty.call(data, key);
+	}
+
+	/**
+	 * Sets the hash `key` to `value`.
+	 *
+	 * @private
+	 * @name set
+	 * @memberOf Hash
+	 * @param {string} key The key of the value to set.
+	 * @param {*} value The value to set.
+	 * @returns {Object} Returns the hash instance.
+	 */
+	function hashSet(key, value) {
+	  var data = this.__data__;
+	  this.size += this.has(key) ? 0 : 1;
+	  data[key] = (nativeCreate && value === undefined) ? HASH_UNDEFINED : value;
+	  return this;
+	}
+
+	// Add methods to `Hash`.
+	Hash.prototype.clear = hashClear;
+	Hash.prototype['delete'] = hashDelete;
+	Hash.prototype.get = hashGet;
+	Hash.prototype.has = hashHas;
+	Hash.prototype.set = hashSet;
+
+	/**
+	 * Creates an list cache object.
+	 *
+	 * @private
+	 * @constructor
+	 * @param {Array} [entries] The key-value pairs to cache.
+	 */
+	function ListCache(entries) {
+	  var index = -1,
+	      length = entries == null ? 0 : entries.length;
+
+	  this.clear();
+	  while (++index < length) {
+	    var entry = entries[index];
+	    this.set(entry[0], entry[1]);
+	  }
+	}
+
+	/**
+	 * Removes all key-value entries from the list cache.
+	 *
+	 * @private
+	 * @name clear
+	 * @memberOf ListCache
+	 */
+	function listCacheClear() {
+	  this.__data__ = [];
+	  this.size = 0;
+	}
+
+	/**
+	 * Removes `key` and its value from the list cache.
+	 *
+	 * @private
+	 * @name delete
+	 * @memberOf ListCache
+	 * @param {string} key The key of the value to remove.
+	 * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+	 */
+	function listCacheDelete(key) {
+	  var data = this.__data__,
+	      index = assocIndexOf(data, key);
+
+	  if (index < 0) {
+	    return false;
+	  }
+	  var lastIndex = data.length - 1;
+	  if (index == lastIndex) {
+	    data.pop();
+	  } else {
+	    splice.call(data, index, 1);
+	  }
+	  --this.size;
+	  return true;
+	}
+
+	/**
+	 * Gets the list cache value for `key`.
+	 *
+	 * @private
+	 * @name get
+	 * @memberOf ListCache
+	 * @param {string} key The key of the value to get.
+	 * @returns {*} Returns the entry value.
+	 */
+	function listCacheGet(key) {
+	  var data = this.__data__,
+	      index = assocIndexOf(data, key);
+
+	  return index < 0 ? undefined : data[index][1];
+	}
+
+	/**
+	 * Checks if a list cache value for `key` exists.
+	 *
+	 * @private
+	 * @name has
+	 * @memberOf ListCache
+	 * @param {string} key The key of the entry to check.
+	 * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+	 */
+	function listCacheHas(key) {
+	  return assocIndexOf(this.__data__, key) > -1;
+	}
+
+	/**
+	 * Sets the list cache `key` to `value`.
+	 *
+	 * @private
+	 * @name set
+	 * @memberOf ListCache
+	 * @param {string} key The key of the value to set.
+	 * @param {*} value The value to set.
+	 * @returns {Object} Returns the list cache instance.
+	 */
+	function listCacheSet(key, value) {
+	  var data = this.__data__,
+	      index = assocIndexOf(data, key);
+
+	  if (index < 0) {
+	    ++this.size;
+	    data.push([key, value]);
+	  } else {
+	    data[index][1] = value;
+	  }
+	  return this;
+	}
+
+	// Add methods to `ListCache`.
+	ListCache.prototype.clear = listCacheClear;
+	ListCache.prototype['delete'] = listCacheDelete;
+	ListCache.prototype.get = listCacheGet;
+	ListCache.prototype.has = listCacheHas;
+	ListCache.prototype.set = listCacheSet;
+
+	/**
+	 * Creates a map cache object to store key-value pairs.
+	 *
+	 * @private
+	 * @constructor
+	 * @param {Array} [entries] The key-value pairs to cache.
+	 */
+	function MapCache(entries) {
+	  var index = -1,
+	      length = entries == null ? 0 : entries.length;
+
+	  this.clear();
+	  while (++index < length) {
+	    var entry = entries[index];
+	    this.set(entry[0], entry[1]);
+	  }
+	}
+
+	/**
+	 * Removes all key-value entries from the map.
+	 *
+	 * @private
+	 * @name clear
+	 * @memberOf MapCache
+	 */
+	function mapCacheClear() {
+	  this.size = 0;
+	  this.__data__ = {
+	    'hash': new Hash,
+	    'map': new (Map || ListCache),
+	    'string': new Hash
+	  };
+	}
+
+	/**
+	 * Removes `key` and its value from the map.
+	 *
+	 * @private
+	 * @name delete
+	 * @memberOf MapCache
+	 * @param {string} key The key of the value to remove.
+	 * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+	 */
+	function mapCacheDelete(key) {
+	  var result = getMapData(this, key)['delete'](key);
+	  this.size -= result ? 1 : 0;
+	  return result;
+	}
+
+	/**
+	 * Gets the map value for `key`.
+	 *
+	 * @private
+	 * @name get
+	 * @memberOf MapCache
+	 * @param {string} key The key of the value to get.
+	 * @returns {*} Returns the entry value.
+	 */
+	function mapCacheGet(key) {
+	  return getMapData(this, key).get(key);
+	}
+
+	/**
+	 * Checks if a map value for `key` exists.
+	 *
+	 * @private
+	 * @name has
+	 * @memberOf MapCache
+	 * @param {string} key The key of the entry to check.
+	 * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+	 */
+	function mapCacheHas(key) {
+	  return getMapData(this, key).has(key);
+	}
+
+	/**
+	 * Sets the map `key` to `value`.
+	 *
+	 * @private
+	 * @name set
+	 * @memberOf MapCache
+	 * @param {string} key The key of the value to set.
+	 * @param {*} value The value to set.
+	 * @returns {Object} Returns the map cache instance.
+	 */
+	function mapCacheSet(key, value) {
+	  var data = getMapData(this, key),
+	      size = data.size;
+
+	  data.set(key, value);
+	  this.size += data.size == size ? 0 : 1;
+	  return this;
+	}
+
+	// Add methods to `MapCache`.
+	MapCache.prototype.clear = mapCacheClear;
+	MapCache.prototype['delete'] = mapCacheDelete;
+	MapCache.prototype.get = mapCacheGet;
+	MapCache.prototype.has = mapCacheHas;
+	MapCache.prototype.set = mapCacheSet;
+
+	/**
+	 *
+	 * Creates an array cache object to store unique values.
+	 *
+	 * @private
+	 * @constructor
+	 * @param {Array} [values] The values to cache.
+	 */
+	function SetCache(values) {
+	  var index = -1,
+	      length = values == null ? 0 : values.length;
+
+	  this.__data__ = new MapCache;
+	  while (++index < length) {
+	    this.add(values[index]);
+	  }
+	}
+
+	/**
+	 * Adds `value` to the array cache.
+	 *
+	 * @private
+	 * @name add
+	 * @memberOf SetCache
+	 * @alias push
+	 * @param {*} value The value to cache.
+	 * @returns {Object} Returns the cache instance.
+	 */
+	function setCacheAdd(value) {
+	  this.__data__.set(value, HASH_UNDEFINED);
+	  return this;
+	}
+
+	/**
+	 * Checks if `value` is in the array cache.
+	 *
+	 * @private
+	 * @name has
+	 * @memberOf SetCache
+	 * @param {*} value The value to search for.
+	 * @returns {number} Returns `true` if `value` is found, else `false`.
+	 */
+	function setCacheHas(value) {
+	  return this.__data__.has(value);
+	}
+
+	// Add methods to `SetCache`.
+	SetCache.prototype.add = SetCache.prototype.push = setCacheAdd;
+	SetCache.prototype.has = setCacheHas;
+
+	/**
+	 * Creates a stack cache object to store key-value pairs.
+	 *
+	 * @private
+	 * @constructor
+	 * @param {Array} [entries] The key-value pairs to cache.
+	 */
+	function Stack(entries) {
+	  var data = this.__data__ = new ListCache(entries);
+	  this.size = data.size;
+	}
+
+	/**
+	 * Removes all key-value entries from the stack.
+	 *
+	 * @private
+	 * @name clear
+	 * @memberOf Stack
+	 */
+	function stackClear() {
+	  this.__data__ = new ListCache;
+	  this.size = 0;
+	}
+
+	/**
+	 * Removes `key` and its value from the stack.
+	 *
+	 * @private
+	 * @name delete
+	 * @memberOf Stack
+	 * @param {string} key The key of the value to remove.
+	 * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+	 */
+	function stackDelete(key) {
+	  var data = this.__data__,
+	      result = data['delete'](key);
+
+	  this.size = data.size;
+	  return result;
+	}
+
+	/**
+	 * Gets the stack value for `key`.
+	 *
+	 * @private
+	 * @name get
+	 * @memberOf Stack
+	 * @param {string} key The key of the value to get.
+	 * @returns {*} Returns the entry value.
+	 */
+	function stackGet(key) {
+	  return this.__data__.get(key);
+	}
+
+	/**
+	 * Checks if a stack value for `key` exists.
+	 *
+	 * @private
+	 * @name has
+	 * @memberOf Stack
+	 * @param {string} key The key of the entry to check.
+	 * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+	 */
+	function stackHas(key) {
+	  return this.__data__.has(key);
+	}
+
+	/**
+	 * Sets the stack `key` to `value`.
+	 *
+	 * @private
+	 * @name set
+	 * @memberOf Stack
+	 * @param {string} key The key of the value to set.
+	 * @param {*} value The value to set.
+	 * @returns {Object} Returns the stack cache instance.
+	 */
+	function stackSet(key, value) {
+	  var data = this.__data__;
+	  if (data instanceof ListCache) {
+	    var pairs = data.__data__;
+	    if (!Map || (pairs.length < LARGE_ARRAY_SIZE - 1)) {
+	      pairs.push([key, value]);
+	      this.size = ++data.size;
+	      return this;
+	    }
+	    data = this.__data__ = new MapCache(pairs);
+	  }
+	  data.set(key, value);
+	  this.size = data.size;
+	  return this;
+	}
+
+	// Add methods to `Stack`.
+	Stack.prototype.clear = stackClear;
+	Stack.prototype['delete'] = stackDelete;
+	Stack.prototype.get = stackGet;
+	Stack.prototype.has = stackHas;
+	Stack.prototype.set = stackSet;
+
+	/**
+	 * Creates an array of the enumerable property names of the array-like `value`.
+	 *
+	 * @private
+	 * @param {*} value The value to query.
+	 * @param {boolean} inherited Specify returning inherited property names.
+	 * @returns {Array} Returns the array of property names.
+	 */
+	function arrayLikeKeys(value, inherited) {
+	  var isArr = isArray(value),
+	      isArg = !isArr && isArguments(value),
+	      isBuff = !isArr && !isArg && isBuffer(value),
+	      isType = !isArr && !isArg && !isBuff && isTypedArray(value),
+	      skipIndexes = isArr || isArg || isBuff || isType,
+	      result = skipIndexes ? baseTimes(value.length, String) : [],
+	      length = result.length;
+
+	  for (var key in value) {
+	    if ((inherited || hasOwnProperty.call(value, key)) &&
+	        !(skipIndexes && (
+	           // Safari 9 has enumerable `arguments.length` in strict mode.
+	           key == 'length' ||
+	           // Node.js 0.10 has enumerable non-index properties on buffers.
+	           (isBuff && (key == 'offset' || key == 'parent')) ||
+	           // PhantomJS 2 has enumerable non-index properties on typed arrays.
+	           (isType && (key == 'buffer' || key == 'byteLength' || key == 'byteOffset')) ||
+	           // Skip index properties.
+	           isIndex(key, length)
+	        ))) {
+	      result.push(key);
+	    }
+	  }
+	  return result;
+	}
+
+	/**
+	 * Gets the index at which the `key` is found in `array` of key-value pairs.
+	 *
+	 * @private
+	 * @param {Array} array The array to inspect.
+	 * @param {*} key The key to search for.
+	 * @returns {number} Returns the index of the matched value, else `-1`.
+	 */
+	function assocIndexOf(array, key) {
+	  var length = array.length;
+	  while (length--) {
+	    if (eq(array[length][0], key)) {
+	      return length;
+	    }
+	  }
+	  return -1;
+	}
+
+	/**
+	 * The base implementation of `getAllKeys` and `getAllKeysIn` which uses
+	 * `keysFunc` and `symbolsFunc` to get the enumerable property names and
+	 * symbols of `object`.
+	 *
+	 * @private
+	 * @param {Object} object The object to query.
+	 * @param {Function} keysFunc The function to get the keys of `object`.
+	 * @param {Function} symbolsFunc The function to get the symbols of `object`.
+	 * @returns {Array} Returns the array of property names and symbols.
+	 */
+	function baseGetAllKeys(object, keysFunc, symbolsFunc) {
+	  var result = keysFunc(object);
+	  return isArray(object) ? result : arrayPush(result, symbolsFunc(object));
+	}
+
+	/**
+	 * The base implementation of `getTag` without fallbacks for buggy environments.
+	 *
+	 * @private
+	 * @param {*} value The value to query.
+	 * @returns {string} Returns the `toStringTag`.
+	 */
+	function baseGetTag(value) {
+	  if (value == null) {
+	    return value === undefined ? undefinedTag : nullTag;
+	  }
+	  return (symToStringTag && symToStringTag in Object(value))
+	    ? getRawTag(value)
+	    : objectToString(value);
+	}
+
+	/**
+	 * The base implementation of `_.isArguments`.
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is an `arguments` object,
+	 */
+	function baseIsArguments(value) {
+	  return isObjectLike(value) && baseGetTag(value) == argsTag;
+	}
+
+	/**
+	 * The base implementation of `_.isEqual` which supports partial comparisons
+	 * and tracks traversed objects.
+	 *
+	 * @private
+	 * @param {*} value The value to compare.
+	 * @param {*} other The other value to compare.
+	 * @param {boolean} bitmask The bitmask flags.
+	 *  1 - Unordered comparison
+	 *  2 - Partial comparison
+	 * @param {Function} [customizer] The function to customize comparisons.
+	 * @param {Object} [stack] Tracks traversed `value` and `other` objects.
+	 * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
+	 */
+	function baseIsEqual(value, other, bitmask, customizer, stack) {
+	  if (value === other) {
+	    return true;
+	  }
+	  if (value == null || other == null || (!isObjectLike(value) && !isObjectLike(other))) {
+	    return value !== value && other !== other;
+	  }
+	  return baseIsEqualDeep(value, other, bitmask, customizer, baseIsEqual, stack);
+	}
+
+	/**
+	 * A specialized version of `baseIsEqual` for arrays and objects which performs
+	 * deep comparisons and tracks traversed objects enabling objects with circular
+	 * references to be compared.
+	 *
+	 * @private
+	 * @param {Object} object The object to compare.
+	 * @param {Object} other The other object to compare.
+	 * @param {number} bitmask The bitmask flags. See `baseIsEqual` for more details.
+	 * @param {Function} customizer The function to customize comparisons.
+	 * @param {Function} equalFunc The function to determine equivalents of values.
+	 * @param {Object} [stack] Tracks traversed `object` and `other` objects.
+	 * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
+	 */
+	function baseIsEqualDeep(object, other, bitmask, customizer, equalFunc, stack) {
+	  var objIsArr = isArray(object),
+	      othIsArr = isArray(other),
+	      objTag = objIsArr ? arrayTag : getTag(object),
+	      othTag = othIsArr ? arrayTag : getTag(other);
+
+	  objTag = objTag == argsTag ? objectTag : objTag;
+	  othTag = othTag == argsTag ? objectTag : othTag;
+
+	  var objIsObj = objTag == objectTag,
+	      othIsObj = othTag == objectTag,
+	      isSameTag = objTag == othTag;
+
+	  if (isSameTag && isBuffer(object)) {
+	    if (!isBuffer(other)) {
+	      return false;
+	    }
+	    objIsArr = true;
+	    objIsObj = false;
+	  }
+	  if (isSameTag && !objIsObj) {
+	    stack || (stack = new Stack);
+	    return (objIsArr || isTypedArray(object))
+	      ? equalArrays(object, other, bitmask, customizer, equalFunc, stack)
+	      : equalByTag(object, other, objTag, bitmask, customizer, equalFunc, stack);
+	  }
+	  if (!(bitmask & COMPARE_PARTIAL_FLAG)) {
+	    var objIsWrapped = objIsObj && hasOwnProperty.call(object, '__wrapped__'),
+	        othIsWrapped = othIsObj && hasOwnProperty.call(other, '__wrapped__');
+
+	    if (objIsWrapped || othIsWrapped) {
+	      var objUnwrapped = objIsWrapped ? object.value() : object,
+	          othUnwrapped = othIsWrapped ? other.value() : other;
+
+	      stack || (stack = new Stack);
+	      return equalFunc(objUnwrapped, othUnwrapped, bitmask, customizer, stack);
+	    }
+	  }
+	  if (!isSameTag) {
+	    return false;
+	  }
+	  stack || (stack = new Stack);
+	  return equalObjects(object, other, bitmask, customizer, equalFunc, stack);
+	}
+
+	/**
+	 * The base implementation of `_.isNative` without bad shim checks.
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is a native function,
+	 *  else `false`.
+	 */
+	function baseIsNative(value) {
+	  if (!isObject(value) || isMasked(value)) {
+	    return false;
+	  }
+	  var pattern = isFunction(value) ? reIsNative : reIsHostCtor;
+	  return pattern.test(toSource(value));
+	}
+
+	/**
+	 * The base implementation of `_.isTypedArray` without Node.js optimizations.
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is a typed array, else `false`.
+	 */
+	function baseIsTypedArray(value) {
+	  return isObjectLike(value) &&
+	    isLength(value.length) && !!typedArrayTags[baseGetTag(value)];
+	}
+
+	/**
+	 * The base implementation of `_.keys` which doesn't treat sparse arrays as dense.
+	 *
+	 * @private
+	 * @param {Object} object The object to query.
+	 * @returns {Array} Returns the array of property names.
+	 */
+	function baseKeys(object) {
+	  if (!isPrototype(object)) {
+	    return nativeKeys(object);
+	  }
+	  var result = [];
+	  for (var key in Object(object)) {
+	    if (hasOwnProperty.call(object, key) && key != 'constructor') {
+	      result.push(key);
+	    }
+	  }
+	  return result;
+	}
+
+	/**
+	 * A specialized version of `baseIsEqualDeep` for arrays with support for
+	 * partial deep comparisons.
+	 *
+	 * @private
+	 * @param {Array} array The array to compare.
+	 * @param {Array} other The other array to compare.
+	 * @param {number} bitmask The bitmask flags. See `baseIsEqual` for more details.
+	 * @param {Function} customizer The function to customize comparisons.
+	 * @param {Function} equalFunc The function to determine equivalents of values.
+	 * @param {Object} stack Tracks traversed `array` and `other` objects.
+	 * @returns {boolean} Returns `true` if the arrays are equivalent, else `false`.
+	 */
+	function equalArrays(array, other, bitmask, customizer, equalFunc, stack) {
+	  var isPartial = bitmask & COMPARE_PARTIAL_FLAG,
+	      arrLength = array.length,
+	      othLength = other.length;
+
+	  if (arrLength != othLength && !(isPartial && othLength > arrLength)) {
+	    return false;
+	  }
+	  // Assume cyclic values are equal.
+	  var stacked = stack.get(array);
+	  if (stacked && stack.get(other)) {
+	    return stacked == other;
+	  }
+	  var index = -1,
+	      result = true,
+	      seen = (bitmask & COMPARE_UNORDERED_FLAG) ? new SetCache : undefined;
+
+	  stack.set(array, other);
+	  stack.set(other, array);
+
+	  // Ignore non-index properties.
+	  while (++index < arrLength) {
+	    var arrValue = array[index],
+	        othValue = other[index];
+
+	    if (customizer) {
+	      var compared = isPartial
+	        ? customizer(othValue, arrValue, index, other, array, stack)
+	        : customizer(arrValue, othValue, index, array, other, stack);
+	    }
+	    if (compared !== undefined) {
+	      if (compared) {
+	        continue;
+	      }
+	      result = false;
+	      break;
+	    }
+	    // Recursively compare arrays (susceptible to call stack limits).
+	    if (seen) {
+	      if (!arraySome(other, function(othValue, othIndex) {
+	            if (!cacheHas(seen, othIndex) &&
+	                (arrValue === othValue || equalFunc(arrValue, othValue, bitmask, customizer, stack))) {
+	              return seen.push(othIndex);
+	            }
+	          })) {
+	        result = false;
+	        break;
+	      }
+	    } else if (!(
+	          arrValue === othValue ||
+	            equalFunc(arrValue, othValue, bitmask, customizer, stack)
+	        )) {
+	      result = false;
+	      break;
+	    }
+	  }
+	  stack['delete'](array);
+	  stack['delete'](other);
+	  return result;
+	}
+
+	/**
+	 * A specialized version of `baseIsEqualDeep` for comparing objects of
+	 * the same `toStringTag`.
+	 *
+	 * **Note:** This function only supports comparing values with tags of
+	 * `Boolean`, `Date`, `Error`, `Number`, `RegExp`, or `String`.
+	 *
+	 * @private
+	 * @param {Object} object The object to compare.
+	 * @param {Object} other The other object to compare.
+	 * @param {string} tag The `toStringTag` of the objects to compare.
+	 * @param {number} bitmask The bitmask flags. See `baseIsEqual` for more details.
+	 * @param {Function} customizer The function to customize comparisons.
+	 * @param {Function} equalFunc The function to determine equivalents of values.
+	 * @param {Object} stack Tracks traversed `object` and `other` objects.
+	 * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
+	 */
+	function equalByTag(object, other, tag, bitmask, customizer, equalFunc, stack) {
+	  switch (tag) {
+	    case dataViewTag:
+	      if ((object.byteLength != other.byteLength) ||
+	          (object.byteOffset != other.byteOffset)) {
+	        return false;
+	      }
+	      object = object.buffer;
+	      other = other.buffer;
+
+	    case arrayBufferTag:
+	      if ((object.byteLength != other.byteLength) ||
+	          !equalFunc(new Uint8Array(object), new Uint8Array(other))) {
+	        return false;
+	      }
+	      return true;
+
+	    case boolTag:
+	    case dateTag:
+	    case numberTag:
+	      // Coerce booleans to `1` or `0` and dates to milliseconds.
+	      // Invalid dates are coerced to `NaN`.
+	      return eq(+object, +other);
+
+	    case errorTag:
+	      return object.name == other.name && object.message == other.message;
+
+	    case regexpTag:
+	    case stringTag:
+	      // Coerce regexes to strings and treat strings, primitives and objects,
+	      // as equal. See http://www.ecma-international.org/ecma-262/7.0/#sec-regexp.prototype.tostring
+	      // for more details.
+	      return object == (other + '');
+
+	    case mapTag:
+	      var convert = mapToArray;
+
+	    case setTag:
+	      var isPartial = bitmask & COMPARE_PARTIAL_FLAG;
+	      convert || (convert = setToArray);
+
+	      if (object.size != other.size && !isPartial) {
+	        return false;
+	      }
+	      // Assume cyclic values are equal.
+	      var stacked = stack.get(object);
+	      if (stacked) {
+	        return stacked == other;
+	      }
+	      bitmask |= COMPARE_UNORDERED_FLAG;
+
+	      // Recursively compare objects (susceptible to call stack limits).
+	      stack.set(object, other);
+	      var result = equalArrays(convert(object), convert(other), bitmask, customizer, equalFunc, stack);
+	      stack['delete'](object);
+	      return result;
+
+	    case symbolTag:
+	      if (symbolValueOf) {
+	        return symbolValueOf.call(object) == symbolValueOf.call(other);
+	      }
+	  }
+	  return false;
+	}
+
+	/**
+	 * A specialized version of `baseIsEqualDeep` for objects with support for
+	 * partial deep comparisons.
+	 *
+	 * @private
+	 * @param {Object} object The object to compare.
+	 * @param {Object} other The other object to compare.
+	 * @param {number} bitmask The bitmask flags. See `baseIsEqual` for more details.
+	 * @param {Function} customizer The function to customize comparisons.
+	 * @param {Function} equalFunc The function to determine equivalents of values.
+	 * @param {Object} stack Tracks traversed `object` and `other` objects.
+	 * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
+	 */
+	function equalObjects(object, other, bitmask, customizer, equalFunc, stack) {
+	  var isPartial = bitmask & COMPARE_PARTIAL_FLAG,
+	      objProps = getAllKeys(object),
+	      objLength = objProps.length,
+	      othProps = getAllKeys(other),
+	      othLength = othProps.length;
+
+	  if (objLength != othLength && !isPartial) {
+	    return false;
+	  }
+	  var index = objLength;
+	  while (index--) {
+	    var key = objProps[index];
+	    if (!(isPartial ? key in other : hasOwnProperty.call(other, key))) {
+	      return false;
+	    }
+	  }
+	  // Assume cyclic values are equal.
+	  var stacked = stack.get(object);
+	  if (stacked && stack.get(other)) {
+	    return stacked == other;
+	  }
+	  var result = true;
+	  stack.set(object, other);
+	  stack.set(other, object);
+
+	  var skipCtor = isPartial;
+	  while (++index < objLength) {
+	    key = objProps[index];
+	    var objValue = object[key],
+	        othValue = other[key];
+
+	    if (customizer) {
+	      var compared = isPartial
+	        ? customizer(othValue, objValue, key, other, object, stack)
+	        : customizer(objValue, othValue, key, object, other, stack);
+	    }
+	    // Recursively compare objects (susceptible to call stack limits).
+	    if (!(compared === undefined
+	          ? (objValue === othValue || equalFunc(objValue, othValue, bitmask, customizer, stack))
+	          : compared
+	        )) {
+	      result = false;
+	      break;
+	    }
+	    skipCtor || (skipCtor = key == 'constructor');
+	  }
+	  if (result && !skipCtor) {
+	    var objCtor = object.constructor,
+	        othCtor = other.constructor;
+
+	    // Non `Object` object instances with different constructors are not equal.
+	    if (objCtor != othCtor &&
+	        ('constructor' in object && 'constructor' in other) &&
+	        !(typeof objCtor == 'function' && objCtor instanceof objCtor &&
+	          typeof othCtor == 'function' && othCtor instanceof othCtor)) {
+	      result = false;
+	    }
+	  }
+	  stack['delete'](object);
+	  stack['delete'](other);
+	  return result;
+	}
+
+	/**
+	 * Creates an array of own enumerable property names and symbols of `object`.
+	 *
+	 * @private
+	 * @param {Object} object The object to query.
+	 * @returns {Array} Returns the array of property names and symbols.
+	 */
+	function getAllKeys(object) {
+	  return baseGetAllKeys(object, keys, getSymbols);
+	}
+
+	/**
+	 * Gets the data for `map`.
+	 *
+	 * @private
+	 * @param {Object} map The map to query.
+	 * @param {string} key The reference key.
+	 * @returns {*} Returns the map data.
+	 */
+	function getMapData(map, key) {
+	  var data = map.__data__;
+	  return isKeyable(key)
+	    ? data[typeof key == 'string' ? 'string' : 'hash']
+	    : data.map;
+	}
+
+	/**
+	 * Gets the native function at `key` of `object`.
+	 *
+	 * @private
+	 * @param {Object} object The object to query.
+	 * @param {string} key The key of the method to get.
+	 * @returns {*} Returns the function if it's native, else `undefined`.
+	 */
+	function getNative(object, key) {
+	  var value = getValue(object, key);
+	  return baseIsNative(value) ? value : undefined;
+	}
+
+	/**
+	 * A specialized version of `baseGetTag` which ignores `Symbol.toStringTag` values.
+	 *
+	 * @private
+	 * @param {*} value The value to query.
+	 * @returns {string} Returns the raw `toStringTag`.
+	 */
+	function getRawTag(value) {
+	  var isOwn = hasOwnProperty.call(value, symToStringTag),
+	      tag = value[symToStringTag];
+
+	  try {
+	    value[symToStringTag] = undefined;
+	    var unmasked = true;
+	  } catch (e) {}
+
+	  var result = nativeObjectToString.call(value);
+	  if (unmasked) {
+	    if (isOwn) {
+	      value[symToStringTag] = tag;
+	    } else {
+	      delete value[symToStringTag];
+	    }
+	  }
+	  return result;
+	}
+
+	/**
+	 * Creates an array of the own enumerable symbols of `object`.
+	 *
+	 * @private
+	 * @param {Object} object The object to query.
+	 * @returns {Array} Returns the array of symbols.
+	 */
+	var getSymbols = !nativeGetSymbols ? stubArray : function(object) {
+	  if (object == null) {
+	    return [];
+	  }
+	  object = Object(object);
+	  return arrayFilter(nativeGetSymbols(object), function(symbol) {
+	    return propertyIsEnumerable.call(object, symbol);
+	  });
+	};
+
+	/**
+	 * Gets the `toStringTag` of `value`.
+	 *
+	 * @private
+	 * @param {*} value The value to query.
+	 * @returns {string} Returns the `toStringTag`.
+	 */
+	var getTag = baseGetTag;
+
+	// Fallback for data views, maps, sets, and weak maps in IE 11 and promises in Node.js < 6.
+	if ((DataView && getTag(new DataView(new ArrayBuffer(1))) != dataViewTag) ||
+	    (Map && getTag(new Map) != mapTag) ||
+	    (Promise && getTag(Promise.resolve()) != promiseTag) ||
+	    (Set && getTag(new Set) != setTag) ||
+	    (WeakMap && getTag(new WeakMap) != weakMapTag)) {
+	  getTag = function(value) {
+	    var result = baseGetTag(value),
+	        Ctor = result == objectTag ? value.constructor : undefined,
+	        ctorString = Ctor ? toSource(Ctor) : '';
+
+	    if (ctorString) {
+	      switch (ctorString) {
+	        case dataViewCtorString: return dataViewTag;
+	        case mapCtorString: return mapTag;
+	        case promiseCtorString: return promiseTag;
+	        case setCtorString: return setTag;
+	        case weakMapCtorString: return weakMapTag;
+	      }
+	    }
+	    return result;
+	  };
+	}
+
+	/**
+	 * Checks if `value` is a valid array-like index.
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @param {number} [length=MAX_SAFE_INTEGER] The upper bounds of a valid index.
+	 * @returns {boolean} Returns `true` if `value` is a valid index, else `false`.
+	 */
+	function isIndex(value, length) {
+	  length = length == null ? MAX_SAFE_INTEGER : length;
+	  return !!length &&
+	    (typeof value == 'number' || reIsUint.test(value)) &&
+	    (value > -1 && value % 1 == 0 && value < length);
+	}
+
+	/**
+	 * Checks if `value` is suitable for use as unique object key.
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is suitable, else `false`.
+	 */
+	function isKeyable(value) {
+	  var type = typeof value;
+	  return (type == 'string' || type == 'number' || type == 'symbol' || type == 'boolean')
+	    ? (value !== '__proto__')
+	    : (value === null);
+	}
+
+	/**
+	 * Checks if `func` has its source masked.
+	 *
+	 * @private
+	 * @param {Function} func The function to check.
+	 * @returns {boolean} Returns `true` if `func` is masked, else `false`.
+	 */
+	function isMasked(func) {
+	  return !!maskSrcKey && (maskSrcKey in func);
+	}
+
+	/**
+	 * Checks if `value` is likely a prototype object.
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is a prototype, else `false`.
+	 */
+	function isPrototype(value) {
+	  var Ctor = value && value.constructor,
+	      proto = (typeof Ctor == 'function' && Ctor.prototype) || objectProto;
+
+	  return value === proto;
+	}
+
+	/**
+	 * Converts `value` to a string using `Object.prototype.toString`.
+	 *
+	 * @private
+	 * @param {*} value The value to convert.
+	 * @returns {string} Returns the converted string.
+	 */
+	function objectToString(value) {
+	  return nativeObjectToString.call(value);
+	}
+
+	/**
+	 * Converts `func` to its source code.
+	 *
+	 * @private
+	 * @param {Function} func The function to convert.
+	 * @returns {string} Returns the source code.
+	 */
+	function toSource(func) {
+	  if (func != null) {
+	    try {
+	      return funcToString.call(func);
+	    } catch (e) {}
+	    try {
+	      return (func + '');
+	    } catch (e) {}
+	  }
+	  return '';
+	}
+
+	/**
+	 * Performs a
+	 * [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
+	 * comparison between two values to determine if they are equivalent.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 4.0.0
+	 * @category Lang
+	 * @param {*} value The value to compare.
+	 * @param {*} other The other value to compare.
+	 * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
+	 * @example
+	 *
+	 * var object = { 'a': 1 };
+	 * var other = { 'a': 1 };
+	 *
+	 * _.eq(object, object);
+	 * // => true
+	 *
+	 * _.eq(object, other);
+	 * // => false
+	 *
+	 * _.eq('a', 'a');
+	 * // => true
+	 *
+	 * _.eq('a', Object('a'));
+	 * // => false
+	 *
+	 * _.eq(NaN, NaN);
+	 * // => true
+	 */
+	function eq(value, other) {
+	  return value === other || (value !== value && other !== other);
+	}
+
+	/**
+	 * Checks if `value` is likely an `arguments` object.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 0.1.0
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is an `arguments` object,
+	 *  else `false`.
+	 * @example
+	 *
+	 * _.isArguments(function() { return arguments; }());
+	 * // => true
+	 *
+	 * _.isArguments([1, 2, 3]);
+	 * // => false
+	 */
+	var isArguments = baseIsArguments(function() { return arguments; }()) ? baseIsArguments : function(value) {
+	  return isObjectLike(value) && hasOwnProperty.call(value, 'callee') &&
+	    !propertyIsEnumerable.call(value, 'callee');
+	};
+
+	/**
+	 * Checks if `value` is classified as an `Array` object.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 0.1.0
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is an array, else `false`.
+	 * @example
+	 *
+	 * _.isArray([1, 2, 3]);
+	 * // => true
+	 *
+	 * _.isArray(document.body.children);
+	 * // => false
+	 *
+	 * _.isArray('abc');
+	 * // => false
+	 *
+	 * _.isArray(_.noop);
+	 * // => false
+	 */
+	var isArray = Array.isArray;
+
+	/**
+	 * Checks if `value` is array-like. A value is considered array-like if it's
+	 * not a function and has a `value.length` that's an integer greater than or
+	 * equal to `0` and less than or equal to `Number.MAX_SAFE_INTEGER`.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 4.0.0
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is array-like, else `false`.
+	 * @example
+	 *
+	 * _.isArrayLike([1, 2, 3]);
+	 * // => true
+	 *
+	 * _.isArrayLike(document.body.children);
+	 * // => true
+	 *
+	 * _.isArrayLike('abc');
+	 * // => true
+	 *
+	 * _.isArrayLike(_.noop);
+	 * // => false
+	 */
+	function isArrayLike(value) {
+	  return value != null && isLength(value.length) && !isFunction(value);
+	}
+
+	/**
+	 * Checks if `value` is a buffer.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 4.3.0
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is a buffer, else `false`.
+	 * @example
+	 *
+	 * _.isBuffer(new Buffer(2));
+	 * // => true
+	 *
+	 * _.isBuffer(new Uint8Array(2));
+	 * // => false
+	 */
+	var isBuffer = nativeIsBuffer || stubFalse;
+
+	/**
+	 * Performs a deep comparison between two values to determine if they are
+	 * equivalent.
+	 *
+	 * **Note:** This method supports comparing arrays, array buffers, booleans,
+	 * date objects, error objects, maps, numbers, `Object` objects, regexes,
+	 * sets, strings, symbols, and typed arrays. `Object` objects are compared
+	 * by their own, not inherited, enumerable properties. Functions and DOM
+	 * nodes are compared by strict equality, i.e. `===`.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 0.1.0
+	 * @category Lang
+	 * @param {*} value The value to compare.
+	 * @param {*} other The other value to compare.
+	 * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
+	 * @example
+	 *
+	 * var object = { 'a': 1 };
+	 * var other = { 'a': 1 };
+	 *
+	 * _.isEqual(object, other);
+	 * // => true
+	 *
+	 * object === other;
+	 * // => false
+	 */
+	function isEqual(value, other) {
+	  return baseIsEqual(value, other);
+	}
+
+	/**
+	 * Checks if `value` is classified as a `Function` object.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 0.1.0
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is a function, else `false`.
+	 * @example
+	 *
+	 * _.isFunction(_);
+	 * // => true
+	 *
+	 * _.isFunction(/abc/);
+	 * // => false
+	 */
+	function isFunction(value) {
+	  if (!isObject(value)) {
+	    return false;
+	  }
+	  // The use of `Object#toString` avoids issues with the `typeof` operator
+	  // in Safari 9 which returns 'object' for typed arrays and other constructors.
+	  var tag = baseGetTag(value);
+	  return tag == funcTag || tag == genTag || tag == asyncTag || tag == proxyTag;
+	}
+
+	/**
+	 * Checks if `value` is a valid array-like length.
+	 *
+	 * **Note:** This method is loosely based on
+	 * [`ToLength`](http://ecma-international.org/ecma-262/7.0/#sec-tolength).
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 4.0.0
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is a valid length, else `false`.
+	 * @example
+	 *
+	 * _.isLength(3);
+	 * // => true
+	 *
+	 * _.isLength(Number.MIN_VALUE);
+	 * // => false
+	 *
+	 * _.isLength(Infinity);
+	 * // => false
+	 *
+	 * _.isLength('3');
+	 * // => false
+	 */
+	function isLength(value) {
+	  return typeof value == 'number' &&
+	    value > -1 && value % 1 == 0 && value <= MAX_SAFE_INTEGER;
+	}
+
+	/**
+	 * Checks if `value` is the
+	 * [language type](http://www.ecma-international.org/ecma-262/7.0/#sec-ecmascript-language-types)
+	 * of `Object`. (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 0.1.0
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is an object, else `false`.
+	 * @example
+	 *
+	 * _.isObject({});
+	 * // => true
+	 *
+	 * _.isObject([1, 2, 3]);
+	 * // => true
+	 *
+	 * _.isObject(_.noop);
+	 * // => true
+	 *
+	 * _.isObject(null);
+	 * // => false
+	 */
+	function isObject(value) {
+	  var type = typeof value;
+	  return value != null && (type == 'object' || type == 'function');
+	}
+
+	/**
+	 * Checks if `value` is object-like. A value is object-like if it's not `null`
+	 * and has a `typeof` result of "object".
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 4.0.0
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
+	 * @example
+	 *
+	 * _.isObjectLike({});
+	 * // => true
+	 *
+	 * _.isObjectLike([1, 2, 3]);
+	 * // => true
+	 *
+	 * _.isObjectLike(_.noop);
+	 * // => false
+	 *
+	 * _.isObjectLike(null);
+	 * // => false
+	 */
+	function isObjectLike(value) {
+	  return value != null && typeof value == 'object';
+	}
+
+	/**
+	 * Checks if `value` is classified as a typed array.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 3.0.0
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is a typed array, else `false`.
+	 * @example
+	 *
+	 * _.isTypedArray(new Uint8Array);
+	 * // => true
+	 *
+	 * _.isTypedArray([]);
+	 * // => false
+	 */
+	var isTypedArray = nodeIsTypedArray ? baseUnary(nodeIsTypedArray) : baseIsTypedArray;
+
+	/**
+	 * Creates an array of the own enumerable property names of `object`.
+	 *
+	 * **Note:** Non-object values are coerced to objects. See the
+	 * [ES spec](http://ecma-international.org/ecma-262/7.0/#sec-object.keys)
+	 * for more details.
+	 *
+	 * @static
+	 * @since 0.1.0
+	 * @memberOf _
+	 * @category Object
+	 * @param {Object} object The object to query.
+	 * @returns {Array} Returns the array of property names.
+	 * @example
+	 *
+	 * function Foo() {
+	 *   this.a = 1;
+	 *   this.b = 2;
+	 * }
+	 *
+	 * Foo.prototype.c = 3;
+	 *
+	 * _.keys(new Foo);
+	 * // => ['a', 'b'] (iteration order is not guaranteed)
+	 *
+	 * _.keys('hi');
+	 * // => ['0', '1']
+	 */
+	function keys(object) {
+	  return isArrayLike(object) ? arrayLikeKeys(object) : baseKeys(object);
+	}
+
+	/**
+	 * This method returns a new empty array.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 4.13.0
+	 * @category Util
+	 * @returns {Array} Returns the new empty array.
+	 * @example
+	 *
+	 * var arrays = _.times(2, _.stubArray);
+	 *
+	 * console.log(arrays);
+	 * // => [[], []]
+	 *
+	 * console.log(arrays[0] === arrays[1]);
+	 * // => false
+	 */
+	function stubArray() {
+	  return [];
+	}
+
+	/**
+	 * This method returns `false`.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 4.13.0
+	 * @category Util
+	 * @returns {boolean} Returns `false`.
+	 * @example
+	 *
+	 * _.times(2, _.stubFalse);
+	 * // => [false, false]
+	 */
+	function stubFalse() {
+	  return false;
+	}
+
+	module.exports = isEqual;
+} (lodash_isequal, lodash_isequal.exports));
 
 var isEqual = lodash_isequal.exports;
 
@@ -5468,7 +6292,7 @@ const InlineContainer = (_a) => {
         }) }));
 };
 
-const FadeIn = Ue `
+Ue `
   from {
     opacity: 0;
   }
@@ -5476,46 +6300,37 @@ const FadeIn = Ue `
     opacity: 1;
   }
 `;
-const Outer = styled.div `
+const Outer = He.div `
   position: relative;
 `;
-const Overlay = styled.div `
+const Overlay = He.div `
   position: absolute;
-  inset: 0 10px;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   opacity: 1;
   pointer-events: none;
   background-color: rgba(46, 170, 220, 0.2);
-  animation: ${FadeIn} 0.1s ease;
 `;
 const BlockContainer = React__namespace.memo((_a) => {
-    var _b, _c;
+    var _b, _c, _d;
     var { blockId, editor, selected, readOnly = false, formats } = _a, props = __rest(_a, ["blockId", "editor", "selected", "readOnly", "formats"]);
-    const [blockFormat, setBlockFormat] = React__namespace.useState();
-    const [Container, setContainer] = React__namespace.useState(formats['block/paragraph']);
     const block = useBlockRenderer({ blockId, editor });
     const memoContents = React__namespace.useMemo(() => {
         var _a;
         return InlineContainer({ contents: (_a = block === null || block === void 0 ? void 0 : block.contents) !== null && _a !== void 0 ? _a : [], formats });
     }, [block === null || block === void 0 ? void 0 : block.contents, formats]);
-    React__namespace.useEffect(() => {
-        const newBlockFormat = `block/${block === null || block === void 0 ? void 0 : block.type.toLocaleLowerCase()}`;
-        setBlockFormat(newBlockFormat);
-        setContainer(() => {
-            if (!formats[newBlockFormat]) {
-                // defalut block format
-                return formats['block/paragraph'];
-            }
-            else {
-                return formats[newBlockFormat];
-            }
-        });
-    }, [block === null || block === void 0 ? void 0 : block.type]);
-    return (jsxRuntime.exports.jsxs(Outer, Object.assign({ style: { '--indent': `${(_c = (_b = block === null || block === void 0 ? void 0 : block.attributes) === null || _b === void 0 ? void 0 : _b.indent) !== null && _c !== void 0 ? _c : 0}` } }, { children: [jsxRuntime.exports.jsx(Container, Object.assign({ suppressContentEditableWarning: true, className: 'notranslate', contentEditable: !readOnly, blockId: blockId, "data-block-id": blockId, "data-attributes": JSON.stringify(block === null || block === void 0 ? void 0 : block.attributes), "data-metas": JSON.stringify(block === null || block === void 0 ? void 0 : block.meta), "data-format": blockFormat, formats: formats, attributes: block === null || block === void 0 ? void 0 : block.attributes, meta: block === null || block === void 0 ? void 0 : block.meta, contents: memoContents, selected: selected }, props)), selected && jsxRuntime.exports.jsx(Overlay, {})] })));
+    const blockFormat = `block/${block === null || block === void 0 ? void 0 : block.type.toLocaleLowerCase()}`;
+    const Container = (_b = formats[blockFormat]) !== null && _b !== void 0 ? _b : formats['block/paragraph'];
+    return (jsxRuntime.exports.jsxs(Outer, Object.assign({ "data-id": blockId, style: { '--indent': `${(_d = (_c = block === null || block === void 0 ? void 0 : block.attributes) === null || _c === void 0 ? void 0 : _c.indent) !== null && _d !== void 0 ? _d : 0}` } }, { children: [jsxRuntime.exports.jsx(Container, Object.assign({ suppressContentEditableWarning: true, className: 'notranslate', contentEditable: !readOnly, blockId: blockId, "data-block-id": blockId, "data-attributes": JSON.stringify(block === null || block === void 0 ? void 0 : block.attributes), "data-metas": JSON.stringify(block === null || block === void 0 ? void 0 : block.meta), "data-format": blockFormat, formats: formats, attributes: block === null || block === void 0 ? void 0 : block.attributes, meta: block === null || block === void 0 ? void 0 : block.meta, contents: memoContents, selected: selected }, props)), selected && jsxRuntime.exports.jsx(Overlay, {})] })));
 });
 
 function useMutationObserver(ref, callback, options = {
     childList: true,
     attributes: true,
+    subtree: true,
+    characterData: true,
 }) {
     React__namespace.useEffect(() => {
         if (!ref.current)
@@ -5523,15 +6338,15 @@ function useMutationObserver(ref, callback, options = {
         const observer = new MutationObserver(callback);
         observer.observe(ref.current, options);
         return () => observer.disconnect();
-    }, [callback, options]);
+    }, []);
 }
 
-const Header = styled.h1 `
+const Header$2 = He.h1 `
   font-size: 24px;
   outline: 0;
-  transition: all 0.3s, color 0.3s;
   padding: 2px 12px;
   box-sizing: border-box;
+  padding-left: calc(12px + 1.5em * var(--indent));
   ::after {
     opacity: 0.3;
     content: attr(placeholder);
@@ -5547,12 +6362,63 @@ const Header1 = React__namespace.memo((_a) => {
         const innerText = headerRef.current.innerText.replaceAll(/\uFEFF/gi, '');
         setShowPlaceholder(innerText.length < 1);
     }, []);
-    useMutationObserver(headerRef, handleChangeElement, {
-        childList: true,
-        attributes: true,
-        subtree: true,
-        characterData: true,
-    });
+    useMutationObserver(headerRef, handleChangeElement);
+    React__namespace.useEffect(() => {
+        handleChangeElement();
+    }, []);
+    return (jsxRuntime.exports.jsx(Header$2, Object.assign({ ref: headerRef, placeholder: showPlaceholder ? placeholder : '' }, props, { children: contents })));
+});
+
+const Header$1 = He.h2 `
+  font-size: 20px;
+  outline: 0;
+  padding: 2px 12px;
+  box-sizing: border-box;
+  padding-left: calc(12px + 1.5em * var(--indent));
+  ::after {
+    opacity: 0.3;
+    content: attr(placeholder);
+  }
+`;
+const Header2 = React__namespace.memo((_a) => {
+    var { blockId, contents, placeholder = 'Header 2', attributes, editor } = _a, props = __rest(_a, ["blockId", "contents", "placeholder", "attributes", "editor"]);
+    const headerRef = React__namespace.useRef(null);
+    const [showPlaceholder, setShowPlaceholder] = React__namespace.useState(false);
+    const handleChangeElement = React__namespace.useCallback(() => {
+        if (!headerRef.current)
+            return;
+        const innerText = headerRef.current.innerText.replaceAll(/\uFEFF/gi, '');
+        setShowPlaceholder(innerText.length < 1);
+    }, []);
+    useMutationObserver(headerRef, handleChangeElement);
+    React__namespace.useEffect(() => {
+        handleChangeElement();
+    }, []);
+    return (jsxRuntime.exports.jsx(Header$1, Object.assign({ ref: headerRef, placeholder: showPlaceholder ? placeholder : '' }, props, { children: contents })));
+});
+
+const Header = He.h3 `
+  font-size: 16px;
+  outline: 0;
+  padding: 2px 12px;
+  box-sizing: border-box;
+  padding-left: calc(12px + 1.5em * var(--indent));
+  ::after {
+    opacity: 0.3;
+    content: attr(placeholder);
+  }
+`;
+const Header3 = React__namespace.memo((_a) => {
+    var { blockId, contents, placeholder = 'Header 3', attributes, editor } = _a, props = __rest(_a, ["blockId", "contents", "placeholder", "attributes", "editor"]);
+    const headerRef = React__namespace.useRef(null);
+    const [showPlaceholder, setShowPlaceholder] = React__namespace.useState(false);
+    const handleChangeElement = React__namespace.useCallback(() => {
+        if (!headerRef.current)
+            return;
+        const innerText = headerRef.current.innerText.replaceAll(/\uFEFF/gi, '');
+        setShowPlaceholder(innerText.length < 1);
+    }, []);
+    useMutationObserver(headerRef, handleChangeElement);
     React__namespace.useEffect(() => {
         handleChangeElement();
     }, []);
@@ -5601,6 +6467,7 @@ function decimalToAlphabet(num) {
         'z',
     ];
     let dest = '';
+    /* eslint-disable-next-line */
     while (true) {
         const remainder = --num % alphabet.length;
         dest = alphabet[remainder] + dest;
@@ -5611,7 +6478,7 @@ function decimalToAlphabet(num) {
     return dest;
 }
 
-const ListItem$1 = styled.div `
+const ListItem$1 = He.div `
   font-size: 1rem;
   outline: 0;
   margin: 0;
@@ -5647,12 +6514,7 @@ const OrderedList = React__namespace.memo((_a) => {
         const innerText = headerRef.current.innerText.replaceAll(/\uFEFF/gi, '');
         setShowPlaceholder(innerText.length < 1);
     }, []);
-    useMutationObserver(headerRef, handleChangeElement, {
-        childList: true,
-        attributes: true,
-        subtree: true,
-        characterData: true,
-    });
+    useMutationObserver(headerRef, handleChangeElement);
     const memoStyle = React__namespace.useMemo(() => {
         var _a, _b;
         const numberType = ((_a = attributes === null || attributes === void 0 ? void 0 : attributes.indent) !== null && _a !== void 0 ? _a : 0) % 3;
@@ -5680,7 +6542,7 @@ const OrderedList = React__namespace.memo((_a) => {
     return (jsxRuntime.exports.jsx(ListItem$1, Object.assign({ ref: headerRef, style: memoStyle, placeholder: showPlaceholder ? placeholder : '' }, props, { children: contents })));
 });
 
-const ListItem = styled.div `
+const ListItem = He.div `
   font-size: 1rem;
   outline: 0;
   margin: 0;
@@ -5717,12 +6579,7 @@ const BulletList = React__namespace.memo((_a) => {
         const innerText = headerRef.current.innerText.replaceAll(/\uFEFF/gi, '');
         setShowPlaceholder(innerText.length < 1);
     }, []);
-    useMutationObserver(headerRef, handleChangeElement, {
-        childList: true,
-        attributes: true,
-        subtree: true,
-        characterData: true,
-    });
+    useMutationObserver(headerRef, handleChangeElement);
     React__namespace.useEffect(() => {
         handleChangeElement();
     }, []);
@@ -5746,35 +6603,561 @@ const BulletList = React__namespace.memo((_a) => {
     return (jsxRuntime.exports.jsx(ListItem, Object.assign({ ref: headerRef, style: memoStyle, placeholder: showPlaceholder ? placeholder : '' }, props, { children: contents })));
 });
 
-const Container$3 = styled.blockquote `
+const Container$5 = He.blockquote `
   outline: 0;
   margin: 0 0 0 12px;
   padding: 2px 12px;
   box-sizing: border-box;
   border-left: 3px solid #ccc;
+  padding-left: calc(12px + 1.5em * var(--indent));
 `;
 const Blockquote = React__namespace.memo((_a) => {
     var { blockId, contents, editor } = _a, props = __rest(_a, ["blockId", "contents", "editor"]);
-    return jsxRuntime.exports.jsx(Container$3, Object.assign({}, props, { children: contents }));
+    return jsxRuntime.exports.jsx(Container$5, Object.assign({}, props, { children: contents }));
 });
 
-const P = styled.p `
+const P = He.p `
   width: 100%;
   font-size: 1rem;
   outline: 0;
   margin: 0;
   padding: 2px 12px;
   box-sizing: border-box;
+  padding-left: calc(12px + 1.5em * var(--indent));
 `;
 const Paragraph = React__namespace.memo((_a) => {
     var { blockId, formats, editor, contents } = _a, props = __rest(_a, ["blockId", "formats", "editor", "contents"]);
     return jsxRuntime.exports.jsx(P, Object.assign({}, props, { children: contents }));
 });
 
+var __assign$i = (undefined && undefined.__assign) || function () {
+    __assign$i = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign$i.apply(this, arguments);
+};
+
+var __assign$h = (undefined && undefined.__assign) || function () {
+    __assign$h = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign$h.apply(this, arguments);
+};
+
+var __assign$g = (undefined && undefined.__assign) || function () {
+    __assign$g = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign$g.apply(this, arguments);
+};
+
+var __assign$f = (undefined && undefined.__assign) || function () {
+    __assign$f = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign$f.apply(this, arguments);
+};
+
+var __assign$e = (undefined && undefined.__assign) || function () {
+    __assign$e = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign$e.apply(this, arguments);
+};
+
+var __assign$d = (undefined && undefined.__assign) || function () {
+    __assign$d = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign$d.apply(this, arguments);
+};
+
+var __assign$c = (undefined && undefined.__assign) || function () {
+    __assign$c = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign$c.apply(this, arguments);
+};
+
+var DEFAULT_COLOR = '#4fa94d';
+
+var __makeTemplateObject$2 = (undefined && undefined.__makeTemplateObject) || function (cooked, raw) {
+    if (Object.defineProperty) { Object.defineProperty(cooked, "raw", { value: raw }); } else { cooked.raw = raw; }
+    return cooked;
+};
+var len = 242.776657104492;
+var time = 1.6;
+var anim = Ue(templateObject_1$2 || (templateObject_1$2 = __makeTemplateObject$2(["\n  12.5% {\n    stroke-dasharray: ", "px, ", "px;\n    stroke-dashoffset: -", "px;\n  }\n  43.75% {\n    stroke-dasharray: ", "px, ", "px;\n    stroke-dashoffset: -", "px;\n  }\n  100% {\n    stroke-dasharray: ", "px, ", "px;\n    stroke-dashoffset: -", "px;\n  }\n"], ["\n  12.5% {\n    stroke-dasharray: ", "px, ", "px;\n    stroke-dashoffset: -", "px;\n  }\n  43.75% {\n    stroke-dasharray: ", "px, ", "px;\n    stroke-dashoffset: -", "px;\n  }\n  100% {\n    stroke-dasharray: ", "px, ", "px;\n    stroke-dashoffset: -", "px;\n  }\n"])), len * 0.14, len, len * 0.11, len * 0.35, len, len * 0.35, len * 0.01, len, len * 0.99);
+He.path(templateObject_2$2 || (templateObject_2$2 = __makeTemplateObject$2(["\n  stroke-dasharray: ", "px, ", ";\n  stroke-dashoffset: 0;\n  animation: ", " ", "s linear infinite;\n"], ["\n  stroke-dasharray: ", "px, ", ";\n  stroke-dashoffset: 0;\n  animation: ", " ", "s linear infinite;\n"])), len * 0.01, len, anim, time);
+var templateObject_1$2, templateObject_2$2;
+
+var __assign$b = (undefined && undefined.__assign) || function () {
+    __assign$b = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign$b.apply(this, arguments);
+};
+
+var __assign$a = (undefined && undefined.__assign) || function () {
+    __assign$a = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign$a.apply(this, arguments);
+};
+var getDefaultStyle = function (visible) { return ({
+    display: visible ? 'flex' : 'none'
+}); };
+var MutatingDots = function (_a) {
+    var _b = _a.height, height = _b === void 0 ? 90 : _b, _c = _a.width, width = _c === void 0 ? 80 : _c, _d = _a.radius, radius = _d === void 0 ? 12.5 : _d, _e = _a.color, color = _e === void 0 ? '#4fa94d' : _e, _f = _a.secondaryColor, secondaryColor = _f === void 0 ? '#4fa94d' : _f, _g = _a.ariaLabel, ariaLabel = _g === void 0 ? 'mutating-dots-loading' : _g, wrapperStyle = _a.wrapperStyle, wrapperClass = _a.wrapperClass, _h = _a.visible, visible = _h === void 0 ? true : _h;
+    return (React__default["default"].createElement("div", { style: __assign$a(__assign$a({}, getDefaultStyle(visible)), wrapperStyle), className: wrapperClass, "data-testid": "mutating-dots-loading" },
+        React__default["default"].createElement("svg", { id: "goo-loader", width: width, height: height, "aria-label": ariaLabel, "data-testid": "mutating-dots-svg" },
+            React__default["default"].createElement("filter", { id: "fancy-goo" },
+                React__default["default"].createElement("feGaussianBlur", { in: "SourceGraphic", stdDeviation: "6", result: "blur" }),
+                React__default["default"].createElement("feColorMatrix", { in: "blur", mode: "matrix", values: "1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9", result: "goo" }),
+                React__default["default"].createElement("feComposite", { in: "SourceGraphic", in2: "goo", operator: "atop" })),
+            React__default["default"].createElement("g", { filter: "url(#fancy-goo)" },
+                React__default["default"].createElement("animateTransform", { id: "mainAnim", attributeName: "transform", attributeType: "XML", type: "rotate", from: "0 50 50", to: "359 50 50", dur: "1.2s", repeatCount: "indefinite" }),
+                React__default["default"].createElement("circle", { cx: "50%", cy: "40", r: radius, fill: color },
+                    React__default["default"].createElement("animate", { id: "cAnim1", attributeType: "XML", attributeName: "cy", dur: "0.6s", begin: "0;cAnim1.end+0.2s", calcMode: "spline", values: "40;20;40", keyTimes: "0;0.3;1", keySplines: "0.09, 0.45, 0.16, 1;0.09, 0.45, 0.16, 1" })),
+                React__default["default"].createElement("circle", { cx: "50%", cy: "60", r: radius, fill: secondaryColor },
+                    React__default["default"].createElement("animate", { id: "cAnim2", attributeType: "XML", attributeName: "cy", dur: "0.6s", begin: "0.4s;cAnim2.end+0.2s", calcMode: "spline", values: "60;80;60", keyTimes: "0;0.3;1", keySplines: "0.09, 0.45, 0.16, 1;0.09, 0.45, 0.16, 1" }))))));
+};
+
+var __assign$9 = (undefined && undefined.__assign) || function () {
+    __assign$9 = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign$9.apply(this, arguments);
+};
+
+var __assign$8 = (undefined && undefined.__assign) || function () {
+    __assign$8 = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign$8.apply(this, arguments);
+};
+
+var __assign$7 = (undefined && undefined.__assign) || function () {
+    __assign$7 = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign$7.apply(this, arguments);
+};
+
+var __assign$6 = (undefined && undefined.__assign) || function () {
+    __assign$6 = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign$6.apply(this, arguments);
+};
+
+var __assign$5 = (undefined && undefined.__assign) || function () {
+    __assign$5 = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign$5.apply(this, arguments);
+};
+
+/**
+ * Returns the value of `props[path]` or `defaultValue`
+ * @example
+ * import styled from "styled-components";
+ * import { prop } from "styled-tools";
+ *
+ * const Button = styled.button`
+ *   color: ${prop("color", "red")};
+ * `;
+ */
+var prop = function prop(path, defaultValue) {
+  return function () {
+    var props = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+    if (typeof props[path] !== "undefined") {
+      return props[path];
+    }
+
+    if (path && path.indexOf(".") > 0) {
+      var paths = path.split(".");
+      var length = paths.length;
+      var object = props[paths[0]];
+      var index = 1;
+
+      while (object != null && index < length) {
+        object = object[paths[index]];
+        index += 1;
+      }
+
+      if (typeof object !== "undefined") {
+        return object;
+      }
+    }
+
+    return defaultValue;
+  };
+};
+
+var __makeTemplateObject$1 = (undefined && undefined.__makeTemplateObject) || function (cooked, raw) {
+    if (Object.defineProperty) { Object.defineProperty(cooked, "raw", { value: raw }); } else { cooked.raw = raw; }
+    return cooked;
+};
+var spin = Ue(templateObject_1$1 || (templateObject_1$1 = __makeTemplateObject$1(["\n to {\n    transform: rotate(360deg);\n  }\n"], ["\n to {\n    transform: rotate(360deg);\n  }\n"])));
+var POINTS = [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330];
+var Svg = He.svg(templateObject_2$1 || (templateObject_2$1 = __makeTemplateObject$1(["\n  animation: ", " 0.75s steps(12, end) infinite;\n  animation-duration: ", "s;\n"], ["\n  animation: ", " 0.75s steps(12, end) infinite;\n  animation-duration: ", "s;\n"])), spin, prop('speed', '0.75'));
+var Polyline = He.polyline(templateObject_3$1 || (templateObject_3$1 = __makeTemplateObject$1(["\n  stroke-width: ", "px;\n  stroke-linecap: round;\n\n  &:nth-child(12n + 0) {\n    stroke-opacity: 0.08;\n  }\n\n  &:nth-child(12n + 1) {\n    stroke-opacity: 0.17;\n  }\n\n  &:nth-child(12n + 2) {\n    stroke-opacity: 0.25;\n  }\n\n  &:nth-child(12n + 3) {\n    stroke-opacity: 0.33;\n  }\n\n  &:nth-child(12n + 4) {\n    stroke-opacity: 0.42;\n  }\n\n  &:nth-child(12n + 5) {\n    stroke-opacity: 0.5;\n  }\n\n  &:nth-child(12n + 6) {\n    stroke-opacity: 0.58;\n  }\n\n  &:nth-child(12n + 7) {\n    stroke-opacity: 0.66;\n  }\n\n  &:nth-child(12n + 8) {\n    stroke-opacity: 0.75;\n  }\n\n  &:nth-child(12n + 9) {\n    stroke-opacity: 0.83;\n  }\n\n  &:nth-child(12n + 11) {\n    stroke-opacity: 0.92;\n  }\n"], ["\n  stroke-width: ", "px;\n  stroke-linecap: round;\n\n  &:nth-child(12n + 0) {\n    stroke-opacity: 0.08;\n  }\n\n  &:nth-child(12n + 1) {\n    stroke-opacity: 0.17;\n  }\n\n  &:nth-child(12n + 2) {\n    stroke-opacity: 0.25;\n  }\n\n  &:nth-child(12n + 3) {\n    stroke-opacity: 0.33;\n  }\n\n  &:nth-child(12n + 4) {\n    stroke-opacity: 0.42;\n  }\n\n  &:nth-child(12n + 5) {\n    stroke-opacity: 0.5;\n  }\n\n  &:nth-child(12n + 6) {\n    stroke-opacity: 0.58;\n  }\n\n  &:nth-child(12n + 7) {\n    stroke-opacity: 0.66;\n  }\n\n  &:nth-child(12n + 8) {\n    stroke-opacity: 0.75;\n  }\n\n  &:nth-child(12n + 9) {\n    stroke-opacity: 0.83;\n  }\n\n  &:nth-child(12n + 11) {\n    stroke-opacity: 0.92;\n  }\n"])), function (props) { return props.width; });
+function RotatingLines(_a) {
+    var _b = _a.strokeColor, strokeColor = _b === void 0 ? DEFAULT_COLOR : _b, _c = _a.strokeWidth, strokeWidth = _c === void 0 ? '5' : _c, _d = _a.animationDuration, animationDuration = _d === void 0 ? '0.75' : _d, _e = _a.width, width = _e === void 0 ? '96' : _e, _f = _a.visible, visible = _f === void 0 ? true : _f;
+    var lines = React.useCallback(function () {
+        return POINTS.map(function (point) { return (React__default["default"].createElement(Polyline, { key: point, points: "24,12 24,4", width: strokeWidth, transform: "rotate(".concat(point, ", 24, 24)") })); });
+    }, [strokeWidth]);
+    return !visible
+        ? null
+        : (React__default["default"].createElement(Svg, { xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 48 48", width: width, stroke: strokeColor, speed: animationDuration, role: "status", "data-testid": "rotating-lines-svg" }, lines()));
+}
+var templateObject_1$1, templateObject_2$1, templateObject_3$1;
+
+var __assign$4 = (undefined && undefined.__assign) || function () {
+    __assign$4 = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign$4.apply(this, arguments);
+};
+
+var __assign$3 = (undefined && undefined.__assign) || function () {
+    __assign$3 = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign$3.apply(this, arguments);
+};
+
+var __assign$2 = (undefined && undefined.__assign) || function () {
+    __assign$2 = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign$2.apply(this, arguments);
+};
+
+var __makeTemplateObject = (undefined && undefined.__makeTemplateObject) || function (cooked, raw) {
+    if (Object.defineProperty) { Object.defineProperty(cooked, "raw", { value: raw }); } else { cooked.raw = raw; }
+    return cooked;
+};
+var __assign$1 = (undefined && undefined.__assign) || function () {
+    __assign$1 = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign$1.apply(this, arguments);
+};
+var dash = Ue(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n to {\n    stroke-dashoffset: 136;\n  }\n"], ["\n to {\n    stroke-dashoffset: 136;\n  }\n"])));
+He.polygon(templateObject_2 || (templateObject_2 = __makeTemplateObject(["\n  stroke-dasharray: 17;\n  animation: ", " 2.5s cubic-bezier(0.35, 0.04, 0.63, 0.95) infinite;\n"], ["\n  stroke-dasharray: 17;\n  animation: ", " 2.5s cubic-bezier(0.35, 0.04, 0.63, 0.95) infinite;\n"])), dash);
+He.svg(templateObject_3 || (templateObject_3 = __makeTemplateObject(["\n  transform-origin: 50% 65%;\n"], ["\n  transform-origin: 50% 65%;\n"])));
+var templateObject_1, templateObject_2, templateObject_3;
+
+var __assign = (undefined && undefined.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+
+const Container$4 = He.div `
+  outline: none;
+  display: flex;
+  justify-content: center;
+  img {
+    max-width: 100%;
+  }
+`;
+const Loading$1 = He.div `
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(3px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+const Image$1 = React__namespace.memo((_a) => {
+    var { blockId, contents, attributes: { thumbnail, original }, meta: { isUploading = false }, editor } = _a, props = __rest(_a, ["blockId", "contents", "attributes", "meta", "editor"]);
+    const imageRef = React__namespace.useRef(null);
+    const handleClick = React__namespace.useCallback((e) => { }, []);
+    const handleMouseDown = React__namespace.useCallback((e) => {
+        e.preventDefault();
+        e.stopPropagation();
+    }, []);
+    return (jsxRuntime.exports.jsxs(Container$4, Object.assign({ ref: imageRef }, props, { contentEditable: false }, { children: [jsxRuntime.exports.jsx("img", { src: thumbnail, onClick: handleClick, onMouseDown: handleMouseDown }), isUploading && (jsxRuntime.exports.jsx(Loading$1, { children: jsxRuntime.exports.jsx(MutatingDots, { height: "100", width: "100", color: "#4fa94d", secondaryColor: "#4fa94d", radius: "12.5", ariaLabel: "mutating-dots-loading", visible: true }) }))] })));
+});
+
+const BYTE_UNITS = [
+	'B',
+	'kB',
+	'MB',
+	'GB',
+	'TB',
+	'PB',
+	'EB',
+	'ZB',
+	'YB',
+];
+
+const BIBYTE_UNITS = [
+	'B',
+	'kiB',
+	'MiB',
+	'GiB',
+	'TiB',
+	'PiB',
+	'EiB',
+	'ZiB',
+	'YiB',
+];
+
+const BIT_UNITS = [
+	'b',
+	'kbit',
+	'Mbit',
+	'Gbit',
+	'Tbit',
+	'Pbit',
+	'Ebit',
+	'Zbit',
+	'Ybit',
+];
+
+const BIBIT_UNITS = [
+	'b',
+	'kibit',
+	'Mibit',
+	'Gibit',
+	'Tibit',
+	'Pibit',
+	'Eibit',
+	'Zibit',
+	'Yibit',
+];
+
+/*
+Formats the given number using `Number#toLocaleString`.
+- If locale is a string, the value is expected to be a locale-key (for example: `de`).
+- If locale is true, the system default locale is used for translation.
+- If no value for locale is specified, the number is returned unmodified.
+*/
+const toLocaleString = (number, locale, options) => {
+	let result = number;
+	if (typeof locale === 'string' || Array.isArray(locale)) {
+		result = number.toLocaleString(locale, options);
+	} else if (locale === true || options !== undefined) {
+		result = number.toLocaleString(undefined, options);
+	}
+
+	return result;
+};
+
+function prettyBytes(number, options) {
+	if (!Number.isFinite(number)) {
+		throw new TypeError(`Expected a finite number, got ${typeof number}: ${number}`);
+	}
+
+	options = {
+		bits: false,
+		binary: false,
+		...options,
+	};
+
+	const UNITS = options.bits
+		? (options.binary ? BIBIT_UNITS : BIT_UNITS)
+		: (options.binary ? BIBYTE_UNITS : BYTE_UNITS);
+
+	if (options.signed && number === 0) {
+		return ` 0 ${UNITS[0]}`;
+	}
+
+	const isNegative = number < 0;
+	const prefix = isNegative ? '-' : (options.signed ? '+' : '');
+
+	if (isNegative) {
+		number = -number;
+	}
+
+	let localeOptions;
+
+	if (options.minimumFractionDigits !== undefined) {
+		localeOptions = {minimumFractionDigits: options.minimumFractionDigits};
+	}
+
+	if (options.maximumFractionDigits !== undefined) {
+		localeOptions = {maximumFractionDigits: options.maximumFractionDigits, ...localeOptions};
+	}
+
+	if (number < 1) {
+		const numberString = toLocaleString(number, options.locale, localeOptions);
+		return prefix + numberString + ' ' + UNITS[0];
+	}
+
+	const exponent = Math.min(Math.floor(options.binary ? Math.log(number) / Math.log(1024) : Math.log10(number) / 3), UNITS.length - 1);
+	number /= (options.binary ? 1024 : 1000) ** exponent;
+
+	if (!localeOptions) {
+		number = number.toPrecision(3);
+	}
+
+	const numberString = toLocaleString(Number(number), options.locale, localeOptions);
+
+	const unit = UNITS[exponent];
+
+	return prefix + numberString + ' ' + unit;
+}
+
+const Container$3 = He.div `
+  outline: none;
+  display: flex;
+  margin: 0 12px;
+  padding: 0 12px;
+  background: #eee;
+  border-radius: 8px;
+`;
+const IconContainer = He.div `
+  display: flex;
+  flex-shrink: 0;
+  width: 50px;
+  justify-content: center;
+  align-items: center;
+`;
+const Inner$1 = He.div `
+  flex-shrink: 1;
+  width: 100%;
+  padding: 12px;
+  box-sizing: border-box;
+`;
+He.div `
+  display: flex;
+  flex-shrink: 0;
+  width: 50px;
+`;
+const FileName = He.div `
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+const Size = He.div `
+  font-size: 12px;
+  color: #999;
+  display: flex;
+`;
+const Loading = He.div `
+  margin-left: 8px;
+`;
+const File = React__namespace.memo((_a) => {
+    var { blockId, contents, attributes: { fileName, original, size }, meta: { isUploading = false }, editor } = _a, props = __rest(_a, ["blockId", "contents", "attributes", "meta", "editor"]);
+    const imageRef = React__namespace.useRef(null);
+    React__namespace.useCallback((e) => { }, []);
+    React__namespace.useCallback((e) => {
+        e.preventDefault();
+        e.stopPropagation();
+    }, []);
+    return (jsxRuntime.exports.jsxs(Container$3, Object.assign({ ref: imageRef }, props, { contentEditable: false }, { children: [jsxRuntime.exports.jsx(IconContainer, { children: jsxRuntime.exports.jsxs("svg", Object.assign({ width: "32", height: "32", viewBox: "0 0 24 24", fill: "none", xmlns: "http://www.w3.org/2000/svg" }, { children: [jsxRuntime.exports.jsx("path", { d: "M14 3V7C14 7.26522 14.1054 7.51957 14.2929 7.70711C14.4804 7.89464 14.7348 8 15 8H19", stroke: "#666666", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round" }), jsxRuntime.exports.jsx("path", { d: "M12 11V17M17 21H7C6.46957 21 5.96086 20.7893 5.58579 20.4142C5.21071 20.0391 5 19.5304 5 19V5C5 4.46957 5.21071 3.96086 5.58579 3.58579C5.96086 3.21071 6.46957 3 7 3H14L19 8V19C19 19.5304 18.7893 20.0391 18.4142 20.4142C18.0391 20.7893 17.5304 21 17 21Z", stroke: "#666666", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round" }), jsxRuntime.exports.jsx("path", { d: "M9.5 13.5L12 11L14.5 13.5", stroke: "#666666", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round" })] })) }), jsxRuntime.exports.jsxs(Inner$1, { children: [jsxRuntime.exports.jsx(FileName, { children: fileName }), jsxRuntime.exports.jsxs(Size, { children: [prettyBytes(size), isUploading && (jsxRuntime.exports.jsx(Loading, { children: jsxRuntime.exports.jsx(RotatingLines, { strokeColor: "grey", strokeWidth: "5", animationDuration: "0.75", width: "18", visible: true }) }))] })] }), jsxRuntime.exports.jsx(IconContainer, {})] })));
+});
+
 /*! Copyright Twitter Inc. and other contributors. Licensed under MIT */
 var twemoji=function(){var twemoji={base:"https://twemoji.maxcdn.com/v/14.0.2/",ext:".png",size:"72x72",className:"emoji",convert:{fromCodePoint:fromCodePoint,toCodePoint:toCodePoint},onerror:function onerror(){if(this.parentNode){this.parentNode.replaceChild(createText(this.alt,false),this);}},parse:parse,replace:replace,test:test},escaper={"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"},re=/(?:\ud83d\udc68\ud83c\udffb\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc68\ud83c\udffc\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc68\ud83c\udffd\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc68\ud83c\udffe\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc68\ud83c\udfff\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffb\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffb\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc69\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffc\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffc\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc69\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffd\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffd\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc69\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffe\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffe\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc69\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udfff\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udfff\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc69\ud83c[\udffb-\udfff]|\ud83e\uddd1\ud83c\udffb\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83e\uddd1\ud83c[\udffc-\udfff]|\ud83e\uddd1\ud83c\udffc\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83e\uddd1\ud83c[\udffb\udffd-\udfff]|\ud83e\uddd1\ud83c\udffd\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83e\uddd1\ud83c[\udffb\udffc\udffe\udfff]|\ud83e\uddd1\ud83c\udffe\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83e\uddd1\ud83c[\udffb-\udffd\udfff]|\ud83e\uddd1\ud83c\udfff\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83e\uddd1\ud83c[\udffb-\udffe]|\ud83d\udc68\ud83c\udffb\u200d\u2764\ufe0f\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc68\ud83c\udffb\u200d\ud83e\udd1d\u200d\ud83d\udc68\ud83c[\udffc-\udfff]|\ud83d\udc68\ud83c\udffc\u200d\u2764\ufe0f\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc68\ud83c\udffc\u200d\ud83e\udd1d\u200d\ud83d\udc68\ud83c[\udffb\udffd-\udfff]|\ud83d\udc68\ud83c\udffd\u200d\u2764\ufe0f\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc68\ud83c\udffd\u200d\ud83e\udd1d\u200d\ud83d\udc68\ud83c[\udffb\udffc\udffe\udfff]|\ud83d\udc68\ud83c\udffe\u200d\u2764\ufe0f\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc68\ud83c\udffe\u200d\ud83e\udd1d\u200d\ud83d\udc68\ud83c[\udffb-\udffd\udfff]|\ud83d\udc68\ud83c\udfff\u200d\u2764\ufe0f\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc68\ud83c\udfff\u200d\ud83e\udd1d\u200d\ud83d\udc68\ud83c[\udffb-\udffe]|\ud83d\udc69\ud83c\udffb\u200d\u2764\ufe0f\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffb\u200d\u2764\ufe0f\u200d\ud83d\udc69\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffb\u200d\ud83e\udd1d\u200d\ud83d\udc68\ud83c[\udffc-\udfff]|\ud83d\udc69\ud83c\udffb\u200d\ud83e\udd1d\u200d\ud83d\udc69\ud83c[\udffc-\udfff]|\ud83d\udc69\ud83c\udffc\u200d\u2764\ufe0f\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffc\u200d\u2764\ufe0f\u200d\ud83d\udc69\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffc\u200d\ud83e\udd1d\u200d\ud83d\udc68\ud83c[\udffb\udffd-\udfff]|\ud83d\udc69\ud83c\udffc\u200d\ud83e\udd1d\u200d\ud83d\udc69\ud83c[\udffb\udffd-\udfff]|\ud83d\udc69\ud83c\udffd\u200d\u2764\ufe0f\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffd\u200d\u2764\ufe0f\u200d\ud83d\udc69\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffd\u200d\ud83e\udd1d\u200d\ud83d\udc68\ud83c[\udffb\udffc\udffe\udfff]|\ud83d\udc69\ud83c\udffd\u200d\ud83e\udd1d\u200d\ud83d\udc69\ud83c[\udffb\udffc\udffe\udfff]|\ud83d\udc69\ud83c\udffe\u200d\u2764\ufe0f\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffe\u200d\u2764\ufe0f\u200d\ud83d\udc69\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffe\u200d\ud83e\udd1d\u200d\ud83d\udc68\ud83c[\udffb-\udffd\udfff]|\ud83d\udc69\ud83c\udffe\u200d\ud83e\udd1d\u200d\ud83d\udc69\ud83c[\udffb-\udffd\udfff]|\ud83d\udc69\ud83c\udfff\u200d\u2764\ufe0f\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udfff\u200d\u2764\ufe0f\u200d\ud83d\udc69\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udfff\u200d\ud83e\udd1d\u200d\ud83d\udc68\ud83c[\udffb-\udffe]|\ud83d\udc69\ud83c\udfff\u200d\ud83e\udd1d\u200d\ud83d\udc69\ud83c[\udffb-\udffe]|\ud83e\uddd1\ud83c\udffb\u200d\u2764\ufe0f\u200d\ud83e\uddd1\ud83c[\udffc-\udfff]|\ud83e\uddd1\ud83c\udffb\u200d\ud83e\udd1d\u200d\ud83e\uddd1\ud83c[\udffb-\udfff]|\ud83e\uddd1\ud83c\udffc\u200d\u2764\ufe0f\u200d\ud83e\uddd1\ud83c[\udffb\udffd-\udfff]|\ud83e\uddd1\ud83c\udffc\u200d\ud83e\udd1d\u200d\ud83e\uddd1\ud83c[\udffb-\udfff]|\ud83e\uddd1\ud83c\udffd\u200d\u2764\ufe0f\u200d\ud83e\uddd1\ud83c[\udffb\udffc\udffe\udfff]|\ud83e\uddd1\ud83c\udffd\u200d\ud83e\udd1d\u200d\ud83e\uddd1\ud83c[\udffb-\udfff]|\ud83e\uddd1\ud83c\udffe\u200d\u2764\ufe0f\u200d\ud83e\uddd1\ud83c[\udffb-\udffd\udfff]|\ud83e\uddd1\ud83c\udffe\u200d\ud83e\udd1d\u200d\ud83e\uddd1\ud83c[\udffb-\udfff]|\ud83e\uddd1\ud83c\udfff\u200d\u2764\ufe0f\u200d\ud83e\uddd1\ud83c[\udffb-\udffe]|\ud83e\uddd1\ud83c\udfff\u200d\ud83e\udd1d\u200d\ud83e\uddd1\ud83c[\udffb-\udfff]|\ud83d\udc68\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68|\ud83d\udc69\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d[\udc68\udc69]|\ud83e\udef1\ud83c\udffb\u200d\ud83e\udef2\ud83c[\udffc-\udfff]|\ud83e\udef1\ud83c\udffc\u200d\ud83e\udef2\ud83c[\udffb\udffd-\udfff]|\ud83e\udef1\ud83c\udffd\u200d\ud83e\udef2\ud83c[\udffb\udffc\udffe\udfff]|\ud83e\udef1\ud83c\udffe\u200d\ud83e\udef2\ud83c[\udffb-\udffd\udfff]|\ud83e\udef1\ud83c\udfff\u200d\ud83e\udef2\ud83c[\udffb-\udffe]|\ud83d\udc68\u200d\u2764\ufe0f\u200d\ud83d\udc68|\ud83d\udc69\u200d\u2764\ufe0f\u200d\ud83d[\udc68\udc69]|\ud83e\uddd1\u200d\ud83e\udd1d\u200d\ud83e\uddd1|\ud83d\udc6b\ud83c[\udffb-\udfff]|\ud83d\udc6c\ud83c[\udffb-\udfff]|\ud83d\udc6d\ud83c[\udffb-\udfff]|\ud83d\udc8f\ud83c[\udffb-\udfff]|\ud83d\udc91\ud83c[\udffb-\udfff]|\ud83e\udd1d\ud83c[\udffb-\udfff]|\ud83d[\udc6b-\udc6d\udc8f\udc91]|\ud83e\udd1d)|(?:\ud83d[\udc68\udc69]|\ud83e\uddd1)(?:\ud83c[\udffb-\udfff])?\u200d(?:\u2695\ufe0f|\u2696\ufe0f|\u2708\ufe0f|\ud83c[\udf3e\udf73\udf7c\udf84\udf93\udfa4\udfa8\udfeb\udfed]|\ud83d[\udcbb\udcbc\udd27\udd2c\ude80\ude92]|\ud83e[\uddaf-\uddb3\uddbc\uddbd])|(?:\ud83c[\udfcb\udfcc]|\ud83d[\udd74\udd75]|\u26f9)((?:\ud83c[\udffb-\udfff]|\ufe0f)\u200d[\u2640\u2642]\ufe0f)|(?:\ud83c[\udfc3\udfc4\udfca]|\ud83d[\udc6e\udc70\udc71\udc73\udc77\udc81\udc82\udc86\udc87\ude45-\ude47\ude4b\ude4d\ude4e\udea3\udeb4-\udeb6]|\ud83e[\udd26\udd35\udd37-\udd39\udd3d\udd3e\uddb8\uddb9\uddcd-\uddcf\uddd4\uddd6-\udddd])(?:\ud83c[\udffb-\udfff])?\u200d[\u2640\u2642]\ufe0f|(?:\ud83d\udc68\u200d\ud83d\udc68\u200d\ud83d\udc66\u200d\ud83d\udc66|\ud83d\udc68\u200d\ud83d\udc68\u200d\ud83d\udc67\u200d\ud83d[\udc66\udc67]|\ud83d\udc68\u200d\ud83d\udc69\u200d\ud83d\udc66\u200d\ud83d\udc66|\ud83d\udc68\u200d\ud83d\udc69\u200d\ud83d\udc67\u200d\ud83d[\udc66\udc67]|\ud83d\udc69\u200d\ud83d\udc69\u200d\ud83d\udc66\u200d\ud83d\udc66|\ud83d\udc69\u200d\ud83d\udc69\u200d\ud83d\udc67\u200d\ud83d[\udc66\udc67]|\ud83d\udc68\u200d\ud83d\udc66\u200d\ud83d\udc66|\ud83d\udc68\u200d\ud83d\udc67\u200d\ud83d[\udc66\udc67]|\ud83d\udc68\u200d\ud83d\udc68\u200d\ud83d[\udc66\udc67]|\ud83d\udc68\u200d\ud83d\udc69\u200d\ud83d[\udc66\udc67]|\ud83d\udc69\u200d\ud83d\udc66\u200d\ud83d\udc66|\ud83d\udc69\u200d\ud83d\udc67\u200d\ud83d[\udc66\udc67]|\ud83d\udc69\u200d\ud83d\udc69\u200d\ud83d[\udc66\udc67]|\ud83c\udff3\ufe0f\u200d\u26a7\ufe0f|\ud83c\udff3\ufe0f\u200d\ud83c\udf08|\ud83d\ude36\u200d\ud83c\udf2b\ufe0f|\u2764\ufe0f\u200d\ud83d\udd25|\u2764\ufe0f\u200d\ud83e\ude79|\ud83c\udff4\u200d\u2620\ufe0f|\ud83d\udc15\u200d\ud83e\uddba|\ud83d\udc3b\u200d\u2744\ufe0f|\ud83d\udc41\u200d\ud83d\udde8|\ud83d\udc68\u200d\ud83d[\udc66\udc67]|\ud83d\udc69\u200d\ud83d[\udc66\udc67]|\ud83d\udc6f\u200d\u2640\ufe0f|\ud83d\udc6f\u200d\u2642\ufe0f|\ud83d\ude2e\u200d\ud83d\udca8|\ud83d\ude35\u200d\ud83d\udcab|\ud83e\udd3c\u200d\u2640\ufe0f|\ud83e\udd3c\u200d\u2642\ufe0f|\ud83e\uddde\u200d\u2640\ufe0f|\ud83e\uddde\u200d\u2642\ufe0f|\ud83e\udddf\u200d\u2640\ufe0f|\ud83e\udddf\u200d\u2642\ufe0f|\ud83d\udc08\u200d\u2b1b)|[#*0-9]\ufe0f?\u20e3|(?:[©®\u2122\u265f]\ufe0f)|(?:\ud83c[\udc04\udd70\udd71\udd7e\udd7f\ude02\ude1a\ude2f\ude37\udf21\udf24-\udf2c\udf36\udf7d\udf96\udf97\udf99-\udf9b\udf9e\udf9f\udfcd\udfce\udfd4-\udfdf\udff3\udff5\udff7]|\ud83d[\udc3f\udc41\udcfd\udd49\udd4a\udd6f\udd70\udd73\udd76-\udd79\udd87\udd8a-\udd8d\udda5\udda8\uddb1\uddb2\uddbc\uddc2-\uddc4\uddd1-\uddd3\udddc-\uddde\udde1\udde3\udde8\uddef\uddf3\uddfa\udecb\udecd-\udecf\udee0-\udee5\udee9\udef0\udef3]|[\u203c\u2049\u2139\u2194-\u2199\u21a9\u21aa\u231a\u231b\u2328\u23cf\u23ed-\u23ef\u23f1\u23f2\u23f8-\u23fa\u24c2\u25aa\u25ab\u25b6\u25c0\u25fb-\u25fe\u2600-\u2604\u260e\u2611\u2614\u2615\u2618\u2620\u2622\u2623\u2626\u262a\u262e\u262f\u2638-\u263a\u2640\u2642\u2648-\u2653\u2660\u2663\u2665\u2666\u2668\u267b\u267f\u2692-\u2697\u2699\u269b\u269c\u26a0\u26a1\u26a7\u26aa\u26ab\u26b0\u26b1\u26bd\u26be\u26c4\u26c5\u26c8\u26cf\u26d1\u26d3\u26d4\u26e9\u26ea\u26f0-\u26f5\u26f8\u26fa\u26fd\u2702\u2708\u2709\u270f\u2712\u2714\u2716\u271d\u2721\u2733\u2734\u2744\u2747\u2757\u2763\u2764\u27a1\u2934\u2935\u2b05-\u2b07\u2b1b\u2b1c\u2b50\u2b55\u3030\u303d\u3297\u3299])(?:\ufe0f|(?!\ufe0e))|(?:(?:\ud83c[\udfcb\udfcc]|\ud83d[\udd74\udd75\udd90]|[\u261d\u26f7\u26f9\u270c\u270d])(?:\ufe0f|(?!\ufe0e))|(?:\ud83c[\udf85\udfc2-\udfc4\udfc7\udfca]|\ud83d[\udc42\udc43\udc46-\udc50\udc66-\udc69\udc6e\udc70-\udc78\udc7c\udc81-\udc83\udc85-\udc87\udcaa\udd7a\udd95\udd96\ude45-\ude47\ude4b-\ude4f\udea3\udeb4-\udeb6\udec0\udecc]|\ud83e[\udd0c\udd0f\udd18-\udd1c\udd1e\udd1f\udd26\udd30-\udd39\udd3d\udd3e\udd77\uddb5\uddb6\uddb8\uddb9\uddbb\uddcd-\uddcf\uddd1-\udddd\udec3-\udec5\udef0-\udef6]|[\u270a\u270b]))(?:\ud83c[\udffb-\udfff])?|(?:\ud83c\udff4\udb40\udc67\udb40\udc62\udb40\udc65\udb40\udc6e\udb40\udc67\udb40\udc7f|\ud83c\udff4\udb40\udc67\udb40\udc62\udb40\udc73\udb40\udc63\udb40\udc74\udb40\udc7f|\ud83c\udff4\udb40\udc67\udb40\udc62\udb40\udc77\udb40\udc6c\udb40\udc73\udb40\udc7f|\ud83c\udde6\ud83c[\udde8-\uddec\uddee\uddf1\uddf2\uddf4\uddf6-\uddfa\uddfc\uddfd\uddff]|\ud83c\udde7\ud83c[\udde6\udde7\udde9-\uddef\uddf1-\uddf4\uddf6-\uddf9\uddfb\uddfc\uddfe\uddff]|\ud83c\udde8\ud83c[\udde6\udde8\udde9\uddeb-\uddee\uddf0-\uddf5\uddf7\uddfa-\uddff]|\ud83c\udde9\ud83c[\uddea\uddec\uddef\uddf0\uddf2\uddf4\uddff]|\ud83c\uddea\ud83c[\udde6\udde8\uddea\uddec\udded\uddf7-\uddfa]|\ud83c\uddeb\ud83c[\uddee-\uddf0\uddf2\uddf4\uddf7]|\ud83c\uddec\ud83c[\udde6\udde7\udde9-\uddee\uddf1-\uddf3\uddf5-\uddfa\uddfc\uddfe]|\ud83c\udded\ud83c[\uddf0\uddf2\uddf3\uddf7\uddf9\uddfa]|\ud83c\uddee\ud83c[\udde8-\uddea\uddf1-\uddf4\uddf6-\uddf9]|\ud83c\uddef\ud83c[\uddea\uddf2\uddf4\uddf5]|\ud83c\uddf0\ud83c[\uddea\uddec-\uddee\uddf2\uddf3\uddf5\uddf7\uddfc\uddfe\uddff]|\ud83c\uddf1\ud83c[\udde6-\udde8\uddee\uddf0\uddf7-\uddfb\uddfe]|\ud83c\uddf2\ud83c[\udde6\udde8-\udded\uddf0-\uddff]|\ud83c\uddf3\ud83c[\udde6\udde8\uddea-\uddec\uddee\uddf1\uddf4\uddf5\uddf7\uddfa\uddff]|\ud83c\uddf4\ud83c\uddf2|\ud83c\uddf5\ud83c[\udde6\uddea-\udded\uddf0-\uddf3\uddf7-\uddf9\uddfc\uddfe]|\ud83c\uddf6\ud83c\udde6|\ud83c\uddf7\ud83c[\uddea\uddf4\uddf8\uddfa\uddfc]|\ud83c\uddf8\ud83c[\udde6-\uddea\uddec-\uddf4\uddf7-\uddf9\uddfb\uddfd-\uddff]|\ud83c\uddf9\ud83c[\udde6\udde8\udde9\uddeb-\udded\uddef-\uddf4\uddf7\uddf9\uddfb\uddfc\uddff]|\ud83c\uddfa\ud83c[\udde6\uddec\uddf2\uddf3\uddf8\uddfe\uddff]|\ud83c\uddfb\ud83c[\udde6\udde8\uddea\uddec\uddee\uddf3\uddfa]|\ud83c\uddfc\ud83c[\uddeb\uddf8]|\ud83c\uddfd\ud83c\uddf0|\ud83c\uddfe\ud83c[\uddea\uddf9]|\ud83c\uddff\ud83c[\udde6\uddf2\uddfc]|\ud83c[\udccf\udd8e\udd91-\udd9a\udde6-\uddff\ude01\ude32-\ude36\ude38-\ude3a\ude50\ude51\udf00-\udf20\udf2d-\udf35\udf37-\udf7c\udf7e-\udf84\udf86-\udf93\udfa0-\udfc1\udfc5\udfc6\udfc8\udfc9\udfcf-\udfd3\udfe0-\udff0\udff4\udff8-\udfff]|\ud83d[\udc00-\udc3e\udc40\udc44\udc45\udc51-\udc65\udc6a\udc6f\udc79-\udc7b\udc7d-\udc80\udc84\udc88-\udc8e\udc90\udc92-\udca9\udcab-\udcfc\udcff-\udd3d\udd4b-\udd4e\udd50-\udd67\udda4\uddfb-\ude44\ude48-\ude4a\ude80-\udea2\udea4-\udeb3\udeb7-\udebf\udec1-\udec5\uded0-\uded2\uded5-\uded7\udedd-\udedf\udeeb\udeec\udef4-\udefc\udfe0-\udfeb\udff0]|\ud83e[\udd0d\udd0e\udd10-\udd17\udd20-\udd25\udd27-\udd2f\udd3a\udd3c\udd3f-\udd45\udd47-\udd76\udd78-\uddb4\uddb7\uddba\uddbc-\uddcc\uddd0\uddde-\uddff\ude70-\ude74\ude78-\ude7c\ude80-\ude86\ude90-\udeac\udeb0-\udeba\udec0-\udec2\uded0-\uded9\udee0-\udee7]|[\u23e9-\u23ec\u23f0\u23f3\u267e\u26ce\u2705\u2728\u274c\u274e\u2753-\u2755\u2795-\u2797\u27b0\u27bf\ue50a])|\ufe0f/g,UFE0Fg=/\uFE0F/g,U200D=String.fromCharCode(8205),rescaper=/[&<>'"]/g,shouldntBeParsed=/^(?:iframe|noframes|noscript|script|select|style|textarea)$/,fromCharCode=String.fromCharCode;return twemoji;function createText(text,clean){return document.createTextNode(clean?text.replace(UFE0Fg,""):text)}function escapeHTML(s){return s.replace(rescaper,replacer)}function defaultImageSrcGenerator(icon,options){return "".concat(options.base,options.size,"/",icon,options.ext)}function grabAllTextNodes(node,allText){var childNodes=node.childNodes,length=childNodes.length,subnode,nodeType;while(length--){subnode=childNodes[length];nodeType=subnode.nodeType;if(nodeType===3){allText.push(subnode);}else if(nodeType===1&&!("ownerSVGElement"in subnode)&&!shouldntBeParsed.test(subnode.nodeName.toLowerCase())){grabAllTextNodes(subnode,allText);}}return allText}function grabTheRightIcon(rawText){return toCodePoint(rawText.indexOf(U200D)<0?rawText.replace(UFE0Fg,""):rawText)}function parseNode(node,options){var allText=grabAllTextNodes(node,[]),length=allText.length,attrib,attrname,modified,fragment,subnode,text,match,i,index,img,rawText,iconId,src;while(length--){modified=false;fragment=document.createDocumentFragment();subnode=allText[length];text=subnode.nodeValue;i=0;while(match=re.exec(text)){index=match.index;if(index!==i){fragment.appendChild(createText(text.slice(i,index),true));}rawText=match[0];iconId=grabTheRightIcon(rawText);i=index+rawText.length;src=options.callback(iconId,options);if(iconId&&src){img=new Image;img.onerror=options.onerror;img.setAttribute("draggable","false");attrib=options.attributes(rawText,iconId);for(attrname in attrib){if(attrib.hasOwnProperty(attrname)&&attrname.indexOf("on")!==0&&!img.hasAttribute(attrname)){img.setAttribute(attrname,attrib[attrname]);}}img.className=options.className;img.alt=rawText;img.src=src;modified=true;fragment.appendChild(img);}if(!img)fragment.appendChild(createText(rawText,false));img=null;}if(modified){if(i<text.length){fragment.appendChild(createText(text.slice(i),true));}subnode.parentNode.replaceChild(fragment,subnode);}}return node}function parseString(str,options){return replace(str,function(rawText){var ret=rawText,iconId=grabTheRightIcon(rawText),src=options.callback(iconId,options),attrib,attrname;if(iconId&&src){ret="<img ".concat('class="',options.className,'" ','draggable="false" ','alt="',rawText,'"',' src="',src,'"');attrib=options.attributes(rawText,iconId);for(attrname in attrib){if(attrib.hasOwnProperty(attrname)&&attrname.indexOf("on")!==0&&ret.indexOf(" "+attrname+"=")===-1){ret=ret.concat(" ",attrname,'="',escapeHTML(attrib[attrname]),'"');}}ret=ret.concat("/>");}return ret})}function replacer(m){return escaper[m]}function returnNull(){return null}function toSizeSquaredAsset(value){return typeof value==="number"?value+"x"+value:value}function fromCodePoint(codepoint){var code=typeof codepoint==="string"?parseInt(codepoint,16):codepoint;if(code<65536){return fromCharCode(code)}code-=65536;return fromCharCode(55296+(code>>10),56320+(code&1023))}function parse(what,how){if(!how||typeof how==="function"){how={callback:how};}return (typeof what==="string"?parseString:parseNode)(what,{callback:how.callback||defaultImageSrcGenerator,attributes:typeof how.attributes==="function"?how.attributes:returnNull,base:typeof how.base==="string"?how.base:twemoji.base,ext:how.ext||twemoji.ext,size:how.folder||toSizeSquaredAsset(how.size||twemoji.size),className:how.className||twemoji.className,onerror:how.onerror||twemoji.onerror})}function replace(text,callback){return String(text).replace(re,callback)}function test(text){re.lastIndex=0;var result=re.test(text);re.lastIndex=0;return result}function toCodePoint(unicodeSurrogates,sep){var r=[],c=0,p=0,i=0;while(i<unicodeSurrogates.length){c=unicodeSurrogates.charCodeAt(i++);if(p){r.push((65536+(p-55296<<10)+(c-56320)).toString(16));p=0;}else if(55296<=c&&c<=56319){p=c;}else {r.push(c.toString(16));}}return r.join(sep||"-")}}();
 
-const Text$1 = styled.span `
+const Text$1 = He.span `
   &::selection {
     background: rgba(46, 170, 220, 0.2);
   }
@@ -5797,7 +7180,7 @@ const Text$1 = styled.span `
     });
 }}
 `;
-const Link = styled.a `
+const Link = He.a `
   ${({ attributes, formats }) => {
     return Object.keys(attributes).map((key) => {
         const styleFormat = `inline/style/${key}`;
@@ -5847,14 +7230,14 @@ const Italic = Ce `
   display: inline-block;
 `;
 
-const Container$2 = styled.div `
+const Container$2 = He.div `
   position: fixed;
   bottom: 12px;
   left: 50%;
   transform: translate(-50%, -50%);
   padding: 8px;
 `;
-const Button$1 = styled.a `
+const Button$1 = He.a `
   margin: 8px;
   border: 1px solid #666;
   border-radius: 4px;
@@ -5909,7 +7292,7 @@ function getScrollContainer(scrollContainer) {
     return scrollContainer !== null && scrollContainer !== void 0 ? scrollContainer : null;
 }
 
-const Container$1 = styled.div `
+const Container$1 = He.div `
   position: absolute;
   top: ${({ top }) => `${top}px`};
   left: ${({ left }) => `${left}px`};
@@ -5921,7 +7304,7 @@ const Container$1 = styled.div `
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
   z-index: 1;
 `;
-const Button = styled.a `
+const Button = He.a `
   display: inline-block;
   padding: 2px 8px;
   text-decoration: none;
@@ -5967,9 +7350,10 @@ const BubbleToolbar = React__namespace.memo((_a) => {
         const subs = new Subscription();
         const eventEmitter = editor.getEventEmitter();
         subs.add(eventEmitter.select(EditorEvents.EVENT_SELECTION_CHANGE).subscribe((v) => {
-            var _a, _b;
+            var _a, _b, _c, _d;
             const caret = editor.getCaretPosition();
-            if (!caret || !editor.hasFocus()) {
+            const blockLength = (_b = editor.getBlockLength((_a = caret === null || caret === void 0 ? void 0 : caret.blockId) !== null && _a !== void 0 ? _a : '')) !== null && _b !== void 0 ? _b : 0;
+            if (!caret || !editor.hasFocus() || blockLength < 1) {
                 setPosition(undefined);
                 setCollapsed(true);
                 return;
@@ -5977,7 +7361,7 @@ const BubbleToolbar = React__namespace.memo((_a) => {
             const container = getScrollContainer(scrollContainer);
             if (container) {
                 const containerRect = container.getBoundingClientRect();
-                const top = ((_a = container === null || container === void 0 ? void 0 : container.scrollTop) !== null && _a !== void 0 ? _a : 0) + caret.rect.top - containerRect.top;
+                const top = ((_c = container === null || container === void 0 ? void 0 : container.scrollTop) !== null && _c !== void 0 ? _c : 0) + caret.rect.top - containerRect.top;
                 const left = caret.rect.left - containerRect.left;
                 setPosition({ top, left });
             }
@@ -5989,7 +7373,7 @@ const BubbleToolbar = React__namespace.memo((_a) => {
             }
             setCollapsed(caret.collapsed);
             setFormats(editor.getFormats(caret.blockId, caret.index, caret.length));
-            setBlockType((_b = editor.getBlock(caret.blockId)) === null || _b === void 0 ? void 0 : _b.type);
+            setBlockType((_d = editor.getBlock(caret.blockId)) === null || _d === void 0 ? void 0 : _d.type);
         }));
         return () => {
             subs.unsubscribe();
@@ -6157,2225 +7541,2222 @@ var diffMatchPatch = {exports: {}};
  */
 
 (function (module) {
-/**
- * @fileoverview Computes the difference between two texts to create a patch.
- * Applies the patch onto another text, allowing for errors.
- * @author fraser@google.com (Neil Fraser)
- */
-
-/**
- * Class containing the diff, match and patch methods.
- * @constructor
- */
-var diff_match_patch = function() {
-
-  // Defaults.
-  // Redefine these in your program to override the defaults.
-
-  // Number of seconds to map a diff before giving up (0 for infinity).
-  this.Diff_Timeout = 1.0;
-  // Cost of an empty edit operation in terms of edit characters.
-  this.Diff_EditCost = 4;
-  // At what point is no match declared (0.0 = perfection, 1.0 = very loose).
-  this.Match_Threshold = 0.5;
-  // How far to search for a match (0 = exact location, 1000+ = broad match).
-  // A match this many characters away from the expected location will add
-  // 1.0 to the score (0.0 is a perfect match).
-  this.Match_Distance = 1000;
-  // When deleting a large block of text (over ~64 characters), how close do
-  // the contents have to be to match the expected contents. (0.0 = perfection,
-  // 1.0 = very loose).  Note that Match_Threshold controls how closely the
-  // end points of a delete need to match.
-  this.Patch_DeleteThreshold = 0.5;
-  // Chunk size for context length.
-  this.Patch_Margin = 4;
-
-  // The number of bits in an int.
-  this.Match_MaxBits = 32;
-};
-
-
-//  DIFF FUNCTIONS
-
-
-/**
- * The data structure representing a diff is an array of tuples:
- * [[DIFF_DELETE, 'Hello'], [DIFF_INSERT, 'Goodbye'], [DIFF_EQUAL, ' world.']]
- * which means: delete 'Hello', add 'Goodbye' and keep ' world.'
- */
-var DIFF_DELETE = -1;
-var DIFF_INSERT = 1;
-var DIFF_EQUAL = 0;
-
-/**
- * Class representing one diff tuple.
- * ~Attempts to look like a two-element array (which is what this used to be).~
- * Constructor returns an actual two-element array, to allow destructing @JackuB
- * See https://github.com/JackuB/diff-match-patch/issues/14 for details
- * @param {number} op Operation, one of: DIFF_DELETE, DIFF_INSERT, DIFF_EQUAL.
- * @param {string} text Text to be deleted, inserted, or retained.
- * @constructor
- */
-diff_match_patch.Diff = function(op, text) {
-  return [op, text];
-};
-
-/**
- * Find the differences between two texts.  Simplifies the problem by stripping
- * any common prefix or suffix off the texts before diffing.
- * @param {string} text1 Old string to be diffed.
- * @param {string} text2 New string to be diffed.
- * @param {boolean=} opt_checklines Optional speedup flag. If present and false,
- *     then don't run a line-level diff first to identify the changed areas.
- *     Defaults to true, which does a faster, slightly less optimal diff.
- * @param {number=} opt_deadline Optional time when the diff should be complete
- *     by.  Used internally for recursive calls.  Users should set DiffTimeout
- *     instead.
- * @return {!Array.<!diff_match_patch.Diff>} Array of diff tuples.
- */
-diff_match_patch.prototype.diff_main = function(text1, text2, opt_checklines,
-    opt_deadline) {
-  // Set a deadline by which time the diff must be complete.
-  if (typeof opt_deadline == 'undefined') {
-    if (this.Diff_Timeout <= 0) {
-      opt_deadline = Number.MAX_VALUE;
-    } else {
-      opt_deadline = (new Date).getTime() + this.Diff_Timeout * 1000;
-    }
-  }
-  var deadline = opt_deadline;
-
-  // Check for null inputs.
-  if (text1 == null || text2 == null) {
-    throw new Error('Null input. (diff_main)');
-  }
-
-  // Check for equality (speedup).
-  if (text1 == text2) {
-    if (text1) {
-      return [new diff_match_patch.Diff(DIFF_EQUAL, text1)];
-    }
-    return [];
-  }
-
-  if (typeof opt_checklines == 'undefined') {
-    opt_checklines = true;
-  }
-  var checklines = opt_checklines;
-
-  // Trim off common prefix (speedup).
-  var commonlength = this.diff_commonPrefix(text1, text2);
-  var commonprefix = text1.substring(0, commonlength);
-  text1 = text1.substring(commonlength);
-  text2 = text2.substring(commonlength);
-
-  // Trim off common suffix (speedup).
-  commonlength = this.diff_commonSuffix(text1, text2);
-  var commonsuffix = text1.substring(text1.length - commonlength);
-  text1 = text1.substring(0, text1.length - commonlength);
-  text2 = text2.substring(0, text2.length - commonlength);
-
-  // Compute the diff on the middle block.
-  var diffs = this.diff_compute_(text1, text2, checklines, deadline);
-
-  // Restore the prefix and suffix.
-  if (commonprefix) {
-    diffs.unshift(new diff_match_patch.Diff(DIFF_EQUAL, commonprefix));
-  }
-  if (commonsuffix) {
-    diffs.push(new diff_match_patch.Diff(DIFF_EQUAL, commonsuffix));
-  }
-  this.diff_cleanupMerge(diffs);
-  return diffs;
-};
-
-
-/**
- * Find the differences between two texts.  Assumes that the texts do not
- * have any common prefix or suffix.
- * @param {string} text1 Old string to be diffed.
- * @param {string} text2 New string to be diffed.
- * @param {boolean} checklines Speedup flag.  If false, then don't run a
- *     line-level diff first to identify the changed areas.
- *     If true, then run a faster, slightly less optimal diff.
- * @param {number} deadline Time when the diff should be complete by.
- * @return {!Array.<!diff_match_patch.Diff>} Array of diff tuples.
- * @private
- */
-diff_match_patch.prototype.diff_compute_ = function(text1, text2, checklines,
-    deadline) {
-  var diffs;
-
-  if (!text1) {
-    // Just add some text (speedup).
-    return [new diff_match_patch.Diff(DIFF_INSERT, text2)];
-  }
-
-  if (!text2) {
-    // Just delete some text (speedup).
-    return [new diff_match_patch.Diff(DIFF_DELETE, text1)];
-  }
-
-  var longtext = text1.length > text2.length ? text1 : text2;
-  var shorttext = text1.length > text2.length ? text2 : text1;
-  var i = longtext.indexOf(shorttext);
-  if (i != -1) {
-    // Shorter text is inside the longer text (speedup).
-    diffs = [new diff_match_patch.Diff(DIFF_INSERT, longtext.substring(0, i)),
-             new diff_match_patch.Diff(DIFF_EQUAL, shorttext),
-             new diff_match_patch.Diff(DIFF_INSERT,
-                 longtext.substring(i + shorttext.length))];
-    // Swap insertions for deletions if diff is reversed.
-    if (text1.length > text2.length) {
-      diffs[0][0] = diffs[2][0] = DIFF_DELETE;
-    }
-    return diffs;
-  }
-
-  if (shorttext.length == 1) {
-    // Single character string.
-    // After the previous speedup, the character can't be an equality.
-    return [new diff_match_patch.Diff(DIFF_DELETE, text1),
-            new diff_match_patch.Diff(DIFF_INSERT, text2)];
-  }
-
-  // Check to see if the problem can be split in two.
-  var hm = this.diff_halfMatch_(text1, text2);
-  if (hm) {
-    // A half-match was found, sort out the return data.
-    var text1_a = hm[0];
-    var text1_b = hm[1];
-    var text2_a = hm[2];
-    var text2_b = hm[3];
-    var mid_common = hm[4];
-    // Send both pairs off for separate processing.
-    var diffs_a = this.diff_main(text1_a, text2_a, checklines, deadline);
-    var diffs_b = this.diff_main(text1_b, text2_b, checklines, deadline);
-    // Merge the results.
-    return diffs_a.concat([new diff_match_patch.Diff(DIFF_EQUAL, mid_common)],
-                          diffs_b);
-  }
-
-  if (checklines && text1.length > 100 && text2.length > 100) {
-    return this.diff_lineMode_(text1, text2, deadline);
-  }
-
-  return this.diff_bisect_(text1, text2, deadline);
-};
-
-
-/**
- * Do a quick line-level diff on both strings, then rediff the parts for
- * greater accuracy.
- * This speedup can produce non-minimal diffs.
- * @param {string} text1 Old string to be diffed.
- * @param {string} text2 New string to be diffed.
- * @param {number} deadline Time when the diff should be complete by.
- * @return {!Array.<!diff_match_patch.Diff>} Array of diff tuples.
- * @private
- */
-diff_match_patch.prototype.diff_lineMode_ = function(text1, text2, deadline) {
-  // Scan the text on a line-by-line basis first.
-  var a = this.diff_linesToChars_(text1, text2);
-  text1 = a.chars1;
-  text2 = a.chars2;
-  var linearray = a.lineArray;
-
-  var diffs = this.diff_main(text1, text2, false, deadline);
-
-  // Convert the diff back to original text.
-  this.diff_charsToLines_(diffs, linearray);
-  // Eliminate freak matches (e.g. blank lines)
-  this.diff_cleanupSemantic(diffs);
-
-  // Rediff any replacement blocks, this time character-by-character.
-  // Add a dummy entry at the end.
-  diffs.push(new diff_match_patch.Diff(DIFF_EQUAL, ''));
-  var pointer = 0;
-  var count_delete = 0;
-  var count_insert = 0;
-  var text_delete = '';
-  var text_insert = '';
-  while (pointer < diffs.length) {
-    switch (diffs[pointer][0]) {
-      case DIFF_INSERT:
-        count_insert++;
-        text_insert += diffs[pointer][1];
-        break;
-      case DIFF_DELETE:
-        count_delete++;
-        text_delete += diffs[pointer][1];
-        break;
-      case DIFF_EQUAL:
-        // Upon reaching an equality, check for prior redundancies.
-        if (count_delete >= 1 && count_insert >= 1) {
-          // Delete the offending records and add the merged ones.
-          diffs.splice(pointer - count_delete - count_insert,
-                       count_delete + count_insert);
-          pointer = pointer - count_delete - count_insert;
-          var subDiff =
-              this.diff_main(text_delete, text_insert, false, deadline);
-          for (var j = subDiff.length - 1; j >= 0; j--) {
-            diffs.splice(pointer, 0, subDiff[j]);
-          }
-          pointer = pointer + subDiff.length;
-        }
-        count_insert = 0;
-        count_delete = 0;
-        text_delete = '';
-        text_insert = '';
-        break;
-    }
-    pointer++;
-  }
-  diffs.pop();  // Remove the dummy entry at the end.
-
-  return diffs;
-};
-
-
-/**
- * Find the 'middle snake' of a diff, split the problem in two
- * and return the recursively constructed diff.
- * See Myers 1986 paper: An O(ND) Difference Algorithm and Its Variations.
- * @param {string} text1 Old string to be diffed.
- * @param {string} text2 New string to be diffed.
- * @param {number} deadline Time at which to bail if not yet complete.
- * @return {!Array.<!diff_match_patch.Diff>} Array of diff tuples.
- * @private
- */
-diff_match_patch.prototype.diff_bisect_ = function(text1, text2, deadline) {
-  // Cache the text lengths to prevent multiple calls.
-  var text1_length = text1.length;
-  var text2_length = text2.length;
-  var max_d = Math.ceil((text1_length + text2_length) / 2);
-  var v_offset = max_d;
-  var v_length = 2 * max_d;
-  var v1 = new Array(v_length);
-  var v2 = new Array(v_length);
-  // Setting all elements to -1 is faster in Chrome & Firefox than mixing
-  // integers and undefined.
-  for (var x = 0; x < v_length; x++) {
-    v1[x] = -1;
-    v2[x] = -1;
-  }
-  v1[v_offset + 1] = 0;
-  v2[v_offset + 1] = 0;
-  var delta = text1_length - text2_length;
-  // If the total number of characters is odd, then the front path will collide
-  // with the reverse path.
-  var front = (delta % 2 != 0);
-  // Offsets for start and end of k loop.
-  // Prevents mapping of space beyond the grid.
-  var k1start = 0;
-  var k1end = 0;
-  var k2start = 0;
-  var k2end = 0;
-  for (var d = 0; d < max_d; d++) {
-    // Bail out if deadline is reached.
-    if ((new Date()).getTime() > deadline) {
-      break;
-    }
-
-    // Walk the front path one step.
-    for (var k1 = -d + k1start; k1 <= d - k1end; k1 += 2) {
-      var k1_offset = v_offset + k1;
-      var x1;
-      if (k1 == -d || (k1 != d && v1[k1_offset - 1] < v1[k1_offset + 1])) {
-        x1 = v1[k1_offset + 1];
-      } else {
-        x1 = v1[k1_offset - 1] + 1;
-      }
-      var y1 = x1 - k1;
-      while (x1 < text1_length && y1 < text2_length &&
-             text1.charAt(x1) == text2.charAt(y1)) {
-        x1++;
-        y1++;
-      }
-      v1[k1_offset] = x1;
-      if (x1 > text1_length) {
-        // Ran off the right of the graph.
-        k1end += 2;
-      } else if (y1 > text2_length) {
-        // Ran off the bottom of the graph.
-        k1start += 2;
-      } else if (front) {
-        var k2_offset = v_offset + delta - k1;
-        if (k2_offset >= 0 && k2_offset < v_length && v2[k2_offset] != -1) {
-          // Mirror x2 onto top-left coordinate system.
-          var x2 = text1_length - v2[k2_offset];
-          if (x1 >= x2) {
-            // Overlap detected.
-            return this.diff_bisectSplit_(text1, text2, x1, y1, deadline);
-          }
-        }
-      }
-    }
-
-    // Walk the reverse path one step.
-    for (var k2 = -d + k2start; k2 <= d - k2end; k2 += 2) {
-      var k2_offset = v_offset + k2;
-      var x2;
-      if (k2 == -d || (k2 != d && v2[k2_offset - 1] < v2[k2_offset + 1])) {
-        x2 = v2[k2_offset + 1];
-      } else {
-        x2 = v2[k2_offset - 1] + 1;
-      }
-      var y2 = x2 - k2;
-      while (x2 < text1_length && y2 < text2_length &&
-             text1.charAt(text1_length - x2 - 1) ==
-             text2.charAt(text2_length - y2 - 1)) {
-        x2++;
-        y2++;
-      }
-      v2[k2_offset] = x2;
-      if (x2 > text1_length) {
-        // Ran off the left of the graph.
-        k2end += 2;
-      } else if (y2 > text2_length) {
-        // Ran off the top of the graph.
-        k2start += 2;
-      } else if (!front) {
-        var k1_offset = v_offset + delta - k2;
-        if (k1_offset >= 0 && k1_offset < v_length && v1[k1_offset] != -1) {
-          var x1 = v1[k1_offset];
-          var y1 = v_offset + x1 - k1_offset;
-          // Mirror x2 onto top-left coordinate system.
-          x2 = text1_length - x2;
-          if (x1 >= x2) {
-            // Overlap detected.
-            return this.diff_bisectSplit_(text1, text2, x1, y1, deadline);
-          }
-        }
-      }
-    }
-  }
-  // Diff took too long and hit the deadline or
-  // number of diffs equals number of characters, no commonality at all.
-  return [new diff_match_patch.Diff(DIFF_DELETE, text1),
-          new diff_match_patch.Diff(DIFF_INSERT, text2)];
-};
-
-
-/**
- * Given the location of the 'middle snake', split the diff in two parts
- * and recurse.
- * @param {string} text1 Old string to be diffed.
- * @param {string} text2 New string to be diffed.
- * @param {number} x Index of split point in text1.
- * @param {number} y Index of split point in text2.
- * @param {number} deadline Time at which to bail if not yet complete.
- * @return {!Array.<!diff_match_patch.Diff>} Array of diff tuples.
- * @private
- */
-diff_match_patch.prototype.diff_bisectSplit_ = function(text1, text2, x, y,
-    deadline) {
-  var text1a = text1.substring(0, x);
-  var text2a = text2.substring(0, y);
-  var text1b = text1.substring(x);
-  var text2b = text2.substring(y);
-
-  // Compute both diffs serially.
-  var diffs = this.diff_main(text1a, text2a, false, deadline);
-  var diffsb = this.diff_main(text1b, text2b, false, deadline);
-
-  return diffs.concat(diffsb);
-};
-
-
-/**
- * Split two texts into an array of strings.  Reduce the texts to a string of
- * hashes where each Unicode character represents one line.
- * @param {string} text1 First string.
- * @param {string} text2 Second string.
- * @return {{chars1: string, chars2: string, lineArray: !Array.<string>}}
- *     An object containing the encoded text1, the encoded text2 and
- *     the array of unique strings.
- *     The zeroth element of the array of unique strings is intentionally blank.
- * @private
- */
-diff_match_patch.prototype.diff_linesToChars_ = function(text1, text2) {
-  var lineArray = [];  // e.g. lineArray[4] == 'Hello\n'
-  var lineHash = {};   // e.g. lineHash['Hello\n'] == 4
-
-  // '\x00' is a valid character, but various debuggers don't like it.
-  // So we'll insert a junk entry to avoid generating a null character.
-  lineArray[0] = '';
-
-  /**
-   * Split a text into an array of strings.  Reduce the texts to a string of
-   * hashes where each Unicode character represents one line.
-   * Modifies linearray and linehash through being a closure.
-   * @param {string} text String to encode.
-   * @return {string} Encoded string.
-   * @private
-   */
-  function diff_linesToCharsMunge_(text) {
-    var chars = '';
-    // Walk the text, pulling out a substring for each line.
-    // text.split('\n') would would temporarily double our memory footprint.
-    // Modifying text would create many large strings to garbage collect.
-    var lineStart = 0;
-    var lineEnd = -1;
-    // Keeping our own length variable is faster than looking it up.
-    var lineArrayLength = lineArray.length;
-    while (lineEnd < text.length - 1) {
-      lineEnd = text.indexOf('\n', lineStart);
-      if (lineEnd == -1) {
-        lineEnd = text.length - 1;
-      }
-      var line = text.substring(lineStart, lineEnd + 1);
-
-      if (lineHash.hasOwnProperty ? lineHash.hasOwnProperty(line) :
-          (lineHash[line] !== undefined)) {
-        chars += String.fromCharCode(lineHash[line]);
-      } else {
-        if (lineArrayLength == maxLines) {
-          // Bail out at 65535 because
-          // String.fromCharCode(65536) == String.fromCharCode(0)
-          line = text.substring(lineStart);
-          lineEnd = text.length;
-        }
-        chars += String.fromCharCode(lineArrayLength);
-        lineHash[line] = lineArrayLength;
-        lineArray[lineArrayLength++] = line;
-      }
-      lineStart = lineEnd + 1;
-    }
-    return chars;
-  }
-  // Allocate 2/3rds of the space for text1, the rest for text2.
-  var maxLines = 40000;
-  var chars1 = diff_linesToCharsMunge_(text1);
-  maxLines = 65535;
-  var chars2 = diff_linesToCharsMunge_(text2);
-  return {chars1: chars1, chars2: chars2, lineArray: lineArray};
-};
-
-
-/**
- * Rehydrate the text in a diff from a string of line hashes to real lines of
- * text.
- * @param {!Array.<!diff_match_patch.Diff>} diffs Array of diff tuples.
- * @param {!Array.<string>} lineArray Array of unique strings.
- * @private
- */
-diff_match_patch.prototype.diff_charsToLines_ = function(diffs, lineArray) {
-  for (var i = 0; i < diffs.length; i++) {
-    var chars = diffs[i][1];
-    var text = [];
-    for (var j = 0; j < chars.length; j++) {
-      text[j] = lineArray[chars.charCodeAt(j)];
-    }
-    diffs[i][1] = text.join('');
-  }
-};
-
-
-/**
- * Determine the common prefix of two strings.
- * @param {string} text1 First string.
- * @param {string} text2 Second string.
- * @return {number} The number of characters common to the start of each
- *     string.
- */
-diff_match_patch.prototype.diff_commonPrefix = function(text1, text2) {
-  // Quick check for common null cases.
-  if (!text1 || !text2 || text1.charAt(0) != text2.charAt(0)) {
-    return 0;
-  }
-  // Binary search.
-  // Performance analysis: https://neil.fraser.name/news/2007/10/09/
-  var pointermin = 0;
-  var pointermax = Math.min(text1.length, text2.length);
-  var pointermid = pointermax;
-  var pointerstart = 0;
-  while (pointermin < pointermid) {
-    if (text1.substring(pointerstart, pointermid) ==
-        text2.substring(pointerstart, pointermid)) {
-      pointermin = pointermid;
-      pointerstart = pointermin;
-    } else {
-      pointermax = pointermid;
-    }
-    pointermid = Math.floor((pointermax - pointermin) / 2 + pointermin);
-  }
-  return pointermid;
-};
-
-
-/**
- * Determine the common suffix of two strings.
- * @param {string} text1 First string.
- * @param {string} text2 Second string.
- * @return {number} The number of characters common to the end of each string.
- */
-diff_match_patch.prototype.diff_commonSuffix = function(text1, text2) {
-  // Quick check for common null cases.
-  if (!text1 || !text2 ||
-      text1.charAt(text1.length - 1) != text2.charAt(text2.length - 1)) {
-    return 0;
-  }
-  // Binary search.
-  // Performance analysis: https://neil.fraser.name/news/2007/10/09/
-  var pointermin = 0;
-  var pointermax = Math.min(text1.length, text2.length);
-  var pointermid = pointermax;
-  var pointerend = 0;
-  while (pointermin < pointermid) {
-    if (text1.substring(text1.length - pointermid, text1.length - pointerend) ==
-        text2.substring(text2.length - pointermid, text2.length - pointerend)) {
-      pointermin = pointermid;
-      pointerend = pointermin;
-    } else {
-      pointermax = pointermid;
-    }
-    pointermid = Math.floor((pointermax - pointermin) / 2 + pointermin);
-  }
-  return pointermid;
-};
-
-
-/**
- * Determine if the suffix of one string is the prefix of another.
- * @param {string} text1 First string.
- * @param {string} text2 Second string.
- * @return {number} The number of characters common to the end of the first
- *     string and the start of the second string.
- * @private
- */
-diff_match_patch.prototype.diff_commonOverlap_ = function(text1, text2) {
-  // Cache the text lengths to prevent multiple calls.
-  var text1_length = text1.length;
-  var text2_length = text2.length;
-  // Eliminate the null case.
-  if (text1_length == 0 || text2_length == 0) {
-    return 0;
-  }
-  // Truncate the longer string.
-  if (text1_length > text2_length) {
-    text1 = text1.substring(text1_length - text2_length);
-  } else if (text1_length < text2_length) {
-    text2 = text2.substring(0, text1_length);
-  }
-  var text_length = Math.min(text1_length, text2_length);
-  // Quick check for the worst case.
-  if (text1 == text2) {
-    return text_length;
-  }
-
-  // Start by looking for a single character match
-  // and increase length until no match is found.
-  // Performance analysis: https://neil.fraser.name/news/2010/11/04/
-  var best = 0;
-  var length = 1;
-  while (true) {
-    var pattern = text1.substring(text_length - length);
-    var found = text2.indexOf(pattern);
-    if (found == -1) {
-      return best;
-    }
-    length += found;
-    if (found == 0 || text1.substring(text_length - length) ==
-        text2.substring(0, length)) {
-      best = length;
-      length++;
-    }
-  }
-};
-
-
-/**
- * Do the two texts share a substring which is at least half the length of the
- * longer text?
- * This speedup can produce non-minimal diffs.
- * @param {string} text1 First string.
- * @param {string} text2 Second string.
- * @return {Array.<string>} Five element Array, containing the prefix of
- *     text1, the suffix of text1, the prefix of text2, the suffix of
- *     text2 and the common middle.  Or null if there was no match.
- * @private
- */
-diff_match_patch.prototype.diff_halfMatch_ = function(text1, text2) {
-  if (this.Diff_Timeout <= 0) {
-    // Don't risk returning a non-optimal diff if we have unlimited time.
-    return null;
-  }
-  var longtext = text1.length > text2.length ? text1 : text2;
-  var shorttext = text1.length > text2.length ? text2 : text1;
-  if (longtext.length < 4 || shorttext.length * 2 < longtext.length) {
-    return null;  // Pointless.
-  }
-  var dmp = this;  // 'this' becomes 'window' in a closure.
-
-  /**
-   * Does a substring of shorttext exist within longtext such that the substring
-   * is at least half the length of longtext?
-   * Closure, but does not reference any external variables.
-   * @param {string} longtext Longer string.
-   * @param {string} shorttext Shorter string.
-   * @param {number} i Start index of quarter length substring within longtext.
-   * @return {Array.<string>} Five element Array, containing the prefix of
-   *     longtext, the suffix of longtext, the prefix of shorttext, the suffix
-   *     of shorttext and the common middle.  Or null if there was no match.
-   * @private
-   */
-  function diff_halfMatchI_(longtext, shorttext, i) {
-    // Start with a 1/4 length substring at position i as a seed.
-    var seed = longtext.substring(i, i + Math.floor(longtext.length / 4));
-    var j = -1;
-    var best_common = '';
-    var best_longtext_a, best_longtext_b, best_shorttext_a, best_shorttext_b;
-    while ((j = shorttext.indexOf(seed, j + 1)) != -1) {
-      var prefixLength = dmp.diff_commonPrefix(longtext.substring(i),
-                                               shorttext.substring(j));
-      var suffixLength = dmp.diff_commonSuffix(longtext.substring(0, i),
-                                               shorttext.substring(0, j));
-      if (best_common.length < suffixLength + prefixLength) {
-        best_common = shorttext.substring(j - suffixLength, j) +
-            shorttext.substring(j, j + prefixLength);
-        best_longtext_a = longtext.substring(0, i - suffixLength);
-        best_longtext_b = longtext.substring(i + prefixLength);
-        best_shorttext_a = shorttext.substring(0, j - suffixLength);
-        best_shorttext_b = shorttext.substring(j + prefixLength);
-      }
-    }
-    if (best_common.length * 2 >= longtext.length) {
-      return [best_longtext_a, best_longtext_b,
-              best_shorttext_a, best_shorttext_b, best_common];
-    } else {
-      return null;
-    }
-  }
-
-  // First check if the second quarter is the seed for a half-match.
-  var hm1 = diff_halfMatchI_(longtext, shorttext,
-                             Math.ceil(longtext.length / 4));
-  // Check again based on the third quarter.
-  var hm2 = diff_halfMatchI_(longtext, shorttext,
-                             Math.ceil(longtext.length / 2));
-  var hm;
-  if (!hm1 && !hm2) {
-    return null;
-  } else if (!hm2) {
-    hm = hm1;
-  } else if (!hm1) {
-    hm = hm2;
-  } else {
-    // Both matched.  Select the longest.
-    hm = hm1[4].length > hm2[4].length ? hm1 : hm2;
-  }
-
-  // A half-match was found, sort out the return data.
-  var text1_a, text1_b, text2_a, text2_b;
-  if (text1.length > text2.length) {
-    text1_a = hm[0];
-    text1_b = hm[1];
-    text2_a = hm[2];
-    text2_b = hm[3];
-  } else {
-    text2_a = hm[0];
-    text2_b = hm[1];
-    text1_a = hm[2];
-    text1_b = hm[3];
-  }
-  var mid_common = hm[4];
-  return [text1_a, text1_b, text2_a, text2_b, mid_common];
-};
-
-
-/**
- * Reduce the number of edits by eliminating semantically trivial equalities.
- * @param {!Array.<!diff_match_patch.Diff>} diffs Array of diff tuples.
- */
-diff_match_patch.prototype.diff_cleanupSemantic = function(diffs) {
-  var changes = false;
-  var equalities = [];  // Stack of indices where equalities are found.
-  var equalitiesLength = 0;  // Keeping our own length var is faster in JS.
-  /** @type {?string} */
-  var lastEquality = null;
-  // Always equal to diffs[equalities[equalitiesLength - 1]][1]
-  var pointer = 0;  // Index of current position.
-  // Number of characters that changed prior to the equality.
-  var length_insertions1 = 0;
-  var length_deletions1 = 0;
-  // Number of characters that changed after the equality.
-  var length_insertions2 = 0;
-  var length_deletions2 = 0;
-  while (pointer < diffs.length) {
-    if (diffs[pointer][0] == DIFF_EQUAL) {  // Equality found.
-      equalities[equalitiesLength++] = pointer;
-      length_insertions1 = length_insertions2;
-      length_deletions1 = length_deletions2;
-      length_insertions2 = 0;
-      length_deletions2 = 0;
-      lastEquality = diffs[pointer][1];
-    } else {  // An insertion or deletion.
-      if (diffs[pointer][0] == DIFF_INSERT) {
-        length_insertions2 += diffs[pointer][1].length;
-      } else {
-        length_deletions2 += diffs[pointer][1].length;
-      }
-      // Eliminate an equality that is smaller or equal to the edits on both
-      // sides of it.
-      if (lastEquality && (lastEquality.length <=
-          Math.max(length_insertions1, length_deletions1)) &&
-          (lastEquality.length <= Math.max(length_insertions2,
-                                           length_deletions2))) {
-        // Duplicate record.
-        diffs.splice(equalities[equalitiesLength - 1], 0,
-                     new diff_match_patch.Diff(DIFF_DELETE, lastEquality));
-        // Change second copy to insert.
-        diffs[equalities[equalitiesLength - 1] + 1][0] = DIFF_INSERT;
-        // Throw away the equality we just deleted.
-        equalitiesLength--;
-        // Throw away the previous equality (it needs to be reevaluated).
-        equalitiesLength--;
-        pointer = equalitiesLength > 0 ? equalities[equalitiesLength - 1] : -1;
-        length_insertions1 = 0;  // Reset the counters.
-        length_deletions1 = 0;
-        length_insertions2 = 0;
-        length_deletions2 = 0;
-        lastEquality = null;
-        changes = true;
-      }
-    }
-    pointer++;
-  }
-
-  // Normalize the diff.
-  if (changes) {
-    this.diff_cleanupMerge(diffs);
-  }
-  this.diff_cleanupSemanticLossless(diffs);
-
-  // Find any overlaps between deletions and insertions.
-  // e.g: <del>abcxxx</del><ins>xxxdef</ins>
-  //   -> <del>abc</del>xxx<ins>def</ins>
-  // e.g: <del>xxxabc</del><ins>defxxx</ins>
-  //   -> <ins>def</ins>xxx<del>abc</del>
-  // Only extract an overlap if it is as big as the edit ahead or behind it.
-  pointer = 1;
-  while (pointer < diffs.length) {
-    if (diffs[pointer - 1][0] == DIFF_DELETE &&
-        diffs[pointer][0] == DIFF_INSERT) {
-      var deletion = diffs[pointer - 1][1];
-      var insertion = diffs[pointer][1];
-      var overlap_length1 = this.diff_commonOverlap_(deletion, insertion);
-      var overlap_length2 = this.diff_commonOverlap_(insertion, deletion);
-      if (overlap_length1 >= overlap_length2) {
-        if (overlap_length1 >= deletion.length / 2 ||
-            overlap_length1 >= insertion.length / 2) {
-          // Overlap found.  Insert an equality and trim the surrounding edits.
-          diffs.splice(pointer, 0, new diff_match_patch.Diff(DIFF_EQUAL,
-              insertion.substring(0, overlap_length1)));
-          diffs[pointer - 1][1] =
-              deletion.substring(0, deletion.length - overlap_length1);
-          diffs[pointer + 1][1] = insertion.substring(overlap_length1);
-          pointer++;
-        }
-      } else {
-        if (overlap_length2 >= deletion.length / 2 ||
-            overlap_length2 >= insertion.length / 2) {
-          // Reverse overlap found.
-          // Insert an equality and swap and trim the surrounding edits.
-          diffs.splice(pointer, 0, new diff_match_patch.Diff(DIFF_EQUAL,
-              deletion.substring(0, overlap_length2)));
-          diffs[pointer - 1][0] = DIFF_INSERT;
-          diffs[pointer - 1][1] =
-              insertion.substring(0, insertion.length - overlap_length2);
-          diffs[pointer + 1][0] = DIFF_DELETE;
-          diffs[pointer + 1][1] =
-              deletion.substring(overlap_length2);
-          pointer++;
-        }
-      }
-      pointer++;
-    }
-    pointer++;
-  }
-};
-
-
-/**
- * Look for single edits surrounded on both sides by equalities
- * which can be shifted sideways to align the edit to a word boundary.
- * e.g: The c<ins>at c</ins>ame. -> The <ins>cat </ins>came.
- * @param {!Array.<!diff_match_patch.Diff>} diffs Array of diff tuples.
- */
-diff_match_patch.prototype.diff_cleanupSemanticLossless = function(diffs) {
-  /**
-   * Given two strings, compute a score representing whether the internal
-   * boundary falls on logical boundaries.
-   * Scores range from 6 (best) to 0 (worst).
-   * Closure, but does not reference any external variables.
-   * @param {string} one First string.
-   * @param {string} two Second string.
-   * @return {number} The score.
-   * @private
-   */
-  function diff_cleanupSemanticScore_(one, two) {
-    if (!one || !two) {
-      // Edges are the best.
-      return 6;
-    }
-
-    // Each port of this function behaves slightly differently due to
-    // subtle differences in each language's definition of things like
-    // 'whitespace'.  Since this function's purpose is largely cosmetic,
-    // the choice has been made to use each language's native features
-    // rather than force total conformity.
-    var char1 = one.charAt(one.length - 1);
-    var char2 = two.charAt(0);
-    var nonAlphaNumeric1 = char1.match(diff_match_patch.nonAlphaNumericRegex_);
-    var nonAlphaNumeric2 = char2.match(diff_match_patch.nonAlphaNumericRegex_);
-    var whitespace1 = nonAlphaNumeric1 &&
-        char1.match(diff_match_patch.whitespaceRegex_);
-    var whitespace2 = nonAlphaNumeric2 &&
-        char2.match(diff_match_patch.whitespaceRegex_);
-    var lineBreak1 = whitespace1 &&
-        char1.match(diff_match_patch.linebreakRegex_);
-    var lineBreak2 = whitespace2 &&
-        char2.match(diff_match_patch.linebreakRegex_);
-    var blankLine1 = lineBreak1 &&
-        one.match(diff_match_patch.blanklineEndRegex_);
-    var blankLine2 = lineBreak2 &&
-        two.match(diff_match_patch.blanklineStartRegex_);
-
-    if (blankLine1 || blankLine2) {
-      // Five points for blank lines.
-      return 5;
-    } else if (lineBreak1 || lineBreak2) {
-      // Four points for line breaks.
-      return 4;
-    } else if (nonAlphaNumeric1 && !whitespace1 && whitespace2) {
-      // Three points for end of sentences.
-      return 3;
-    } else if (whitespace1 || whitespace2) {
-      // Two points for whitespace.
-      return 2;
-    } else if (nonAlphaNumeric1 || nonAlphaNumeric2) {
-      // One point for non-alphanumeric.
-      return 1;
-    }
-    return 0;
-  }
-
-  var pointer = 1;
-  // Intentionally ignore the first and last element (don't need checking).
-  while (pointer < diffs.length - 1) {
-    if (diffs[pointer - 1][0] == DIFF_EQUAL &&
-        diffs[pointer + 1][0] == DIFF_EQUAL) {
-      // This is a single edit surrounded by equalities.
-      var equality1 = diffs[pointer - 1][1];
-      var edit = diffs[pointer][1];
-      var equality2 = diffs[pointer + 1][1];
-
-      // First, shift the edit as far left as possible.
-      var commonOffset = this.diff_commonSuffix(equality1, edit);
-      if (commonOffset) {
-        var commonString = edit.substring(edit.length - commonOffset);
-        equality1 = equality1.substring(0, equality1.length - commonOffset);
-        edit = commonString + edit.substring(0, edit.length - commonOffset);
-        equality2 = commonString + equality2;
-      }
-
-      // Second, step character by character right, looking for the best fit.
-      var bestEquality1 = equality1;
-      var bestEdit = edit;
-      var bestEquality2 = equality2;
-      var bestScore = diff_cleanupSemanticScore_(equality1, edit) +
-          diff_cleanupSemanticScore_(edit, equality2);
-      while (edit.charAt(0) === equality2.charAt(0)) {
-        equality1 += edit.charAt(0);
-        edit = edit.substring(1) + equality2.charAt(0);
-        equality2 = equality2.substring(1);
-        var score = diff_cleanupSemanticScore_(equality1, edit) +
-            diff_cleanupSemanticScore_(edit, equality2);
-        // The >= encourages trailing rather than leading whitespace on edits.
-        if (score >= bestScore) {
-          bestScore = score;
-          bestEquality1 = equality1;
-          bestEdit = edit;
-          bestEquality2 = equality2;
-        }
-      }
-
-      if (diffs[pointer - 1][1] != bestEquality1) {
-        // We have an improvement, save it back to the diff.
-        if (bestEquality1) {
-          diffs[pointer - 1][1] = bestEquality1;
-        } else {
-          diffs.splice(pointer - 1, 1);
-          pointer--;
-        }
-        diffs[pointer][1] = bestEdit;
-        if (bestEquality2) {
-          diffs[pointer + 1][1] = bestEquality2;
-        } else {
-          diffs.splice(pointer + 1, 1);
-          pointer--;
-        }
-      }
-    }
-    pointer++;
-  }
-};
-
-// Define some regex patterns for matching boundaries.
-diff_match_patch.nonAlphaNumericRegex_ = /[^a-zA-Z0-9]/;
-diff_match_patch.whitespaceRegex_ = /\s/;
-diff_match_patch.linebreakRegex_ = /[\r\n]/;
-diff_match_patch.blanklineEndRegex_ = /\n\r?\n$/;
-diff_match_patch.blanklineStartRegex_ = /^\r?\n\r?\n/;
-
-/**
- * Reduce the number of edits by eliminating operationally trivial equalities.
- * @param {!Array.<!diff_match_patch.Diff>} diffs Array of diff tuples.
- */
-diff_match_patch.prototype.diff_cleanupEfficiency = function(diffs) {
-  var changes = false;
-  var equalities = [];  // Stack of indices where equalities are found.
-  var equalitiesLength = 0;  // Keeping our own length var is faster in JS.
-  /** @type {?string} */
-  var lastEquality = null;
-  // Always equal to diffs[equalities[equalitiesLength - 1]][1]
-  var pointer = 0;  // Index of current position.
-  // Is there an insertion operation before the last equality.
-  var pre_ins = false;
-  // Is there a deletion operation before the last equality.
-  var pre_del = false;
-  // Is there an insertion operation after the last equality.
-  var post_ins = false;
-  // Is there a deletion operation after the last equality.
-  var post_del = false;
-  while (pointer < diffs.length) {
-    if (diffs[pointer][0] == DIFF_EQUAL) {  // Equality found.
-      if (diffs[pointer][1].length < this.Diff_EditCost &&
-          (post_ins || post_del)) {
-        // Candidate found.
-        equalities[equalitiesLength++] = pointer;
-        pre_ins = post_ins;
-        pre_del = post_del;
-        lastEquality = diffs[pointer][1];
-      } else {
-        // Not a candidate, and can never become one.
-        equalitiesLength = 0;
-        lastEquality = null;
-      }
-      post_ins = post_del = false;
-    } else {  // An insertion or deletion.
-      if (diffs[pointer][0] == DIFF_DELETE) {
-        post_del = true;
-      } else {
-        post_ins = true;
-      }
-      /*
-       * Five types to be split:
-       * <ins>A</ins><del>B</del>XY<ins>C</ins><del>D</del>
-       * <ins>A</ins>X<ins>C</ins><del>D</del>
-       * <ins>A</ins><del>B</del>X<ins>C</ins>
-       * <ins>A</del>X<ins>C</ins><del>D</del>
-       * <ins>A</ins><del>B</del>X<del>C</del>
-       */
-      if (lastEquality && ((pre_ins && pre_del && post_ins && post_del) ||
-                           ((lastEquality.length < this.Diff_EditCost / 2) &&
-                            (pre_ins + pre_del + post_ins + post_del) == 3))) {
-        // Duplicate record.
-        diffs.splice(equalities[equalitiesLength - 1], 0,
-                     new diff_match_patch.Diff(DIFF_DELETE, lastEquality));
-        // Change second copy to insert.
-        diffs[equalities[equalitiesLength - 1] + 1][0] = DIFF_INSERT;
-        equalitiesLength--;  // Throw away the equality we just deleted;
-        lastEquality = null;
-        if (pre_ins && pre_del) {
-          // No changes made which could affect previous entry, keep going.
-          post_ins = post_del = true;
-          equalitiesLength = 0;
-        } else {
-          equalitiesLength--;  // Throw away the previous equality.
-          pointer = equalitiesLength > 0 ?
-              equalities[equalitiesLength - 1] : -1;
-          post_ins = post_del = false;
-        }
-        changes = true;
-      }
-    }
-    pointer++;
-  }
-
-  if (changes) {
-    this.diff_cleanupMerge(diffs);
-  }
-};
-
-
-/**
- * Reorder and merge like edit sections.  Merge equalities.
- * Any edit section can move as long as it doesn't cross an equality.
- * @param {!Array.<!diff_match_patch.Diff>} diffs Array of diff tuples.
- */
-diff_match_patch.prototype.diff_cleanupMerge = function(diffs) {
-  // Add a dummy entry at the end.
-  diffs.push(new diff_match_patch.Diff(DIFF_EQUAL, ''));
-  var pointer = 0;
-  var count_delete = 0;
-  var count_insert = 0;
-  var text_delete = '';
-  var text_insert = '';
-  var commonlength;
-  while (pointer < diffs.length) {
-    switch (diffs[pointer][0]) {
-      case DIFF_INSERT:
-        count_insert++;
-        text_insert += diffs[pointer][1];
-        pointer++;
-        break;
-      case DIFF_DELETE:
-        count_delete++;
-        text_delete += diffs[pointer][1];
-        pointer++;
-        break;
-      case DIFF_EQUAL:
-        // Upon reaching an equality, check for prior redundancies.
-        if (count_delete + count_insert > 1) {
-          if (count_delete !== 0 && count_insert !== 0) {
-            // Factor out any common prefixies.
-            commonlength = this.diff_commonPrefix(text_insert, text_delete);
-            if (commonlength !== 0) {
-              if ((pointer - count_delete - count_insert) > 0 &&
-                  diffs[pointer - count_delete - count_insert - 1][0] ==
-                  DIFF_EQUAL) {
-                diffs[pointer - count_delete - count_insert - 1][1] +=
-                    text_insert.substring(0, commonlength);
-              } else {
-                diffs.splice(0, 0, new diff_match_patch.Diff(DIFF_EQUAL,
-                    text_insert.substring(0, commonlength)));
-                pointer++;
-              }
-              text_insert = text_insert.substring(commonlength);
-              text_delete = text_delete.substring(commonlength);
-            }
-            // Factor out any common suffixies.
-            commonlength = this.diff_commonSuffix(text_insert, text_delete);
-            if (commonlength !== 0) {
-              diffs[pointer][1] = text_insert.substring(text_insert.length -
-                  commonlength) + diffs[pointer][1];
-              text_insert = text_insert.substring(0, text_insert.length -
-                  commonlength);
-              text_delete = text_delete.substring(0, text_delete.length -
-                  commonlength);
-            }
-          }
-          // Delete the offending records and add the merged ones.
-          pointer -= count_delete + count_insert;
-          diffs.splice(pointer, count_delete + count_insert);
-          if (text_delete.length) {
-            diffs.splice(pointer, 0,
-                new diff_match_patch.Diff(DIFF_DELETE, text_delete));
-            pointer++;
-          }
-          if (text_insert.length) {
-            diffs.splice(pointer, 0,
-                new diff_match_patch.Diff(DIFF_INSERT, text_insert));
-            pointer++;
-          }
-          pointer++;
-        } else if (pointer !== 0 && diffs[pointer - 1][0] == DIFF_EQUAL) {
-          // Merge this equality with the previous one.
-          diffs[pointer - 1][1] += diffs[pointer][1];
-          diffs.splice(pointer, 1);
-        } else {
-          pointer++;
-        }
-        count_insert = 0;
-        count_delete = 0;
-        text_delete = '';
-        text_insert = '';
-        break;
-    }
-  }
-  if (diffs[diffs.length - 1][1] === '') {
-    diffs.pop();  // Remove the dummy entry at the end.
-  }
-
-  // Second pass: look for single edits surrounded on both sides by equalities
-  // which can be shifted sideways to eliminate an equality.
-  // e.g: A<ins>BA</ins>C -> <ins>AB</ins>AC
-  var changes = false;
-  pointer = 1;
-  // Intentionally ignore the first and last element (don't need checking).
-  while (pointer < diffs.length - 1) {
-    if (diffs[pointer - 1][0] == DIFF_EQUAL &&
-        diffs[pointer + 1][0] == DIFF_EQUAL) {
-      // This is a single edit surrounded by equalities.
-      if (diffs[pointer][1].substring(diffs[pointer][1].length -
-          diffs[pointer - 1][1].length) == diffs[pointer - 1][1]) {
-        // Shift the edit over the previous equality.
-        diffs[pointer][1] = diffs[pointer - 1][1] +
-            diffs[pointer][1].substring(0, diffs[pointer][1].length -
-                                        diffs[pointer - 1][1].length);
-        diffs[pointer + 1][1] = diffs[pointer - 1][1] + diffs[pointer + 1][1];
-        diffs.splice(pointer - 1, 1);
-        changes = true;
-      } else if (diffs[pointer][1].substring(0, diffs[pointer + 1][1].length) ==
-          diffs[pointer + 1][1]) {
-        // Shift the edit over the next equality.
-        diffs[pointer - 1][1] += diffs[pointer + 1][1];
-        diffs[pointer][1] =
-            diffs[pointer][1].substring(diffs[pointer + 1][1].length) +
-            diffs[pointer + 1][1];
-        diffs.splice(pointer + 1, 1);
-        changes = true;
-      }
-    }
-    pointer++;
-  }
-  // If shifts were made, the diff needs reordering and another shift sweep.
-  if (changes) {
-    this.diff_cleanupMerge(diffs);
-  }
-};
-
-
-/**
- * loc is a location in text1, compute and return the equivalent location in
- * text2.
- * e.g. 'The cat' vs 'The big cat', 1->1, 5->8
- * @param {!Array.<!diff_match_patch.Diff>} diffs Array of diff tuples.
- * @param {number} loc Location within text1.
- * @return {number} Location within text2.
- */
-diff_match_patch.prototype.diff_xIndex = function(diffs, loc) {
-  var chars1 = 0;
-  var chars2 = 0;
-  var last_chars1 = 0;
-  var last_chars2 = 0;
-  var x;
-  for (x = 0; x < diffs.length; x++) {
-    if (diffs[x][0] !== DIFF_INSERT) {  // Equality or deletion.
-      chars1 += diffs[x][1].length;
-    }
-    if (diffs[x][0] !== DIFF_DELETE) {  // Equality or insertion.
-      chars2 += diffs[x][1].length;
-    }
-    if (chars1 > loc) {  // Overshot the location.
-      break;
-    }
-    last_chars1 = chars1;
-    last_chars2 = chars2;
-  }
-  // Was the location was deleted?
-  if (diffs.length != x && diffs[x][0] === DIFF_DELETE) {
-    return last_chars2;
-  }
-  // Add the remaining character length.
-  return last_chars2 + (loc - last_chars1);
-};
-
-
-/**
- * Convert a diff array into a pretty HTML report.
- * @param {!Array.<!diff_match_patch.Diff>} diffs Array of diff tuples.
- * @return {string} HTML representation.
- */
-diff_match_patch.prototype.diff_prettyHtml = function(diffs) {
-  var html = [];
-  var pattern_amp = /&/g;
-  var pattern_lt = /</g;
-  var pattern_gt = />/g;
-  var pattern_para = /\n/g;
-  for (var x = 0; x < diffs.length; x++) {
-    var op = diffs[x][0];    // Operation (insert, delete, equal)
-    var data = diffs[x][1];  // Text of change.
-    var text = data.replace(pattern_amp, '&amp;').replace(pattern_lt, '&lt;')
-        .replace(pattern_gt, '&gt;').replace(pattern_para, '&para;<br>');
-    switch (op) {
-      case DIFF_INSERT:
-        html[x] = '<ins style="background:#e6ffe6;">' + text + '</ins>';
-        break;
-      case DIFF_DELETE:
-        html[x] = '<del style="background:#ffe6e6;">' + text + '</del>';
-        break;
-      case DIFF_EQUAL:
-        html[x] = '<span>' + text + '</span>';
-        break;
-    }
-  }
-  return html.join('');
-};
-
-
-/**
- * Compute and return the source text (all equalities and deletions).
- * @param {!Array.<!diff_match_patch.Diff>} diffs Array of diff tuples.
- * @return {string} Source text.
- */
-diff_match_patch.prototype.diff_text1 = function(diffs) {
-  var text = [];
-  for (var x = 0; x < diffs.length; x++) {
-    if (diffs[x][0] !== DIFF_INSERT) {
-      text[x] = diffs[x][1];
-    }
-  }
-  return text.join('');
-};
-
-
-/**
- * Compute and return the destination text (all equalities and insertions).
- * @param {!Array.<!diff_match_patch.Diff>} diffs Array of diff tuples.
- * @return {string} Destination text.
- */
-diff_match_patch.prototype.diff_text2 = function(diffs) {
-  var text = [];
-  for (var x = 0; x < diffs.length; x++) {
-    if (diffs[x][0] !== DIFF_DELETE) {
-      text[x] = diffs[x][1];
-    }
-  }
-  return text.join('');
-};
-
-
-/**
- * Compute the Levenshtein distance; the number of inserted, deleted or
- * substituted characters.
- * @param {!Array.<!diff_match_patch.Diff>} diffs Array of diff tuples.
- * @return {number} Number of changes.
- */
-diff_match_patch.prototype.diff_levenshtein = function(diffs) {
-  var levenshtein = 0;
-  var insertions = 0;
-  var deletions = 0;
-  for (var x = 0; x < diffs.length; x++) {
-    var op = diffs[x][0];
-    var data = diffs[x][1];
-    switch (op) {
-      case DIFF_INSERT:
-        insertions += data.length;
-        break;
-      case DIFF_DELETE:
-        deletions += data.length;
-        break;
-      case DIFF_EQUAL:
-        // A deletion and an insertion is one substitution.
-        levenshtein += Math.max(insertions, deletions);
-        insertions = 0;
-        deletions = 0;
-        break;
-    }
-  }
-  levenshtein += Math.max(insertions, deletions);
-  return levenshtein;
-};
-
-
-/**
- * Crush the diff into an encoded string which describes the operations
- * required to transform text1 into text2.
- * E.g. =3\t-2\t+ing  -> Keep 3 chars, delete 2 chars, insert 'ing'.
- * Operations are tab-separated.  Inserted text is escaped using %xx notation.
- * @param {!Array.<!diff_match_patch.Diff>} diffs Array of diff tuples.
- * @return {string} Delta text.
- */
-diff_match_patch.prototype.diff_toDelta = function(diffs) {
-  var text = [];
-  for (var x = 0; x < diffs.length; x++) {
-    switch (diffs[x][0]) {
-      case DIFF_INSERT:
-        text[x] = '+' + encodeURI(diffs[x][1]);
-        break;
-      case DIFF_DELETE:
-        text[x] = '-' + diffs[x][1].length;
-        break;
-      case DIFF_EQUAL:
-        text[x] = '=' + diffs[x][1].length;
-        break;
-    }
-  }
-  return text.join('\t').replace(/%20/g, ' ');
-};
-
-
-/**
- * Given the original text1, and an encoded string which describes the
- * operations required to transform text1 into text2, compute the full diff.
- * @param {string} text1 Source string for the diff.
- * @param {string} delta Delta text.
- * @return {!Array.<!diff_match_patch.Diff>} Array of diff tuples.
- * @throws {!Error} If invalid input.
- */
-diff_match_patch.prototype.diff_fromDelta = function(text1, delta) {
-  var diffs = [];
-  var diffsLength = 0;  // Keeping our own length var is faster in JS.
-  var pointer = 0;  // Cursor in text1
-  var tokens = delta.split(/\t/g);
-  for (var x = 0; x < tokens.length; x++) {
-    // Each token begins with a one character parameter which specifies the
-    // operation of this token (delete, insert, equality).
-    var param = tokens[x].substring(1);
-    switch (tokens[x].charAt(0)) {
-      case '+':
-        try {
-          diffs[diffsLength++] =
-              new diff_match_patch.Diff(DIFF_INSERT, decodeURI(param));
-        } catch (ex) {
-          // Malformed URI sequence.
-          throw new Error('Illegal escape in diff_fromDelta: ' + param);
-        }
-        break;
-      case '-':
-        // Fall through.
-      case '=':
-        var n = parseInt(param, 10);
-        if (isNaN(n) || n < 0) {
-          throw new Error('Invalid number in diff_fromDelta: ' + param);
-        }
-        var text = text1.substring(pointer, pointer += n);
-        if (tokens[x].charAt(0) == '=') {
-          diffs[diffsLength++] = new diff_match_patch.Diff(DIFF_EQUAL, text);
-        } else {
-          diffs[diffsLength++] = new diff_match_patch.Diff(DIFF_DELETE, text);
-        }
-        break;
-      default:
-        // Blank tokens are ok (from a trailing \t).
-        // Anything else is an error.
-        if (tokens[x]) {
-          throw new Error('Invalid diff operation in diff_fromDelta: ' +
-                          tokens[x]);
-        }
-    }
-  }
-  if (pointer != text1.length) {
-    throw new Error('Delta length (' + pointer +
-        ') does not equal source text length (' + text1.length + ').');
-  }
-  return diffs;
-};
-
-
-//  MATCH FUNCTIONS
-
-
-/**
- * Locate the best instance of 'pattern' in 'text' near 'loc'.
- * @param {string} text The text to search.
- * @param {string} pattern The pattern to search for.
- * @param {number} loc The location to search around.
- * @return {number} Best match index or -1.
- */
-diff_match_patch.prototype.match_main = function(text, pattern, loc) {
-  // Check for null inputs.
-  if (text == null || pattern == null || loc == null) {
-    throw new Error('Null input. (match_main)');
-  }
-
-  loc = Math.max(0, Math.min(loc, text.length));
-  if (text == pattern) {
-    // Shortcut (potentially not guaranteed by the algorithm)
-    return 0;
-  } else if (!text.length) {
-    // Nothing to match.
-    return -1;
-  } else if (text.substring(loc, loc + pattern.length) == pattern) {
-    // Perfect match at the perfect spot!  (Includes case of null pattern)
-    return loc;
-  } else {
-    // Do a fuzzy compare.
-    return this.match_bitap_(text, pattern, loc);
-  }
-};
-
-
-/**
- * Locate the best instance of 'pattern' in 'text' near 'loc' using the
- * Bitap algorithm.
- * @param {string} text The text to search.
- * @param {string} pattern The pattern to search for.
- * @param {number} loc The location to search around.
- * @return {number} Best match index or -1.
- * @private
- */
-diff_match_patch.prototype.match_bitap_ = function(text, pattern, loc) {
-  if (pattern.length > this.Match_MaxBits) {
-    throw new Error('Pattern too long for this browser.');
-  }
-
-  // Initialise the alphabet.
-  var s = this.match_alphabet_(pattern);
-
-  var dmp = this;  // 'this' becomes 'window' in a closure.
-
-  /**
-   * Compute and return the score for a match with e errors and x location.
-   * Accesses loc and pattern through being a closure.
-   * @param {number} e Number of errors in match.
-   * @param {number} x Location of match.
-   * @return {number} Overall score for match (0.0 = good, 1.0 = bad).
-   * @private
-   */
-  function match_bitapScore_(e, x) {
-    var accuracy = e / pattern.length;
-    var proximity = Math.abs(loc - x);
-    if (!dmp.Match_Distance) {
-      // Dodge divide by zero error.
-      return proximity ? 1.0 : accuracy;
-    }
-    return accuracy + (proximity / dmp.Match_Distance);
-  }
-
-  // Highest score beyond which we give up.
-  var score_threshold = this.Match_Threshold;
-  // Is there a nearby exact match? (speedup)
-  var best_loc = text.indexOf(pattern, loc);
-  if (best_loc != -1) {
-    score_threshold = Math.min(match_bitapScore_(0, best_loc), score_threshold);
-    // What about in the other direction? (speedup)
-    best_loc = text.lastIndexOf(pattern, loc + pattern.length);
-    if (best_loc != -1) {
-      score_threshold =
-          Math.min(match_bitapScore_(0, best_loc), score_threshold);
-    }
-  }
-
-  // Initialise the bit arrays.
-  var matchmask = 1 << (pattern.length - 1);
-  best_loc = -1;
-
-  var bin_min, bin_mid;
-  var bin_max = pattern.length + text.length;
-  var last_rd;
-  for (var d = 0; d < pattern.length; d++) {
-    // Scan for the best match; each iteration allows for one more error.
-    // Run a binary search to determine how far from 'loc' we can stray at this
-    // error level.
-    bin_min = 0;
-    bin_mid = bin_max;
-    while (bin_min < bin_mid) {
-      if (match_bitapScore_(d, loc + bin_mid) <= score_threshold) {
-        bin_min = bin_mid;
-      } else {
-        bin_max = bin_mid;
-      }
-      bin_mid = Math.floor((bin_max - bin_min) / 2 + bin_min);
-    }
-    // Use the result from this iteration as the maximum for the next.
-    bin_max = bin_mid;
-    var start = Math.max(1, loc - bin_mid + 1);
-    var finish = Math.min(loc + bin_mid, text.length) + pattern.length;
-
-    var rd = Array(finish + 2);
-    rd[finish + 1] = (1 << d) - 1;
-    for (var j = finish; j >= start; j--) {
-      // The alphabet (s) is a sparse hash, so the following line generates
-      // warnings.
-      var charMatch = s[text.charAt(j - 1)];
-      if (d === 0) {  // First pass: exact match.
-        rd[j] = ((rd[j + 1] << 1) | 1) & charMatch;
-      } else {  // Subsequent passes: fuzzy match.
-        rd[j] = (((rd[j + 1] << 1) | 1) & charMatch) |
-                (((last_rd[j + 1] | last_rd[j]) << 1) | 1) |
-                last_rd[j + 1];
-      }
-      if (rd[j] & matchmask) {
-        var score = match_bitapScore_(d, j - 1);
-        // This match will almost certainly be better than any existing match.
-        // But check anyway.
-        if (score <= score_threshold) {
-          // Told you so.
-          score_threshold = score;
-          best_loc = j - 1;
-          if (best_loc > loc) {
-            // When passing loc, don't exceed our current distance from loc.
-            start = Math.max(1, 2 * loc - best_loc);
-          } else {
-            // Already passed loc, downhill from here on in.
-            break;
-          }
-        }
-      }
-    }
-    // No hope for a (better) match at greater error levels.
-    if (match_bitapScore_(d + 1, loc) > score_threshold) {
-      break;
-    }
-    last_rd = rd;
-  }
-  return best_loc;
-};
-
-
-/**
- * Initialise the alphabet for the Bitap algorithm.
- * @param {string} pattern The text to encode.
- * @return {!Object} Hash of character locations.
- * @private
- */
-diff_match_patch.prototype.match_alphabet_ = function(pattern) {
-  var s = {};
-  for (var i = 0; i < pattern.length; i++) {
-    s[pattern.charAt(i)] = 0;
-  }
-  for (var i = 0; i < pattern.length; i++) {
-    s[pattern.charAt(i)] |= 1 << (pattern.length - i - 1);
-  }
-  return s;
-};
-
-
-//  PATCH FUNCTIONS
-
-
-/**
- * Increase the context until it is unique,
- * but don't let the pattern expand beyond Match_MaxBits.
- * @param {!diff_match_patch.patch_obj} patch The patch to grow.
- * @param {string} text Source text.
- * @private
- */
-diff_match_patch.prototype.patch_addContext_ = function(patch, text) {
-  if (text.length == 0) {
-    return;
-  }
-  if (patch.start2 === null) {
-    throw Error('patch not initialized');
-  }
-  var pattern = text.substring(patch.start2, patch.start2 + patch.length1);
-  var padding = 0;
-
-  // Look for the first and last matches of pattern in text.  If two different
-  // matches are found, increase the pattern length.
-  while (text.indexOf(pattern) != text.lastIndexOf(pattern) &&
-         pattern.length < this.Match_MaxBits - this.Patch_Margin -
-         this.Patch_Margin) {
-    padding += this.Patch_Margin;
-    pattern = text.substring(patch.start2 - padding,
-                             patch.start2 + patch.length1 + padding);
-  }
-  // Add one chunk for good luck.
-  padding += this.Patch_Margin;
-
-  // Add the prefix.
-  var prefix = text.substring(patch.start2 - padding, patch.start2);
-  if (prefix) {
-    patch.diffs.unshift(new diff_match_patch.Diff(DIFF_EQUAL, prefix));
-  }
-  // Add the suffix.
-  var suffix = text.substring(patch.start2 + patch.length1,
-                              patch.start2 + patch.length1 + padding);
-  if (suffix) {
-    patch.diffs.push(new diff_match_patch.Diff(DIFF_EQUAL, suffix));
-  }
-
-  // Roll back the start points.
-  patch.start1 -= prefix.length;
-  patch.start2 -= prefix.length;
-  // Extend the lengths.
-  patch.length1 += prefix.length + suffix.length;
-  patch.length2 += prefix.length + suffix.length;
-};
-
-
-/**
- * Compute a list of patches to turn text1 into text2.
- * Use diffs if provided, otherwise compute it ourselves.
- * There are four ways to call this function, depending on what data is
- * available to the caller:
- * Method 1:
- * a = text1, b = text2
- * Method 2:
- * a = diffs
- * Method 3 (optimal):
- * a = text1, b = diffs
- * Method 4 (deprecated, use method 3):
- * a = text1, b = text2, c = diffs
- *
- * @param {string|!Array.<!diff_match_patch.Diff>} a text1 (methods 1,3,4) or
- * Array of diff tuples for text1 to text2 (method 2).
- * @param {string|!Array.<!diff_match_patch.Diff>=} opt_b text2 (methods 1,4) or
- * Array of diff tuples for text1 to text2 (method 3) or undefined (method 2).
- * @param {string|!Array.<!diff_match_patch.Diff>=} opt_c Array of diff tuples
- * for text1 to text2 (method 4) or undefined (methods 1,2,3).
- * @return {!Array.<!diff_match_patch.patch_obj>} Array of Patch objects.
- */
-diff_match_patch.prototype.patch_make = function(a, opt_b, opt_c) {
-  var text1, diffs;
-  if (typeof a == 'string' && typeof opt_b == 'string' &&
-      typeof opt_c == 'undefined') {
-    // Method 1: text1, text2
-    // Compute diffs from text1 and text2.
-    text1 = /** @type {string} */(a);
-    diffs = this.diff_main(text1, /** @type {string} */(opt_b), true);
-    if (diffs.length > 2) {
-      this.diff_cleanupSemantic(diffs);
-      this.diff_cleanupEfficiency(diffs);
-    }
-  } else if (a && typeof a == 'object' && typeof opt_b == 'undefined' &&
-      typeof opt_c == 'undefined') {
-    // Method 2: diffs
-    // Compute text1 from diffs.
-    diffs = /** @type {!Array.<!diff_match_patch.Diff>} */(a);
-    text1 = this.diff_text1(diffs);
-  } else if (typeof a == 'string' && opt_b && typeof opt_b == 'object' &&
-      typeof opt_c == 'undefined') {
-    // Method 3: text1, diffs
-    text1 = /** @type {string} */(a);
-    diffs = /** @type {!Array.<!diff_match_patch.Diff>} */(opt_b);
-  } else if (typeof a == 'string' && typeof opt_b == 'string' &&
-      opt_c && typeof opt_c == 'object') {
-    // Method 4: text1, text2, diffs
-    // text2 is not used.
-    text1 = /** @type {string} */(a);
-    diffs = /** @type {!Array.<!diff_match_patch.Diff>} */(opt_c);
-  } else {
-    throw new Error('Unknown call format to patch_make.');
-  }
-
-  if (diffs.length === 0) {
-    return [];  // Get rid of the null case.
-  }
-  var patches = [];
-  var patch = new diff_match_patch.patch_obj();
-  var patchDiffLength = 0;  // Keeping our own length var is faster in JS.
-  var char_count1 = 0;  // Number of characters into the text1 string.
-  var char_count2 = 0;  // Number of characters into the text2 string.
-  // Start with text1 (prepatch_text) and apply the diffs until we arrive at
-  // text2 (postpatch_text).  We recreate the patches one by one to determine
-  // context info.
-  var prepatch_text = text1;
-  var postpatch_text = text1;
-  for (var x = 0; x < diffs.length; x++) {
-    var diff_type = diffs[x][0];
-    var diff_text = diffs[x][1];
-
-    if (!patchDiffLength && diff_type !== DIFF_EQUAL) {
-      // A new patch starts here.
-      patch.start1 = char_count1;
-      patch.start2 = char_count2;
-    }
-
-    switch (diff_type) {
-      case DIFF_INSERT:
-        patch.diffs[patchDiffLength++] = diffs[x];
-        patch.length2 += diff_text.length;
-        postpatch_text = postpatch_text.substring(0, char_count2) + diff_text +
-                         postpatch_text.substring(char_count2);
-        break;
-      case DIFF_DELETE:
-        patch.length1 += diff_text.length;
-        patch.diffs[patchDiffLength++] = diffs[x];
-        postpatch_text = postpatch_text.substring(0, char_count2) +
-                         postpatch_text.substring(char_count2 +
-                             diff_text.length);
-        break;
-      case DIFF_EQUAL:
-        if (diff_text.length <= 2 * this.Patch_Margin &&
-            patchDiffLength && diffs.length != x + 1) {
-          // Small equality inside a patch.
-          patch.diffs[patchDiffLength++] = diffs[x];
-          patch.length1 += diff_text.length;
-          patch.length2 += diff_text.length;
-        } else if (diff_text.length >= 2 * this.Patch_Margin) {
-          // Time for a new patch.
-          if (patchDiffLength) {
-            this.patch_addContext_(patch, prepatch_text);
-            patches.push(patch);
-            patch = new diff_match_patch.patch_obj();
-            patchDiffLength = 0;
-            // Unlike Unidiff, our patch lists have a rolling context.
-            // https://github.com/google/diff-match-patch/wiki/Unidiff
-            // Update prepatch text & pos to reflect the application of the
-            // just completed patch.
-            prepatch_text = postpatch_text;
-            char_count1 = char_count2;
-          }
-        }
-        break;
-    }
-
-    // Update the current character count.
-    if (diff_type !== DIFF_INSERT) {
-      char_count1 += diff_text.length;
-    }
-    if (diff_type !== DIFF_DELETE) {
-      char_count2 += diff_text.length;
-    }
-  }
-  // Pick up the leftover patch if not empty.
-  if (patchDiffLength) {
-    this.patch_addContext_(patch, prepatch_text);
-    patches.push(patch);
-  }
-
-  return patches;
-};
-
-
-/**
- * Given an array of patches, return another array that is identical.
- * @param {!Array.<!diff_match_patch.patch_obj>} patches Array of Patch objects.
- * @return {!Array.<!diff_match_patch.patch_obj>} Array of Patch objects.
- */
-diff_match_patch.prototype.patch_deepCopy = function(patches) {
-  // Making deep copies is hard in JavaScript.
-  var patchesCopy = [];
-  for (var x = 0; x < patches.length; x++) {
-    var patch = patches[x];
-    var patchCopy = new diff_match_patch.patch_obj();
-    patchCopy.diffs = [];
-    for (var y = 0; y < patch.diffs.length; y++) {
-      patchCopy.diffs[y] =
-          new diff_match_patch.Diff(patch.diffs[y][0], patch.diffs[y][1]);
-    }
-    patchCopy.start1 = patch.start1;
-    patchCopy.start2 = patch.start2;
-    patchCopy.length1 = patch.length1;
-    patchCopy.length2 = patch.length2;
-    patchesCopy[x] = patchCopy;
-  }
-  return patchesCopy;
-};
-
-
-/**
- * Merge a set of patches onto the text.  Return a patched text, as well
- * as a list of true/false values indicating which patches were applied.
- * @param {!Array.<!diff_match_patch.patch_obj>} patches Array of Patch objects.
- * @param {string} text Old text.
- * @return {!Array.<string|!Array.<boolean>>} Two element Array, containing the
- *      new text and an array of boolean values.
- */
-diff_match_patch.prototype.patch_apply = function(patches, text) {
-  if (patches.length == 0) {
-    return [text, []];
-  }
-
-  // Deep copy the patches so that no changes are made to originals.
-  patches = this.patch_deepCopy(patches);
-
-  var nullPadding = this.patch_addPadding(patches);
-  text = nullPadding + text + nullPadding;
-
-  this.patch_splitMax(patches);
-  // delta keeps track of the offset between the expected and actual location
-  // of the previous patch.  If there are patches expected at positions 10 and
-  // 20, but the first patch was found at 12, delta is 2 and the second patch
-  // has an effective expected position of 22.
-  var delta = 0;
-  var results = [];
-  for (var x = 0; x < patches.length; x++) {
-    var expected_loc = patches[x].start2 + delta;
-    var text1 = this.diff_text1(patches[x].diffs);
-    var start_loc;
-    var end_loc = -1;
-    if (text1.length > this.Match_MaxBits) {
-      // patch_splitMax will only provide an oversized pattern in the case of
-      // a monster delete.
-      start_loc = this.match_main(text, text1.substring(0, this.Match_MaxBits),
-                                  expected_loc);
-      if (start_loc != -1) {
-        end_loc = this.match_main(text,
-            text1.substring(text1.length - this.Match_MaxBits),
-            expected_loc + text1.length - this.Match_MaxBits);
-        if (end_loc == -1 || start_loc >= end_loc) {
-          // Can't find valid trailing context.  Drop this patch.
-          start_loc = -1;
-        }
-      }
-    } else {
-      start_loc = this.match_main(text, text1, expected_loc);
-    }
-    if (start_loc == -1) {
-      // No match found.  :(
-      results[x] = false;
-      // Subtract the delta for this failed patch from subsequent patches.
-      delta -= patches[x].length2 - patches[x].length1;
-    } else {
-      // Found a match.  :)
-      results[x] = true;
-      delta = start_loc - expected_loc;
-      var text2;
-      if (end_loc == -1) {
-        text2 = text.substring(start_loc, start_loc + text1.length);
-      } else {
-        text2 = text.substring(start_loc, end_loc + this.Match_MaxBits);
-      }
-      if (text1 == text2) {
-        // Perfect match, just shove the replacement text in.
-        text = text.substring(0, start_loc) +
-               this.diff_text2(patches[x].diffs) +
-               text.substring(start_loc + text1.length);
-      } else {
-        // Imperfect match.  Run a diff to get a framework of equivalent
-        // indices.
-        var diffs = this.diff_main(text1, text2, false);
-        if (text1.length > this.Match_MaxBits &&
-            this.diff_levenshtein(diffs) / text1.length >
-            this.Patch_DeleteThreshold) {
-          // The end points match, but the content is unacceptably bad.
-          results[x] = false;
-        } else {
-          this.diff_cleanupSemanticLossless(diffs);
-          var index1 = 0;
-          var index2;
-          for (var y = 0; y < patches[x].diffs.length; y++) {
-            var mod = patches[x].diffs[y];
-            if (mod[0] !== DIFF_EQUAL) {
-              index2 = this.diff_xIndex(diffs, index1);
-            }
-            if (mod[0] === DIFF_INSERT) {  // Insertion
-              text = text.substring(0, start_loc + index2) + mod[1] +
-                     text.substring(start_loc + index2);
-            } else if (mod[0] === DIFF_DELETE) {  // Deletion
-              text = text.substring(0, start_loc + index2) +
-                     text.substring(start_loc + this.diff_xIndex(diffs,
-                         index1 + mod[1].length));
-            }
-            if (mod[0] !== DIFF_DELETE) {
-              index1 += mod[1].length;
-            }
-          }
-        }
-      }
-    }
-  }
-  // Strip the padding off.
-  text = text.substring(nullPadding.length, text.length - nullPadding.length);
-  return [text, results];
-};
-
-
-/**
- * Add some padding on text start and end so that edges can match something.
- * Intended to be called only from within patch_apply.
- * @param {!Array.<!diff_match_patch.patch_obj>} patches Array of Patch objects.
- * @return {string} The padding string added to each side.
- */
-diff_match_patch.prototype.patch_addPadding = function(patches) {
-  var paddingLength = this.Patch_Margin;
-  var nullPadding = '';
-  for (var x = 1; x <= paddingLength; x++) {
-    nullPadding += String.fromCharCode(x);
-  }
-
-  // Bump all the patches forward.
-  for (var x = 0; x < patches.length; x++) {
-    patches[x].start1 += paddingLength;
-    patches[x].start2 += paddingLength;
-  }
-
-  // Add some padding on start of first diff.
-  var patch = patches[0];
-  var diffs = patch.diffs;
-  if (diffs.length == 0 || diffs[0][0] != DIFF_EQUAL) {
-    // Add nullPadding equality.
-    diffs.unshift(new diff_match_patch.Diff(DIFF_EQUAL, nullPadding));
-    patch.start1 -= paddingLength;  // Should be 0.
-    patch.start2 -= paddingLength;  // Should be 0.
-    patch.length1 += paddingLength;
-    patch.length2 += paddingLength;
-  } else if (paddingLength > diffs[0][1].length) {
-    // Grow first equality.
-    var extraLength = paddingLength - diffs[0][1].length;
-    diffs[0][1] = nullPadding.substring(diffs[0][1].length) + diffs[0][1];
-    patch.start1 -= extraLength;
-    patch.start2 -= extraLength;
-    patch.length1 += extraLength;
-    patch.length2 += extraLength;
-  }
-
-  // Add some padding on end of last diff.
-  patch = patches[patches.length - 1];
-  diffs = patch.diffs;
-  if (diffs.length == 0 || diffs[diffs.length - 1][0] != DIFF_EQUAL) {
-    // Add nullPadding equality.
-    diffs.push(new diff_match_patch.Diff(DIFF_EQUAL, nullPadding));
-    patch.length1 += paddingLength;
-    patch.length2 += paddingLength;
-  } else if (paddingLength > diffs[diffs.length - 1][1].length) {
-    // Grow last equality.
-    var extraLength = paddingLength - diffs[diffs.length - 1][1].length;
-    diffs[diffs.length - 1][1] += nullPadding.substring(0, extraLength);
-    patch.length1 += extraLength;
-    patch.length2 += extraLength;
-  }
-
-  return nullPadding;
-};
-
-
-/**
- * Look through the patches and break up any which are longer than the maximum
- * limit of the match algorithm.
- * Intended to be called only from within patch_apply.
- * @param {!Array.<!diff_match_patch.patch_obj>} patches Array of Patch objects.
- */
-diff_match_patch.prototype.patch_splitMax = function(patches) {
-  var patch_size = this.Match_MaxBits;
-  for (var x = 0; x < patches.length; x++) {
-    if (patches[x].length1 <= patch_size) {
-      continue;
-    }
-    var bigpatch = patches[x];
-    // Remove the big old patch.
-    patches.splice(x--, 1);
-    var start1 = bigpatch.start1;
-    var start2 = bigpatch.start2;
-    var precontext = '';
-    while (bigpatch.diffs.length !== 0) {
-      // Create one of several smaller patches.
-      var patch = new diff_match_patch.patch_obj();
-      var empty = true;
-      patch.start1 = start1 - precontext.length;
-      patch.start2 = start2 - precontext.length;
-      if (precontext !== '') {
-        patch.length1 = patch.length2 = precontext.length;
-        patch.diffs.push(new diff_match_patch.Diff(DIFF_EQUAL, precontext));
-      }
-      while (bigpatch.diffs.length !== 0 &&
-             patch.length1 < patch_size - this.Patch_Margin) {
-        var diff_type = bigpatch.diffs[0][0];
-        var diff_text = bigpatch.diffs[0][1];
-        if (diff_type === DIFF_INSERT) {
-          // Insertions are harmless.
-          patch.length2 += diff_text.length;
-          start2 += diff_text.length;
-          patch.diffs.push(bigpatch.diffs.shift());
-          empty = false;
-        } else if (diff_type === DIFF_DELETE && patch.diffs.length == 1 &&
-                   patch.diffs[0][0] == DIFF_EQUAL &&
-                   diff_text.length > 2 * patch_size) {
-          // This is a large deletion.  Let it pass in one chunk.
-          patch.length1 += diff_text.length;
-          start1 += diff_text.length;
-          empty = false;
-          patch.diffs.push(new diff_match_patch.Diff(diff_type, diff_text));
-          bigpatch.diffs.shift();
-        } else {
-          // Deletion or equality.  Only take as much as we can stomach.
-          diff_text = diff_text.substring(0,
-              patch_size - patch.length1 - this.Patch_Margin);
-          patch.length1 += diff_text.length;
-          start1 += diff_text.length;
-          if (diff_type === DIFF_EQUAL) {
-            patch.length2 += diff_text.length;
-            start2 += diff_text.length;
-          } else {
-            empty = false;
-          }
-          patch.diffs.push(new diff_match_patch.Diff(diff_type, diff_text));
-          if (diff_text == bigpatch.diffs[0][1]) {
-            bigpatch.diffs.shift();
-          } else {
-            bigpatch.diffs[0][1] =
-                bigpatch.diffs[0][1].substring(diff_text.length);
-          }
-        }
-      }
-      // Compute the head context for the next patch.
-      precontext = this.diff_text2(patch.diffs);
-      precontext =
-          precontext.substring(precontext.length - this.Patch_Margin);
-      // Append the end context for this patch.
-      var postcontext = this.diff_text1(bigpatch.diffs)
-                            .substring(0, this.Patch_Margin);
-      if (postcontext !== '') {
-        patch.length1 += postcontext.length;
-        patch.length2 += postcontext.length;
-        if (patch.diffs.length !== 0 &&
-            patch.diffs[patch.diffs.length - 1][0] === DIFF_EQUAL) {
-          patch.diffs[patch.diffs.length - 1][1] += postcontext;
-        } else {
-          patch.diffs.push(new diff_match_patch.Diff(DIFF_EQUAL, postcontext));
-        }
-      }
-      if (!empty) {
-        patches.splice(++x, 0, patch);
-      }
-    }
-  }
-};
-
-
-/**
- * Take a list of patches and return a textual representation.
- * @param {!Array.<!diff_match_patch.patch_obj>} patches Array of Patch objects.
- * @return {string} Text representation of patches.
- */
-diff_match_patch.prototype.patch_toText = function(patches) {
-  var text = [];
-  for (var x = 0; x < patches.length; x++) {
-    text[x] = patches[x];
-  }
-  return text.join('');
-};
-
-
-/**
- * Parse a textual representation of patches and return a list of Patch objects.
- * @param {string} textline Text representation of patches.
- * @return {!Array.<!diff_match_patch.patch_obj>} Array of Patch objects.
- * @throws {!Error} If invalid input.
- */
-diff_match_patch.prototype.patch_fromText = function(textline) {
-  var patches = [];
-  if (!textline) {
-    return patches;
-  }
-  var text = textline.split('\n');
-  var textPointer = 0;
-  var patchHeader = /^@@ -(\d+),?(\d*) \+(\d+),?(\d*) @@$/;
-  while (textPointer < text.length) {
-    var m = text[textPointer].match(patchHeader);
-    if (!m) {
-      throw new Error('Invalid patch string: ' + text[textPointer]);
-    }
-    var patch = new diff_match_patch.patch_obj();
-    patches.push(patch);
-    patch.start1 = parseInt(m[1], 10);
-    if (m[2] === '') {
-      patch.start1--;
-      patch.length1 = 1;
-    } else if (m[2] == '0') {
-      patch.length1 = 0;
-    } else {
-      patch.start1--;
-      patch.length1 = parseInt(m[2], 10);
-    }
-
-    patch.start2 = parseInt(m[3], 10);
-    if (m[4] === '') {
-      patch.start2--;
-      patch.length2 = 1;
-    } else if (m[4] == '0') {
-      patch.length2 = 0;
-    } else {
-      patch.start2--;
-      patch.length2 = parseInt(m[4], 10);
-    }
-    textPointer++;
-
-    while (textPointer < text.length) {
-      var sign = text[textPointer].charAt(0);
-      try {
-        var line = decodeURI(text[textPointer].substring(1));
-      } catch (ex) {
-        // Malformed URI sequence.
-        throw new Error('Illegal escape in patch_fromText: ' + line);
-      }
-      if (sign == '-') {
-        // Deletion.
-        patch.diffs.push(new diff_match_patch.Diff(DIFF_DELETE, line));
-      } else if (sign == '+') {
-        // Insertion.
-        patch.diffs.push(new diff_match_patch.Diff(DIFF_INSERT, line));
-      } else if (sign == ' ') {
-        // Minor equality.
-        patch.diffs.push(new diff_match_patch.Diff(DIFF_EQUAL, line));
-      } else if (sign == '@') {
-        // Start of next patch.
-        break;
-      } else if (sign === '') ; else {
-        // WTF?
-        throw new Error('Invalid patch mode "' + sign + '" in: ' + line);
-      }
-      textPointer++;
-    }
-  }
-  return patches;
-};
-
-
-/**
- * Class representing one patch operation.
- * @constructor
- */
-diff_match_patch.patch_obj = function() {
-  /** @type {!Array.<!diff_match_patch.Diff>} */
-  this.diffs = [];
-  /** @type {?number} */
-  this.start1 = null;
-  /** @type {?number} */
-  this.start2 = null;
-  /** @type {number} */
-  this.length1 = 0;
-  /** @type {number} */
-  this.length2 = 0;
-};
-
-
-/**
- * Emulate GNU diff's format.
- * Header: @@ -382,8 +481,9 @@
- * Indices are printed as 1-based, not 0-based.
- * @return {string} The GNU diff string.
- */
-diff_match_patch.patch_obj.prototype.toString = function() {
-  var coords1, coords2;
-  if (this.length1 === 0) {
-    coords1 = this.start1 + ',0';
-  } else if (this.length1 == 1) {
-    coords1 = this.start1 + 1;
-  } else {
-    coords1 = (this.start1 + 1) + ',' + this.length1;
-  }
-  if (this.length2 === 0) {
-    coords2 = this.start2 + ',0';
-  } else if (this.length2 == 1) {
-    coords2 = this.start2 + 1;
-  } else {
-    coords2 = (this.start2 + 1) + ',' + this.length2;
-  }
-  var text = ['@@ -' + coords1 + ' +' + coords2 + ' @@\n'];
-  var op;
-  // Escape the body of the patch with %xx notation.
-  for (var x = 0; x < this.diffs.length; x++) {
-    switch (this.diffs[x][0]) {
-      case DIFF_INSERT:
-        op = '+';
-        break;
-      case DIFF_DELETE:
-        op = '-';
-        break;
-      case DIFF_EQUAL:
-        op = ' ';
-        break;
-    }
-    text[x + 1] = op + encodeURI(this.diffs[x][1]) + '\n';
-  }
-  return text.join('').replace(/%20/g, ' ');
-};
-
-
-// The following export code was added by @ForbesLindesay
-module.exports = diff_match_patch;
-module.exports['diff_match_patch'] = diff_match_patch;
-module.exports['DIFF_DELETE'] = DIFF_DELETE;
-module.exports['DIFF_INSERT'] = DIFF_INSERT;
-module.exports['DIFF_EQUAL'] = DIFF_EQUAL;
-}(diffMatchPatch));
+	/**
+	 * @fileoverview Computes the difference between two texts to create a patch.
+	 * Applies the patch onto another text, allowing for errors.
+	 * @author fraser@google.com (Neil Fraser)
+	 */
+
+	/**
+	 * Class containing the diff, match and patch methods.
+	 * @constructor
+	 */
+	var diff_match_patch = function() {
+
+	  // Defaults.
+	  // Redefine these in your program to override the defaults.
+
+	  // Number of seconds to map a diff before giving up (0 for infinity).
+	  this.Diff_Timeout = 1.0;
+	  // Cost of an empty edit operation in terms of edit characters.
+	  this.Diff_EditCost = 4;
+	  // At what point is no match declared (0.0 = perfection, 1.0 = very loose).
+	  this.Match_Threshold = 0.5;
+	  // How far to search for a match (0 = exact location, 1000+ = broad match).
+	  // A match this many characters away from the expected location will add
+	  // 1.0 to the score (0.0 is a perfect match).
+	  this.Match_Distance = 1000;
+	  // When deleting a large block of text (over ~64 characters), how close do
+	  // the contents have to be to match the expected contents. (0.0 = perfection,
+	  // 1.0 = very loose).  Note that Match_Threshold controls how closely the
+	  // end points of a delete need to match.
+	  this.Patch_DeleteThreshold = 0.5;
+	  // Chunk size for context length.
+	  this.Patch_Margin = 4;
+
+	  // The number of bits in an int.
+	  this.Match_MaxBits = 32;
+	};
+
+
+	//  DIFF FUNCTIONS
+
+
+	/**
+	 * The data structure representing a diff is an array of tuples:
+	 * [[DIFF_DELETE, 'Hello'], [DIFF_INSERT, 'Goodbye'], [DIFF_EQUAL, ' world.']]
+	 * which means: delete 'Hello', add 'Goodbye' and keep ' world.'
+	 */
+	var DIFF_DELETE = -1;
+	var DIFF_INSERT = 1;
+	var DIFF_EQUAL = 0;
+
+	/**
+	 * Class representing one diff tuple.
+	 * ~Attempts to look like a two-element array (which is what this used to be).~
+	 * Constructor returns an actual two-element array, to allow destructing @JackuB
+	 * See https://github.com/JackuB/diff-match-patch/issues/14 for details
+	 * @param {number} op Operation, one of: DIFF_DELETE, DIFF_INSERT, DIFF_EQUAL.
+	 * @param {string} text Text to be deleted, inserted, or retained.
+	 * @constructor
+	 */
+	diff_match_patch.Diff = function(op, text) {
+	  return [op, text];
+	};
+
+	/**
+	 * Find the differences between two texts.  Simplifies the problem by stripping
+	 * any common prefix or suffix off the texts before diffing.
+	 * @param {string} text1 Old string to be diffed.
+	 * @param {string} text2 New string to be diffed.
+	 * @param {boolean=} opt_checklines Optional speedup flag. If present and false,
+	 *     then don't run a line-level diff first to identify the changed areas.
+	 *     Defaults to true, which does a faster, slightly less optimal diff.
+	 * @param {number=} opt_deadline Optional time when the diff should be complete
+	 *     by.  Used internally for recursive calls.  Users should set DiffTimeout
+	 *     instead.
+	 * @return {!Array.<!diff_match_patch.Diff>} Array of diff tuples.
+	 */
+	diff_match_patch.prototype.diff_main = function(text1, text2, opt_checklines,
+	    opt_deadline) {
+	  // Set a deadline by which time the diff must be complete.
+	  if (typeof opt_deadline == 'undefined') {
+	    if (this.Diff_Timeout <= 0) {
+	      opt_deadline = Number.MAX_VALUE;
+	    } else {
+	      opt_deadline = (new Date).getTime() + this.Diff_Timeout * 1000;
+	    }
+	  }
+	  var deadline = opt_deadline;
+
+	  // Check for null inputs.
+	  if (text1 == null || text2 == null) {
+	    throw new Error('Null input. (diff_main)');
+	  }
+
+	  // Check for equality (speedup).
+	  if (text1 == text2) {
+	    if (text1) {
+	      return [new diff_match_patch.Diff(DIFF_EQUAL, text1)];
+	    }
+	    return [];
+	  }
+
+	  if (typeof opt_checklines == 'undefined') {
+	    opt_checklines = true;
+	  }
+	  var checklines = opt_checklines;
+
+	  // Trim off common prefix (speedup).
+	  var commonlength = this.diff_commonPrefix(text1, text2);
+	  var commonprefix = text1.substring(0, commonlength);
+	  text1 = text1.substring(commonlength);
+	  text2 = text2.substring(commonlength);
+
+	  // Trim off common suffix (speedup).
+	  commonlength = this.diff_commonSuffix(text1, text2);
+	  var commonsuffix = text1.substring(text1.length - commonlength);
+	  text1 = text1.substring(0, text1.length - commonlength);
+	  text2 = text2.substring(0, text2.length - commonlength);
+
+	  // Compute the diff on the middle block.
+	  var diffs = this.diff_compute_(text1, text2, checklines, deadline);
+
+	  // Restore the prefix and suffix.
+	  if (commonprefix) {
+	    diffs.unshift(new diff_match_patch.Diff(DIFF_EQUAL, commonprefix));
+	  }
+	  if (commonsuffix) {
+	    diffs.push(new diff_match_patch.Diff(DIFF_EQUAL, commonsuffix));
+	  }
+	  this.diff_cleanupMerge(diffs);
+	  return diffs;
+	};
+
+
+	/**
+	 * Find the differences between two texts.  Assumes that the texts do not
+	 * have any common prefix or suffix.
+	 * @param {string} text1 Old string to be diffed.
+	 * @param {string} text2 New string to be diffed.
+	 * @param {boolean} checklines Speedup flag.  If false, then don't run a
+	 *     line-level diff first to identify the changed areas.
+	 *     If true, then run a faster, slightly less optimal diff.
+	 * @param {number} deadline Time when the diff should be complete by.
+	 * @return {!Array.<!diff_match_patch.Diff>} Array of diff tuples.
+	 * @private
+	 */
+	diff_match_patch.prototype.diff_compute_ = function(text1, text2, checklines,
+	    deadline) {
+	  var diffs;
+
+	  if (!text1) {
+	    // Just add some text (speedup).
+	    return [new diff_match_patch.Diff(DIFF_INSERT, text2)];
+	  }
+
+	  if (!text2) {
+	    // Just delete some text (speedup).
+	    return [new diff_match_patch.Diff(DIFF_DELETE, text1)];
+	  }
+
+	  var longtext = text1.length > text2.length ? text1 : text2;
+	  var shorttext = text1.length > text2.length ? text2 : text1;
+	  var i = longtext.indexOf(shorttext);
+	  if (i != -1) {
+	    // Shorter text is inside the longer text (speedup).
+	    diffs = [new diff_match_patch.Diff(DIFF_INSERT, longtext.substring(0, i)),
+	             new diff_match_patch.Diff(DIFF_EQUAL, shorttext),
+	             new diff_match_patch.Diff(DIFF_INSERT,
+	                 longtext.substring(i + shorttext.length))];
+	    // Swap insertions for deletions if diff is reversed.
+	    if (text1.length > text2.length) {
+	      diffs[0][0] = diffs[2][0] = DIFF_DELETE;
+	    }
+	    return diffs;
+	  }
+
+	  if (shorttext.length == 1) {
+	    // Single character string.
+	    // After the previous speedup, the character can't be an equality.
+	    return [new diff_match_patch.Diff(DIFF_DELETE, text1),
+	            new diff_match_patch.Diff(DIFF_INSERT, text2)];
+	  }
+
+	  // Check to see if the problem can be split in two.
+	  var hm = this.diff_halfMatch_(text1, text2);
+	  if (hm) {
+	    // A half-match was found, sort out the return data.
+	    var text1_a = hm[0];
+	    var text1_b = hm[1];
+	    var text2_a = hm[2];
+	    var text2_b = hm[3];
+	    var mid_common = hm[4];
+	    // Send both pairs off for separate processing.
+	    var diffs_a = this.diff_main(text1_a, text2_a, checklines, deadline);
+	    var diffs_b = this.diff_main(text1_b, text2_b, checklines, deadline);
+	    // Merge the results.
+	    return diffs_a.concat([new diff_match_patch.Diff(DIFF_EQUAL, mid_common)],
+	                          diffs_b);
+	  }
+
+	  if (checklines && text1.length > 100 && text2.length > 100) {
+	    return this.diff_lineMode_(text1, text2, deadline);
+	  }
+
+	  return this.diff_bisect_(text1, text2, deadline);
+	};
+
+
+	/**
+	 * Do a quick line-level diff on both strings, then rediff the parts for
+	 * greater accuracy.
+	 * This speedup can produce non-minimal diffs.
+	 * @param {string} text1 Old string to be diffed.
+	 * @param {string} text2 New string to be diffed.
+	 * @param {number} deadline Time when the diff should be complete by.
+	 * @return {!Array.<!diff_match_patch.Diff>} Array of diff tuples.
+	 * @private
+	 */
+	diff_match_patch.prototype.diff_lineMode_ = function(text1, text2, deadline) {
+	  // Scan the text on a line-by-line basis first.
+	  var a = this.diff_linesToChars_(text1, text2);
+	  text1 = a.chars1;
+	  text2 = a.chars2;
+	  var linearray = a.lineArray;
+
+	  var diffs = this.diff_main(text1, text2, false, deadline);
+
+	  // Convert the diff back to original text.
+	  this.diff_charsToLines_(diffs, linearray);
+	  // Eliminate freak matches (e.g. blank lines)
+	  this.diff_cleanupSemantic(diffs);
+
+	  // Rediff any replacement blocks, this time character-by-character.
+	  // Add a dummy entry at the end.
+	  diffs.push(new diff_match_patch.Diff(DIFF_EQUAL, ''));
+	  var pointer = 0;
+	  var count_delete = 0;
+	  var count_insert = 0;
+	  var text_delete = '';
+	  var text_insert = '';
+	  while (pointer < diffs.length) {
+	    switch (diffs[pointer][0]) {
+	      case DIFF_INSERT:
+	        count_insert++;
+	        text_insert += diffs[pointer][1];
+	        break;
+	      case DIFF_DELETE:
+	        count_delete++;
+	        text_delete += diffs[pointer][1];
+	        break;
+	      case DIFF_EQUAL:
+	        // Upon reaching an equality, check for prior redundancies.
+	        if (count_delete >= 1 && count_insert >= 1) {
+	          // Delete the offending records and add the merged ones.
+	          diffs.splice(pointer - count_delete - count_insert,
+	                       count_delete + count_insert);
+	          pointer = pointer - count_delete - count_insert;
+	          var subDiff =
+	              this.diff_main(text_delete, text_insert, false, deadline);
+	          for (var j = subDiff.length - 1; j >= 0; j--) {
+	            diffs.splice(pointer, 0, subDiff[j]);
+	          }
+	          pointer = pointer + subDiff.length;
+	        }
+	        count_insert = 0;
+	        count_delete = 0;
+	        text_delete = '';
+	        text_insert = '';
+	        break;
+	    }
+	    pointer++;
+	  }
+	  diffs.pop();  // Remove the dummy entry at the end.
+
+	  return diffs;
+	};
+
+
+	/**
+	 * Find the 'middle snake' of a diff, split the problem in two
+	 * and return the recursively constructed diff.
+	 * See Myers 1986 paper: An O(ND) Difference Algorithm and Its Variations.
+	 * @param {string} text1 Old string to be diffed.
+	 * @param {string} text2 New string to be diffed.
+	 * @param {number} deadline Time at which to bail if not yet complete.
+	 * @return {!Array.<!diff_match_patch.Diff>} Array of diff tuples.
+	 * @private
+	 */
+	diff_match_patch.prototype.diff_bisect_ = function(text1, text2, deadline) {
+	  // Cache the text lengths to prevent multiple calls.
+	  var text1_length = text1.length;
+	  var text2_length = text2.length;
+	  var max_d = Math.ceil((text1_length + text2_length) / 2);
+	  var v_offset = max_d;
+	  var v_length = 2 * max_d;
+	  var v1 = new Array(v_length);
+	  var v2 = new Array(v_length);
+	  // Setting all elements to -1 is faster in Chrome & Firefox than mixing
+	  // integers and undefined.
+	  for (var x = 0; x < v_length; x++) {
+	    v1[x] = -1;
+	    v2[x] = -1;
+	  }
+	  v1[v_offset + 1] = 0;
+	  v2[v_offset + 1] = 0;
+	  var delta = text1_length - text2_length;
+	  // If the total number of characters is odd, then the front path will collide
+	  // with the reverse path.
+	  var front = (delta % 2 != 0);
+	  // Offsets for start and end of k loop.
+	  // Prevents mapping of space beyond the grid.
+	  var k1start = 0;
+	  var k1end = 0;
+	  var k2start = 0;
+	  var k2end = 0;
+	  for (var d = 0; d < max_d; d++) {
+	    // Bail out if deadline is reached.
+	    if ((new Date()).getTime() > deadline) {
+	      break;
+	    }
+
+	    // Walk the front path one step.
+	    for (var k1 = -d + k1start; k1 <= d - k1end; k1 += 2) {
+	      var k1_offset = v_offset + k1;
+	      var x1;
+	      if (k1 == -d || (k1 != d && v1[k1_offset - 1] < v1[k1_offset + 1])) {
+	        x1 = v1[k1_offset + 1];
+	      } else {
+	        x1 = v1[k1_offset - 1] + 1;
+	      }
+	      var y1 = x1 - k1;
+	      while (x1 < text1_length && y1 < text2_length &&
+	             text1.charAt(x1) == text2.charAt(y1)) {
+	        x1++;
+	        y1++;
+	      }
+	      v1[k1_offset] = x1;
+	      if (x1 > text1_length) {
+	        // Ran off the right of the graph.
+	        k1end += 2;
+	      } else if (y1 > text2_length) {
+	        // Ran off the bottom of the graph.
+	        k1start += 2;
+	      } else if (front) {
+	        var k2_offset = v_offset + delta - k1;
+	        if (k2_offset >= 0 && k2_offset < v_length && v2[k2_offset] != -1) {
+	          // Mirror x2 onto top-left coordinate system.
+	          var x2 = text1_length - v2[k2_offset];
+	          if (x1 >= x2) {
+	            // Overlap detected.
+	            return this.diff_bisectSplit_(text1, text2, x1, y1, deadline);
+	          }
+	        }
+	      }
+	    }
+
+	    // Walk the reverse path one step.
+	    for (var k2 = -d + k2start; k2 <= d - k2end; k2 += 2) {
+	      var k2_offset = v_offset + k2;
+	      var x2;
+	      if (k2 == -d || (k2 != d && v2[k2_offset - 1] < v2[k2_offset + 1])) {
+	        x2 = v2[k2_offset + 1];
+	      } else {
+	        x2 = v2[k2_offset - 1] + 1;
+	      }
+	      var y2 = x2 - k2;
+	      while (x2 < text1_length && y2 < text2_length &&
+	             text1.charAt(text1_length - x2 - 1) ==
+	             text2.charAt(text2_length - y2 - 1)) {
+	        x2++;
+	        y2++;
+	      }
+	      v2[k2_offset] = x2;
+	      if (x2 > text1_length) {
+	        // Ran off the left of the graph.
+	        k2end += 2;
+	      } else if (y2 > text2_length) {
+	        // Ran off the top of the graph.
+	        k2start += 2;
+	      } else if (!front) {
+	        var k1_offset = v_offset + delta - k2;
+	        if (k1_offset >= 0 && k1_offset < v_length && v1[k1_offset] != -1) {
+	          var x1 = v1[k1_offset];
+	          var y1 = v_offset + x1 - k1_offset;
+	          // Mirror x2 onto top-left coordinate system.
+	          x2 = text1_length - x2;
+	          if (x1 >= x2) {
+	            // Overlap detected.
+	            return this.diff_bisectSplit_(text1, text2, x1, y1, deadline);
+	          }
+	        }
+	      }
+	    }
+	  }
+	  // Diff took too long and hit the deadline or
+	  // number of diffs equals number of characters, no commonality at all.
+	  return [new diff_match_patch.Diff(DIFF_DELETE, text1),
+	          new diff_match_patch.Diff(DIFF_INSERT, text2)];
+	};
+
+
+	/**
+	 * Given the location of the 'middle snake', split the diff in two parts
+	 * and recurse.
+	 * @param {string} text1 Old string to be diffed.
+	 * @param {string} text2 New string to be diffed.
+	 * @param {number} x Index of split point in text1.
+	 * @param {number} y Index of split point in text2.
+	 * @param {number} deadline Time at which to bail if not yet complete.
+	 * @return {!Array.<!diff_match_patch.Diff>} Array of diff tuples.
+	 * @private
+	 */
+	diff_match_patch.prototype.diff_bisectSplit_ = function(text1, text2, x, y,
+	    deadline) {
+	  var text1a = text1.substring(0, x);
+	  var text2a = text2.substring(0, y);
+	  var text1b = text1.substring(x);
+	  var text2b = text2.substring(y);
+
+	  // Compute both diffs serially.
+	  var diffs = this.diff_main(text1a, text2a, false, deadline);
+	  var diffsb = this.diff_main(text1b, text2b, false, deadline);
+
+	  return diffs.concat(diffsb);
+	};
+
+
+	/**
+	 * Split two texts into an array of strings.  Reduce the texts to a string of
+	 * hashes where each Unicode character represents one line.
+	 * @param {string} text1 First string.
+	 * @param {string} text2 Second string.
+	 * @return {{chars1: string, chars2: string, lineArray: !Array.<string>}}
+	 *     An object containing the encoded text1, the encoded text2 and
+	 *     the array of unique strings.
+	 *     The zeroth element of the array of unique strings is intentionally blank.
+	 * @private
+	 */
+	diff_match_patch.prototype.diff_linesToChars_ = function(text1, text2) {
+	  var lineArray = [];  // e.g. lineArray[4] == 'Hello\n'
+	  var lineHash = {};   // e.g. lineHash['Hello\n'] == 4
+
+	  // '\x00' is a valid character, but various debuggers don't like it.
+	  // So we'll insert a junk entry to avoid generating a null character.
+	  lineArray[0] = '';
+
+	  /**
+	   * Split a text into an array of strings.  Reduce the texts to a string of
+	   * hashes where each Unicode character represents one line.
+	   * Modifies linearray and linehash through being a closure.
+	   * @param {string} text String to encode.
+	   * @return {string} Encoded string.
+	   * @private
+	   */
+	  function diff_linesToCharsMunge_(text) {
+	    var chars = '';
+	    // Walk the text, pulling out a substring for each line.
+	    // text.split('\n') would would temporarily double our memory footprint.
+	    // Modifying text would create many large strings to garbage collect.
+	    var lineStart = 0;
+	    var lineEnd = -1;
+	    // Keeping our own length variable is faster than looking it up.
+	    var lineArrayLength = lineArray.length;
+	    while (lineEnd < text.length - 1) {
+	      lineEnd = text.indexOf('\n', lineStart);
+	      if (lineEnd == -1) {
+	        lineEnd = text.length - 1;
+	      }
+	      var line = text.substring(lineStart, lineEnd + 1);
+
+	      if (lineHash.hasOwnProperty ? lineHash.hasOwnProperty(line) :
+	          (lineHash[line] !== undefined)) {
+	        chars += String.fromCharCode(lineHash[line]);
+	      } else {
+	        if (lineArrayLength == maxLines) {
+	          // Bail out at 65535 because
+	          // String.fromCharCode(65536) == String.fromCharCode(0)
+	          line = text.substring(lineStart);
+	          lineEnd = text.length;
+	        }
+	        chars += String.fromCharCode(lineArrayLength);
+	        lineHash[line] = lineArrayLength;
+	        lineArray[lineArrayLength++] = line;
+	      }
+	      lineStart = lineEnd + 1;
+	    }
+	    return chars;
+	  }
+	  // Allocate 2/3rds of the space for text1, the rest for text2.
+	  var maxLines = 40000;
+	  var chars1 = diff_linesToCharsMunge_(text1);
+	  maxLines = 65535;
+	  var chars2 = diff_linesToCharsMunge_(text2);
+	  return {chars1: chars1, chars2: chars2, lineArray: lineArray};
+	};
+
+
+	/**
+	 * Rehydrate the text in a diff from a string of line hashes to real lines of
+	 * text.
+	 * @param {!Array.<!diff_match_patch.Diff>} diffs Array of diff tuples.
+	 * @param {!Array.<string>} lineArray Array of unique strings.
+	 * @private
+	 */
+	diff_match_patch.prototype.diff_charsToLines_ = function(diffs, lineArray) {
+	  for (var i = 0; i < diffs.length; i++) {
+	    var chars = diffs[i][1];
+	    var text = [];
+	    for (var j = 0; j < chars.length; j++) {
+	      text[j] = lineArray[chars.charCodeAt(j)];
+	    }
+	    diffs[i][1] = text.join('');
+	  }
+	};
+
+
+	/**
+	 * Determine the common prefix of two strings.
+	 * @param {string} text1 First string.
+	 * @param {string} text2 Second string.
+	 * @return {number} The number of characters common to the start of each
+	 *     string.
+	 */
+	diff_match_patch.prototype.diff_commonPrefix = function(text1, text2) {
+	  // Quick check for common null cases.
+	  if (!text1 || !text2 || text1.charAt(0) != text2.charAt(0)) {
+	    return 0;
+	  }
+	  // Binary search.
+	  // Performance analysis: https://neil.fraser.name/news/2007/10/09/
+	  var pointermin = 0;
+	  var pointermax = Math.min(text1.length, text2.length);
+	  var pointermid = pointermax;
+	  var pointerstart = 0;
+	  while (pointermin < pointermid) {
+	    if (text1.substring(pointerstart, pointermid) ==
+	        text2.substring(pointerstart, pointermid)) {
+	      pointermin = pointermid;
+	      pointerstart = pointermin;
+	    } else {
+	      pointermax = pointermid;
+	    }
+	    pointermid = Math.floor((pointermax - pointermin) / 2 + pointermin);
+	  }
+	  return pointermid;
+	};
+
+
+	/**
+	 * Determine the common suffix of two strings.
+	 * @param {string} text1 First string.
+	 * @param {string} text2 Second string.
+	 * @return {number} The number of characters common to the end of each string.
+	 */
+	diff_match_patch.prototype.diff_commonSuffix = function(text1, text2) {
+	  // Quick check for common null cases.
+	  if (!text1 || !text2 ||
+	      text1.charAt(text1.length - 1) != text2.charAt(text2.length - 1)) {
+	    return 0;
+	  }
+	  // Binary search.
+	  // Performance analysis: https://neil.fraser.name/news/2007/10/09/
+	  var pointermin = 0;
+	  var pointermax = Math.min(text1.length, text2.length);
+	  var pointermid = pointermax;
+	  var pointerend = 0;
+	  while (pointermin < pointermid) {
+	    if (text1.substring(text1.length - pointermid, text1.length - pointerend) ==
+	        text2.substring(text2.length - pointermid, text2.length - pointerend)) {
+	      pointermin = pointermid;
+	      pointerend = pointermin;
+	    } else {
+	      pointermax = pointermid;
+	    }
+	    pointermid = Math.floor((pointermax - pointermin) / 2 + pointermin);
+	  }
+	  return pointermid;
+	};
+
+
+	/**
+	 * Determine if the suffix of one string is the prefix of another.
+	 * @param {string} text1 First string.
+	 * @param {string} text2 Second string.
+	 * @return {number} The number of characters common to the end of the first
+	 *     string and the start of the second string.
+	 * @private
+	 */
+	diff_match_patch.prototype.diff_commonOverlap_ = function(text1, text2) {
+	  // Cache the text lengths to prevent multiple calls.
+	  var text1_length = text1.length;
+	  var text2_length = text2.length;
+	  // Eliminate the null case.
+	  if (text1_length == 0 || text2_length == 0) {
+	    return 0;
+	  }
+	  // Truncate the longer string.
+	  if (text1_length > text2_length) {
+	    text1 = text1.substring(text1_length - text2_length);
+	  } else if (text1_length < text2_length) {
+	    text2 = text2.substring(0, text1_length);
+	  }
+	  var text_length = Math.min(text1_length, text2_length);
+	  // Quick check for the worst case.
+	  if (text1 == text2) {
+	    return text_length;
+	  }
+
+	  // Start by looking for a single character match
+	  // and increase length until no match is found.
+	  // Performance analysis: https://neil.fraser.name/news/2010/11/04/
+	  var best = 0;
+	  var length = 1;
+	  while (true) {
+	    var pattern = text1.substring(text_length - length);
+	    var found = text2.indexOf(pattern);
+	    if (found == -1) {
+	      return best;
+	    }
+	    length += found;
+	    if (found == 0 || text1.substring(text_length - length) ==
+	        text2.substring(0, length)) {
+	      best = length;
+	      length++;
+	    }
+	  }
+	};
+
+
+	/**
+	 * Do the two texts share a substring which is at least half the length of the
+	 * longer text?
+	 * This speedup can produce non-minimal diffs.
+	 * @param {string} text1 First string.
+	 * @param {string} text2 Second string.
+	 * @return {Array.<string>} Five element Array, containing the prefix of
+	 *     text1, the suffix of text1, the prefix of text2, the suffix of
+	 *     text2 and the common middle.  Or null if there was no match.
+	 * @private
+	 */
+	diff_match_patch.prototype.diff_halfMatch_ = function(text1, text2) {
+	  if (this.Diff_Timeout <= 0) {
+	    // Don't risk returning a non-optimal diff if we have unlimited time.
+	    return null;
+	  }
+	  var longtext = text1.length > text2.length ? text1 : text2;
+	  var shorttext = text1.length > text2.length ? text2 : text1;
+	  if (longtext.length < 4 || shorttext.length * 2 < longtext.length) {
+	    return null;  // Pointless.
+	  }
+	  var dmp = this;  // 'this' becomes 'window' in a closure.
+
+	  /**
+	   * Does a substring of shorttext exist within longtext such that the substring
+	   * is at least half the length of longtext?
+	   * Closure, but does not reference any external variables.
+	   * @param {string} longtext Longer string.
+	   * @param {string} shorttext Shorter string.
+	   * @param {number} i Start index of quarter length substring within longtext.
+	   * @return {Array.<string>} Five element Array, containing the prefix of
+	   *     longtext, the suffix of longtext, the prefix of shorttext, the suffix
+	   *     of shorttext and the common middle.  Or null if there was no match.
+	   * @private
+	   */
+	  function diff_halfMatchI_(longtext, shorttext, i) {
+	    // Start with a 1/4 length substring at position i as a seed.
+	    var seed = longtext.substring(i, i + Math.floor(longtext.length / 4));
+	    var j = -1;
+	    var best_common = '';
+	    var best_longtext_a, best_longtext_b, best_shorttext_a, best_shorttext_b;
+	    while ((j = shorttext.indexOf(seed, j + 1)) != -1) {
+	      var prefixLength = dmp.diff_commonPrefix(longtext.substring(i),
+	                                               shorttext.substring(j));
+	      var suffixLength = dmp.diff_commonSuffix(longtext.substring(0, i),
+	                                               shorttext.substring(0, j));
+	      if (best_common.length < suffixLength + prefixLength) {
+	        best_common = shorttext.substring(j - suffixLength, j) +
+	            shorttext.substring(j, j + prefixLength);
+	        best_longtext_a = longtext.substring(0, i - suffixLength);
+	        best_longtext_b = longtext.substring(i + prefixLength);
+	        best_shorttext_a = shorttext.substring(0, j - suffixLength);
+	        best_shorttext_b = shorttext.substring(j + prefixLength);
+	      }
+	    }
+	    if (best_common.length * 2 >= longtext.length) {
+	      return [best_longtext_a, best_longtext_b,
+	              best_shorttext_a, best_shorttext_b, best_common];
+	    } else {
+	      return null;
+	    }
+	  }
+
+	  // First check if the second quarter is the seed for a half-match.
+	  var hm1 = diff_halfMatchI_(longtext, shorttext,
+	                             Math.ceil(longtext.length / 4));
+	  // Check again based on the third quarter.
+	  var hm2 = diff_halfMatchI_(longtext, shorttext,
+	                             Math.ceil(longtext.length / 2));
+	  var hm;
+	  if (!hm1 && !hm2) {
+	    return null;
+	  } else if (!hm2) {
+	    hm = hm1;
+	  } else if (!hm1) {
+	    hm = hm2;
+	  } else {
+	    // Both matched.  Select the longest.
+	    hm = hm1[4].length > hm2[4].length ? hm1 : hm2;
+	  }
+
+	  // A half-match was found, sort out the return data.
+	  var text1_a, text1_b, text2_a, text2_b;
+	  if (text1.length > text2.length) {
+	    text1_a = hm[0];
+	    text1_b = hm[1];
+	    text2_a = hm[2];
+	    text2_b = hm[3];
+	  } else {
+	    text2_a = hm[0];
+	    text2_b = hm[1];
+	    text1_a = hm[2];
+	    text1_b = hm[3];
+	  }
+	  var mid_common = hm[4];
+	  return [text1_a, text1_b, text2_a, text2_b, mid_common];
+	};
+
+
+	/**
+	 * Reduce the number of edits by eliminating semantically trivial equalities.
+	 * @param {!Array.<!diff_match_patch.Diff>} diffs Array of diff tuples.
+	 */
+	diff_match_patch.prototype.diff_cleanupSemantic = function(diffs) {
+	  var changes = false;
+	  var equalities = [];  // Stack of indices where equalities are found.
+	  var equalitiesLength = 0;  // Keeping our own length var is faster in JS.
+	  /** @type {?string} */
+	  var lastEquality = null;
+	  // Always equal to diffs[equalities[equalitiesLength - 1]][1]
+	  var pointer = 0;  // Index of current position.
+	  // Number of characters that changed prior to the equality.
+	  var length_insertions1 = 0;
+	  var length_deletions1 = 0;
+	  // Number of characters that changed after the equality.
+	  var length_insertions2 = 0;
+	  var length_deletions2 = 0;
+	  while (pointer < diffs.length) {
+	    if (diffs[pointer][0] == DIFF_EQUAL) {  // Equality found.
+	      equalities[equalitiesLength++] = pointer;
+	      length_insertions1 = length_insertions2;
+	      length_deletions1 = length_deletions2;
+	      length_insertions2 = 0;
+	      length_deletions2 = 0;
+	      lastEquality = diffs[pointer][1];
+	    } else {  // An insertion or deletion.
+	      if (diffs[pointer][0] == DIFF_INSERT) {
+	        length_insertions2 += diffs[pointer][1].length;
+	      } else {
+	        length_deletions2 += diffs[pointer][1].length;
+	      }
+	      // Eliminate an equality that is smaller or equal to the edits on both
+	      // sides of it.
+	      if (lastEquality && (lastEquality.length <=
+	          Math.max(length_insertions1, length_deletions1)) &&
+	          (lastEquality.length <= Math.max(length_insertions2,
+	                                           length_deletions2))) {
+	        // Duplicate record.
+	        diffs.splice(equalities[equalitiesLength - 1], 0,
+	                     new diff_match_patch.Diff(DIFF_DELETE, lastEquality));
+	        // Change second copy to insert.
+	        diffs[equalities[equalitiesLength - 1] + 1][0] = DIFF_INSERT;
+	        // Throw away the equality we just deleted.
+	        equalitiesLength--;
+	        // Throw away the previous equality (it needs to be reevaluated).
+	        equalitiesLength--;
+	        pointer = equalitiesLength > 0 ? equalities[equalitiesLength - 1] : -1;
+	        length_insertions1 = 0;  // Reset the counters.
+	        length_deletions1 = 0;
+	        length_insertions2 = 0;
+	        length_deletions2 = 0;
+	        lastEquality = null;
+	        changes = true;
+	      }
+	    }
+	    pointer++;
+	  }
+
+	  // Normalize the diff.
+	  if (changes) {
+	    this.diff_cleanupMerge(diffs);
+	  }
+	  this.diff_cleanupSemanticLossless(diffs);
+
+	  // Find any overlaps between deletions and insertions.
+	  // e.g: <del>abcxxx</del><ins>xxxdef</ins>
+	  //   -> <del>abc</del>xxx<ins>def</ins>
+	  // e.g: <del>xxxabc</del><ins>defxxx</ins>
+	  //   -> <ins>def</ins>xxx<del>abc</del>
+	  // Only extract an overlap if it is as big as the edit ahead or behind it.
+	  pointer = 1;
+	  while (pointer < diffs.length) {
+	    if (diffs[pointer - 1][0] == DIFF_DELETE &&
+	        diffs[pointer][0] == DIFF_INSERT) {
+	      var deletion = diffs[pointer - 1][1];
+	      var insertion = diffs[pointer][1];
+	      var overlap_length1 = this.diff_commonOverlap_(deletion, insertion);
+	      var overlap_length2 = this.diff_commonOverlap_(insertion, deletion);
+	      if (overlap_length1 >= overlap_length2) {
+	        if (overlap_length1 >= deletion.length / 2 ||
+	            overlap_length1 >= insertion.length / 2) {
+	          // Overlap found.  Insert an equality and trim the surrounding edits.
+	          diffs.splice(pointer, 0, new diff_match_patch.Diff(DIFF_EQUAL,
+	              insertion.substring(0, overlap_length1)));
+	          diffs[pointer - 1][1] =
+	              deletion.substring(0, deletion.length - overlap_length1);
+	          diffs[pointer + 1][1] = insertion.substring(overlap_length1);
+	          pointer++;
+	        }
+	      } else {
+	        if (overlap_length2 >= deletion.length / 2 ||
+	            overlap_length2 >= insertion.length / 2) {
+	          // Reverse overlap found.
+	          // Insert an equality and swap and trim the surrounding edits.
+	          diffs.splice(pointer, 0, new diff_match_patch.Diff(DIFF_EQUAL,
+	              deletion.substring(0, overlap_length2)));
+	          diffs[pointer - 1][0] = DIFF_INSERT;
+	          diffs[pointer - 1][1] =
+	              insertion.substring(0, insertion.length - overlap_length2);
+	          diffs[pointer + 1][0] = DIFF_DELETE;
+	          diffs[pointer + 1][1] =
+	              deletion.substring(overlap_length2);
+	          pointer++;
+	        }
+	      }
+	      pointer++;
+	    }
+	    pointer++;
+	  }
+	};
+
+
+	/**
+	 * Look for single edits surrounded on both sides by equalities
+	 * which can be shifted sideways to align the edit to a word boundary.
+	 * e.g: The c<ins>at c</ins>ame. -> The <ins>cat </ins>came.
+	 * @param {!Array.<!diff_match_patch.Diff>} diffs Array of diff tuples.
+	 */
+	diff_match_patch.prototype.diff_cleanupSemanticLossless = function(diffs) {
+	  /**
+	   * Given two strings, compute a score representing whether the internal
+	   * boundary falls on logical boundaries.
+	   * Scores range from 6 (best) to 0 (worst).
+	   * Closure, but does not reference any external variables.
+	   * @param {string} one First string.
+	   * @param {string} two Second string.
+	   * @return {number} The score.
+	   * @private
+	   */
+	  function diff_cleanupSemanticScore_(one, two) {
+	    if (!one || !two) {
+	      // Edges are the best.
+	      return 6;
+	    }
+
+	    // Each port of this function behaves slightly differently due to
+	    // subtle differences in each language's definition of things like
+	    // 'whitespace'.  Since this function's purpose is largely cosmetic,
+	    // the choice has been made to use each language's native features
+	    // rather than force total conformity.
+	    var char1 = one.charAt(one.length - 1);
+	    var char2 = two.charAt(0);
+	    var nonAlphaNumeric1 = char1.match(diff_match_patch.nonAlphaNumericRegex_);
+	    var nonAlphaNumeric2 = char2.match(diff_match_patch.nonAlphaNumericRegex_);
+	    var whitespace1 = nonAlphaNumeric1 &&
+	        char1.match(diff_match_patch.whitespaceRegex_);
+	    var whitespace2 = nonAlphaNumeric2 &&
+	        char2.match(diff_match_patch.whitespaceRegex_);
+	    var lineBreak1 = whitespace1 &&
+	        char1.match(diff_match_patch.linebreakRegex_);
+	    var lineBreak2 = whitespace2 &&
+	        char2.match(diff_match_patch.linebreakRegex_);
+	    var blankLine1 = lineBreak1 &&
+	        one.match(diff_match_patch.blanklineEndRegex_);
+	    var blankLine2 = lineBreak2 &&
+	        two.match(diff_match_patch.blanklineStartRegex_);
+
+	    if (blankLine1 || blankLine2) {
+	      // Five points for blank lines.
+	      return 5;
+	    } else if (lineBreak1 || lineBreak2) {
+	      // Four points for line breaks.
+	      return 4;
+	    } else if (nonAlphaNumeric1 && !whitespace1 && whitespace2) {
+	      // Three points for end of sentences.
+	      return 3;
+	    } else if (whitespace1 || whitespace2) {
+	      // Two points for whitespace.
+	      return 2;
+	    } else if (nonAlphaNumeric1 || nonAlphaNumeric2) {
+	      // One point for non-alphanumeric.
+	      return 1;
+	    }
+	    return 0;
+	  }
+
+	  var pointer = 1;
+	  // Intentionally ignore the first and last element (don't need checking).
+	  while (pointer < diffs.length - 1) {
+	    if (diffs[pointer - 1][0] == DIFF_EQUAL &&
+	        diffs[pointer + 1][0] == DIFF_EQUAL) {
+	      // This is a single edit surrounded by equalities.
+	      var equality1 = diffs[pointer - 1][1];
+	      var edit = diffs[pointer][1];
+	      var equality2 = diffs[pointer + 1][1];
+
+	      // First, shift the edit as far left as possible.
+	      var commonOffset = this.diff_commonSuffix(equality1, edit);
+	      if (commonOffset) {
+	        var commonString = edit.substring(edit.length - commonOffset);
+	        equality1 = equality1.substring(0, equality1.length - commonOffset);
+	        edit = commonString + edit.substring(0, edit.length - commonOffset);
+	        equality2 = commonString + equality2;
+	      }
+
+	      // Second, step character by character right, looking for the best fit.
+	      var bestEquality1 = equality1;
+	      var bestEdit = edit;
+	      var bestEquality2 = equality2;
+	      var bestScore = diff_cleanupSemanticScore_(equality1, edit) +
+	          diff_cleanupSemanticScore_(edit, equality2);
+	      while (edit.charAt(0) === equality2.charAt(0)) {
+	        equality1 += edit.charAt(0);
+	        edit = edit.substring(1) + equality2.charAt(0);
+	        equality2 = equality2.substring(1);
+	        var score = diff_cleanupSemanticScore_(equality1, edit) +
+	            diff_cleanupSemanticScore_(edit, equality2);
+	        // The >= encourages trailing rather than leading whitespace on edits.
+	        if (score >= bestScore) {
+	          bestScore = score;
+	          bestEquality1 = equality1;
+	          bestEdit = edit;
+	          bestEquality2 = equality2;
+	        }
+	      }
+
+	      if (diffs[pointer - 1][1] != bestEquality1) {
+	        // We have an improvement, save it back to the diff.
+	        if (bestEquality1) {
+	          diffs[pointer - 1][1] = bestEquality1;
+	        } else {
+	          diffs.splice(pointer - 1, 1);
+	          pointer--;
+	        }
+	        diffs[pointer][1] = bestEdit;
+	        if (bestEquality2) {
+	          diffs[pointer + 1][1] = bestEquality2;
+	        } else {
+	          diffs.splice(pointer + 1, 1);
+	          pointer--;
+	        }
+	      }
+	    }
+	    pointer++;
+	  }
+	};
+
+	// Define some regex patterns for matching boundaries.
+	diff_match_patch.nonAlphaNumericRegex_ = /[^a-zA-Z0-9]/;
+	diff_match_patch.whitespaceRegex_ = /\s/;
+	diff_match_patch.linebreakRegex_ = /[\r\n]/;
+	diff_match_patch.blanklineEndRegex_ = /\n\r?\n$/;
+	diff_match_patch.blanklineStartRegex_ = /^\r?\n\r?\n/;
+
+	/**
+	 * Reduce the number of edits by eliminating operationally trivial equalities.
+	 * @param {!Array.<!diff_match_patch.Diff>} diffs Array of diff tuples.
+	 */
+	diff_match_patch.prototype.diff_cleanupEfficiency = function(diffs) {
+	  var changes = false;
+	  var equalities = [];  // Stack of indices where equalities are found.
+	  var equalitiesLength = 0;  // Keeping our own length var is faster in JS.
+	  /** @type {?string} */
+	  var lastEquality = null;
+	  // Always equal to diffs[equalities[equalitiesLength - 1]][1]
+	  var pointer = 0;  // Index of current position.
+	  // Is there an insertion operation before the last equality.
+	  var pre_ins = false;
+	  // Is there a deletion operation before the last equality.
+	  var pre_del = false;
+	  // Is there an insertion operation after the last equality.
+	  var post_ins = false;
+	  // Is there a deletion operation after the last equality.
+	  var post_del = false;
+	  while (pointer < diffs.length) {
+	    if (diffs[pointer][0] == DIFF_EQUAL) {  // Equality found.
+	      if (diffs[pointer][1].length < this.Diff_EditCost &&
+	          (post_ins || post_del)) {
+	        // Candidate found.
+	        equalities[equalitiesLength++] = pointer;
+	        pre_ins = post_ins;
+	        pre_del = post_del;
+	        lastEquality = diffs[pointer][1];
+	      } else {
+	        // Not a candidate, and can never become one.
+	        equalitiesLength = 0;
+	        lastEquality = null;
+	      }
+	      post_ins = post_del = false;
+	    } else {  // An insertion or deletion.
+	      if (diffs[pointer][0] == DIFF_DELETE) {
+	        post_del = true;
+	      } else {
+	        post_ins = true;
+	      }
+	      /*
+	       * Five types to be split:
+	       * <ins>A</ins><del>B</del>XY<ins>C</ins><del>D</del>
+	       * <ins>A</ins>X<ins>C</ins><del>D</del>
+	       * <ins>A</ins><del>B</del>X<ins>C</ins>
+	       * <ins>A</del>X<ins>C</ins><del>D</del>
+	       * <ins>A</ins><del>B</del>X<del>C</del>
+	       */
+	      if (lastEquality && ((pre_ins && pre_del && post_ins && post_del) ||
+	                           ((lastEquality.length < this.Diff_EditCost / 2) &&
+	                            (pre_ins + pre_del + post_ins + post_del) == 3))) {
+	        // Duplicate record.
+	        diffs.splice(equalities[equalitiesLength - 1], 0,
+	                     new diff_match_patch.Diff(DIFF_DELETE, lastEquality));
+	        // Change second copy to insert.
+	        diffs[equalities[equalitiesLength - 1] + 1][0] = DIFF_INSERT;
+	        equalitiesLength--;  // Throw away the equality we just deleted;
+	        lastEquality = null;
+	        if (pre_ins && pre_del) {
+	          // No changes made which could affect previous entry, keep going.
+	          post_ins = post_del = true;
+	          equalitiesLength = 0;
+	        } else {
+	          equalitiesLength--;  // Throw away the previous equality.
+	          pointer = equalitiesLength > 0 ?
+	              equalities[equalitiesLength - 1] : -1;
+	          post_ins = post_del = false;
+	        }
+	        changes = true;
+	      }
+	    }
+	    pointer++;
+	  }
+
+	  if (changes) {
+	    this.diff_cleanupMerge(diffs);
+	  }
+	};
+
+
+	/**
+	 * Reorder and merge like edit sections.  Merge equalities.
+	 * Any edit section can move as long as it doesn't cross an equality.
+	 * @param {!Array.<!diff_match_patch.Diff>} diffs Array of diff tuples.
+	 */
+	diff_match_patch.prototype.diff_cleanupMerge = function(diffs) {
+	  // Add a dummy entry at the end.
+	  diffs.push(new diff_match_patch.Diff(DIFF_EQUAL, ''));
+	  var pointer = 0;
+	  var count_delete = 0;
+	  var count_insert = 0;
+	  var text_delete = '';
+	  var text_insert = '';
+	  var commonlength;
+	  while (pointer < diffs.length) {
+	    switch (diffs[pointer][0]) {
+	      case DIFF_INSERT:
+	        count_insert++;
+	        text_insert += diffs[pointer][1];
+	        pointer++;
+	        break;
+	      case DIFF_DELETE:
+	        count_delete++;
+	        text_delete += diffs[pointer][1];
+	        pointer++;
+	        break;
+	      case DIFF_EQUAL:
+	        // Upon reaching an equality, check for prior redundancies.
+	        if (count_delete + count_insert > 1) {
+	          if (count_delete !== 0 && count_insert !== 0) {
+	            // Factor out any common prefixies.
+	            commonlength = this.diff_commonPrefix(text_insert, text_delete);
+	            if (commonlength !== 0) {
+	              if ((pointer - count_delete - count_insert) > 0 &&
+	                  diffs[pointer - count_delete - count_insert - 1][0] ==
+	                  DIFF_EQUAL) {
+	                diffs[pointer - count_delete - count_insert - 1][1] +=
+	                    text_insert.substring(0, commonlength);
+	              } else {
+	                diffs.splice(0, 0, new diff_match_patch.Diff(DIFF_EQUAL,
+	                    text_insert.substring(0, commonlength)));
+	                pointer++;
+	              }
+	              text_insert = text_insert.substring(commonlength);
+	              text_delete = text_delete.substring(commonlength);
+	            }
+	            // Factor out any common suffixies.
+	            commonlength = this.diff_commonSuffix(text_insert, text_delete);
+	            if (commonlength !== 0) {
+	              diffs[pointer][1] = text_insert.substring(text_insert.length -
+	                  commonlength) + diffs[pointer][1];
+	              text_insert = text_insert.substring(0, text_insert.length -
+	                  commonlength);
+	              text_delete = text_delete.substring(0, text_delete.length -
+	                  commonlength);
+	            }
+	          }
+	          // Delete the offending records and add the merged ones.
+	          pointer -= count_delete + count_insert;
+	          diffs.splice(pointer, count_delete + count_insert);
+	          if (text_delete.length) {
+	            diffs.splice(pointer, 0,
+	                new diff_match_patch.Diff(DIFF_DELETE, text_delete));
+	            pointer++;
+	          }
+	          if (text_insert.length) {
+	            diffs.splice(pointer, 0,
+	                new diff_match_patch.Diff(DIFF_INSERT, text_insert));
+	            pointer++;
+	          }
+	          pointer++;
+	        } else if (pointer !== 0 && diffs[pointer - 1][0] == DIFF_EQUAL) {
+	          // Merge this equality with the previous one.
+	          diffs[pointer - 1][1] += diffs[pointer][1];
+	          diffs.splice(pointer, 1);
+	        } else {
+	          pointer++;
+	        }
+	        count_insert = 0;
+	        count_delete = 0;
+	        text_delete = '';
+	        text_insert = '';
+	        break;
+	    }
+	  }
+	  if (diffs[diffs.length - 1][1] === '') {
+	    diffs.pop();  // Remove the dummy entry at the end.
+	  }
+
+	  // Second pass: look for single edits surrounded on both sides by equalities
+	  // which can be shifted sideways to eliminate an equality.
+	  // e.g: A<ins>BA</ins>C -> <ins>AB</ins>AC
+	  var changes = false;
+	  pointer = 1;
+	  // Intentionally ignore the first and last element (don't need checking).
+	  while (pointer < diffs.length - 1) {
+	    if (diffs[pointer - 1][0] == DIFF_EQUAL &&
+	        diffs[pointer + 1][0] == DIFF_EQUAL) {
+	      // This is a single edit surrounded by equalities.
+	      if (diffs[pointer][1].substring(diffs[pointer][1].length -
+	          diffs[pointer - 1][1].length) == diffs[pointer - 1][1]) {
+	        // Shift the edit over the previous equality.
+	        diffs[pointer][1] = diffs[pointer - 1][1] +
+	            diffs[pointer][1].substring(0, diffs[pointer][1].length -
+	                                        diffs[pointer - 1][1].length);
+	        diffs[pointer + 1][1] = diffs[pointer - 1][1] + diffs[pointer + 1][1];
+	        diffs.splice(pointer - 1, 1);
+	        changes = true;
+	      } else if (diffs[pointer][1].substring(0, diffs[pointer + 1][1].length) ==
+	          diffs[pointer + 1][1]) {
+	        // Shift the edit over the next equality.
+	        diffs[pointer - 1][1] += diffs[pointer + 1][1];
+	        diffs[pointer][1] =
+	            diffs[pointer][1].substring(diffs[pointer + 1][1].length) +
+	            diffs[pointer + 1][1];
+	        diffs.splice(pointer + 1, 1);
+	        changes = true;
+	      }
+	    }
+	    pointer++;
+	  }
+	  // If shifts were made, the diff needs reordering and another shift sweep.
+	  if (changes) {
+	    this.diff_cleanupMerge(diffs);
+	  }
+	};
+
+
+	/**
+	 * loc is a location in text1, compute and return the equivalent location in
+	 * text2.
+	 * e.g. 'The cat' vs 'The big cat', 1->1, 5->8
+	 * @param {!Array.<!diff_match_patch.Diff>} diffs Array of diff tuples.
+	 * @param {number} loc Location within text1.
+	 * @return {number} Location within text2.
+	 */
+	diff_match_patch.prototype.diff_xIndex = function(diffs, loc) {
+	  var chars1 = 0;
+	  var chars2 = 0;
+	  var last_chars1 = 0;
+	  var last_chars2 = 0;
+	  var x;
+	  for (x = 0; x < diffs.length; x++) {
+	    if (diffs[x][0] !== DIFF_INSERT) {  // Equality or deletion.
+	      chars1 += diffs[x][1].length;
+	    }
+	    if (diffs[x][0] !== DIFF_DELETE) {  // Equality or insertion.
+	      chars2 += diffs[x][1].length;
+	    }
+	    if (chars1 > loc) {  // Overshot the location.
+	      break;
+	    }
+	    last_chars1 = chars1;
+	    last_chars2 = chars2;
+	  }
+	  // Was the location was deleted?
+	  if (diffs.length != x && diffs[x][0] === DIFF_DELETE) {
+	    return last_chars2;
+	  }
+	  // Add the remaining character length.
+	  return last_chars2 + (loc - last_chars1);
+	};
+
+
+	/**
+	 * Convert a diff array into a pretty HTML report.
+	 * @param {!Array.<!diff_match_patch.Diff>} diffs Array of diff tuples.
+	 * @return {string} HTML representation.
+	 */
+	diff_match_patch.prototype.diff_prettyHtml = function(diffs) {
+	  var html = [];
+	  var pattern_amp = /&/g;
+	  var pattern_lt = /</g;
+	  var pattern_gt = />/g;
+	  var pattern_para = /\n/g;
+	  for (var x = 0; x < diffs.length; x++) {
+	    var op = diffs[x][0];    // Operation (insert, delete, equal)
+	    var data = diffs[x][1];  // Text of change.
+	    var text = data.replace(pattern_amp, '&amp;').replace(pattern_lt, '&lt;')
+	        .replace(pattern_gt, '&gt;').replace(pattern_para, '&para;<br>');
+	    switch (op) {
+	      case DIFF_INSERT:
+	        html[x] = '<ins style="background:#e6ffe6;">' + text + '</ins>';
+	        break;
+	      case DIFF_DELETE:
+	        html[x] = '<del style="background:#ffe6e6;">' + text + '</del>';
+	        break;
+	      case DIFF_EQUAL:
+	        html[x] = '<span>' + text + '</span>';
+	        break;
+	    }
+	  }
+	  return html.join('');
+	};
+
+
+	/**
+	 * Compute and return the source text (all equalities and deletions).
+	 * @param {!Array.<!diff_match_patch.Diff>} diffs Array of diff tuples.
+	 * @return {string} Source text.
+	 */
+	diff_match_patch.prototype.diff_text1 = function(diffs) {
+	  var text = [];
+	  for (var x = 0; x < diffs.length; x++) {
+	    if (diffs[x][0] !== DIFF_INSERT) {
+	      text[x] = diffs[x][1];
+	    }
+	  }
+	  return text.join('');
+	};
+
+
+	/**
+	 * Compute and return the destination text (all equalities and insertions).
+	 * @param {!Array.<!diff_match_patch.Diff>} diffs Array of diff tuples.
+	 * @return {string} Destination text.
+	 */
+	diff_match_patch.prototype.diff_text2 = function(diffs) {
+	  var text = [];
+	  for (var x = 0; x < diffs.length; x++) {
+	    if (diffs[x][0] !== DIFF_DELETE) {
+	      text[x] = diffs[x][1];
+	    }
+	  }
+	  return text.join('');
+	};
+
+
+	/**
+	 * Compute the Levenshtein distance; the number of inserted, deleted or
+	 * substituted characters.
+	 * @param {!Array.<!diff_match_patch.Diff>} diffs Array of diff tuples.
+	 * @return {number} Number of changes.
+	 */
+	diff_match_patch.prototype.diff_levenshtein = function(diffs) {
+	  var levenshtein = 0;
+	  var insertions = 0;
+	  var deletions = 0;
+	  for (var x = 0; x < diffs.length; x++) {
+	    var op = diffs[x][0];
+	    var data = diffs[x][1];
+	    switch (op) {
+	      case DIFF_INSERT:
+	        insertions += data.length;
+	        break;
+	      case DIFF_DELETE:
+	        deletions += data.length;
+	        break;
+	      case DIFF_EQUAL:
+	        // A deletion and an insertion is one substitution.
+	        levenshtein += Math.max(insertions, deletions);
+	        insertions = 0;
+	        deletions = 0;
+	        break;
+	    }
+	  }
+	  levenshtein += Math.max(insertions, deletions);
+	  return levenshtein;
+	};
+
+
+	/**
+	 * Crush the diff into an encoded string which describes the operations
+	 * required to transform text1 into text2.
+	 * E.g. =3\t-2\t+ing  -> Keep 3 chars, delete 2 chars, insert 'ing'.
+	 * Operations are tab-separated.  Inserted text is escaped using %xx notation.
+	 * @param {!Array.<!diff_match_patch.Diff>} diffs Array of diff tuples.
+	 * @return {string} Delta text.
+	 */
+	diff_match_patch.prototype.diff_toDelta = function(diffs) {
+	  var text = [];
+	  for (var x = 0; x < diffs.length; x++) {
+	    switch (diffs[x][0]) {
+	      case DIFF_INSERT:
+	        text[x] = '+' + encodeURI(diffs[x][1]);
+	        break;
+	      case DIFF_DELETE:
+	        text[x] = '-' + diffs[x][1].length;
+	        break;
+	      case DIFF_EQUAL:
+	        text[x] = '=' + diffs[x][1].length;
+	        break;
+	    }
+	  }
+	  return text.join('\t').replace(/%20/g, ' ');
+	};
+
+
+	/**
+	 * Given the original text1, and an encoded string which describes the
+	 * operations required to transform text1 into text2, compute the full diff.
+	 * @param {string} text1 Source string for the diff.
+	 * @param {string} delta Delta text.
+	 * @return {!Array.<!diff_match_patch.Diff>} Array of diff tuples.
+	 * @throws {!Error} If invalid input.
+	 */
+	diff_match_patch.prototype.diff_fromDelta = function(text1, delta) {
+	  var diffs = [];
+	  var diffsLength = 0;  // Keeping our own length var is faster in JS.
+	  var pointer = 0;  // Cursor in text1
+	  var tokens = delta.split(/\t/g);
+	  for (var x = 0; x < tokens.length; x++) {
+	    // Each token begins with a one character parameter which specifies the
+	    // operation of this token (delete, insert, equality).
+	    var param = tokens[x].substring(1);
+	    switch (tokens[x].charAt(0)) {
+	      case '+':
+	        try {
+	          diffs[diffsLength++] =
+	              new diff_match_patch.Diff(DIFF_INSERT, decodeURI(param));
+	        } catch (ex) {
+	          // Malformed URI sequence.
+	          throw new Error('Illegal escape in diff_fromDelta: ' + param);
+	        }
+	        break;
+	      case '-':
+	        // Fall through.
+	      case '=':
+	        var n = parseInt(param, 10);
+	        if (isNaN(n) || n < 0) {
+	          throw new Error('Invalid number in diff_fromDelta: ' + param);
+	        }
+	        var text = text1.substring(pointer, pointer += n);
+	        if (tokens[x].charAt(0) == '=') {
+	          diffs[diffsLength++] = new diff_match_patch.Diff(DIFF_EQUAL, text);
+	        } else {
+	          diffs[diffsLength++] = new diff_match_patch.Diff(DIFF_DELETE, text);
+	        }
+	        break;
+	      default:
+	        // Blank tokens are ok (from a trailing \t).
+	        // Anything else is an error.
+	        if (tokens[x]) {
+	          throw new Error('Invalid diff operation in diff_fromDelta: ' +
+	                          tokens[x]);
+	        }
+	    }
+	  }
+	  if (pointer != text1.length) {
+	    throw new Error('Delta length (' + pointer +
+	        ') does not equal source text length (' + text1.length + ').');
+	  }
+	  return diffs;
+	};
+
+
+	//  MATCH FUNCTIONS
+
+
+	/**
+	 * Locate the best instance of 'pattern' in 'text' near 'loc'.
+	 * @param {string} text The text to search.
+	 * @param {string} pattern The pattern to search for.
+	 * @param {number} loc The location to search around.
+	 * @return {number} Best match index or -1.
+	 */
+	diff_match_patch.prototype.match_main = function(text, pattern, loc) {
+	  // Check for null inputs.
+	  if (text == null || pattern == null || loc == null) {
+	    throw new Error('Null input. (match_main)');
+	  }
+
+	  loc = Math.max(0, Math.min(loc, text.length));
+	  if (text == pattern) {
+	    // Shortcut (potentially not guaranteed by the algorithm)
+	    return 0;
+	  } else if (!text.length) {
+	    // Nothing to match.
+	    return -1;
+	  } else if (text.substring(loc, loc + pattern.length) == pattern) {
+	    // Perfect match at the perfect spot!  (Includes case of null pattern)
+	    return loc;
+	  } else {
+	    // Do a fuzzy compare.
+	    return this.match_bitap_(text, pattern, loc);
+	  }
+	};
+
+
+	/**
+	 * Locate the best instance of 'pattern' in 'text' near 'loc' using the
+	 * Bitap algorithm.
+	 * @param {string} text The text to search.
+	 * @param {string} pattern The pattern to search for.
+	 * @param {number} loc The location to search around.
+	 * @return {number} Best match index or -1.
+	 * @private
+	 */
+	diff_match_patch.prototype.match_bitap_ = function(text, pattern, loc) {
+	  if (pattern.length > this.Match_MaxBits) {
+	    throw new Error('Pattern too long for this browser.');
+	  }
+
+	  // Initialise the alphabet.
+	  var s = this.match_alphabet_(pattern);
+
+	  var dmp = this;  // 'this' becomes 'window' in a closure.
+
+	  /**
+	   * Compute and return the score for a match with e errors and x location.
+	   * Accesses loc and pattern through being a closure.
+	   * @param {number} e Number of errors in match.
+	   * @param {number} x Location of match.
+	   * @return {number} Overall score for match (0.0 = good, 1.0 = bad).
+	   * @private
+	   */
+	  function match_bitapScore_(e, x) {
+	    var accuracy = e / pattern.length;
+	    var proximity = Math.abs(loc - x);
+	    if (!dmp.Match_Distance) {
+	      // Dodge divide by zero error.
+	      return proximity ? 1.0 : accuracy;
+	    }
+	    return accuracy + (proximity / dmp.Match_Distance);
+	  }
+
+	  // Highest score beyond which we give up.
+	  var score_threshold = this.Match_Threshold;
+	  // Is there a nearby exact match? (speedup)
+	  var best_loc = text.indexOf(pattern, loc);
+	  if (best_loc != -1) {
+	    score_threshold = Math.min(match_bitapScore_(0, best_loc), score_threshold);
+	    // What about in the other direction? (speedup)
+	    best_loc = text.lastIndexOf(pattern, loc + pattern.length);
+	    if (best_loc != -1) {
+	      score_threshold =
+	          Math.min(match_bitapScore_(0, best_loc), score_threshold);
+	    }
+	  }
+
+	  // Initialise the bit arrays.
+	  var matchmask = 1 << (pattern.length - 1);
+	  best_loc = -1;
+
+	  var bin_min, bin_mid;
+	  var bin_max = pattern.length + text.length;
+	  var last_rd;
+	  for (var d = 0; d < pattern.length; d++) {
+	    // Scan for the best match; each iteration allows for one more error.
+	    // Run a binary search to determine how far from 'loc' we can stray at this
+	    // error level.
+	    bin_min = 0;
+	    bin_mid = bin_max;
+	    while (bin_min < bin_mid) {
+	      if (match_bitapScore_(d, loc + bin_mid) <= score_threshold) {
+	        bin_min = bin_mid;
+	      } else {
+	        bin_max = bin_mid;
+	      }
+	      bin_mid = Math.floor((bin_max - bin_min) / 2 + bin_min);
+	    }
+	    // Use the result from this iteration as the maximum for the next.
+	    bin_max = bin_mid;
+	    var start = Math.max(1, loc - bin_mid + 1);
+	    var finish = Math.min(loc + bin_mid, text.length) + pattern.length;
+
+	    var rd = Array(finish + 2);
+	    rd[finish + 1] = (1 << d) - 1;
+	    for (var j = finish; j >= start; j--) {
+	      // The alphabet (s) is a sparse hash, so the following line generates
+	      // warnings.
+	      var charMatch = s[text.charAt(j - 1)];
+	      if (d === 0) {  // First pass: exact match.
+	        rd[j] = ((rd[j + 1] << 1) | 1) & charMatch;
+	      } else {  // Subsequent passes: fuzzy match.
+	        rd[j] = (((rd[j + 1] << 1) | 1) & charMatch) |
+	                (((last_rd[j + 1] | last_rd[j]) << 1) | 1) |
+	                last_rd[j + 1];
+	      }
+	      if (rd[j] & matchmask) {
+	        var score = match_bitapScore_(d, j - 1);
+	        // This match will almost certainly be better than any existing match.
+	        // But check anyway.
+	        if (score <= score_threshold) {
+	          // Told you so.
+	          score_threshold = score;
+	          best_loc = j - 1;
+	          if (best_loc > loc) {
+	            // When passing loc, don't exceed our current distance from loc.
+	            start = Math.max(1, 2 * loc - best_loc);
+	          } else {
+	            // Already passed loc, downhill from here on in.
+	            break;
+	          }
+	        }
+	      }
+	    }
+	    // No hope for a (better) match at greater error levels.
+	    if (match_bitapScore_(d + 1, loc) > score_threshold) {
+	      break;
+	    }
+	    last_rd = rd;
+	  }
+	  return best_loc;
+	};
+
+
+	/**
+	 * Initialise the alphabet for the Bitap algorithm.
+	 * @param {string} pattern The text to encode.
+	 * @return {!Object} Hash of character locations.
+	 * @private
+	 */
+	diff_match_patch.prototype.match_alphabet_ = function(pattern) {
+	  var s = {};
+	  for (var i = 0; i < pattern.length; i++) {
+	    s[pattern.charAt(i)] = 0;
+	  }
+	  for (var i = 0; i < pattern.length; i++) {
+	    s[pattern.charAt(i)] |= 1 << (pattern.length - i - 1);
+	  }
+	  return s;
+	};
+
+
+	//  PATCH FUNCTIONS
+
+
+	/**
+	 * Increase the context until it is unique,
+	 * but don't let the pattern expand beyond Match_MaxBits.
+	 * @param {!diff_match_patch.patch_obj} patch The patch to grow.
+	 * @param {string} text Source text.
+	 * @private
+	 */
+	diff_match_patch.prototype.patch_addContext_ = function(patch, text) {
+	  if (text.length == 0) {
+	    return;
+	  }
+	  if (patch.start2 === null) {
+	    throw Error('patch not initialized');
+	  }
+	  var pattern = text.substring(patch.start2, patch.start2 + patch.length1);
+	  var padding = 0;
+
+	  // Look for the first and last matches of pattern in text.  If two different
+	  // matches are found, increase the pattern length.
+	  while (text.indexOf(pattern) != text.lastIndexOf(pattern) &&
+	         pattern.length < this.Match_MaxBits - this.Patch_Margin -
+	         this.Patch_Margin) {
+	    padding += this.Patch_Margin;
+	    pattern = text.substring(patch.start2 - padding,
+	                             patch.start2 + patch.length1 + padding);
+	  }
+	  // Add one chunk for good luck.
+	  padding += this.Patch_Margin;
+
+	  // Add the prefix.
+	  var prefix = text.substring(patch.start2 - padding, patch.start2);
+	  if (prefix) {
+	    patch.diffs.unshift(new diff_match_patch.Diff(DIFF_EQUAL, prefix));
+	  }
+	  // Add the suffix.
+	  var suffix = text.substring(patch.start2 + patch.length1,
+	                              patch.start2 + patch.length1 + padding);
+	  if (suffix) {
+	    patch.diffs.push(new diff_match_patch.Diff(DIFF_EQUAL, suffix));
+	  }
+
+	  // Roll back the start points.
+	  patch.start1 -= prefix.length;
+	  patch.start2 -= prefix.length;
+	  // Extend the lengths.
+	  patch.length1 += prefix.length + suffix.length;
+	  patch.length2 += prefix.length + suffix.length;
+	};
+
+
+	/**
+	 * Compute a list of patches to turn text1 into text2.
+	 * Use diffs if provided, otherwise compute it ourselves.
+	 * There are four ways to call this function, depending on what data is
+	 * available to the caller:
+	 * Method 1:
+	 * a = text1, b = text2
+	 * Method 2:
+	 * a = diffs
+	 * Method 3 (optimal):
+	 * a = text1, b = diffs
+	 * Method 4 (deprecated, use method 3):
+	 * a = text1, b = text2, c = diffs
+	 *
+	 * @param {string|!Array.<!diff_match_patch.Diff>} a text1 (methods 1,3,4) or
+	 * Array of diff tuples for text1 to text2 (method 2).
+	 * @param {string|!Array.<!diff_match_patch.Diff>=} opt_b text2 (methods 1,4) or
+	 * Array of diff tuples for text1 to text2 (method 3) or undefined (method 2).
+	 * @param {string|!Array.<!diff_match_patch.Diff>=} opt_c Array of diff tuples
+	 * for text1 to text2 (method 4) or undefined (methods 1,2,3).
+	 * @return {!Array.<!diff_match_patch.patch_obj>} Array of Patch objects.
+	 */
+	diff_match_patch.prototype.patch_make = function(a, opt_b, opt_c) {
+	  var text1, diffs;
+	  if (typeof a == 'string' && typeof opt_b == 'string' &&
+	      typeof opt_c == 'undefined') {
+	    // Method 1: text1, text2
+	    // Compute diffs from text1 and text2.
+	    text1 = /** @type {string} */(a);
+	    diffs = this.diff_main(text1, /** @type {string} */(opt_b), true);
+	    if (diffs.length > 2) {
+	      this.diff_cleanupSemantic(diffs);
+	      this.diff_cleanupEfficiency(diffs);
+	    }
+	  } else if (a && typeof a == 'object' && typeof opt_b == 'undefined' &&
+	      typeof opt_c == 'undefined') {
+	    // Method 2: diffs
+	    // Compute text1 from diffs.
+	    diffs = /** @type {!Array.<!diff_match_patch.Diff>} */(a);
+	    text1 = this.diff_text1(diffs);
+	  } else if (typeof a == 'string' && opt_b && typeof opt_b == 'object' &&
+	      typeof opt_c == 'undefined') {
+	    // Method 3: text1, diffs
+	    text1 = /** @type {string} */(a);
+	    diffs = /** @type {!Array.<!diff_match_patch.Diff>} */(opt_b);
+	  } else if (typeof a == 'string' && typeof opt_b == 'string' &&
+	      opt_c && typeof opt_c == 'object') {
+	    // Method 4: text1, text2, diffs
+	    // text2 is not used.
+	    text1 = /** @type {string} */(a);
+	    diffs = /** @type {!Array.<!diff_match_patch.Diff>} */(opt_c);
+	  } else {
+	    throw new Error('Unknown call format to patch_make.');
+	  }
+
+	  if (diffs.length === 0) {
+	    return [];  // Get rid of the null case.
+	  }
+	  var patches = [];
+	  var patch = new diff_match_patch.patch_obj();
+	  var patchDiffLength = 0;  // Keeping our own length var is faster in JS.
+	  var char_count1 = 0;  // Number of characters into the text1 string.
+	  var char_count2 = 0;  // Number of characters into the text2 string.
+	  // Start with text1 (prepatch_text) and apply the diffs until we arrive at
+	  // text2 (postpatch_text).  We recreate the patches one by one to determine
+	  // context info.
+	  var prepatch_text = text1;
+	  var postpatch_text = text1;
+	  for (var x = 0; x < diffs.length; x++) {
+	    var diff_type = diffs[x][0];
+	    var diff_text = diffs[x][1];
+
+	    if (!patchDiffLength && diff_type !== DIFF_EQUAL) {
+	      // A new patch starts here.
+	      patch.start1 = char_count1;
+	      patch.start2 = char_count2;
+	    }
+
+	    switch (diff_type) {
+	      case DIFF_INSERT:
+	        patch.diffs[patchDiffLength++] = diffs[x];
+	        patch.length2 += diff_text.length;
+	        postpatch_text = postpatch_text.substring(0, char_count2) + diff_text +
+	                         postpatch_text.substring(char_count2);
+	        break;
+	      case DIFF_DELETE:
+	        patch.length1 += diff_text.length;
+	        patch.diffs[patchDiffLength++] = diffs[x];
+	        postpatch_text = postpatch_text.substring(0, char_count2) +
+	                         postpatch_text.substring(char_count2 +
+	                             diff_text.length);
+	        break;
+	      case DIFF_EQUAL:
+	        if (diff_text.length <= 2 * this.Patch_Margin &&
+	            patchDiffLength && diffs.length != x + 1) {
+	          // Small equality inside a patch.
+	          patch.diffs[patchDiffLength++] = diffs[x];
+	          patch.length1 += diff_text.length;
+	          patch.length2 += diff_text.length;
+	        } else if (diff_text.length >= 2 * this.Patch_Margin) {
+	          // Time for a new patch.
+	          if (patchDiffLength) {
+	            this.patch_addContext_(patch, prepatch_text);
+	            patches.push(patch);
+	            patch = new diff_match_patch.patch_obj();
+	            patchDiffLength = 0;
+	            // Unlike Unidiff, our patch lists have a rolling context.
+	            // https://github.com/google/diff-match-patch/wiki/Unidiff
+	            // Update prepatch text & pos to reflect the application of the
+	            // just completed patch.
+	            prepatch_text = postpatch_text;
+	            char_count1 = char_count2;
+	          }
+	        }
+	        break;
+	    }
+
+	    // Update the current character count.
+	    if (diff_type !== DIFF_INSERT) {
+	      char_count1 += diff_text.length;
+	    }
+	    if (diff_type !== DIFF_DELETE) {
+	      char_count2 += diff_text.length;
+	    }
+	  }
+	  // Pick up the leftover patch if not empty.
+	  if (patchDiffLength) {
+	    this.patch_addContext_(patch, prepatch_text);
+	    patches.push(patch);
+	  }
+
+	  return patches;
+	};
+
+
+	/**
+	 * Given an array of patches, return another array that is identical.
+	 * @param {!Array.<!diff_match_patch.patch_obj>} patches Array of Patch objects.
+	 * @return {!Array.<!diff_match_patch.patch_obj>} Array of Patch objects.
+	 */
+	diff_match_patch.prototype.patch_deepCopy = function(patches) {
+	  // Making deep copies is hard in JavaScript.
+	  var patchesCopy = [];
+	  for (var x = 0; x < patches.length; x++) {
+	    var patch = patches[x];
+	    var patchCopy = new diff_match_patch.patch_obj();
+	    patchCopy.diffs = [];
+	    for (var y = 0; y < patch.diffs.length; y++) {
+	      patchCopy.diffs[y] =
+	          new diff_match_patch.Diff(patch.diffs[y][0], patch.diffs[y][1]);
+	    }
+	    patchCopy.start1 = patch.start1;
+	    patchCopy.start2 = patch.start2;
+	    patchCopy.length1 = patch.length1;
+	    patchCopy.length2 = patch.length2;
+	    patchesCopy[x] = patchCopy;
+	  }
+	  return patchesCopy;
+	};
+
+
+	/**
+	 * Merge a set of patches onto the text.  Return a patched text, as well
+	 * as a list of true/false values indicating which patches were applied.
+	 * @param {!Array.<!diff_match_patch.patch_obj>} patches Array of Patch objects.
+	 * @param {string} text Old text.
+	 * @return {!Array.<string|!Array.<boolean>>} Two element Array, containing the
+	 *      new text and an array of boolean values.
+	 */
+	diff_match_patch.prototype.patch_apply = function(patches, text) {
+	  if (patches.length == 0) {
+	    return [text, []];
+	  }
+
+	  // Deep copy the patches so that no changes are made to originals.
+	  patches = this.patch_deepCopy(patches);
+
+	  var nullPadding = this.patch_addPadding(patches);
+	  text = nullPadding + text + nullPadding;
+
+	  this.patch_splitMax(patches);
+	  // delta keeps track of the offset between the expected and actual location
+	  // of the previous patch.  If there are patches expected at positions 10 and
+	  // 20, but the first patch was found at 12, delta is 2 and the second patch
+	  // has an effective expected position of 22.
+	  var delta = 0;
+	  var results = [];
+	  for (var x = 0; x < patches.length; x++) {
+	    var expected_loc = patches[x].start2 + delta;
+	    var text1 = this.diff_text1(patches[x].diffs);
+	    var start_loc;
+	    var end_loc = -1;
+	    if (text1.length > this.Match_MaxBits) {
+	      // patch_splitMax will only provide an oversized pattern in the case of
+	      // a monster delete.
+	      start_loc = this.match_main(text, text1.substring(0, this.Match_MaxBits),
+	                                  expected_loc);
+	      if (start_loc != -1) {
+	        end_loc = this.match_main(text,
+	            text1.substring(text1.length - this.Match_MaxBits),
+	            expected_loc + text1.length - this.Match_MaxBits);
+	        if (end_loc == -1 || start_loc >= end_loc) {
+	          // Can't find valid trailing context.  Drop this patch.
+	          start_loc = -1;
+	        }
+	      }
+	    } else {
+	      start_loc = this.match_main(text, text1, expected_loc);
+	    }
+	    if (start_loc == -1) {
+	      // No match found.  :(
+	      results[x] = false;
+	      // Subtract the delta for this failed patch from subsequent patches.
+	      delta -= patches[x].length2 - patches[x].length1;
+	    } else {
+	      // Found a match.  :)
+	      results[x] = true;
+	      delta = start_loc - expected_loc;
+	      var text2;
+	      if (end_loc == -1) {
+	        text2 = text.substring(start_loc, start_loc + text1.length);
+	      } else {
+	        text2 = text.substring(start_loc, end_loc + this.Match_MaxBits);
+	      }
+	      if (text1 == text2) {
+	        // Perfect match, just shove the replacement text in.
+	        text = text.substring(0, start_loc) +
+	               this.diff_text2(patches[x].diffs) +
+	               text.substring(start_loc + text1.length);
+	      } else {
+	        // Imperfect match.  Run a diff to get a framework of equivalent
+	        // indices.
+	        var diffs = this.diff_main(text1, text2, false);
+	        if (text1.length > this.Match_MaxBits &&
+	            this.diff_levenshtein(diffs) / text1.length >
+	            this.Patch_DeleteThreshold) {
+	          // The end points match, but the content is unacceptably bad.
+	          results[x] = false;
+	        } else {
+	          this.diff_cleanupSemanticLossless(diffs);
+	          var index1 = 0;
+	          var index2;
+	          for (var y = 0; y < patches[x].diffs.length; y++) {
+	            var mod = patches[x].diffs[y];
+	            if (mod[0] !== DIFF_EQUAL) {
+	              index2 = this.diff_xIndex(diffs, index1);
+	            }
+	            if (mod[0] === DIFF_INSERT) {  // Insertion
+	              text = text.substring(0, start_loc + index2) + mod[1] +
+	                     text.substring(start_loc + index2);
+	            } else if (mod[0] === DIFF_DELETE) {  // Deletion
+	              text = text.substring(0, start_loc + index2) +
+	                     text.substring(start_loc + this.diff_xIndex(diffs,
+	                         index1 + mod[1].length));
+	            }
+	            if (mod[0] !== DIFF_DELETE) {
+	              index1 += mod[1].length;
+	            }
+	          }
+	        }
+	      }
+	    }
+	  }
+	  // Strip the padding off.
+	  text = text.substring(nullPadding.length, text.length - nullPadding.length);
+	  return [text, results];
+	};
+
+
+	/**
+	 * Add some padding on text start and end so that edges can match something.
+	 * Intended to be called only from within patch_apply.
+	 * @param {!Array.<!diff_match_patch.patch_obj>} patches Array of Patch objects.
+	 * @return {string} The padding string added to each side.
+	 */
+	diff_match_patch.prototype.patch_addPadding = function(patches) {
+	  var paddingLength = this.Patch_Margin;
+	  var nullPadding = '';
+	  for (var x = 1; x <= paddingLength; x++) {
+	    nullPadding += String.fromCharCode(x);
+	  }
+
+	  // Bump all the patches forward.
+	  for (var x = 0; x < patches.length; x++) {
+	    patches[x].start1 += paddingLength;
+	    patches[x].start2 += paddingLength;
+	  }
+
+	  // Add some padding on start of first diff.
+	  var patch = patches[0];
+	  var diffs = patch.diffs;
+	  if (diffs.length == 0 || diffs[0][0] != DIFF_EQUAL) {
+	    // Add nullPadding equality.
+	    diffs.unshift(new diff_match_patch.Diff(DIFF_EQUAL, nullPadding));
+	    patch.start1 -= paddingLength;  // Should be 0.
+	    patch.start2 -= paddingLength;  // Should be 0.
+	    patch.length1 += paddingLength;
+	    patch.length2 += paddingLength;
+	  } else if (paddingLength > diffs[0][1].length) {
+	    // Grow first equality.
+	    var extraLength = paddingLength - diffs[0][1].length;
+	    diffs[0][1] = nullPadding.substring(diffs[0][1].length) + diffs[0][1];
+	    patch.start1 -= extraLength;
+	    patch.start2 -= extraLength;
+	    patch.length1 += extraLength;
+	    patch.length2 += extraLength;
+	  }
+
+	  // Add some padding on end of last diff.
+	  patch = patches[patches.length - 1];
+	  diffs = patch.diffs;
+	  if (diffs.length == 0 || diffs[diffs.length - 1][0] != DIFF_EQUAL) {
+	    // Add nullPadding equality.
+	    diffs.push(new diff_match_patch.Diff(DIFF_EQUAL, nullPadding));
+	    patch.length1 += paddingLength;
+	    patch.length2 += paddingLength;
+	  } else if (paddingLength > diffs[diffs.length - 1][1].length) {
+	    // Grow last equality.
+	    var extraLength = paddingLength - diffs[diffs.length - 1][1].length;
+	    diffs[diffs.length - 1][1] += nullPadding.substring(0, extraLength);
+	    patch.length1 += extraLength;
+	    patch.length2 += extraLength;
+	  }
+
+	  return nullPadding;
+	};
+
+
+	/**
+	 * Look through the patches and break up any which are longer than the maximum
+	 * limit of the match algorithm.
+	 * Intended to be called only from within patch_apply.
+	 * @param {!Array.<!diff_match_patch.patch_obj>} patches Array of Patch objects.
+	 */
+	diff_match_patch.prototype.patch_splitMax = function(patches) {
+	  var patch_size = this.Match_MaxBits;
+	  for (var x = 0; x < patches.length; x++) {
+	    if (patches[x].length1 <= patch_size) {
+	      continue;
+	    }
+	    var bigpatch = patches[x];
+	    // Remove the big old patch.
+	    patches.splice(x--, 1);
+	    var start1 = bigpatch.start1;
+	    var start2 = bigpatch.start2;
+	    var precontext = '';
+	    while (bigpatch.diffs.length !== 0) {
+	      // Create one of several smaller patches.
+	      var patch = new diff_match_patch.patch_obj();
+	      var empty = true;
+	      patch.start1 = start1 - precontext.length;
+	      patch.start2 = start2 - precontext.length;
+	      if (precontext !== '') {
+	        patch.length1 = patch.length2 = precontext.length;
+	        patch.diffs.push(new diff_match_patch.Diff(DIFF_EQUAL, precontext));
+	      }
+	      while (bigpatch.diffs.length !== 0 &&
+	             patch.length1 < patch_size - this.Patch_Margin) {
+	        var diff_type = bigpatch.diffs[0][0];
+	        var diff_text = bigpatch.diffs[0][1];
+	        if (diff_type === DIFF_INSERT) {
+	          // Insertions are harmless.
+	          patch.length2 += diff_text.length;
+	          start2 += diff_text.length;
+	          patch.diffs.push(bigpatch.diffs.shift());
+	          empty = false;
+	        } else if (diff_type === DIFF_DELETE && patch.diffs.length == 1 &&
+	                   patch.diffs[0][0] == DIFF_EQUAL &&
+	                   diff_text.length > 2 * patch_size) {
+	          // This is a large deletion.  Let it pass in one chunk.
+	          patch.length1 += diff_text.length;
+	          start1 += diff_text.length;
+	          empty = false;
+	          patch.diffs.push(new diff_match_patch.Diff(diff_type, diff_text));
+	          bigpatch.diffs.shift();
+	        } else {
+	          // Deletion or equality.  Only take as much as we can stomach.
+	          diff_text = diff_text.substring(0,
+	              patch_size - patch.length1 - this.Patch_Margin);
+	          patch.length1 += diff_text.length;
+	          start1 += diff_text.length;
+	          if (diff_type === DIFF_EQUAL) {
+	            patch.length2 += diff_text.length;
+	            start2 += diff_text.length;
+	          } else {
+	            empty = false;
+	          }
+	          patch.diffs.push(new diff_match_patch.Diff(diff_type, diff_text));
+	          if (diff_text == bigpatch.diffs[0][1]) {
+	            bigpatch.diffs.shift();
+	          } else {
+	            bigpatch.diffs[0][1] =
+	                bigpatch.diffs[0][1].substring(diff_text.length);
+	          }
+	        }
+	      }
+	      // Compute the head context for the next patch.
+	      precontext = this.diff_text2(patch.diffs);
+	      precontext =
+	          precontext.substring(precontext.length - this.Patch_Margin);
+	      // Append the end context for this patch.
+	      var postcontext = this.diff_text1(bigpatch.diffs)
+	                            .substring(0, this.Patch_Margin);
+	      if (postcontext !== '') {
+	        patch.length1 += postcontext.length;
+	        patch.length2 += postcontext.length;
+	        if (patch.diffs.length !== 0 &&
+	            patch.diffs[patch.diffs.length - 1][0] === DIFF_EQUAL) {
+	          patch.diffs[patch.diffs.length - 1][1] += postcontext;
+	        } else {
+	          patch.diffs.push(new diff_match_patch.Diff(DIFF_EQUAL, postcontext));
+	        }
+	      }
+	      if (!empty) {
+	        patches.splice(++x, 0, patch);
+	      }
+	    }
+	  }
+	};
+
+
+	/**
+	 * Take a list of patches and return a textual representation.
+	 * @param {!Array.<!diff_match_patch.patch_obj>} patches Array of Patch objects.
+	 * @return {string} Text representation of patches.
+	 */
+	diff_match_patch.prototype.patch_toText = function(patches) {
+	  var text = [];
+	  for (var x = 0; x < patches.length; x++) {
+	    text[x] = patches[x];
+	  }
+	  return text.join('');
+	};
+
+
+	/**
+	 * Parse a textual representation of patches and return a list of Patch objects.
+	 * @param {string} textline Text representation of patches.
+	 * @return {!Array.<!diff_match_patch.patch_obj>} Array of Patch objects.
+	 * @throws {!Error} If invalid input.
+	 */
+	diff_match_patch.prototype.patch_fromText = function(textline) {
+	  var patches = [];
+	  if (!textline) {
+	    return patches;
+	  }
+	  var text = textline.split('\n');
+	  var textPointer = 0;
+	  var patchHeader = /^@@ -(\d+),?(\d*) \+(\d+),?(\d*) @@$/;
+	  while (textPointer < text.length) {
+	    var m = text[textPointer].match(patchHeader);
+	    if (!m) {
+	      throw new Error('Invalid patch string: ' + text[textPointer]);
+	    }
+	    var patch = new diff_match_patch.patch_obj();
+	    patches.push(patch);
+	    patch.start1 = parseInt(m[1], 10);
+	    if (m[2] === '') {
+	      patch.start1--;
+	      patch.length1 = 1;
+	    } else if (m[2] == '0') {
+	      patch.length1 = 0;
+	    } else {
+	      patch.start1--;
+	      patch.length1 = parseInt(m[2], 10);
+	    }
+
+	    patch.start2 = parseInt(m[3], 10);
+	    if (m[4] === '') {
+	      patch.start2--;
+	      patch.length2 = 1;
+	    } else if (m[4] == '0') {
+	      patch.length2 = 0;
+	    } else {
+	      patch.start2--;
+	      patch.length2 = parseInt(m[4], 10);
+	    }
+	    textPointer++;
+
+	    while (textPointer < text.length) {
+	      var sign = text[textPointer].charAt(0);
+	      try {
+	        var line = decodeURI(text[textPointer].substring(1));
+	      } catch (ex) {
+	        // Malformed URI sequence.
+	        throw new Error('Illegal escape in patch_fromText: ' + line);
+	      }
+	      if (sign == '-') {
+	        // Deletion.
+	        patch.diffs.push(new diff_match_patch.Diff(DIFF_DELETE, line));
+	      } else if (sign == '+') {
+	        // Insertion.
+	        patch.diffs.push(new diff_match_patch.Diff(DIFF_INSERT, line));
+	      } else if (sign == ' ') {
+	        // Minor equality.
+	        patch.diffs.push(new diff_match_patch.Diff(DIFF_EQUAL, line));
+	      } else if (sign == '@') {
+	        // Start of next patch.
+	        break;
+	      } else if (sign === '') ; else {
+	        // WTF?
+	        throw new Error('Invalid patch mode "' + sign + '" in: ' + line);
+	      }
+	      textPointer++;
+	    }
+	  }
+	  return patches;
+	};
+
+
+	/**
+	 * Class representing one patch operation.
+	 * @constructor
+	 */
+	diff_match_patch.patch_obj = function() {
+	  /** @type {!Array.<!diff_match_patch.Diff>} */
+	  this.diffs = [];
+	  /** @type {?number} */
+	  this.start1 = null;
+	  /** @type {?number} */
+	  this.start2 = null;
+	  /** @type {number} */
+	  this.length1 = 0;
+	  /** @type {number} */
+	  this.length2 = 0;
+	};
+
+
+	/**
+	 * Emulate GNU diff's format.
+	 * Header: @@ -382,8 +481,9 @@
+	 * Indices are printed as 1-based, not 0-based.
+	 * @return {string} The GNU diff string.
+	 */
+	diff_match_patch.patch_obj.prototype.toString = function() {
+	  var coords1, coords2;
+	  if (this.length1 === 0) {
+	    coords1 = this.start1 + ',0';
+	  } else if (this.length1 == 1) {
+	    coords1 = this.start1 + 1;
+	  } else {
+	    coords1 = (this.start1 + 1) + ',' + this.length1;
+	  }
+	  if (this.length2 === 0) {
+	    coords2 = this.start2 + ',0';
+	  } else if (this.length2 == 1) {
+	    coords2 = this.start2 + 1;
+	  } else {
+	    coords2 = (this.start2 + 1) + ',' + this.length2;
+	  }
+	  var text = ['@@ -' + coords1 + ' +' + coords2 + ' @@\n'];
+	  var op;
+	  // Escape the body of the patch with %xx notation.
+	  for (var x = 0; x < this.diffs.length; x++) {
+	    switch (this.diffs[x][0]) {
+	      case DIFF_INSERT:
+	        op = '+';
+	        break;
+	      case DIFF_DELETE:
+	        op = '-';
+	        break;
+	      case DIFF_EQUAL:
+	        op = ' ';
+	        break;
+	    }
+	    text[x + 1] = op + encodeURI(this.diffs[x][1]) + '\n';
+	  }
+	  return text.join('').replace(/%20/g, ' ');
+	};
+
+
+	// The following export code was added by @ForbesLindesay
+	module.exports = diff_match_patch;
+	module.exports['diff_match_patch'] = diff_match_patch;
+	module.exports['DIFF_DELETE'] = DIFF_DELETE;
+	module.exports['DIFF_INSERT'] = DIFF_INSERT;
+	module.exports['DIFF_EQUAL'] = DIFF_EQUAL;
+} (diffMatchPatch));
 
 var DiffMatchPatch = diffMatchPatch.exports;
 
-let nanoid = (size = 21) => {
-  let id = '';
-  let bytes = crypto.getRandomValues(new Uint8Array(size));
-  while (size--) {
-    let byte = bytes[size] & 63;
+let nanoid = (size = 21) =>
+  crypto.getRandomValues(new Uint8Array(size)).reduce((id, byte) => {
+    byte &= 63;
     if (byte < 36) {
       id += byte.toString(36);
     } else if (byte < 62) {
       id += (byte - 26).toString(36).toUpperCase();
-    } else if (byte < 63) {
-      id += '_';
-    } else {
+    } else if (byte > 62) {
       id += '-';
+    } else {
+      id += '_';
     }
-  }
-  return id
-};
+    return id
+  }, '');
 
 function ansiRegex({onlyFirst = false} = {}) {
 	const pattern = [
@@ -8448,11 +9829,7 @@ function stringLength(string, {countAnsiEscapeCodes = false} = {}) {
 
 var dist = {};
 
-var unicount = {};
-
-Object.defineProperty(unicount, "__esModule", { value: true });
-unicount.uniToStrPos = unicount.strPosToUni = void 0;
-unicount.strPosToUni = (s, strOffset = s.length) => {
+const strPosToUni = (s, strOffset = s.length) => {
     let pairs = 0;
     let i = 0;
     for (; i < strOffset; i++) {
@@ -8466,7 +9843,7 @@ unicount.strPosToUni = (s, strOffset = s.length) => {
         throw Error('Invalid offset - splits unicode bytes');
     return i - pairs;
 };
-unicount.uniToStrPos = (s, uniOffset) => {
+const uniToStrPos = (s, uniOffset) => {
     let pos = 0;
     for (; uniOffset > 0; uniOffset--) {
         const code = s.charCodeAt(pos);
@@ -8475,476 +9852,484 @@ unicount.uniToStrPos = (s, uniOffset) => {
     return pos;
 };
 
+var unicount = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    strPosToUni: strPosToUni,
+    uniToStrPos: uniToStrPos
+});
+
+var require$$0 = /*@__PURE__*/getAugmentedNamespace(unicount);
+
 var type = {};
 
 (function (exports) {
-/* Text OT!
- *
- * This is an OT implementation for text. It is the standard implementation of
- * text used by ShareJS.
- *
- * This type is composable and by default non-invertable (operations do not by
- * default contain enough information to invert them). Its similar to ShareJS's
- * old text-composable type, but its not invertable and its very similar to the
- * text-tp2 implementation but it doesn't support tombstones or purging.
- *
- * Ops are lists of components which iterate over the document. Components are
- * either:
- *
- * - A number N: Skip N characters in the original document
- * - "str": Insert "str" at the current position in the document
- * - {d:N}: Delete N characters at the current position in the document
- * - {d:"str"}: Delete "str" at the current position in the document. This is
- *   equivalent to {d:N} but provides extra information for operation
- *   invertability.
- *
- * Eg: [3, 'hi', 5, {d:8}]
- *
- * The operation does not have to skip the last characters in the document.
- *
- * Snapshots are by default strings.
- *
- * Cursors are either a single number (which is the cursor position) or a pair
- * of [anchor, focus] (aka [start, end]). Be aware that end can be before start.
- *
- * The actual string type is configurable. The OG default exposed text type uses
- * raw javascript strings, but they're not compatible with OT implementations in
- * other languages because string.length returns the wrong value for unicode
- * characters that don't fit in 2 bytes. And JS strings are quite an inefficient
- * data structure for manipulating lines & UTF8 offsets. For this reason, you
- * can use your own data structure underneath the text OT code.
- *
- * Note that insert operations themselves are always raw strings. Its just
- * snapshots that are configurable.
- */
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.uniSlice = exports.dlen = exports.eachOp = void 0;
-const unicount_1 = unicount;
-/** Check the operation is valid. Throws if not valid. */
-const checkOp = (op) => {
-    if (!Array.isArray(op))
-        throw Error('Op must be an array of components');
-    let last = null;
-    for (let i = 0; i < op.length; i++) {
-        const c = op[i];
-        switch (typeof c) {
-            case 'object':
-                // The only valid objects are {d:X} for +ive values of X or non-empty strings.
-                if (typeof c.d !== 'number' && typeof c.d !== 'string')
-                    throw Error('Delete must be number or string');
-                if (exports.dlen(c.d) <= 0)
-                    throw Error('Deletes must not be empty');
-                break;
-            case 'string':
-                // Strings are inserts.
-                if (!(c.length > 0))
-                    throw Error('Inserts cannot be empty');
-                break;
-            case 'number':
-                // Numbers must be skips. They have to be +ive numbers.
-                if (!(c > 0))
-                    throw Error('Skip components must be >0');
-                if (typeof last === 'number')
-                    throw Error('Adjacent skip components should be combined');
-                break;
-        }
-        last = c;
-    }
-    if (typeof last === 'number')
-        throw Error('Op has a trailing skip');
-};
-// TODO: Consider exposing this at the library level.
-// TODO: Also consider rewriting this to use es iterators instead of callback-passing style.
-function eachOp(op, fn) {
-    let prePos = 0, postPos = 0;
-    for (let i = 0; i < op.length; i++) {
-        const c = op[i];
-        fn(c, prePos, postPos);
-        switch (typeof c) {
-            case 'object': // Delete
-                prePos += exports.dlen(c.d);
-                break;
-            case 'string': // Insert
-                postPos += unicount_1.strPosToUni(c);
-                break;
-            case 'number': // Skip
-                prePos += c;
-                postPos += c;
-                break;
-        }
-    }
-}
-exports.eachOp = eachOp;
-function mapOp(op, fn) {
-    const newOp = [];
-    const append = makeAppend(newOp);
-    eachOp(op, (c, prePos, postPos) => {
-        append(fn(c, prePos, postPos));
-    });
-    return trim(newOp);
-}
-const id = (x) => x;
-const normalize = (op) => {
-    return mapOp(op, id);
-};
-exports.dlen = (d) => typeof d === 'number' ? d : unicount_1.strPosToUni(d);
-/** Make a function that appends to the given operation. */
-const makeAppend = (op) => (component) => {
-    if (!component || component.d === 0 || component.d === '') ;
-    else if (op.length === 0) {
-        op.push(component);
-    }
-    else if (typeof component === typeof op[op.length - 1]) {
-        if (typeof component === 'object') {
-            // Concatenate deletes. This is annoying because the op or component could
-            // contain strings or numbers.
-            const last = op[op.length - 1];
-            last.d = typeof last.d === 'string' && typeof component.d === 'string'
-                ? last.d + component.d // Preserve invert information
-                : exports.dlen(last.d) + exports.dlen(component.d); // Discard invert information, if any.
-            // (op[op.length - 1] as {d:number}).d += component.d
-        }
-        else {
-            // Concat strings / inserts. TSC should be smart enough for this :p
-            op[op.length - 1] += component;
-        }
-    }
-    else {
-        op.push(component);
-    }
-};
-/** Get the length of a component */
-const componentLength = (c) => (typeof c === 'number' ? c
-    : typeof c === 'string' ? unicount_1.strPosToUni(c)
-        : typeof c.d === 'number' ? c.d
-            : unicount_1.strPosToUni(c.d));
-// Does not support negative numbers.
-exports.uniSlice = (s, startUni, endUni) => {
-    const start = unicount_1.uniToStrPos(s, startUni);
-    const end = endUni == null ? Infinity : unicount_1.uniToStrPos(s, endUni);
-    return s.slice(start, end);
-};
-const dslice = (d, start, end) => (typeof d === 'number'
-    ? (end == null) ? d - start : Math.min(d, end) - start
-    : exports.uniSlice(d, start, end));
-/** Makes and returns utility functions take and peek.
- */
-const makeTake = (op) => {
-    // TODO: Rewrite this by passing a context, like the rust code does. Its cleaner that way.
-    // The index of the next component to take
-    let idx = 0;
-    // The offset into the component. For strings this is in UCS2 length, not
-    // unicode codepoints.
-    let offset = 0;
-    // Take up to length n from the front of op. If n is -1, take the entire next
-    // op component. If indivisableField == 'd', delete components won't be separated.
-    // If indivisableField == 'i', insert components won't be separated.
-    const take = (n, indivisableField) => {
-        // We're at the end of the operation. The op has skips, forever. Infinity
-        // might make more sense than null here.
-        if (idx === op.length)
-            return n === -1 ? null : n;
-        const c = op[idx];
-        let part;
-        if (typeof c === 'number') {
-            // Skip
-            if (n === -1 || c - offset <= n) {
-                part = c - offset;
-                ++idx;
-                offset = 0;
-                return part;
-            }
-            else {
-                offset += n;
-                return n;
-            }
-        }
-        else if (typeof c === 'string') {
-            // Insert
-            if (n === -1 || indivisableField === 'i' || unicount_1.strPosToUni(c.slice(offset)) <= n) {
-                part = c.slice(offset);
-                ++idx;
-                offset = 0;
-                return part;
-            }
-            else {
-                const offset2 = offset + unicount_1.uniToStrPos(c.slice(offset), n);
-                part = c.slice(offset, offset2);
-                offset = offset2;
-                return part;
-            }
-        }
-        else {
-            // Delete
-            //
-            // So this is a little weird - the insert case uses UCS2 length offsets
-            // directly instead of counting in codepoints. Thats more efficient, but
-            // more complicated. It only matters for non-invertable ops with huge
-            // deletes being composed / transformed by other very complicated ops.
-            // Probably not common enough to optimize for. Esp since this is a little
-            // bit of a mess anyway, and the tests should iron out any problems.
-            if (n === -1 || indivisableField === 'd' || exports.dlen(c.d) - offset <= n) {
-                // Emit the remainder of the delete.
-                part = { d: dslice(c.d, offset) };
-                // part = {d: dlen(c.d) - offset}
-                ++idx;
-                offset = 0;
-                return part;
-            }
-            else {
-                // Slice into the delete content
-                let result = dslice(c.d, offset, offset + n);
-                offset += n;
-                return { d: result };
-            }
-        }
-    };
-    // Peek at the next op that will be returned.
-    const peek = () => op[idx];
-    return { take, peek };
-};
-/** Trim any excess skips from the end of an operation.
- *
- * There should only be at most one, because the operation was made with append.
- */
-const trim = (op) => {
-    if (op.length > 0 && typeof op[op.length - 1] === 'number') {
-        op.pop();
-    }
-    return op;
-};
-/** Transform op by otherOp.
- *
- * @param op - The operation to transform
- * @param otherOp - Operation to transform it by
- * @param side - Either 'left' or 'right'
- */
-function transform(op1, op2, side) {
-    if (side !== 'left' && side !== 'right') {
-        throw Error("side (" + side + ") must be 'left' or 'right'");
-    }
-    checkOp(op1);
-    checkOp(op2);
-    const newOp = [];
-    const append = makeAppend(newOp);
-    const { take, peek } = makeTake(op1);
-    for (let i = 0; i < op2.length; i++) {
-        const c2 = op2[i];
-        let length, c1;
-        switch (typeof c2) {
-            case 'number': // Skip
-                length = c2;
-                while (length > 0) {
-                    c1 = take(length, 'i');
-                    append(c1);
-                    if (typeof c1 !== 'string') {
-                        length -= componentLength(c1);
-                    }
-                }
-                break;
-            case 'string': // Insert
-                if (side === 'left') {
-                    // The left insert should go first.
-                    if (typeof peek() === 'string') {
-                        append(take(-1));
-                    }
-                }
-                // Otherwise skip the inserted text.
-                append(unicount_1.strPosToUni(c2));
-                break;
-            case 'object': // Delete
-                length = exports.dlen(c2.d);
-                while (length > 0) {
-                    c1 = take(length, 'i');
-                    switch (typeof c1) {
-                        case 'number':
-                            length -= c1;
-                            break;
-                        case 'string':
-                            append(c1);
-                            break;
-                        case 'object':
-                            // The delete is unnecessary now - the text has already been deleted.
-                            length -= exports.dlen(c1.d);
-                    }
-                }
-                break;
-        }
-    }
-    // Append any extra data in op1.
-    let c;
-    while ((c = take(-1)))
-        append(c);
-    return trim(newOp);
-}
-/** Compose op1 and op2 together and return the result */
-function compose(op1, op2) {
-    checkOp(op1);
-    checkOp(op2);
-    const result = [];
-    const append = makeAppend(result);
-    const { take } = makeTake(op1);
-    for (let i = 0; i < op2.length; i++) {
-        const component = op2[i];
-        let length, chunk;
-        switch (typeof component) {
-            case 'number': // Skip
-                length = component;
-                while (length > 0) {
-                    chunk = take(length, 'd');
-                    append(chunk);
-                    if (typeof chunk !== 'object') {
-                        length -= componentLength(chunk);
-                    }
-                }
-                break;
-            case 'string': // Insert
-                append(component);
-                break;
-            case 'object': // Delete
-                length = exports.dlen(component.d); // Length of the delete we're doing
-                let offset = 0; // Offset into our deleted content
-                while (offset < length) {
-                    chunk = take(length - offset, 'd');
-                    switch (typeof chunk) {
-                        case 'number':
-                            // We're deleting the skipped characters.
-                            append({ d: dslice(component.d, offset, offset + chunk) });
-                            offset += chunk;
-                            break;
-                        case 'string':
-                            offset += unicount_1.strPosToUni(chunk);
-                            break;
-                        case 'object':
-                            append(chunk);
-                    }
-                }
-                break;
-        }
-    }
-    let c;
-    while ((c = take(-1)))
-        append(c);
-    return trim(result);
-}
-// This operates in unicode offsets to make it consistent with the equivalent
-// methods in other languages / systems.
-const transformPosition = (cursor, op) => {
-    let pos = 0;
-    for (let i = 0; i < op.length && cursor > pos; i++) {
-        const c = op[i];
-        // I could actually use the op_iter stuff above - but I think its simpler
-        // like this.
-        switch (typeof c) {
-            case 'number': { // skip
-                pos += c;
-                break;
-            }
-            case 'string': // insert
-                // Its safe to use c.length here because they're both utf16 offsets.
-                // Ignoring pos because the doc doesn't know about the insert yet.
-                const offset = unicount_1.strPosToUni(c);
-                pos += offset;
-                cursor += offset;
-                break;
-            case 'object': // delete
-                cursor -= Math.min(exports.dlen(c.d), cursor - pos);
-                break;
-        }
-    }
-    return cursor;
-};
-const transformSelection = (selection, op) => (typeof selection === 'number'
-    ? transformPosition(selection, op)
-    : selection.map(s => transformPosition(s, op)));
-function makeInvertible(op, doc, ropeImpl) {
-    return mapOp(op, (c, prePos) => ((typeof c === 'object' && typeof c.d === 'number') // Delete
-        ? { d: ropeImpl.slice(doc, prePos, prePos + c.d) }
-        : c));
-}
-/** Attempt to invert the operation. Operations with {d:N} components cannot be inverted, and this method will throw. */
-function invert(op) {
-    return mapOp(op, c => {
-        switch (typeof c) {
-            case 'object': // Delete
-                if (typeof c.d === 'number') {
-                    throw Error('Cannot invert text op: Deleted characters missing from operation. makeInvertible must be called first.');
-                }
-                else
-                    return c.d; // delete -> insert
-            case 'string': return { d: c }; // Insert -> delete
-            case 'number': return c; // skip -> skip
-        }
-    });
-}
-/** Strip extraneous invertibility information from the operation */
-function stripInvertible(op) {
-    return mapOp(op, c => ((typeof c === 'object' && typeof c.d === 'string')
-        ? { d: unicount_1.strPosToUni(c.d) }
-        : c));
-}
-/** Helper method. returns true if the operation can be successfully inverted. */
-function isInvertible(op) {
-    let invertible = true;
-    eachOp(op, c => {
-        if (typeof c === 'object' && typeof c.d === 'number')
-            invertible = false;
-    });
-    return invertible;
-}
-function makeType(ropeImpl) {
-    return {
-        name: 'text-unicode',
-        uri: 'http://sharejs.org/types/text-unicode',
-        trim,
-        normalize,
-        checkOp,
-        /** Create a new text snapshot.
-         *
-         * @param {string} initial - initial snapshot data. Optional. Defaults to ''.
-         * @returns {Snap} Initial document snapshot object
-         */
-        create(initial = '') {
-            if (typeof initial !== 'string') {
-                throw Error('Initial data must be a string');
-            }
-            return ropeImpl.create(initial);
-        },
-        /** Apply an operation to a document snapshot
-         */
-        apply(str, op) {
-            checkOp(op);
-            const builder = ropeImpl.builder(str);
-            for (let i = 0; i < op.length; i++) {
-                const component = op[i];
-                switch (typeof component) {
-                    case 'number':
-                        builder.skip(component);
-                        break;
-                    case 'string':
-                        builder.append(component);
-                        break;
-                    case 'object':
-                        builder.del(exports.dlen(component.d));
-                        break;
-                }
-            }
-            return builder.build();
-        },
-        transform,
-        compose,
-        transformPosition,
-        transformSelection,
-        isInvertible,
-        makeInvertible(op, doc) { return makeInvertible(op, doc, ropeImpl); },
-        stripInvertible,
-        invert,
-        invertWithDoc(op, doc) { return invert(makeInvertible(op, doc, ropeImpl)); },
-        isNoop: (op) => op.length === 0
-    };
-}
-exports.default = makeType;
-}(type));
+	/* Text OT!
+	 *
+	 * This is an OT implementation for text. It is the standard implementation of
+	 * text used by ShareJS.
+	 *
+	 * This type is composable and by default non-invertable (operations do not by
+	 * default contain enough information to invert them). Its similar to ShareJS's
+	 * old text-composable type, but its not invertable and its very similar to the
+	 * text-tp2 implementation but it doesn't support tombstones or purging.
+	 *
+	 * Ops are lists of components which iterate over the document. Components are
+	 * either:
+	 *
+	 * - A number N: Skip N characters in the original document
+	 * - "str": Insert "str" at the current position in the document
+	 * - {d:N}: Delete N characters at the current position in the document
+	 * - {d:"str"}: Delete "str" at the current position in the document. This is
+	 *   equivalent to {d:N} but provides extra information for operation
+	 *   invertability.
+	 *
+	 * Eg: [3, 'hi', 5, {d:8}]
+	 *
+	 * The operation does not have to skip the last characters in the document.
+	 *
+	 * Snapshots are by default strings.
+	 *
+	 * Cursors are either a single number (which is the cursor position) or a pair
+	 * of [anchor, focus] (aka [start, end]). Be aware that end can be before start.
+	 *
+	 * The actual string type is configurable. The OG default exposed text type uses
+	 * raw javascript strings, but they're not compatible with OT implementations in
+	 * other languages because string.length returns the wrong value for unicode
+	 * characters that don't fit in 2 bytes. And JS strings are quite an inefficient
+	 * data structure for manipulating lines & UTF8 offsets. For this reason, you
+	 * can use your own data structure underneath the text OT code.
+	 *
+	 * Note that insert operations themselves are always raw strings. Its just
+	 * snapshots that are configurable.
+	 */
+	Object.defineProperty(exports, "__esModule", { value: true });
+	exports.uniSlice = exports.dlen = exports.eachOp = void 0;
+	const unicount_1 = require$$0;
+	/** Check the operation is valid. Throws if not valid. */
+	const checkOp = (op) => {
+	    if (!Array.isArray(op))
+	        throw Error('Op must be an array of components');
+	    let last = null;
+	    for (let i = 0; i < op.length; i++) {
+	        const c = op[i];
+	        switch (typeof c) {
+	            case 'object':
+	                // The only valid objects are {d:X} for +ive values of X or non-empty strings.
+	                if (typeof c.d !== 'number' && typeof c.d !== 'string')
+	                    throw Error('Delete must be number or string');
+	                if (exports.dlen(c.d) <= 0)
+	                    throw Error('Deletes must not be empty');
+	                break;
+	            case 'string':
+	                // Strings are inserts.
+	                if (!(c.length > 0))
+	                    throw Error('Inserts cannot be empty');
+	                break;
+	            case 'number':
+	                // Numbers must be skips. They have to be +ive numbers.
+	                if (!(c > 0))
+	                    throw Error('Skip components must be >0');
+	                if (typeof last === 'number')
+	                    throw Error('Adjacent skip components should be combined');
+	                break;
+	        }
+	        last = c;
+	    }
+	    if (typeof last === 'number')
+	        throw Error('Op has a trailing skip');
+	};
+	// TODO: Consider exposing this at the library level.
+	// TODO: Also consider rewriting this to use es iterators instead of callback-passing style.
+	function eachOp(op, fn) {
+	    let prePos = 0, postPos = 0;
+	    for (let i = 0; i < op.length; i++) {
+	        const c = op[i];
+	        fn(c, prePos, postPos);
+	        switch (typeof c) {
+	            case 'object': // Delete
+	                prePos += exports.dlen(c.d);
+	                break;
+	            case 'string': // Insert
+	                postPos += unicount_1.strPosToUni(c);
+	                break;
+	            case 'number': // Skip
+	                prePos += c;
+	                postPos += c;
+	                break;
+	        }
+	    }
+	}
+	exports.eachOp = eachOp;
+	function mapOp(op, fn) {
+	    const newOp = [];
+	    const append = makeAppend(newOp);
+	    eachOp(op, (c, prePos, postPos) => {
+	        append(fn(c, prePos, postPos));
+	    });
+	    return trim(newOp);
+	}
+	const id = (x) => x;
+	const normalize = (op) => {
+	    return mapOp(op, id);
+	};
+	exports.dlen = (d) => typeof d === 'number' ? d : unicount_1.strPosToUni(d);
+	/** Make a function that appends to the given operation. */
+	const makeAppend = (op) => (component) => {
+	    if (!component || component.d === 0 || component.d === '') ;
+	    else if (op.length === 0) {
+	        op.push(component);
+	    }
+	    else if (typeof component === typeof op[op.length - 1]) {
+	        if (typeof component === 'object') {
+	            // Concatenate deletes. This is annoying because the op or component could
+	            // contain strings or numbers.
+	            const last = op[op.length - 1];
+	            last.d = typeof last.d === 'string' && typeof component.d === 'string'
+	                ? last.d + component.d // Preserve invert information
+	                : exports.dlen(last.d) + exports.dlen(component.d); // Discard invert information, if any.
+	            // (op[op.length - 1] as {d:number}).d += component.d
+	        }
+	        else {
+	            // Concat strings / inserts. TSC should be smart enough for this :p
+	            op[op.length - 1] += component;
+	        }
+	    }
+	    else {
+	        op.push(component);
+	    }
+	};
+	/** Get the length of a component */
+	const componentLength = (c) => (typeof c === 'number' ? c
+	    : typeof c === 'string' ? unicount_1.strPosToUni(c)
+	        : typeof c.d === 'number' ? c.d
+	            : unicount_1.strPosToUni(c.d));
+	// Does not support negative numbers.
+	exports.uniSlice = (s, startUni, endUni) => {
+	    const start = unicount_1.uniToStrPos(s, startUni);
+	    const end = endUni == null ? Infinity : unicount_1.uniToStrPos(s, endUni);
+	    return s.slice(start, end);
+	};
+	const dslice = (d, start, end) => (typeof d === 'number'
+	    ? (end == null) ? d - start : Math.min(d, end) - start
+	    : exports.uniSlice(d, start, end));
+	/** Makes and returns utility functions take and peek.
+	 */
+	const makeTake = (op) => {
+	    // TODO: Rewrite this by passing a context, like the rust code does. Its cleaner that way.
+	    // The index of the next component to take
+	    let idx = 0;
+	    // The offset into the component. For strings this is in UCS2 length, not
+	    // unicode codepoints.
+	    let offset = 0;
+	    // Take up to length n from the front of op. If n is -1, take the entire next
+	    // op component. If indivisableField == 'd', delete components won't be separated.
+	    // If indivisableField == 'i', insert components won't be separated.
+	    const take = (n, indivisableField) => {
+	        // We're at the end of the operation. The op has skips, forever. Infinity
+	        // might make more sense than null here.
+	        if (idx === op.length)
+	            return n === -1 ? null : n;
+	        const c = op[idx];
+	        let part;
+	        if (typeof c === 'number') {
+	            // Skip
+	            if (n === -1 || c - offset <= n) {
+	                part = c - offset;
+	                ++idx;
+	                offset = 0;
+	                return part;
+	            }
+	            else {
+	                offset += n;
+	                return n;
+	            }
+	        }
+	        else if (typeof c === 'string') {
+	            // Insert
+	            if (n === -1 || indivisableField === 'i' || unicount_1.strPosToUni(c.slice(offset)) <= n) {
+	                part = c.slice(offset);
+	                ++idx;
+	                offset = 0;
+	                return part;
+	            }
+	            else {
+	                const offset2 = offset + unicount_1.uniToStrPos(c.slice(offset), n);
+	                part = c.slice(offset, offset2);
+	                offset = offset2;
+	                return part;
+	            }
+	        }
+	        else {
+	            // Delete
+	            //
+	            // So this is a little weird - the insert case uses UCS2 length offsets
+	            // directly instead of counting in codepoints. Thats more efficient, but
+	            // more complicated. It only matters for non-invertable ops with huge
+	            // deletes being composed / transformed by other very complicated ops.
+	            // Probably not common enough to optimize for. Esp since this is a little
+	            // bit of a mess anyway, and the tests should iron out any problems.
+	            if (n === -1 || indivisableField === 'd' || exports.dlen(c.d) - offset <= n) {
+	                // Emit the remainder of the delete.
+	                part = { d: dslice(c.d, offset) };
+	                // part = {d: dlen(c.d) - offset}
+	                ++idx;
+	                offset = 0;
+	                return part;
+	            }
+	            else {
+	                // Slice into the delete content
+	                let result = dslice(c.d, offset, offset + n);
+	                offset += n;
+	                return { d: result };
+	            }
+	        }
+	    };
+	    // Peek at the next op that will be returned.
+	    const peek = () => op[idx];
+	    return { take, peek };
+	};
+	/** Trim any excess skips from the end of an operation.
+	 *
+	 * There should only be at most one, because the operation was made with append.
+	 */
+	const trim = (op) => {
+	    if (op.length > 0 && typeof op[op.length - 1] === 'number') {
+	        op.pop();
+	    }
+	    return op;
+	};
+	/** Transform op by otherOp.
+	 *
+	 * @param op - The operation to transform
+	 * @param otherOp - Operation to transform it by
+	 * @param side - Either 'left' or 'right'
+	 */
+	function transform(op1, op2, side) {
+	    if (side !== 'left' && side !== 'right') {
+	        throw Error("side (" + side + ") must be 'left' or 'right'");
+	    }
+	    checkOp(op1);
+	    checkOp(op2);
+	    const newOp = [];
+	    const append = makeAppend(newOp);
+	    const { take, peek } = makeTake(op1);
+	    for (let i = 0; i < op2.length; i++) {
+	        const c2 = op2[i];
+	        let length, c1;
+	        switch (typeof c2) {
+	            case 'number': // Skip
+	                length = c2;
+	                while (length > 0) {
+	                    c1 = take(length, 'i');
+	                    append(c1);
+	                    if (typeof c1 !== 'string') {
+	                        length -= componentLength(c1);
+	                    }
+	                }
+	                break;
+	            case 'string': // Insert
+	                if (side === 'left') {
+	                    // The left insert should go first.
+	                    if (typeof peek() === 'string') {
+	                        append(take(-1));
+	                    }
+	                }
+	                // Otherwise skip the inserted text.
+	                append(unicount_1.strPosToUni(c2));
+	                break;
+	            case 'object': // Delete
+	                length = exports.dlen(c2.d);
+	                while (length > 0) {
+	                    c1 = take(length, 'i');
+	                    switch (typeof c1) {
+	                        case 'number':
+	                            length -= c1;
+	                            break;
+	                        case 'string':
+	                            append(c1);
+	                            break;
+	                        case 'object':
+	                            // The delete is unnecessary now - the text has already been deleted.
+	                            length -= exports.dlen(c1.d);
+	                    }
+	                }
+	                break;
+	        }
+	    }
+	    // Append any extra data in op1.
+	    let c;
+	    while ((c = take(-1)))
+	        append(c);
+	    return trim(newOp);
+	}
+	/** Compose op1 and op2 together and return the result */
+	function compose(op1, op2) {
+	    checkOp(op1);
+	    checkOp(op2);
+	    const result = [];
+	    const append = makeAppend(result);
+	    const { take } = makeTake(op1);
+	    for (let i = 0; i < op2.length; i++) {
+	        const component = op2[i];
+	        let length, chunk;
+	        switch (typeof component) {
+	            case 'number': // Skip
+	                length = component;
+	                while (length > 0) {
+	                    chunk = take(length, 'd');
+	                    append(chunk);
+	                    if (typeof chunk !== 'object') {
+	                        length -= componentLength(chunk);
+	                    }
+	                }
+	                break;
+	            case 'string': // Insert
+	                append(component);
+	                break;
+	            case 'object': // Delete
+	                length = exports.dlen(component.d); // Length of the delete we're doing
+	                let offset = 0; // Offset into our deleted content
+	                while (offset < length) {
+	                    chunk = take(length - offset, 'd');
+	                    switch (typeof chunk) {
+	                        case 'number':
+	                            // We're deleting the skipped characters.
+	                            append({ d: dslice(component.d, offset, offset + chunk) });
+	                            offset += chunk;
+	                            break;
+	                        case 'string':
+	                            offset += unicount_1.strPosToUni(chunk);
+	                            break;
+	                        case 'object':
+	                            append(chunk);
+	                    }
+	                }
+	                break;
+	        }
+	    }
+	    let c;
+	    while ((c = take(-1)))
+	        append(c);
+	    return trim(result);
+	}
+	// This operates in unicode offsets to make it consistent with the equivalent
+	// methods in other languages / systems.
+	const transformPosition = (cursor, op) => {
+	    let pos = 0;
+	    for (let i = 0; i < op.length && cursor > pos; i++) {
+	        const c = op[i];
+	        // I could actually use the op_iter stuff above - but I think its simpler
+	        // like this.
+	        switch (typeof c) {
+	            case 'number': { // skip
+	                pos += c;
+	                break;
+	            }
+	            case 'string': // insert
+	                // Its safe to use c.length here because they're both utf16 offsets.
+	                // Ignoring pos because the doc doesn't know about the insert yet.
+	                const offset = unicount_1.strPosToUni(c);
+	                pos += offset;
+	                cursor += offset;
+	                break;
+	            case 'object': // delete
+	                cursor -= Math.min(exports.dlen(c.d), cursor - pos);
+	                break;
+	        }
+	    }
+	    return cursor;
+	};
+	const transformSelection = (selection, op) => (typeof selection === 'number'
+	    ? transformPosition(selection, op)
+	    : selection.map(s => transformPosition(s, op)));
+	function makeInvertible(op, doc, ropeImpl) {
+	    return mapOp(op, (c, prePos) => ((typeof c === 'object' && typeof c.d === 'number') // Delete
+	        ? { d: ropeImpl.slice(doc, prePos, prePos + c.d) }
+	        : c));
+	}
+	/** Attempt to invert the operation. Operations with {d:N} components cannot be inverted, and this method will throw. */
+	function invert(op) {
+	    return mapOp(op, c => {
+	        switch (typeof c) {
+	            case 'object': // Delete
+	                if (typeof c.d === 'number') {
+	                    throw Error('Cannot invert text op: Deleted characters missing from operation. makeInvertible must be called first.');
+	                }
+	                else
+	                    return c.d; // delete -> insert
+	            case 'string': return { d: c }; // Insert -> delete
+	            case 'number': return c; // skip -> skip
+	        }
+	    });
+	}
+	/** Strip extraneous invertibility information from the operation */
+	function stripInvertible(op) {
+	    return mapOp(op, c => ((typeof c === 'object' && typeof c.d === 'string')
+	        ? { d: unicount_1.strPosToUni(c.d) }
+	        : c));
+	}
+	/** Helper method. returns true if the operation can be successfully inverted. */
+	function isInvertible(op) {
+	    let invertible = true;
+	    eachOp(op, c => {
+	        if (typeof c === 'object' && typeof c.d === 'number')
+	            invertible = false;
+	    });
+	    return invertible;
+	}
+	function makeType(ropeImpl) {
+	    return {
+	        name: 'text-unicode',
+	        uri: 'http://sharejs.org/types/text-unicode',
+	        trim,
+	        normalize,
+	        checkOp,
+	        /** Create a new text snapshot.
+	         *
+	         * @param {string} initial - initial snapshot data. Optional. Defaults to ''.
+	         * @returns {Snap} Initial document snapshot object
+	         */
+	        create(initial = '') {
+	            if (typeof initial !== 'string') {
+	                throw Error('Initial data must be a string');
+	            }
+	            return ropeImpl.create(initial);
+	        },
+	        /** Apply an operation to a document snapshot
+	         */
+	        apply(str, op) {
+	            checkOp(op);
+	            const builder = ropeImpl.builder(str);
+	            for (let i = 0; i < op.length; i++) {
+	                const component = op[i];
+	                switch (typeof component) {
+	                    case 'number':
+	                        builder.skip(component);
+	                        break;
+	                    case 'string':
+	                        builder.append(component);
+	                        break;
+	                    case 'object':
+	                        builder.del(exports.dlen(component.d));
+	                        break;
+	                }
+	            }
+	            return builder.build();
+	        },
+	        transform,
+	        compose,
+	        transformPosition,
+	        transformSelection,
+	        isInvertible,
+	        makeInvertible(op, doc) { return makeInvertible(op, doc, ropeImpl); },
+	        stripInvertible,
+	        invert,
+	        invertWithDoc(op, doc) { return invert(makeInvertible(op, doc, ropeImpl)); },
+	        isNoop: (op) => op.length === 0
+	    };
+	}
+	exports.default = makeType;
+} (type));
 
 var api$1 = {};
 
@@ -8968,7 +10353,7 @@ Object.defineProperty(api$1, "__esModule", { value: true });
 // - onInsert(pos, text): Called when text is inserted.
 // - onRemove(pos, length): Called when text is removed.
 const type_1 = type;
-const unicount_1 = unicount;
+const unicount_1 = require$$0;
 function api(getSnapshot, submitOp) {
     return {
         // Returns the text content of the document
@@ -9010,74 +10395,74 @@ api$1.default = api;
 api.provides = { text: true };
 
 (function (exports) {
-var __createBinding = (commonjsGlobal && commonjsGlobal.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (commonjsGlobal && commonjsGlobal.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (commonjsGlobal && commonjsGlobal.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
-var __importDefault = (commonjsGlobal && commonjsGlobal.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.type = exports.remove = exports.insert = void 0;
-// This is an implementation of the text OT type built on top of JS strings.
-// You would think this would be horribly inefficient, but its surpringly
-// good. JS strings are magic.
-const unicount_1 = unicount;
-const type_1 = __importStar(type);
-const api_1 = __importDefault(api$1);
-const ropeImplUnicodeString = {
-    create(s) { return s; },
-    toString(s) { return s; },
-    builder(oldDoc) {
-        if (typeof oldDoc !== 'string')
-            throw Error('Invalid document snapshot: ' + oldDoc);
-        const newDoc = [];
-        return {
-            skip(n) {
-                let offset = unicount_1.uniToStrPos(oldDoc, n);
-                if (offset > oldDoc.length)
-                    throw Error('The op is too long for this document');
-                newDoc.push(oldDoc.slice(0, offset));
-                oldDoc = oldDoc.slice(offset);
-            },
-            append(s) {
-                newDoc.push(s);
-            },
-            del(n) {
-                oldDoc = oldDoc.slice(unicount_1.uniToStrPos(oldDoc, n));
-            },
-            build() { return newDoc.join('') + oldDoc; },
-        };
-    },
-    slice: type_1.uniSlice,
-};
-const textString = type_1.default(ropeImplUnicodeString);
-const type$1 = Object.assign(Object.assign({}, textString), { api: api_1.default });
-exports.type = type$1;
-exports.insert = (pos, text) => (text.length === 0
-    ? []
-    : pos === 0 ? [text] : [pos, text]);
-exports.remove = (pos, textOrLen) => (type_1.dlen(textOrLen) === 0
-    ? []
-    : pos === 0 ? [{ d: textOrLen }] : [pos, { d: textOrLen }]);
-var type_2 = type;
-Object.defineProperty(exports, "makeType", { enumerable: true, get: function () { return type_2.default; } });
-}(dist));
+	var __createBinding = (commonjsGlobal && commonjsGlobal.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+	    if (k2 === undefined) k2 = k;
+	    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+	}) : (function(o, m, k, k2) {
+	    if (k2 === undefined) k2 = k;
+	    o[k2] = m[k];
+	}));
+	var __setModuleDefault = (commonjsGlobal && commonjsGlobal.__setModuleDefault) || (Object.create ? (function(o, v) {
+	    Object.defineProperty(o, "default", { enumerable: true, value: v });
+	}) : function(o, v) {
+	    o["default"] = v;
+	});
+	var __importStar = (commonjsGlobal && commonjsGlobal.__importStar) || function (mod) {
+	    if (mod && mod.__esModule) return mod;
+	    var result = {};
+	    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+	    __setModuleDefault(result, mod);
+	    return result;
+	};
+	var __importDefault = (commonjsGlobal && commonjsGlobal.__importDefault) || function (mod) {
+	    return (mod && mod.__esModule) ? mod : { "default": mod };
+	};
+	Object.defineProperty(exports, "__esModule", { value: true });
+	exports.type = exports.remove = exports.insert = void 0;
+	// This is an implementation of the text OT type built on top of JS strings.
+	// You would think this would be horribly inefficient, but its surpringly
+	// good. JS strings are magic.
+	const unicount_1 = require$$0;
+	const type_1 = __importStar(type);
+	const api_1 = __importDefault(api$1);
+	const ropeImplUnicodeString = {
+	    create(s) { return s; },
+	    toString(s) { return s; },
+	    builder(oldDoc) {
+	        if (typeof oldDoc !== 'string')
+	            throw Error('Invalid document snapshot: ' + oldDoc);
+	        const newDoc = [];
+	        return {
+	            skip(n) {
+	                let offset = unicount_1.uniToStrPos(oldDoc, n);
+	                if (offset > oldDoc.length)
+	                    throw Error('The op is too long for this document');
+	                newDoc.push(oldDoc.slice(0, offset));
+	                oldDoc = oldDoc.slice(offset);
+	            },
+	            append(s) {
+	                newDoc.push(s);
+	            },
+	            del(n) {
+	                oldDoc = oldDoc.slice(unicount_1.uniToStrPos(oldDoc, n));
+	            },
+	            build() { return newDoc.join('') + oldDoc; },
+	        };
+	    },
+	    slice: type_1.uniSlice,
+	};
+	const textString = type_1.default(ropeImplUnicodeString);
+	const type$1 = Object.assign(Object.assign({}, textString), { api: api_1.default });
+	exports.type = type$1;
+	exports.insert = (pos, text) => (text.length === 0
+	    ? []
+	    : pos === 0 ? [text] : [pos, text]);
+	exports.remove = (pos, textOrLen) => (type_1.dlen(textOrLen) === 0
+	    ? []
+	    : pos === 0 ? [{ d: textOrLen }] : [pos, { d: textOrLen }]);
+	var type_2 = type;
+	Object.defineProperty(exports, "makeType", { enumerable: true, get: function () { return type_2.default; } });
+} (dist));
 
 function getInlineId(node) {
     var _a;
@@ -9094,7 +10479,7 @@ function createInline(type, text = '\uFEFF', attributes = {}) {
         id: nanoid(),
         text,
         type,
-        attributes: {},
+        attributes,
         isEmbed: isEmbed(type),
     };
 }
@@ -9125,11 +10510,12 @@ function getInlineText(inline) {
     return text;
 }
 
-function createBlock(type, contents = [], attributes) {
+function createBlock(type, contents = [], attributes, meta) {
     return {
         id: nanoid(),
         contents: contents.length < 1 ? [createInline('TEXT')] : contents,
         attributes: attributes !== null && attributes !== void 0 ? attributes : {},
+        meta: meta !== null && meta !== void 0 ? meta : {},
         type,
     };
 }
@@ -9414,7 +10800,6 @@ function splitInlineContents(contents, index) {
                 }
             }
             else {
-                length--;
                 lastContents.push(contents[i]);
             }
         }
@@ -9521,7 +10906,7 @@ function getDuplicateAttributes(contents, index, length = 0) {
         }
         const attributes = Object.assign({}, r);
         Object.keys(attributes).forEach((attr) => {
-            if (!v.hasOwnProperty(attr)) {
+            if (!Object.prototype.hasOwnProperty.call(v, attr)) {
                 delete attributes[attr];
             }
         });
@@ -9579,13 +10964,12 @@ function getRectByRange(range) {
 }
 
 const json0diff = require('json0-ot-diff');
-function useEditor({ settings, eventEmitter, scrollContainer, }) {
+function useEditor({ settings, eventEmitter, }) {
     const editorRef = React__namespace.useRef(null);
     const lastCaretPositionRef = React__namespace.useRef();
     const lastCaretRectRef = React__namespace.useRef();
     const blocksRef = React__namespace.useRef([]);
     const modulesRef = React__namespace.useRef({});
-    const [modules, setModules] = React__namespace.useState({});
     const focus = React__namespace.useCallback(() => {
         if (lastCaretPositionRef.current) {
             setCaretPosition({
@@ -9620,24 +11004,29 @@ function useEditor({ settings, eventEmitter, scrollContainer, }) {
             return false;
         return editorRef.current.contains(selection.focusNode);
     }, []);
-    const prev = React__namespace.useCallback(({ index, margin = 10 } = {}) => {
+    const prev = React__namespace.useCallback(({ index, margin = 10, blockId } = {}) => {
         var _a, _b;
         const position = lastCaretPositionRef.current;
-        const currentIndex = blocksRef.current.findIndex((v) => v.id === (position === null || position === void 0 ? void 0 : position.blockId));
+        const currentIndex = blocksRef.current.findIndex((v) => v.id === (blockId !== null && blockId !== void 0 ? blockId : position === null || position === void 0 ? void 0 : position.blockId));
         if (currentIndex < 1 || !blocksRef.current[currentIndex - 1])
             return false;
         if (!lastCaretRectRef.current) {
             setCaretPosition({
                 blockId: blocksRef.current[currentIndex - 1].id,
                 index: 0,
+                nextElementDirection: 'up',
             });
             return false;
         }
         const prevBlock = getBlockElementById(blocksRef.current[currentIndex - 1].id);
         if (!prevBlock)
             return false;
+        // for embedded elements
+        if (prevBlock.contentEditable === 'false') {
+            return prev({ blockId: prevBlock.dataset.blockId });
+        }
         let prevRect = prevBlock.getBoundingClientRect();
-        const container = getScrollContainer(scrollContainer);
+        const container = getScrollContainer(settings.scrollContainer);
         const containerOffsetTop = container ? container.getBoundingClientRect().top : 0;
         if (prevRect.top <=
             (container ? containerOffsetTop : containerOffsetTop + settings.scrollMarginTop)) {
@@ -9678,10 +11067,10 @@ function useEditor({ settings, eventEmitter, scrollContainer, }) {
         updateCaretPositionRef();
         return true;
     }, []);
-    const next = React__namespace.useCallback(({ index = 0, margin = 10 } = {}) => {
+    const next = React__namespace.useCallback(({ index = 0, margin = 10, blockId } = {}) => {
         var _a, _b, _c, _d, _e, _f, _g, _h;
         const position = lastCaretPositionRef.current;
-        const currentIndex = blocksRef.current.findIndex((v) => v.id === (position === null || position === void 0 ? void 0 : position.blockId));
+        const currentIndex = blocksRef.current.findIndex((v) => v.id === (blockId !== null && blockId !== void 0 ? blockId : position === null || position === void 0 ? void 0 : position.blockId));
         if (currentIndex === -1 || !blocksRef.current[currentIndex + 1])
             return false;
         if (!lastCaretRectRef.current) {
@@ -9696,8 +11085,12 @@ function useEditor({ settings, eventEmitter, scrollContainer, }) {
         const nextBlock = getBlockElementById(blocksRef.current[currentIndex + 1].id);
         if (!nextBlock)
             return false;
+        // for embedded elements
+        if (nextBlock.contentEditable === 'false') {
+            return next({ blockId: nextBlock.dataset.blockId });
+        }
         let nextRect = (_b = (_a = nextBlock.parentElement) === null || _a === void 0 ? void 0 : _a.getBoundingClientRect()) !== null && _b !== void 0 ? _b : nextBlock.getBoundingClientRect();
-        const container = getScrollContainer(scrollContainer);
+        const container = getScrollContainer(settings.scrollContainer);
         const scrollHeight = (_c = container === null || container === void 0 ? void 0 : container.clientHeight) !== null && _c !== void 0 ? _c : window.innerHeight;
         if (container) {
             const containerRect = (_d = container.getBoundingClientRect()) !== null && _d !== void 0 ? _d : 0;
@@ -9817,15 +11210,31 @@ function useEditor({ settings, eventEmitter, scrollContainer, }) {
             return null;
         return range;
     }, []);
-    const setCaretPosition = React__namespace.useCallback(({ blockId = '', index = 0, length = 0 }) => {
-        var _a;
+    const setCaretPosition = React__namespace.useCallback(({ blockId = '', index = 0, length = 0, nextElementDirection = 'down', }) => {
+        var _a, _b, _c, _d;
         const element = getBlockElementById(blockId);
         if (!element)
             return;
+        // for embedded elements
+        if (element.contentEditable === 'false') {
+            const nextBlockId = nextElementDirection === 'up'
+                ? ((_a = element.parentElement) === null || _a === void 0 ? void 0 : _a.previousElementSibling).dataset.id
+                : ((_b = element.parentElement) === null || _b === void 0 ? void 0 : _b.nextElementSibling).dataset.id;
+            if (!nextBlockId)
+                return;
+            const nextBlockLength = nextElementDirection === 'up' ? (_c = getBlockLength$1(nextBlockId)) !== null && _c !== void 0 ? _c : 0 : 0;
+            setCaretPosition({
+                blockId: nextBlockId,
+                index: nextBlockLength,
+                length: 0,
+                nextElementDirection,
+            });
+            return;
+        }
         const selection = document.getSelection();
         if (!selection)
             return;
-        const blockLength = (_a = getBlockLength$1(blockId)) !== null && _a !== void 0 ? _a : 0;
+        const blockLength = (_d = getBlockLength$1(blockId)) !== null && _d !== void 0 ? _d : 0;
         if (index < 0) {
             index = 0;
         }
@@ -9855,7 +11264,7 @@ function useEditor({ settings, eventEmitter, scrollContainer, }) {
         if (!element)
             return;
         let nextRect = (_d = (_c = element.parentElement) === null || _c === void 0 ? void 0 : _c.getBoundingClientRect()) !== null && _d !== void 0 ? _d : element.getBoundingClientRect();
-        const container = getScrollContainer(scrollContainer);
+        const container = getScrollContainer(settings.scrollContainer);
         const scrollHeight = (_e = container === null || container === void 0 ? void 0 : container.clientHeight) !== null && _e !== void 0 ? _e : window.innerHeight;
         if (container) {
             const containerRect = (_f = container.getBoundingClientRect()) !== null && _f !== void 0 ? _f : 0;
@@ -9916,9 +11325,7 @@ function useEditor({ settings, eventEmitter, scrollContainer, }) {
             editor: editorController,
             options,
         });
-        setModules((prevModules) => {
-            return Object.assign(Object.assign({}, prevModules), { [name]: moduleInstance });
-        });
+        modulesRef.current = Object.assign(Object.assign({}, modulesRef.current), { [name]: moduleInstance });
         moduleInstance.onInit();
     }, []);
     const addModules = React__namespace.useCallback((modules, options = {}) => {
@@ -9929,9 +11336,7 @@ function useEditor({ settings, eventEmitter, scrollContainer, }) {
                 editor: editorController,
                 options: (_a = options[name]) !== null && _a !== void 0 ? _a : {},
             });
-            setModules((prevModules) => {
-                return Object.assign(Object.assign({}, prevModules), { [name]: moduleInstance });
-            });
+            modulesRef.current = Object.assign(Object.assign({}, modulesRef.current), { [name]: moduleInstance });
             moduleInstance.onInit();
         });
     }, []);
@@ -9947,7 +11352,7 @@ function useEditor({ settings, eventEmitter, scrollContainer, }) {
         Object.keys(modulesRef.current).forEach((key) => {
             modulesRef.current[key].onDestroy();
         });
-        setModules({});
+        modulesRef.current = {};
     }, []);
     const sync = React__namespace.useCallback((blockId, blockElement, forceUpdate = false) => {
         if (!blockId) {
@@ -10006,13 +11411,17 @@ function useEditor({ settings, eventEmitter, scrollContainer, }) {
             }
         }, 10);
     }, []);
-    const createBlock = React__namespace.useCallback((appendBlock, prevBlockId, type = 'append', source = EventSources.USER) => {
+    const createBlock$1 = React__namespace.useCallback((appendBlock, prevBlockId, type = 'append', source = EventSources.USER) => {
         const currentIndex = blocksRef.current.findIndex((v) => v.id === prevBlockId);
+        const block = copyObject(appendBlock);
+        if (block.meta) {
+            delete block.meta;
+        }
         eventEmitter.emit(EditorEvents.EVENT_EDITOR_HISTORY_PUSH, {
             payload: {
                 type: HistoryType.ADD_BLOCK,
                 blockId: appendBlock.id,
-                block: copyObject(appendBlock),
+                block,
                 prevBlockId,
             },
             source,
@@ -10028,20 +11437,36 @@ function useEditor({ settings, eventEmitter, scrollContainer, }) {
                 : [...blocksRef.current, appendBlock]);
     }, []);
     const updateBlocks = React__namespace.useCallback((blocks) => {
+        // If the last block is an embedded element
+        if (settings.embeddedBlocks.includes(blocks[blocks.length - 1].type)) {
+            blocks = [...blocks, createBlock('PARAGRAPH')];
+        }
         blocksRef.current = blocks;
     }, []);
-    const updateBlock = React__namespace.useCallback((block, source = EventSources.USER) => {
-        const currentIndex = blocksRef.current.findIndex((v) => v.id === block.id);
+    const updateBlock = React__namespace.useCallback((targetBlock, source = EventSources.USER) => {
+        const currentIndex = blocksRef.current.findIndex((v) => v.id === targetBlock.id);
         if (currentIndex === -1)
             return;
-        block = copyObject(block);
+        const block = copyObject(targetBlock);
+        const prev = copyObject(blocksRef.current[currentIndex]);
         Object.keys(block.attributes).forEach((key) => {
             if (typeof block.attributes[key] === 'boolean' && !block.attributes[key]) {
                 delete block.attributes[key];
             }
         });
         const contents = optimizeInlineContents(block.contents);
-        const prevBlock = Object.assign(Object.assign({}, blocksRef.current[currentIndex]), { contents: blocksRef.current[currentIndex].contents.map((content) => {
+        blocksRef.current = [
+            ...blocksRef.current.slice(0, currentIndex),
+            Object.assign(Object.assign(Object.assign({}, blocksRef.current[currentIndex]), block), { contents }),
+            ...blocksRef.current.slice(currentIndex + 1),
+        ];
+        if (block.meta) {
+            delete block.meta;
+        }
+        if (prev.meta) {
+            delete prev.meta;
+        }
+        const prevBlock = Object.assign(Object.assign({}, prev), { contents: prev.contents.map((content) => {
                 return {
                     attributes: content.attributes,
                     text: content.text,
@@ -10072,11 +11497,6 @@ function useEditor({ settings, eventEmitter, scrollContainer, }) {
                 source,
             });
         }
-        blocksRef.current = [
-            ...blocksRef.current.slice(0, currentIndex),
-            Object.assign(Object.assign(Object.assign({}, blocksRef.current[currentIndex]), block), { contents }),
-            ...blocksRef.current.slice(currentIndex + 1),
-        ];
     }, []);
     const deleteBlock = React__namespace.useCallback((blockId, source = EventSources.USER) => {
         var _a;
@@ -10167,8 +11587,9 @@ function useEditor({ settings, eventEmitter, scrollContainer, }) {
             getBlocks,
             getBlock,
             getBlockLength: getBlockLength$1,
-            createBlock,
+            createBlock: createBlock$1,
             updateBlock,
+            updateBlocks,
             deleteBlock,
             deleteBlocks,
             sync,
@@ -10210,9 +11631,6 @@ function useEditor({ settings, eventEmitter, scrollContainer, }) {
     //     clearInterval(interval);
     //   };
     // }, []);
-    React__namespace.useEffect(() => {
-        modulesRef.current = modules;
-    }, [modules]);
     React__namespace.useEffect(() => {
         const debouncedSelectionChange = debounce(200, (e) => {
             if (!editorRef.current)
@@ -10291,14 +11709,14 @@ class EditorModule {
     }
     onDestroy() {
         this.eventEmitter.info('destory editor module');
-        setTimeout(() => this.subs.unsubscribe());
+        this.subs.unsubscribe();
     }
-    createBlock({ prevId = '', type = 'PARAGRAPH', contents = [], attributes = {}, } = {}) {
+    createBlock({ prevId = '', type = 'PARAGRAPH', contents = [], attributes = {}, meta = {}, source = 'user', } = {}) {
         var _a;
         const caretPosition = this.editor.getCaretPosition();
-        const appendBlock = createBlock(type, contents, attributes);
+        const appendBlock = createBlock(type, contents, attributes, meta);
         const prevBlockId = prevId || (caretPosition === null || caretPosition === void 0 ? void 0 : caretPosition.blockId);
-        this.editor.createBlock(appendBlock, prevBlockId);
+        this.editor.createBlock(appendBlock, prevBlockId, 'append', source);
         this.editor.numberingList();
         (_a = this.editor.getModule('history')) === null || _a === void 0 ? void 0 : _a.optimizeOp();
         setTimeout(() => {
@@ -10310,6 +11728,7 @@ class EditorModule {
             this.editor.next();
         }, 10);
         this.editor.render([]);
+        return appendBlock;
     }
     deleteBlock(blockId) {
         var _a;
@@ -10434,22 +11853,38 @@ class KeyBoardModule {
         this.addBinding({
             key: KeyCodes.ARROW_UP,
             collapsed: true,
-            handler: this._handlekeyUp.bind(this),
+            handler: this._handleKeyUp.bind(this),
         });
         this.addBinding({
             key: KeyCodes.ARROW_DOWN,
             collapsed: true,
-            handler: this._handlekeyDown.bind(this),
+            handler: this._handleKeyDown.bind(this),
         });
         this.addBinding({
             key: KeyCodes.ARROW_LEFT,
             collapsed: true,
-            handler: this._handlekeyLeft.bind(this),
+            handler: this._handleKeyLeft.bind(this),
         });
         this.addBinding({
             key: KeyCodes.ARROW_RIGHT,
             collapsed: true,
-            handler: this._handlekeyRight.bind(this),
+            handler: this._handleKeyRight.bind(this),
+        });
+        // selector operation
+        this.addBinding({
+            key: KeyCodes.ARROW_UP,
+            shiftKey: true,
+            handler: this._handleSelectorUp.bind(this),
+        });
+        this.addBinding({
+            key: KeyCodes.ARROW_DOWN,
+            shiftKey: true,
+            handler: this._handleSelectorDown.bind(this),
+        });
+        this.addBinding({
+            key: KeyCodes.A,
+            shortKey: true,
+            handler: this._handleSelectAll.bind(this),
         });
         this.addBinding({
             key: KeyCodes.BACKSPACE,
@@ -10634,7 +12069,7 @@ class KeyBoardModule {
             editor.getModule('editor').splitBlock(caret.blockId, caret.index, caret.length);
         }
     }
-    _handlekeyLeft(caretPosition, editor, event) {
+    _handleKeyLeft(caretPosition, editor, event) {
         var _a;
         const caret = editor.getCaretPosition();
         if (caret) {
@@ -10647,13 +12082,17 @@ class KeyBoardModule {
                 const currentIndex = blocks.findIndex((v) => v.id === caret.blockId);
                 if (currentIndex !== -1 && currentIndex > 0) {
                     const nextBlockLength = (_a = editor.getBlockLength(blocks[currentIndex - 1].id)) !== null && _a !== void 0 ? _a : 0;
-                    editor.setCaretPosition({ blockId: blocks[currentIndex - 1].id, index: nextBlockLength });
+                    editor.setCaretPosition({
+                        blockId: blocks[currentIndex - 1].id,
+                        index: nextBlockLength,
+                        nextElementDirection: 'up',
+                    });
                 }
             }
         }
         setTimeout(() => editor.updateCaretRect(), 10);
     }
-    _handlekeyRight(caretPosition, editor, event) {
+    _handleKeyRight(caretPosition, editor, event) {
         const caret = editor.getCaretPosition();
         if (caret) {
             const blockLength = editor.getBlockLength(caret.blockId);
@@ -10670,7 +12109,7 @@ class KeyBoardModule {
         }
         setTimeout(() => editor.updateCaretRect(), 10);
     }
-    _handlekeyUp(caretPosition, editor, event) {
+    _handleKeyUp(caretPosition, editor, event) {
         if (!caretPosition.isTop)
             return;
         if (editor.prev()) {
@@ -10680,7 +12119,7 @@ class KeyBoardModule {
             setTimeout(() => editor.updateCaretRect(), 10);
         }
     }
-    _handlekeyDown(caretPosition, editor, event) {
+    _handleKeyDown(caretPosition, editor, event) {
         if (!caretPosition.isBottom)
             return;
         if (editor.next()) {
@@ -10804,6 +12243,41 @@ class KeyBoardModule {
             editor.updateCaretRect();
         }, 10);
     }
+    _handleSelectorUp(caretPosition, editor, event) {
+        if (caretPosition.isTop) {
+            const block = editor.getBlock(caretPosition.blockId);
+            if (caretPosition.index === 0 && block) {
+                event.preventDefault();
+                editor.getModule('selector').selectBlocks([block]);
+                editor.getModule('selector').setStart(block.id);
+                return;
+            }
+        }
+    }
+    _handleSelectorDown(caretPosition, editor, event) {
+        var _a;
+        if (caretPosition.isBottom) {
+            const block = editor.getBlock(caretPosition.blockId);
+            const blockLength = (_a = editor.getBlockLength(caretPosition.blockId)) !== null && _a !== void 0 ? _a : 0;
+            if (caretPosition.length === blockLength - caretPosition.index && block) {
+                event.preventDefault();
+                editor.getModule('selector').selectBlocks([block]);
+                editor.getModule('selector').setStart(block.id);
+                return;
+            }
+        }
+    }
+    _handleSelectAll(caretPosition, editor, event) {
+        var _a;
+        const blocks = editor.getBlocks();
+        const blockLength = (_a = editor.getBlockLength(caretPosition.blockId)) !== null && _a !== void 0 ? _a : 0;
+        if (blocks && caretPosition.index === 0 && caretPosition.length === blockLength) {
+            event.preventDefault();
+            editor.getModule('selector').selectBlocks(blocks);
+            editor.getModule('selector').setStart(caretPosition.blockId);
+            return;
+        }
+    }
 }
 
 class LoggerModule {
@@ -10818,7 +12292,10 @@ class LoggerModule {
     }
     onDestroy() {
         this.eventEmitter.info('destroy logger module');
-        setTimeout(() => this.subs.unsubscribe());
+        setTimeout(() => {
+            // Run one frame later to display the log just before it disappears
+            this.subs.unsubscribe();
+        });
     }
     _watchLogEvents() {
         if (this.logLevel >= LogLevels.INFO) {
@@ -10894,18 +12371,26 @@ class ToolbarModule {
 const ShortKey = /Mac/i.test(navigator.platform) ? 'metaKey' : 'ctrlKey';
 class SelectorModule {
     constructor({ eventEmitter, editor }) {
-        this.position = { start: null, end: null };
+        this.startBlockId = null;
         this.enabled = false;
         this.mousePressed = false;
         this.changed = false;
         this.selectedBlocks = [];
         this.bindings = [];
-        this.mouseMove = throttle(100, (e) => {
+        // area select mode
+        this.area = { start: null, end: null };
+        this.areaSelecting = false;
+        this.areaEl = null;
+        this.mouseMove = throttle(20, (e) => {
             var _a, _b;
+            if (this.areaSelecting) {
+                this.areaMove(e);
+                return;
+            }
             if (!this.mousePressed)
                 return;
             const blocks = this.editor.getBlocks();
-            const startIndex = blocks.findIndex((v) => v.id === this.position.start);
+            const startIndex = blocks.findIndex((v) => v.id === this.startBlockId);
             if (startIndex === -1)
                 return;
             const [blockId] = getBlockId(e.target);
@@ -10943,8 +12428,7 @@ class SelectorModule {
                 selectedBlocks = copyObject(blocks.filter((v) => blockIds.includes(v.id)));
             }
             else {
-                this.position.end = blockId;
-                const endIndex = blocks.findIndex((v) => v.id === this.position.end);
+                const endIndex = blocks.findIndex((v) => v.id === blockId);
                 if (startIndex > endIndex) {
                     selectedBlocks = copyObject(blocks.slice(endIndex, startIndex + 1));
                     blockIds = selectedBlocks.map((v) => v.id);
@@ -10960,12 +12444,18 @@ class SelectorModule {
                 this.editor.blur();
             }
             if (this.enabled) {
-                this.selectedBlocks = selectedBlocks;
-                this.sendBlockSelectedEvent(blockIds);
+                this.selectBlocks(selectedBlocks);
             }
         });
         this.editor = editor;
         this.eventEmitter = eventEmitter;
+    }
+    selectBlocks(blocks) {
+        this.selectedBlocks = blocks;
+        this.sendBlockSelectedEvent(blocks.map((v) => v.id));
+    }
+    setStart(id) {
+        this.startBlockId = id;
     }
     sendBlockSelectedEvent(blockIds) {
         this.eventEmitter.emit(EditorEvents.EVENT_BLOCK_SELECTED, blockIds);
@@ -10977,32 +12467,245 @@ class SelectorModule {
             prevented: true,
             handler: this._handleBackspace.bind(this),
         });
+        this.addBinding({
+            key: KeyCodes.ARROW_UP,
+            prevented: true,
+            shiftKey: true,
+            handler: this._handleSelectorUp.bind(this),
+        });
+        this.addBinding({
+            key: KeyCodes.ARROW_DOWN,
+            prevented: true,
+            shiftKey: true,
+            handler: this._handleSelectorDown.bind(this),
+        });
+        this.addBinding({
+            key: KeyCodes.ARROW_UP,
+            handler: this._handleKeyUp.bind(this),
+        });
+        this.addBinding({
+            key: KeyCodes.ARROW_DOWN,
+            handler: this._handleKeyDown.bind(this),
+        });
+        this.addBinding({
+            key: KeyCodes.ARROW_LEFT,
+            handler: this._handleReset.bind(this),
+        });
+        this.addBinding({
+            key: KeyCodes.ARROW_RIGHT,
+            handler: this._handleReset.bind(this),
+        });
+        this.addBinding({
+            key: KeyCodes.A,
+            shortKey: true,
+            handler: this._handleSelectAll.bind(this),
+        });
+        this.addBinding({
+            key: KeyCodes.ESC,
+            handler: this._handleReset.bind(this),
+        });
+        this.addBinding({
+            key: KeyCodes.TAB,
+            prevented: true,
+            handler: this._handleIndent.bind(this),
+        });
+        this.addBinding({
+            key: KeyCodes.TAB,
+            shiftKey: true,
+            prevented: true,
+            handler: this._handleOutdent.bind(this),
+        });
     }
     onDestroy() {
         this.eventEmitter.info('destroy selector module');
     }
     mouseDown(e) {
+        if (e.shiftKey && this.startBlockId) {
+            const blocks = this.editor.getBlocks();
+            const [blockId] = getBlockId(e.target);
+            const startIndex = blocks.findIndex((v) => v.id === this.startBlockId);
+            const endIndex = blocks.findIndex((v) => v.id === blockId);
+            if (startIndex === -1 || endIndex === -1)
+                return;
+            this.selectBlocks(blocks.slice(startIndex < endIndex ? startIndex : endIndex, (endIndex > startIndex ? endIndex : startIndex) + 1));
+            return;
+        }
         this.reset();
         const [blockId] = getBlockId(e.target);
         if (!blockId)
             return;
         this.mousePressed = true;
-        this.position.start = blockId;
+        this.startBlockId = blockId;
     }
     mouseUp(e) {
+        if (this.areaSelecting) {
+            this.areaEnd(e);
+            return;
+        }
         this.mousePressed = false;
         setTimeout(() => {
             this.changed = false;
         });
     }
-    reset() {
+    areaStart(e) {
+        var _a;
+        const [blockId] = getBlockId(e.target);
+        if (blockId)
+            return;
+        const blocks = this.editor.getBlocks();
+        let startBlockIndex;
+        for (let i = 0; i < blocks.length; i++) {
+            const blockEl = getBlockElementById(blocks[i].id);
+            const rect = blockEl === null || blockEl === void 0 ? void 0 : blockEl.getBoundingClientRect();
+            if (rect && rect.top < e.clientY && rect.top + rect.height > e.clientY) {
+                startBlockIndex = i;
+                break;
+            }
+        }
+        const container = getScrollContainer(this.editor.getSettings().scrollContainer);
+        const containerScrollTop = container ? container.scrollTop : 0;
+        const scrollEl = document.scrollingElement;
+        const bodyScrollTop = (_a = scrollEl === null || scrollEl === void 0 ? void 0 : scrollEl.scrollTop) !== null && _a !== void 0 ? _a : 0;
+        this.area.start = {
+            top: e.clientY,
+            left: e.clientX,
+            bodyScrollTop,
+            containerScrollTop,
+            blockIndex: startBlockIndex !== null && startBlockIndex !== void 0 ? startBlockIndex : null,
+        };
+        this.area.end = null;
+        this.areaSelecting = true;
+        if (!document.getElementById('shibuya-area-selector')) {
+            this.areaEl = document.createElement('div');
+            this.areaEl.setAttribute('id', 'shibuya-area-selector');
+            this.areaEl.style.backgroundColor = 'rgba(46,170,220,0.2)';
+            this.areaEl.style.borderRadius = '8px';
+            this.areaEl.style.position = 'absolute';
+            document.body.appendChild(this.areaEl);
+        }
+    }
+    areaMove(e) {
+        var _a, _b, _c, _d, _e;
+        if (!this.area.start)
+            return;
+        let isUpward = false;
+        const container = getScrollContainer(this.editor.getSettings().scrollContainer);
+        const containerScrollTop = container ? container.scrollTop : 0;
+        const scrollEl = document.scrollingElement;
+        const bodyScrollTop = (_a = scrollEl === null || scrollEl === void 0 ? void 0 : scrollEl.scrollTop) !== null && _a !== void 0 ? _a : 0;
+        this.area.end = { top: e.clientY, left: e.clientX, bodyScrollTop, containerScrollTop };
+        const startTop = this.area.start.bodyScrollTop + this.area.start.top;
+        const endTop = bodyScrollTop + this.area.end.top;
+        const startLeft = this.area.start.left;
+        const endLeft = this.area.end.left;
+        let area = {
+            left: 0,
+            top: 0,
+            width: 0,
+            height: 0,
+        };
+        if (startTop < endTop) {
+            area.top = startTop;
+            area.height = endTop - startTop;
+        }
+        else {
+            area.top = endTop;
+            area.height = startTop - endTop;
+        }
+        if (startLeft < endLeft) {
+            area.left = startLeft;
+            area.width = endLeft - startLeft;
+        }
+        else {
+            area.left = endLeft;
+            area.width = startLeft - endLeft;
+        }
+        if (containerScrollTop + startTop > containerScrollTop + endTop) {
+            isUpward = true;
+        }
+        if (this.areaEl) {
+            this.areaEl.style.top = `${area.top}px`;
+            this.areaEl.style.left = `${area.left}px`;
+            this.areaEl.style.height = `${area.height}px`;
+            this.areaEl.style.width = `${area.width}px`;
+        }
+        const editorRect = container
+            ? (_c = (_b = this.editor.getEditorRef().parentElement) === null || _b === void 0 ? void 0 : _b.parentElement) === null || _c === void 0 ? void 0 : _c.getBoundingClientRect()
+            : this.editor.getEditorRef().getBoundingClientRect();
+        if (!editorRect)
+            return;
+        if (((editorRect.x < area.left && editorRect.x + editorRect.width > area.left + area.width) ||
+            (editorRect.x > area.left && editorRect.x < area.left + area.width) ||
+            (editorRect.x + editorRect.width < area.left + area.width &&
+                editorRect.x + editorRect.width > area.left)) &&
+            ((editorRect.y < area.top &&
+                editorRect.y + editorRect.height > area.top - bodyScrollTop + area.height) ||
+                (editorRect.y > area.top && editorRect.y < area.top - bodyScrollTop + area.height) ||
+                (editorRect.y + editorRect.height < area.top - bodyScrollTop + area.height &&
+                    editorRect.y + editorRect.height > area.top - bodyScrollTop))) {
+            const blocks = this.editor.getBlocks();
+            let blockIds = [];
+            let selectedBlocks = [];
+            if (isUpward) {
+                for (let i = (_d = this.area.start.blockIndex) !== null && _d !== void 0 ? _d : blocks.length - 1; i >= 0; i--) {
+                    const blockEl = getBlockElementById(blocks[i].id);
+                    const rect = blockEl === null || blockEl === void 0 ? void 0 : blockEl.getBoundingClientRect();
+                    if (rect && rect.top + rect.height > e.clientY) {
+                        blockIds.push(blocks[i].id);
+                    }
+                    else {
+                        break;
+                    }
+                }
+            }
+            else {
+                for (let i = (_e = this.area.start.blockIndex) !== null && _e !== void 0 ? _e : 0; i < blocks.length; i++) {
+                    const blockEl = getBlockElementById(blocks[i].id);
+                    const rect = blockEl === null || blockEl === void 0 ? void 0 : blockEl.getBoundingClientRect();
+                    if (rect && rect.top <= e.clientY) {
+                        if (container &&
+                            area.top + this.area.start.containerScrollTop >= rect.top + containerScrollTop) {
+                            continue;
+                        }
+                        blockIds.push(blocks[i].id);
+                    }
+                    else {
+                        break;
+                    }
+                }
+            }
+            selectedBlocks = copyObject(blocks.filter((v) => blockIds.includes(v.id)));
+            this.selectBlocks(selectedBlocks);
+        }
+        else {
+            this.selectBlocks([]);
+        }
+    }
+    areaEnd(e) {
+        setTimeout(() => {
+            this.area.start = null;
+            this.area.end = null;
+            this.areaSelecting = false;
+            if (this.areaEl) {
+                this.areaEl.remove();
+                this.areaEl = null;
+            }
+        }, 10);
+    }
+    reset(e) {
         if (this.changed)
             return;
+        if (this.areaSelecting && e && this.area.start) {
+            const movedX = e.clientX - this.area.start.left;
+            const movedY = e.clientY - this.area.start.top;
+            if (!((movedX > -5 || movedX < 5) && (movedY > -5 || movedY < 5))) {
+                return;
+            }
+        }
         this.mousePressed = false;
         this.enabled = false;
-        this.position = { start: null, end: null };
-        this.selectedBlocks = [];
-        this.sendBlockSelectedEvent([]);
+        this.startBlockId = null;
+        this.selectBlocks([]);
     }
     getSelectedBlocks() {
         return this.selectedBlocks;
@@ -11053,6 +12756,129 @@ class SelectorModule {
             return;
         editor.getModule('editor').deleteBlocks(selectedBlocks.map((block) => block.id));
         this.reset();
+    }
+    _handleSelectorUp() {
+        const blocks = this.editor.getBlocks();
+        const startIndex = this.selectedBlocks.findIndex((v) => v.id === this.startBlockId);
+        if (startIndex === -1)
+            return;
+        if (startIndex === this.selectedBlocks.length - 1) {
+            const index = blocks.findIndex((v) => this.selectedBlocks[0].id === v.id);
+            if (index === -1 || !blocks[index - 1])
+                return;
+            this.selectBlocks([blocks[index - 1], ...this.selectedBlocks]);
+        }
+        else {
+            this.selectBlocks(this.selectedBlocks.slice(0, -1));
+        }
+    }
+    _handleSelectorDown() {
+        const blocks = this.editor.getBlocks();
+        const startIndex = this.selectedBlocks.findIndex((v) => v.id === this.startBlockId);
+        if (startIndex === -1)
+            return;
+        if (startIndex === 0) {
+            const index = blocks.findIndex((v) => this.selectedBlocks[this.selectedBlocks.length - 1].id === v.id);
+            if (index === -1 || !blocks[index + 1])
+                return;
+            this.selectBlocks([...this.selectedBlocks, blocks[index + 1]]);
+        }
+        else {
+            this.selectBlocks(this.selectedBlocks.slice(1));
+        }
+    }
+    _handleReset(editor, e) {
+        e.preventDefault();
+        if (this.startBlockId) {
+            const length = this.editor.getBlockLength(this.startBlockId);
+            editor.setCaretPosition({
+                blockId: this.startBlockId,
+                index: length !== null && length !== void 0 ? length : 0,
+            });
+            editor.updateCaretRect();
+        }
+        this.reset();
+    }
+    _handleKeyUp(editor, e) {
+        e.preventDefault();
+        if (this.selectedBlocks.length < 1)
+            return;
+        if (this.selectedBlocks.length > 1) {
+            this.selectBlocks(this.selectedBlocks.filter((v) => v.id === this.startBlockId));
+            return;
+        }
+        const blocks = this.editor.getBlocks();
+        const currentIndex = blocks.findIndex((v) => v.id === this.startBlockId);
+        if (currentIndex === -1 || currentIndex < 1)
+            return;
+        const nextBlock = blocks[currentIndex - 1];
+        this.startBlockId = nextBlock.id;
+        this.selectBlocks([nextBlock]);
+    }
+    _handleKeyDown(editor, e) {
+        e.preventDefault();
+        if (this.selectedBlocks.length < 1)
+            return;
+        if (this.selectedBlocks.length > 1) {
+            this.selectBlocks(this.selectedBlocks.filter((v) => v.id === this.startBlockId));
+            return;
+        }
+        const blocks = this.editor.getBlocks();
+        const currentIndex = blocks.findIndex((v) => v.id === this.startBlockId);
+        if (currentIndex === -1 || currentIndex >= blocks.length - 1)
+            return;
+        const nextBlock = blocks[currentIndex + 1];
+        this.startBlockId = nextBlock.id;
+        this.selectBlocks([nextBlock]);
+    }
+    _handleSelectAll(editor, event) {
+        const blocks = editor.getBlocks();
+        event.preventDefault();
+        editor.getModule('selector').selectBlocks(blocks);
+        return;
+    }
+    _handleIndent(editor, event) {
+        var _a;
+        event.preventDefault();
+        const blocks = editor.getBlocks();
+        const { indentatableFormats } = editor.getSettings();
+        const affectedIds = [];
+        for (let i = 0; i < this.selectedBlocks.length; i++) {
+            const blockIndex = blocks.findIndex((v) => v.id === this.selectedBlocks[i].id);
+            if (blockIndex === -1)
+                return;
+            if (!blocks[blockIndex] || !indentatableFormats.includes(blocks[blockIndex].type))
+                return;
+            if (blocks[blockIndex].attributes.indent > 6)
+                return;
+            editor.updateBlock(Object.assign(Object.assign({}, blocks[blockIndex]), { attributes: Object.assign(Object.assign({}, blocks[blockIndex].attributes), { indent: ((_a = blocks[blockIndex].attributes.indent) !== null && _a !== void 0 ? _a : 0) + 1 }) }));
+            affectedIds.push(this.selectedBlocks[i].id);
+        }
+        editor.numberingList();
+        editor.render(affectedIds);
+        return;
+    }
+    _handleOutdent(editor, event) {
+        var _a;
+        event.preventDefault();
+        const blocks = editor.getBlocks();
+        const { indentatableFormats } = editor.getSettings();
+        const affectedIds = [];
+        for (let i = 0; i < this.selectedBlocks.length; i++) {
+            const blockIndex = blocks.findIndex((v) => v.id === this.selectedBlocks[i].id);
+            if (blockIndex === -1)
+                return;
+            if (!blocks[blockIndex] || !indentatableFormats.includes(blocks[blockIndex].type))
+                return;
+            if (((_a = blocks[blockIndex].attributes.indent) !== null && _a !== void 0 ? _a : 0) < 1)
+                return;
+            const indent = blocks[blockIndex].attributes.indent - 1;
+            editor.updateBlock(Object.assign(Object.assign({}, blocks[blockIndex]), { attributes: Object.assign(Object.assign({}, blocks[blockIndex].attributes), { indent: indent !== 0 ? indent : false }) }));
+            affectedIds.push(this.selectedBlocks[i].id);
+        }
+        editor.numberingList();
+        editor.render(affectedIds);
+        return;
     }
 }
 
@@ -12171,6 +13997,9 @@ class HistoryModule {
         if (position) {
             op.position = position;
         }
+        if (op.type === HistoryType.UPDATE_CONTENTS && (op.undo.length < 1 || op.redo.length < 1)) {
+            return;
+        }
         this.tmpUndo.push(op);
         if (force) {
             this.optimizeOp();
@@ -12288,7 +14117,7 @@ class HistoryModule {
                 this.executeJson0(op.blockId, op.undo);
                 affectedIds.push(op.blockId);
                 if (i === updateOps.length - 1 && addOps.length < 1 && removeOps.length < 1) {
-                    this.moveCaret(op.undo, op.position, 'undo');
+                    this.moveCaret(op, op.position, 'undo');
                 }
             });
             addOps.forEach((op, i) => {
@@ -12390,7 +14219,7 @@ class HistoryModule {
                         this.executeJson0(op.blockId, op.redo);
                         affectedIds.push(op.blockId);
                         if (i === updateOps.length - 1) {
-                            this.moveCaret(op.redo, op.position, 'redo');
+                            this.moveCaret(op, op.position, 'redo');
                         }
                         break;
                     }
@@ -12406,28 +14235,44 @@ class HistoryModule {
         }
     }
     executeJson0(blockId, ops) {
-        const block = this.editor.getBlock(blockId);
-        if (!block)
-            return;
-        const updatedBlock = lib.type.apply(block, ops);
-        this.editor.updateBlock(Object.assign(Object.assign({}, updatedBlock), { contents: updatedBlock.contents.map((content) => {
-                var _a, _b, _c, _d, _e;
-                return {
-                    id: (_a = content.id) !== null && _a !== void 0 ? _a : nanoid(),
-                    attributes: (_b = content.attributes) !== null && _b !== void 0 ? _b : {},
-                    text: (_c = content.text) !== null && _c !== void 0 ? _c : '',
-                    type: (_d = content.type) !== null && _d !== void 0 ? _d : 'TEXT',
-                    isEmbed: (_e = content.isEmbed) !== null && _e !== void 0 ? _e : false,
-                };
-            }) }), EventSources.USER);
+        try {
+            const block = this.editor.getBlock(blockId);
+            if (!block)
+                return;
+            const updatedBlock = lib.type.apply(block, ops);
+            this.editor.updateBlock(Object.assign(Object.assign({}, updatedBlock), { contents: updatedBlock.contents.map((content) => {
+                    var _a, _b, _c, _d, _e;
+                    return {
+                        id: (_a = content.id) !== null && _a !== void 0 ? _a : nanoid(),
+                        attributes: (_b = content.attributes) !== null && _b !== void 0 ? _b : {},
+                        text: (_c = content.text) !== null && _c !== void 0 ? _c : '',
+                        type: (_d = content.type) !== null && _d !== void 0 ? _d : 'TEXT',
+                        isEmbed: (_e = content.isEmbed) !== null && _e !== void 0 ? _e : false,
+                    };
+                }) }), EventSources.USER);
+        }
+        catch (e) {
+            this.eventEmitter.info('Failed to restore hisotry', e);
+        }
     }
-    moveCaret(ops, position, type = 'undo') {
-        var _a, _b;
-        if (!position)
+    moveCaret(op, position, type = 'undo') {
+        var _a, _b, _c;
+        if (!position) {
+            const blockLength = (_a = this.editor.getBlockLength(op.blockId)) !== null && _a !== void 0 ? _a : 0;
+            setTimeout(() => {
+                this.editor.setCaretPosition({
+                    blockId: op.blockId,
+                    index: blockLength,
+                    length: 0,
+                });
+                this.editor.updateCaretRect();
+            }, 10);
             return;
+        }
+        const ops = type === 'undo' ? op.undo : op.redo;
         let affectedLength = type === 'undo' ? getTextLength(ops) : 0;
-        let positionIndex = (_a = position.index) !== null && _a !== void 0 ? _a : 0;
-        let positionLength = (_b = position.length) !== null && _b !== void 0 ? _b : 0;
+        let positionIndex = (_b = position.index) !== null && _b !== void 0 ? _b : 0;
+        let positionLength = (_c = position.length) !== null && _c !== void 0 ? _c : 0;
         setTimeout(() => {
             var _a;
             const blockLength = (_a = this.editor.getBlockLength(position.blockId)) !== null && _a !== void 0 ? _a : 0;
@@ -12467,9 +14312,12 @@ class ClipboardModule {
                 return;
             const range = new Range();
             const selection = document.getSelection();
+            if (!selection)
+                return;
             range.setStart(this.clipboardEl, 0);
             range.setEnd(this.clipboardEl, 0);
-            selection === null || selection === void 0 ? void 0 : selection.addRange(range);
+            selection.removeAllRanges();
+            selection.addRange(range);
         }));
     }
     onDestroy() {
@@ -12477,11 +14325,23 @@ class ClipboardModule {
         this.subs.unsubscribe();
     }
     onPaste(event) {
-        var _a;
+        var _a, _b;
         event.preventDefault();
         const caretPosition = this.editor.getCaretPosition();
+        const dataTransferItems = (_a = event.clipboardData.items) !== null && _a !== void 0 ? _a : [];
+        const files = [];
+        for (let i = 0; i < dataTransferItems.length; i++) {
+            const file = dataTransferItems[i].getAsFile();
+            if (file)
+                files.push(file);
+        }
+        // file upload
+        if (files.length > 0) {
+            this.editor.getModule('uploader').upload(files);
+            return;
+        }
         const clipboardJson = event.clipboardData.getData('text/shibuya-formats');
-        const prevBlock = this.editor.getBlock((_a = caretPosition === null || caretPosition === void 0 ? void 0 : caretPosition.blockId) !== null && _a !== void 0 ? _a : '');
+        const prevBlock = this.editor.getBlock((_b = caretPosition === null || caretPosition === void 0 ? void 0 : caretPosition.blockId) !== null && _b !== void 0 ? _b : '');
         if (caretPosition && prevBlock && clipboardJson) {
             const { type, data } = JSON.parse(clipboardJson);
             // blocks
@@ -12494,6 +14354,7 @@ class ClipboardModule {
                     prevBlockId = appendBlock.id;
                     return appendBlock.id;
                 });
+                this.editor.numberingList();
                 this.editor.render(affectedIds);
                 setTimeout(() => {
                     var _a;
@@ -12613,10 +14474,47 @@ class MarkdownShortcutModule {
             handler: this._handleHeader.bind(this),
         });
         this.addShortcut({
+            name: 'ordered-list',
+            type: 'block',
+            pattern: /^1.$/,
+            handler: this._handleOrderedList.bind(this),
+        });
+        this.addShortcut({
+            name: 'bullet-list',
+            type: 'block',
+            pattern: /^\*$/,
+            handler: this._handleBulletList.bind(this),
+        });
+        this.addShortcut({
             name: 'bold',
             type: 'inline',
             pattern: /(.*)((?:\*|_){2})(.+?)((?:\*|_){2})/,
             handler: this._handleBold.bind(this),
+        });
+        this.addShortcut({
+            name: 'italic',
+            type: 'inline',
+            pattern: /(.*)((?:\*|_){1})(.+?)((?:\*|_){1})/,
+            handler: this._handleItalic.bind(this),
+        });
+        this.addShortcut({
+            name: 'strike',
+            type: 'inline',
+            pattern: /(.*)((?:~){2})(.+?)((?:~){2})/,
+            handler: this._handleStrike.bind(this),
+        });
+        this.addShortcut({
+            name: 'code',
+            type: 'inline',
+            pattern: /(.*)((?:`){1})(.+?)((?:`){1})/,
+            handler: this._handleInlineCode.bind(this),
+        });
+        this.addShortcut({
+            name: 'link',
+            type: 'inline',
+            /* eslint-disable-next-line */
+            pattern: /(.*)(?:\[(.+?)\])(?:\((https?\:\/\/.+?)\))/,
+            handler: this._handleLink.bind(this),
         });
     }
     onDestroy() {
@@ -12626,6 +14524,7 @@ class MarkdownShortcutModule {
         this.shortcuts.push(props);
     }
     execute() {
+        var _a;
         let isExecuted = false;
         const caret = this.editor.getCaretPosition();
         if (!caret)
@@ -12639,13 +14538,15 @@ class MarkdownShortcutModule {
             const removeOp = dist.remove(caret.index, targetLength);
             targetText = dist.type.apply(targetText, removeOp);
         }
-        this.shortcuts.forEach((shortcut) => {
-            const match = targetText.match(shortcut.pattern);
+        for (let i = 0; i < this.shortcuts.length; i++) {
+            const match = targetText.match(this.shortcuts[i].pattern);
             if (match) {
-                shortcut.handler(caret, match);
+                this.shortcuts[i].handler(caret, match);
+                (_a = this.editor.getModule('history')) === null || _a === void 0 ? void 0 : _a.optimizeOp();
                 isExecuted = true;
+                break;
             }
-        });
+        }
         return isExecuted;
     }
     formatInline(blockId, index, openeTagLength, contentLength, closeTagLength, attributes) {
@@ -12681,6 +14582,12 @@ class MarkdownShortcutModule {
     _handleBlockquote(caret, match) {
         this.formatBlock(caret.blockId, 'BLOCKQUOTE', 0, stringLength(match[0]));
     }
+    _handleOrderedList(caret, match) {
+        this.formatBlock(caret.blockId, 'ORDEREDLIST', 0, stringLength(match[0]));
+    }
+    _handleBulletList(caret, match) {
+        this.formatBlock(caret.blockId, 'BULLETLIST', 0, stringLength(match[0]));
+    }
     _handleHeader(caret, match) {
         const length = stringLength(match[0]);
         switch (length) {
@@ -12709,15 +14616,147 @@ class MarkdownShortcutModule {
         const openeTagLength = stringLength(match[2]);
         const contentLength = stringLength(match[3]);
         const closeTagLength = stringLength(match[4]);
+        this.formatInline(caret.blockId, index, openeTagLength, contentLength, closeTagLength, {
+            bold: true,
+        });
+    }
+    _handleItalic(caret, match) {
+        const index = stringLength(match[1]);
+        const openeTagLength = stringLength(match[2]);
+        const contentLength = stringLength(match[3]);
+        const closeTagLength = stringLength(match[4]);
+        this.formatInline(caret.blockId, index, openeTagLength, contentLength, closeTagLength, {
+            italic: true,
+        });
+    }
+    _handleStrike(caret, match) {
+        const index = stringLength(match[1]);
+        const openeTagLength = stringLength(match[2]);
+        const contentLength = stringLength(match[3]);
+        const closeTagLength = stringLength(match[4]);
+        this.formatInline(caret.blockId, index, openeTagLength, contentLength, closeTagLength, {
+            strike: true,
+        });
+    }
+    _handleInlineCode(caret, match) {
+        const index = stringLength(match[1]);
+        const openeTagLength = stringLength(match[2]);
+        const contentLength = stringLength(match[3]);
+        const closeTagLength = stringLength(match[4]);
+        this.formatInline(caret.blockId, index, openeTagLength, contentLength, closeTagLength, {
+            code: true,
+        });
+    }
+    _handleLink(caret, match) {
+        const block = this.editor.getBlock(caret.blockId);
+        if (!block)
+            return;
+        const matchLength = stringLength(match[0]);
+        const index = stringLength(match[1]);
+        const linkText = match[2];
+        const url = match[3];
+        this.editor.getModule('history').optimizeOp();
+        const deletedContents = deleteInlineContents(block.contents, index, matchLength - index);
+        const [first, last] = splitInlineContents(deletedContents, index);
+        this.editor.updateBlock(Object.assign(Object.assign({}, block), { contents: [...first, createInline('TEXT', linkText, { link: url }), ...last] }));
+        this.editor.render([caret.blockId]);
         setTimeout(() => {
-            this.formatInline(caret.blockId, index, openeTagLength, contentLength, closeTagLength, {
-                bold: true,
+            this.editor.setCaretPosition({
+                blockId: block.id,
+                index: index + stringLength(linkText),
             });
         }, 10);
     }
 }
 
-const Container = styled.div `
+class UploaderModule {
+    constructor({ eventEmitter, editor, options }) {
+        this.editor = editor;
+        this.eventEmitter = eventEmitter;
+        this.options = Object.assign({}, options);
+    }
+    onInit() {
+        this.eventEmitter.info('init uploader module');
+    }
+    onDestroy() {
+        this.eventEmitter.info('destroy uploader module');
+    }
+    upload(files) {
+        if (!this.options.onUpload || typeof this.options.onUpload !== 'function')
+            return;
+        files.forEach((file) => {
+            const isImage = !!file.type.match(/^image\/(gif|jpe?g|a?png|svg|webp|bmp)/i);
+            if (isImage) {
+                const fileReader = new FileReader();
+                fileReader.onload = (event) => __awaiter(this, void 0, void 0, function* () {
+                    var _a;
+                    const addedBlock = this.editor.getModule('editor').createBlock({
+                        type: 'IMAGE',
+                        attributes: {
+                            thumbnail: event.target.result,
+                        },
+                        meta: {
+                            isUploading: true,
+                        },
+                    });
+                    const res = yield this.options.onUpload({
+                        original: file,
+                        base64: event.target.result,
+                        isImage,
+                    });
+                    if (!res) {
+                        // todo: error;
+                        this.editor.deleteBlock(addedBlock.id);
+                        this.editor.render();
+                        return;
+                    }
+                    this.editor.updateBlock(Object.assign(Object.assign({}, addedBlock), { attributes: { thumbnail: (_a = res === null || res === void 0 ? void 0 : res.thumbnail) !== null && _a !== void 0 ? _a : res.original }, meta: {
+                            isUploading: false,
+                        } }));
+                    this.editor.render([addedBlock.id]);
+                });
+                fileReader.readAsDataURL(file);
+            }
+            else {
+                const fileReader = new FileReader();
+                fileReader.onload = (event) => __awaiter(this, void 0, void 0, function* () {
+                    const addedBlock = this.editor.getModule('editor').createBlock({
+                        type: 'FILE',
+                        attributes: {
+                            fileName: file.name,
+                            original: event.target.result,
+                            size: file.size,
+                        },
+                        meta: {
+                            isUploading: true,
+                        },
+                    });
+                    const res = yield this.options.onUpload({
+                        original: file,
+                        base64: event.target.result,
+                        isImage,
+                    });
+                    if (!res) {
+                        // todo: error;
+                        this.editor.deleteBlock(addedBlock.id);
+                        this.editor.render();
+                        return;
+                    }
+                    this.editor.updateBlock(Object.assign(Object.assign({}, addedBlock), { 
+                        // attributes: { thumbnail: res?.thumbnail ?? res.original },
+                        meta: {
+                            isUploading: false,
+                        } }));
+                    this.editor.render([addedBlock.id]);
+                });
+                fileReader.readAsDataURL(file);
+            }
+        });
+        //const base64images = await this.options.onUpload(files);
+    }
+}
+
+const Container = He.div `
   border: 1px solid #ccc;
   border-radius: 12px;
   margin: 12px;
@@ -12731,16 +14770,16 @@ const Container = styled.div `
     display: none;
   }
 `;
-const Inner = styled.div `
+const Inner = He.div `
   flex-shrink: 0;
   flex-grow: 0;
 `;
-const MarginBottom = styled.div `
+const MarginBottom = He.div `
   flex-shrink: 0;
   flex-grow: 1;
   user-select: none;
 `;
-const Selector = styled.div `
+const Selector = He.div `
   left: -100000px;
   height: 1px;
   overflow-y: hidden;
@@ -12749,20 +14788,20 @@ const Selector = styled.div `
 `;
 const Editor = React__namespace.memo(React__namespace.forwardRef((_a, forwardRef) => {
     var _b, _c, _d, _e, _f, _g;
-    var { readOnly = false, formats, settings = {}, scrollContainer } = _a, props = __rest(_a, ["readOnly", "formats", "settings", "scrollContainer"]);
+    var { readOnly = false, formats, settings = {} } = _a, props = __rest(_a, ["readOnly", "formats", "settings"]);
     const [eventEmitter, eventTool] = useEventEmitter();
     const [editorRef, editor] = useEditor({
         settings: {
             // default settings
             scrollMarginTop: (_b = settings.scrollMarginTop) !== null && _b !== void 0 ? _b : 100,
             scrollMarginBottom: (_c = settings.scrollMarginBottom) !== null && _c !== void 0 ? _c : 250,
-            allowAttributes: (_d = settings.allowAttributes) !== null && _d !== void 0 ? _d : [],
-            allowFormats: (_e = settings.allowFormats) !== null && _e !== void 0 ? _e : [],
+            allowFormats: (_d = settings.allowFormats) !== null && _d !== void 0 ? _d : [],
+            embeddedBlocks: (_e = settings.embeddedBlocks) !== null && _e !== void 0 ? _e : ['IMAGE', 'FILE'],
             collaborationLevel: (_f = settings.collaborationLevel) !== null && _f !== void 0 ? _f : 'inline',
             indentatableFormats: (_g = settings.indentatableFormats) !== null && _g !== void 0 ? _g : ['ORDEREDLIST', 'BULLETLIST'],
+            scrollContainer: settings.scrollContainer,
         },
         eventEmitter,
-        scrollContainer,
     });
     const containerRef = React__namespace.useRef(null);
     const [blockFormats, setBlockFormats] = React__namespace.useState({
@@ -12772,7 +14811,11 @@ const Editor = React__namespace.memo(React__namespace.forwardRef((_a, forwardRef
         'block/orderedlist': OrderedList,
         'block/bulletlist': BulletList,
         'block/header1': Header1,
+        'block/header2': Header2,
+        'block/header3': Header3,
         'block/blockquote': Blockquote,
+        'block/image': Image$1,
+        'block/file': File,
         'inline/text': InlineText,
         'inline/style/bold': Bold,
         'inline/style/underline': Underline,
@@ -12866,6 +14909,7 @@ const Editor = React__namespace.memo(React__namespace.forwardRef((_a, forwardRef
             { name: 'history', module: HistoryModule },
             { name: 'clipboard', module: ClipboardModule },
             { name: 'markdown-shortcut', module: MarkdownShortcutModule },
+            { name: 'uploader', module: UploaderModule },
         ], (_a = settings === null || settings === void 0 ? void 0 : settings.modules) !== null && _a !== void 0 ? _a : {});
         subs.add(eventEmitter.select(EditorEvents.EVENT_BLOCK_RERENDER).subscribe(() => {
             setBlocks(editor.getBlocks());
@@ -12881,7 +14925,13 @@ const Editor = React__namespace.memo(React__namespace.forwardRef((_a, forwardRef
     }, []);
     React__namespace.useEffect(() => {
         const handleMouseDown = (e) => {
-            editor.getModule('selector').mouseDown(e);
+            var _a;
+            if ((_a = editorRef.current) === null || _a === void 0 ? void 0 : _a.contains(e.target)) {
+                editor.getModule('selector').mouseDown(e);
+            }
+            else {
+                editor.getModule('selector').areaStart(e);
+            }
         };
         const handleMouseMove = (e) => {
             var _a;
@@ -12894,7 +14944,7 @@ const Editor = React__namespace.memo(React__namespace.forwardRef((_a, forwardRef
             if (!editorRef.current || editorRef.current.contains(e.target)) {
                 return;
             }
-            editor.getModule('selector').reset();
+            editor.getModule('selector').reset(e);
         };
         document.addEventListener('mousedown', handleMouseDown);
         document.addEventListener('mousemove', handleMouseMove);
@@ -12934,7 +14984,7 @@ const Editor = React__namespace.memo(React__namespace.forwardRef((_a, forwardRef
     React__namespace.useImperativeHandle(forwardRef, () => editor, [editor]);
     return (jsxRuntime.exports.jsxs(Container, Object.assign({ ref: containerRef }, props, { children: [jsxRuntime.exports.jsx(Inner, Object.assign({ ref: editorRef, onClick: handleClick, onKeyDown: handleKeyDown, onPaste: handlePaste, onCopy: handleCopy, onCut: handleCut, onDrop: handleDrop, onDrag: handleDrag }, { children: memoBlocks.map((block, index) => {
                     return (jsxRuntime.exports.jsx(BlockContainer, { formats: blockFormats, editor: memoEditor, blockId: block.id, readOnly: readOnly, selected: block.selected, onBeforeInput: handleInput, onCompositionStart: handleCompositionStart, onCompositionEnd: handleCompositionEnd }, block.id));
-                }) })), jsxRuntime.exports.jsx(MarginBottom, { onClick: handleContainerClick }), jsxRuntime.exports.jsx(MemoGlobalToolbar, { editor: memoEditor }), jsxRuntime.exports.jsx(MemoBubbleToolbar, { editor: memoEditor, scrollContainer: scrollContainer }), jsxRuntime.exports.jsx(Selector, { contentEditable: true, className: "clipboard", onKeyDown: handleSelectorKeyDown, onBeforeInput: handleSelectorInput, onCopy: handleCopy, onCut: handleCut })] })));
+                }) })), jsxRuntime.exports.jsx(MarginBottom, { onClick: handleContainerClick }), jsxRuntime.exports.jsx(MemoGlobalToolbar, { editor: memoEditor }), jsxRuntime.exports.jsx(MemoBubbleToolbar, { editor: memoEditor, scrollContainer: settings.scrollContainer }), jsxRuntime.exports.jsx(Selector, { contentEditable: true, className: "clipboard", onKeyDown: handleSelectorKeyDown, onBeforeInput: handleSelectorInput, onCopy: handleCopy, onCut: handleCut })] })));
 }));
 
 exports.BlockContainer = BlockContainer;
@@ -12942,14 +14992,26 @@ exports.Blockquote = Blockquote;
 exports.Bold = Bold;
 exports.BubbleToolbar = BubbleToolbar;
 exports.BulletList = BulletList;
+exports.ClipboardModule = ClipboardModule;
 exports.Editor = Editor;
+exports.EditorModule = EditorModule;
+exports.File = File;
 exports.GlobalToolbar = GlobalToolbar;
 exports.Header1 = Header1;
+exports.Header2 = Header2;
+exports.Header3 = Header3;
+exports.HistoryModule = HistoryModule;
+exports.Image = Image$1;
 exports.InlineCode = InlineCode;
 exports.InlineText = InlineText;
 exports.Italic = Italic;
+exports.KeyBoardModule = KeyBoardModule;
+exports.LoggerModule = LoggerModule;
+exports.MarkdownShortcutModule = MarkdownShortcutModule;
 exports.OrderedList = OrderedList;
 exports.Paragraph = Paragraph;
+exports.SelectorModule = SelectorModule;
 exports.Strike = Strike;
+exports.ToolbarModule = ToolbarModule;
 exports.Underline = Underline;
 //# sourceMappingURL=main.js.map

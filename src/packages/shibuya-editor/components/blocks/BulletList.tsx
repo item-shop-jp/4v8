@@ -22,14 +22,12 @@ const ListItem = styled.div<Pick<BulletListProps, 'placeholder'>>`
   padding-left: calc(40px + 1.5em * var(--indent));
   box-sizing: border-box;
   position: relative;
-  transition: all 0.3s;
   ::before {
     position: absolute;
     font-family: Arial;
     font-size: 1.5em;
     line-height: 1;
     top: 3px;
-    transition: all 0.3s;
     content: var(--content);
     left: calc(18px + 1em * var(--indent));
   }

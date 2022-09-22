@@ -10,10 +10,11 @@ import {
   BulletList,
   Blockquote,
   Paragraph,
-  ImageEmbed,
+  Image,
+  File,
 } from './components/blocks';
 import { InlineText } from './components/inlines';
-import { Bold, Strike, Underline, InlineCode, Italic } from './components/styles';
+import { Bold, Strike, Underline, InlineCode, Italic, Color, Link } from './components/styles';
 import { GlobalToolbar, BubbleToolbar } from './components/toolbar';
 import { useEditor } from './hooks/use-editor';
 import { useEventEmitter } from './hooks/use-event-emitter';
@@ -26,18 +27,15 @@ import {
   HistoryModule,
   ClipboardModule,
   MarkdownShortcutModule,
+  UploaderModule,
+  DragDropModule,
 } from './modules';
 import { getBlockElementById } from './utils/block';
 import { EditorEvents } from './constants';
-import { Formats } from './types/format';
-import { Block } from './types/block';
-import { Settings, EditorController } from './types/editor';
-import { Link } from './components/styles/Link';
 import { LinkPopup } from './components/popups';
-import { UploaderModule } from './modules/uploader';
+import { Formats, Block, Settings, EditorController } from './types';
 
 interface Props {
-  scrollContainer?: HTMLElement | string;
   readOnly?: boolean;
   formats?: { [key: string]: any };
   settings?: Partial<Settings>;
@@ -76,24 +74,20 @@ const Selector = styled.div`
 
 export const Editor = React.memo(
   React.forwardRef<EditorController, Props>(
-    (
-      { readOnly = false, formats, settings = {}, scrollContainer, ...props }: Props,
-      forwardRef,
-    ) => {
+    ({ readOnly = false, formats, settings = {}, ...props }: Props, forwardRef) => {
       const [eventEmitter, eventTool] = useEventEmitter();
       const [editorRef, editor] = useEditor({
         settings: {
           // default settings
           scrollMarginTop: settings.scrollMarginTop ?? 100,
           scrollMarginBottom: settings.scrollMarginBottom ?? 250,
-          allowAttributes: settings.allowAttributes ?? [],
           allowFormats: settings.allowFormats ?? [],
           embeddedBlocks: settings.embeddedBlocks ?? ['IMAGE', 'FILE'],
           collaborationLevel: settings.collaborationLevel ?? 'inline',
           indentatableFormats: settings.indentatableFormats ?? ['ORDEREDLIST', 'BULLETLIST'],
+          scrollContainer: settings.scrollContainer,
         },
         eventEmitter,
-        scrollContainer,
       });
       const containerRef = React.useRef<HTMLDivElement>(null);
       const [blockFormats, setBlockFormats] = React.useState<Formats>({
@@ -106,7 +100,8 @@ export const Editor = React.memo(
         'block/header2': Header2,
         'block/header3': Header3,
         'block/blockquote': Blockquote,
-        'block/image': ImageEmbed,
+        'block/image': Image,
+        'block/file': File,
         'inline/text': InlineText,
         'inline/style/bold': Bold,
         'inline/style/underline': Underline,
@@ -114,6 +109,7 @@ export const Editor = React.memo(
         'inline/style/code': InlineCode,
         'inline/style/italic': Italic,
         'inline/style/link': Link,
+        'inline/style/color': Color,
         'popup/link': LinkPopup,
       });
       const [blocks, setBlocks] = React.useState<Block[]>([]);
@@ -211,12 +207,21 @@ export const Editor = React.memo(
       const handleDrop = React.useCallback(
         (e: React.DragEvent) => {
           e.preventDefault();
+          editor.getModule('drag-drop').handleDrop(e.nativeEvent);
         },
         [editor],
       );
       const handleDrag = React.useCallback(
         (e: React.DragEvent) => {
           e.preventDefault();
+        },
+        [editor],
+      );
+      const handleDragOver = React.useCallback(
+        (e: React.DragEvent) => {
+          if ((e.target as HTMLElement)?.getAttribute('contenteditable') !== 'true') {
+            e.preventDefault();
+          }
         },
         [editor],
       );
@@ -249,6 +254,7 @@ export const Editor = React.memo(
             { name: 'clipboard', module: ClipboardModule },
             { name: 'markdown-shortcut', module: MarkdownShortcutModule },
             { name: 'uploader', module: UploaderModule },
+            { name: 'drag-drop', module: DragDropModule },
           ],
           settings?.modules ?? {},
         );
@@ -272,7 +278,11 @@ export const Editor = React.memo(
 
       React.useEffect(() => {
         const handleMouseDown = (e: MouseEvent) => {
-          editor.getModule('selector').mouseDown(e);
+          if (editorRef.current?.contains(e.target as Element)) {
+            editor.getModule('selector').mouseDown(e);
+          } else {
+            editor.getModule('selector').areaStart(e);
+          }
         };
 
         const handleMouseMove = (e: MouseEvent) => {
@@ -287,7 +297,7 @@ export const Editor = React.memo(
           if (!editorRef.current || editorRef.current.contains(e.target as Node)) {
             return;
           }
-          editor.getModule('selector').reset();
+          editor.getModule('selector').reset(e);
         };
 
         document.addEventListener('mousedown', handleMouseDown);
@@ -349,6 +359,7 @@ export const Editor = React.memo(
             onCut={handleCut}
             onDrop={handleDrop}
             onDrag={handleDrag}
+            onDragOver={handleDragOver}
           >
             {memoBlocks.map((block, index) => {
               return (
@@ -359,7 +370,7 @@ export const Editor = React.memo(
                   blockId={block.id}
                   readOnly={readOnly}
                   selected={block.selected}
-                  scrollContainer={scrollContainer}
+                  scrollContainer={settings.scrollContainer}
                   onBeforeInput={handleInput}
                   onCompositionStart={handleCompositionStart}
                   onCompositionEnd={handleCompositionEnd}
@@ -369,8 +380,8 @@ export const Editor = React.memo(
           </Inner>
           <MarginBottom onClick={handleContainerClick} />
           <MemoGlobalToolbar editor={memoEditor} />
-          <MemoBubbleToolbar editor={memoEditor} scrollContainer={scrollContainer} />
-          <MemoLinkPopup editor={memoEditor} scrollContainer={scrollContainer} />
+          <MemoBubbleToolbar editor={memoEditor} scrollContainer={settings.scrollContainer} />
+          <MemoLinkPopup editor={memoEditor} scrollContainer={settings.scrollContainer} />
           <Selector
             contentEditable={true}
             className="clipboard"

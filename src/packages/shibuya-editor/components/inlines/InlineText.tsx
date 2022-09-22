@@ -4,10 +4,7 @@ import twemoji from 'twemoji';
 import { EditorController } from '../../types/editor';
 import { Formats } from '../../types/format';
 import { Inline } from '../../types/inline';
-import { getScrollContainer } from '../../utils/dom';
-import { Subscription } from 'rxjs';
 import { EditorEvents } from '../../constants';
-import { copyObject } from '../../utils/object';
 
 export interface InlineTextProps {
   inline: Inline;
@@ -43,7 +40,7 @@ const Text = styled.span<InlineContentProps>`
     return Object.keys(attributes).map((key: string) => {
       const styleFormat = `inline/style/${key}`;
       if (attributes[key] && formats[styleFormat]) {
-        return formats[styleFormat];
+        return formats[styleFormat](attributes[key]);
       }
       return;
     });
@@ -55,7 +52,7 @@ const Link = styled.a<InlineContentProps>`
     return Object.keys(attributes).map((key: string) => {
       const styleFormat = `inline/style/${key}`;
       if (attributes[key] && formats[styleFormat]) {
-        return formats[styleFormat];
+        return formats[styleFormat](attributes[key]);
       }
       return;
     });
@@ -88,33 +85,6 @@ export const InlineText = ({
       caretPosition,
     });
   };
-
-  // const handleClickDelete = React.useCallback(() => {
-  //   const caretPosition = editor.getCaretPosition();
-  //   if (!caretPosition) return;
-  //   const block = editor.getBlock(caretPosition.blockId);
-  //   if (!block) return;
-  //   const inlineIndex = block.contents.findIndex((v) => v.id === inline.id);
-  //   if (inlineIndex === -1) return;
-  //   editor.updateBlock({
-  //     ...block,
-  //     contents: copyObject([
-  //       ...block.contents.slice(0, inlineIndex),
-  //       {
-  //         ...block.contents[inlineIndex],
-  //         attributes: {
-  //           ...block.contents[inlineIndex].attributes,
-  //           link: false,
-  //         },
-  //       },
-  //       ...block.contents.slice(inlineIndex + 1),
-  //     ]),
-  //   });
-  //   editor.render([block.id]);
-  //   setTimeout(() => {
-  //     editor.focus();
-  //   }, 10);
-  // }, [inline]);
 
   return (
     <>

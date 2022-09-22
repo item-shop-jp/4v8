@@ -7,6 +7,7 @@ import { getBlockId, getBlockElementById } from '../utils/block';
 import { KeyCodes, EditorEvents } from '../constants';
 import { Block } from '../types/block';
 import { copyObject } from '../utils/object';
+import { getScrollContainer } from '../utils/dom';
 
 const ShortKey = /Mac/i.test(navigator.platform) ? 'metaKey' : 'ctrlKey';
 
@@ -15,9 +16,15 @@ interface Props {
   editor: EditorController;
 }
 
-interface Position {
-  start: string | null;
-  end: string | null;
+interface Area {
+  start: {
+    top: number;
+    left: number;
+    bodyScrollTop: number;
+    containerScrollTop: number;
+    blockIndex: number | null;
+  } | null;
+  end: { top: number; left: number; bodyScrollTop: number; containerScrollTop: number } | null;
 }
 
 interface KeyBindingProps {
@@ -41,8 +48,16 @@ export class SelectorModule implements Module {
   private changed = false;
   private selectedBlocks: Block[] = [];
   private bindings: KeyBindingProps[] = [];
+  // area select mode
+  private area: Area = { start: null, end: null };
+  private areaSelecting = false;
+  private areaEl: HTMLDivElement | null = null;
 
   mouseMove = throttle(20, (e: MouseEvent) => {
+    if (this.areaSelecting) {
+      this.areaMove(e);
+      return;
+    }
     if (!this.mousePressed) return;
     const blocks = this.editor.getBlocks();
     const startIndex = blocks.findIndex((v) => v.id === this.startBlockId);
@@ -55,7 +70,6 @@ export class SelectorModule implements Module {
       const startEl = getBlockElementById(blocks[startIndex].id);
       const startTop = startEl?.getBoundingClientRect()?.top ?? 0;
       const isUpward = startTop > e.clientY;
-
       if (isUpward) {
         for (let i = startIndex; i >= 0; i--) {
           const blockEl = getBlockElementById(blocks[i].id);
@@ -164,6 +178,23 @@ export class SelectorModule implements Module {
       shortKey: true,
       handler: this._handleSelectAll.bind(this),
     });
+    this.addBinding({
+      key: KeyCodes.ESC,
+      handler: this._handleReset.bind(this),
+    });
+
+    this.addBinding({
+      key: KeyCodes.TAB,
+      prevented: true,
+      handler: this._handleIndent.bind(this),
+    });
+
+    this.addBinding({
+      key: KeyCodes.TAB,
+      shiftKey: true,
+      prevented: true,
+      handler: this._handleOutdent.bind(this),
+    });
   }
 
   onDestroy() {
@@ -193,6 +224,11 @@ export class SelectorModule implements Module {
   }
 
   mouseUp(e: MouseEvent) {
+    if (this.areaSelecting) {
+      this.areaEnd(e);
+      return;
+    }
+
     this.mousePressed = false;
 
     setTimeout(() => {
@@ -200,13 +236,168 @@ export class SelectorModule implements Module {
     });
   }
 
-  reset() {
+  areaStart(e: MouseEvent) {
+    const [blockId] = getBlockId(e.target as HTMLElement);
+    if (blockId) return;
+
+    const blocks = this.editor.getBlocks();
+    let startBlockIndex;
+    for (let i = 0; i < blocks.length; i++) {
+      const blockEl = getBlockElementById(blocks[i].id);
+      const rect = blockEl?.getBoundingClientRect();
+      if (rect && rect.top < e.clientY && rect.top + rect.height > e.clientY) {
+        startBlockIndex = i;
+        break;
+      }
+    }
+
+    const container = getScrollContainer(this.editor.getSettings().scrollContainer);
+    const containerScrollTop = container ? container.scrollTop : 0;
+    const scrollEl = document.scrollingElement as HTMLElement;
+    const bodyScrollTop = scrollEl?.scrollTop ?? 0;
+
+    this.area.start = {
+      top: e.clientY,
+      left: e.clientX,
+      bodyScrollTop,
+      containerScrollTop,
+      blockIndex: startBlockIndex ?? null,
+    };
+    this.area.end = null;
+    this.areaSelecting = true;
+    if (!document.getElementById('shibuya-area-selector')) {
+      this.areaEl = document.createElement('div');
+      this.areaEl.setAttribute('id', 'shibuya-area-selector');
+      this.areaEl.style.backgroundColor = 'rgba(46,170,220,0.2)';
+      this.areaEl.style.borderRadius = '8px';
+      this.areaEl.style.position = 'absolute';
+      document.body.appendChild(this.areaEl);
+    }
+  }
+
+  areaMove(e: MouseEvent) {
+    if (!this.area.start) return;
+
+    let isUpward = false;
+    const container = getScrollContainer(this.editor.getSettings().scrollContainer);
+    const containerScrollTop = container ? container.scrollTop : 0;
+    const scrollEl = document.scrollingElement as HTMLElement;
+    const bodyScrollTop = scrollEl?.scrollTop ?? 0;
+    this.area.end = { top: e.clientY, left: e.clientX, bodyScrollTop, containerScrollTop };
+    const startTop = this.area.start.bodyScrollTop + this.area.start.top;
+    const endTop = bodyScrollTop + this.area.end.top;
+    const startLeft = this.area.start.left;
+    const endLeft = this.area.end.left;
+
+    let area: { left: number; top: number; width: number; height: number } = {
+      left: 0,
+      top: 0,
+      width: 0,
+      height: 0,
+    };
+
+    if (startTop < endTop) {
+      area.top = startTop;
+      area.height = endTop - startTop;
+    } else {
+      area.top = endTop;
+      area.height = startTop - endTop;
+    }
+    if (startLeft < endLeft) {
+      area.left = startLeft;
+      area.width = endLeft - startLeft;
+    } else {
+      area.left = endLeft;
+      area.width = startLeft - endLeft;
+    }
+
+    if (containerScrollTop + startTop > containerScrollTop + endTop) {
+      isUpward = true;
+    }
+
+    if (this.areaEl) {
+      this.areaEl.style.top = `${area.top}px`;
+      this.areaEl.style.left = `${area.left}px`;
+      this.areaEl.style.height = `${area.height}px`;
+      this.areaEl.style.width = `${area.width}px`;
+    }
+
+    const editorRect = container
+      ? this.editor.getEditorRef().parentElement?.parentElement?.getBoundingClientRect()
+      : this.editor.getEditorRef().getBoundingClientRect();
+    if (!editorRect) return;
+
+    if (
+      ((editorRect.x < area.left && editorRect.x + editorRect.width > area.left + area.width) ||
+        (editorRect.x > area.left && editorRect.x < area.left + area.width) ||
+        (editorRect.x + editorRect.width < area.left + area.width &&
+          editorRect.x + editorRect.width > area.left)) &&
+      ((editorRect.y < area.top &&
+        editorRect.y + editorRect.height > area.top - bodyScrollTop + area.height) ||
+        (editorRect.y > area.top && editorRect.y < area.top - bodyScrollTop + area.height) ||
+        (editorRect.y + editorRect.height < area.top - bodyScrollTop + area.height &&
+          editorRect.y + editorRect.height > area.top - bodyScrollTop))
+    ) {
+      const blocks = this.editor.getBlocks();
+      let blockIds: string[] = [];
+      let selectedBlocks: Block[] = [];
+      if (isUpward) {
+        for (let i = this.area.start.blockIndex ?? blocks.length - 1; i >= 0; i--) {
+          const blockEl = getBlockElementById(blocks[i].id);
+          const rect = blockEl?.getBoundingClientRect();
+
+          if (rect && rect.top + rect.height > e.clientY) {
+            blockIds.push(blocks[i].id);
+          } else {
+            break;
+          }
+        }
+      } else {
+        for (let i = this.area.start.blockIndex ?? 0; i < blocks.length; i++) {
+          const blockEl = getBlockElementById(blocks[i].id);
+          const rect = blockEl?.getBoundingClientRect();
+          if (rect && rect.top <= e.clientY) {
+            if (container && area.top >= rect.top + bodyScrollTop) {
+              continue;
+            }
+            blockIds.push(blocks[i].id);
+          } else {
+            break;
+          }
+        }
+      }
+      selectedBlocks = copyObject(blocks.filter((v) => blockIds.includes(v.id)));
+      this.selectBlocks(selectedBlocks);
+    } else {
+      this.selectBlocks([]);
+    }
+  }
+
+  areaEnd(e: MouseEvent) {
+    setTimeout(() => {
+      this.area.start = null;
+      this.area.end = null;
+      this.areaSelecting = false;
+      if (this.areaEl) {
+        this.areaEl.remove();
+        this.areaEl = null;
+      }
+    }, 10);
+  }
+
+  reset(e?: MouseEvent) {
     if (this.changed) return;
+    if (this.areaSelecting && e && this.area.start) {
+      const movedX = e.clientX - this.area.start.left;
+      const movedY = e.clientY - this.area.start.top;
+      if (!((movedX > -5 || movedX < 5) && (movedY > -5 || movedY < 5))) {
+        return;
+      }
+    }
     this.mousePressed = false;
     this.enabled = false;
     this.startBlockId = null;
-    this.selectedBlocks = [];
-    this.sendBlockSelectedEvent([]);
+    this.selectBlocks([]);
   }
 
   getSelectedBlocks() {
@@ -347,6 +538,55 @@ export class SelectorModule implements Module {
     const blocks = editor.getBlocks();
     event.preventDefault();
     editor.getModule('selector').selectBlocks(blocks);
+    return;
+  }
+
+  private _handleIndent(editor: EditorController, event: React.KeyboardEvent) {
+    event.preventDefault();
+    const blocks = editor.getBlocks();
+    const { indentatableFormats } = editor.getSettings();
+    const affectedIds = [];
+    for (let i = 0; i < this.selectedBlocks.length; i++) {
+      const blockIndex = blocks.findIndex((v) => v.id === this.selectedBlocks[i].id);
+      if (blockIndex === -1) return;
+      if (!blocks[blockIndex] || !indentatableFormats.includes(blocks[blockIndex].type)) return;
+      if (blocks[blockIndex].attributes.indent > 6) return;
+      editor.updateBlock({
+        ...blocks[blockIndex],
+        attributes: {
+          ...blocks[blockIndex].attributes,
+          indent: (blocks[blockIndex].attributes.indent ?? 0) + 1,
+        },
+      });
+      affectedIds.push(this.selectedBlocks[i].id);
+    }
+    editor.numberingList();
+    editor.render(affectedIds);
+    return;
+  }
+
+  private _handleOutdent(editor: EditorController, event: React.KeyboardEvent) {
+    event.preventDefault();
+    const blocks = editor.getBlocks();
+    const { indentatableFormats } = editor.getSettings();
+    const affectedIds = [];
+    for (let i = 0; i < this.selectedBlocks.length; i++) {
+      const blockIndex = blocks.findIndex((v) => v.id === this.selectedBlocks[i].id);
+      if (blockIndex === -1) return;
+      if (!blocks[blockIndex] || !indentatableFormats.includes(blocks[blockIndex].type)) return;
+      if ((blocks[blockIndex].attributes.indent ?? 0) < 1) return;
+      const indent = blocks[blockIndex].attributes.indent - 1;
+      editor.updateBlock({
+        ...blocks[blockIndex],
+        attributes: {
+          ...blocks[blockIndex].attributes,
+          indent: indent !== 0 ? indent : false,
+        },
+      });
+      affectedIds.push(this.selectedBlocks[i].id);
+    }
+    editor.numberingList();
+    editor.render(affectedIds);
     return;
   }
 }

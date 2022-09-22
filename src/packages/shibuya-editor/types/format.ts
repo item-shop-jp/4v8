@@ -11,11 +11,13 @@ export interface Formats {
   'block/paragraph': React.FC<ParagraphProps>;
   'block/header1': React.FC<Header1Props>;
   'inline/text': React.FC<InlineTextProps>;
-  'inline/style/bold': FlattenSimpleInterpolation;
-  'inline/style/underline': FlattenSimpleInterpolation;
-  'inline/style/strike': FlattenSimpleInterpolation;
-  'inline/style/code': FlattenSimpleInterpolation;
-  'inline/style/link': FlattenSimpleInterpolation;
+  'inline/style/bold': () => FlattenSimpleInterpolation;
+  'inline/style/underline': () => FlattenSimpleInterpolation;
+  'inline/style/strike': () => FlattenSimpleInterpolation;
+  'inline/style/code': () => FlattenSimpleInterpolation;
+  'inline/style/italic': () => FlattenSimpleInterpolation;
+  'inline/style/color': (color: string) => FlattenSimpleInterpolation;
+  'inline/style/link': (url?: string) => FlattenSimpleInterpolation;
   'popup/link': React.FC<LinkPopupProps>;
   [key: string]: any;
 }

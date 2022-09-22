@@ -13,6 +13,9 @@ import {
   splitInlineContents,
 } from '../utils/block';
 import { Inline } from '../types/inline';
+import stringLength from 'string-length';
+import { createInline } from '../utils/inline';
+import { copyObject } from '../utils/object';
 
 interface Props {
   eventEmitter: EventEmitter;
@@ -61,16 +64,15 @@ export class ClipboardModule implements Module {
     event.preventDefault();
     const caretPosition = this.editor.getCaretPosition();
 
-    // file upload
     const dataTransferItems = event.clipboardData.items ?? [];
-    if (dataTransferItems.length > 0) {
-      const files: File[] = [];
-      for (let i = 0; i < dataTransferItems.length; i++) {
-        const file = dataTransferItems[i].getAsFile();
-        if (!file) return;
-        files.push(file);
-      }
-      console.log(files);
+    const files: File[] = [];
+    for (let i = 0; i < dataTransferItems.length; i++) {
+      const file = dataTransferItems[i].getAsFile();
+      if (file) files.push(file);
+    }
+
+    // file upload
+    if (files.length > 0) {
       this.editor.getModule('uploader').upload(files);
       return;
     }
@@ -90,6 +92,7 @@ export class ClipboardModule implements Module {
           prevBlockId = appendBlock.id;
           return appendBlock.id;
         });
+        this.editor.numberingList();
         this.editor.render(affectedIds);
         setTimeout(() => {
           const textIndex = this.editor.getBlockLength(prevBlockId) ?? 0;
@@ -100,14 +103,23 @@ export class ClipboardModule implements Module {
           this.editor.updateCaretRect();
         }, 10);
       } else if (type === 'inlines') {
-        const inlineContents = data as Inline[];
-        const [first, last] = splitInlineContents(prevBlock.contents, caretPosition.index);
-        const appendTextLength = inlineContents.map((v) => v.text).join('').length;
+        const appendContents = data as Inline[];
+        let contents = copyObject(prevBlock.contents);
+        if (caretPosition.length > 0) {
+          contents = deleteInlineContents(contents, caretPosition.index, caretPosition.length);
+        }
+        const [first, last] = splitInlineContents(contents, caretPosition.index);
+        const appendTextLength = stringLength(
+          appendContents
+            .map((v) => v.text)
+            .join('')
+            .replaceAll(/\uFEFF/gi, ''),
+        );
         this.editor.updateBlock({
           ...prevBlock,
           contents: [
             ...first,
-            ...inlineContents.map((v) => {
+            ...appendContents.map((v) => {
               return { ...v, id: nanoid() };
             }),
             ...last,
@@ -122,6 +134,69 @@ export class ClipboardModule implements Module {
           this.editor.updateCaretRect();
         }, 10);
       }
+      return;
+    }
+
+    const clipboardText = event.clipboardData.getData('text/plain');
+    const linkRegExp = new RegExp(`^https?://[a-zA-Z0-9-_.!'()*;/?:@&=+$,%#]+$`, 'i');
+    const linkMatch = clipboardText.match(linkRegExp);
+    // if it was url
+    if (prevBlock && caretPosition && linkMatch) {
+      if (caretPosition.length > 0) {
+        this.editor.formatText(prevBlock.id, caretPosition.index, caretPosition.length, {
+          link: linkMatch[0],
+        });
+        setTimeout(() => {
+          this.editor.setCaretPosition({
+            blockId: prevBlock.id,
+            index: caretPosition.index,
+            length: caretPosition.length,
+          });
+          this.editor.updateCaretRect();
+        }, 10);
+      } else {
+        const [first, last] = splitInlineContents(
+          copyObject(prevBlock.contents),
+          caretPosition.index,
+        );
+        const appendContent = createInline('TEXT', clipboardText, { link: linkMatch[0] });
+        this.editor.updateBlock({
+          ...prevBlock,
+          contents: [...first, appendContent, ...last],
+        });
+        this.editor.render([prevBlock.id]);
+        setTimeout(() => {
+          this.editor.setCaretPosition({
+            blockId: prevBlock.id,
+            index: caretPosition.index + stringLength(clipboardText),
+          });
+          this.editor.updateCaretRect();
+        }, 10);
+      }
+      return;
+    }
+
+    if (prevBlock && caretPosition && clipboardText.length > 0) {
+      let contents = copyObject(prevBlock.contents);
+      if (caretPosition.length > 0) {
+        contents = deleteInlineContents(contents, caretPosition.index, caretPosition.length);
+      }
+      const [first, last] = splitInlineContents(contents, caretPosition.index);
+      const appendContent = createInline('TEXT', clipboardText);
+
+      this.editor.updateBlock({
+        ...prevBlock,
+        contents: [...first, appendContent, ...last],
+      });
+      this.editor.render([prevBlock.id]);
+      setTimeout(() => {
+        this.editor.setCaretPosition({
+          blockId: prevBlock.id,
+          index: caretPosition.index + stringLength(clipboardText),
+        });
+        this.editor.updateCaretRect();
+      }, 10);
+      return;
     }
   }
 

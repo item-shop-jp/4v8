@@ -29,13 +29,11 @@ const json0diff = require('json0-ot-diff');
 interface Props {
   settings: Settings;
   eventEmitter: EventEmitter;
-  scrollContainer?: HTMLElement | string;
 }
 
 export function useEditor({
   settings,
   eventEmitter,
-  scrollContainer,
 }: Props): [React.MutableRefObject<HTMLDivElement | null>, EditorController] {
   const editorRef = React.useRef<HTMLDivElement>(null);
   const lastCaretPositionRef = React.useRef<CaretPosition | null>();
@@ -98,7 +96,7 @@ export function useEditor({
         return prev({ blockId: prevBlock.dataset.blockId });
       }
       let prevRect = prevBlock.getBoundingClientRect();
-      const container = getScrollContainer(scrollContainer);
+      const container = getScrollContainer(settings.scrollContainer);
       const containerOffsetTop = container ? container.getBoundingClientRect().top : 0;
 
       if (
@@ -180,7 +178,7 @@ export function useEditor({
       }
       let nextRect =
         nextBlock.parentElement?.getBoundingClientRect() ?? nextBlock.getBoundingClientRect();
-      const container = getScrollContainer(scrollContainer);
+      const container = getScrollContainer(settings.scrollContainer);
       const scrollHeight = container?.clientHeight ?? window.innerHeight;
 
       if (container) {
@@ -364,6 +362,7 @@ export function useEditor({
 
         selection.removeAllRanges();
         selection.addRange(range);
+
         updateCaretPositionRef();
       } catch (e) {
         eventEmitter.warning('Invalid Range', e);
@@ -378,7 +377,7 @@ export function useEditor({
     if (!element) return;
     let nextRect =
       element.parentElement?.getBoundingClientRect() ?? element.getBoundingClientRect();
-    const container = getScrollContainer(scrollContainer);
+    const container = getScrollContainer(settings.scrollContainer);
     const scrollHeight = container?.clientHeight ?? window.innerHeight;
     if (container) {
       const containerRect = container.getBoundingClientRect() ?? 0;
@@ -802,7 +801,7 @@ export function useEditor({
   }, [settings]);
 
   const getEditorRef = React.useCallback(() => {
-    return editorRef.current;
+    return editorRef.current as HTMLDivElement;
   }, []);
 
   const editorController = React.useMemo(() => {
@@ -818,11 +817,13 @@ export function useEditor({
       getBlockLength,
       createBlock,
       updateBlock,
+      updateBlocks,
       deleteBlock,
       deleteBlocks,
       sync,
       getCaretPosition,
       setCaretPosition,
+      updateCaretPositionRef,
       updateCaretRect,
       scrollIntoView,
       getNativeRange,

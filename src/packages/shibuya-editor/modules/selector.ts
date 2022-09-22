@@ -284,7 +284,6 @@ export class SelectorModule implements Module {
     const scrollEl = document.scrollingElement as HTMLElement;
     const bodyScrollTop = scrollEl?.scrollTop ?? 0;
     this.area.end = { top: e.clientY, left: e.clientX, bodyScrollTop, containerScrollTop };
-
     const startTop = this.area.start.bodyScrollTop + this.area.start.top;
     const endTop = bodyScrollTop + this.area.end.top;
     const startLeft = this.area.start.left;
@@ -358,10 +357,7 @@ export class SelectorModule implements Module {
           const blockEl = getBlockElementById(blocks[i].id);
           const rect = blockEl?.getBoundingClientRect();
           if (rect && rect.top <= e.clientY) {
-            if (
-              container &&
-              area.top + this.area.start.containerScrollTop >= rect.top + containerScrollTop
-            ) {
+            if (container && area.top >= rect.top + bodyScrollTop) {
               continue;
             }
             blockIds.push(blocks[i].id);

@@ -2,6 +2,7 @@ import { Module } from '../types/module';
 import { EventEmitter } from '../utils/event-emitter';
 import { EditorController } from '../types/editor';
 import { CaretPosition } from '../types/caret';
+import { getBlockElementById } from '../utils/block';
 
 interface Props {
   eventEmitter: EventEmitter;
@@ -35,7 +36,7 @@ export class UploaderModule implements Module {
     this.eventEmitter.info('destroy uploader module');
   }
 
-  upload(files: File[]) {
+  upload(files: File[], blockId?: string) {
     if (!this.options.onUpload || typeof this.options.onUpload !== 'function') return;
 
     files.forEach((file) => {
@@ -44,6 +45,7 @@ export class UploaderModule implements Module {
         const fileReader = new FileReader();
         fileReader.onload = async (event) => {
           const addedBlock = this.editor.getModule('editor').createBlock({
+            prevId: blockId,
             type: 'IMAGE',
             attributes: {
               thumbnail: (<FileReader>event.target).result,
@@ -52,6 +54,10 @@ export class UploaderModule implements Module {
               isUploading: true,
             },
           });
+          setTimeout(() => {
+            const el = getBlockElementById(addedBlock.id);
+            el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }, 20);
           const res = await this.options.onUpload({
             original: file,
             base64: (<FileReader>event.target).result as string,
@@ -77,6 +83,7 @@ export class UploaderModule implements Module {
         const fileReader = new FileReader();
         fileReader.onload = async (event) => {
           const addedBlock = this.editor.getModule('editor').createBlock({
+            prevId: blockId,
             type: 'FILE',
             attributes: {
               fileName: file.name,
@@ -87,6 +94,10 @@ export class UploaderModule implements Module {
               isUploading: true,
             },
           });
+          setTimeout(() => {
+            const el = getBlockElementById(addedBlock.id);
+            el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }, 20);
           const res = await this.options.onUpload({
             original: file,
             base64: (<FileReader>event.target).result as string,

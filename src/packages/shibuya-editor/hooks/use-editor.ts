@@ -362,6 +362,7 @@ export function useEditor({
 
         selection.removeAllRanges();
         selection.addRange(range);
+
         updateCaretPositionRef();
       } catch (e) {
         eventEmitter.warning('Invalid Range', e);
@@ -824,6 +825,7 @@ export function useEditor({
       sync,
       getCaretPosition,
       setCaretPosition,
+      updateCaretPositionRef,
       updateCaretRect,
       scrollIntoView,
       getNativeRange,

@@ -8649,16 +8649,17 @@ react-is@^17.0.1:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-17.0.1.tgz#5b3531bd76a645a4c9fb6e693ed36419e3301339"
   integrity sha512-NAnt2iGDXohE5LI7uBnLnqvLQMtzhkiAOLXTmv+qnF9Ky7xAPcX8Up/xWIhxvLVGJvuLiNc4xQLtuqDRzb4fSA==
 
-react-is@^18.0.0:
+react-is@^18.0.0, react-is@^18.2.0:
   version "18.2.0"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-18.2.0.tgz#199431eeaaa2e09f86427efbb4f1473edb47609b"
   integrity sha512-xWGDIW6x921xtzPkhiULtthJHoJvBbF3q26fzloPCK0hsvxtPVelvftw3zjbHWSkR2km9Z+4uxbDDK/6Zw9B8w==
 
-react-loader-spinner@^5.1.7-beta.1:
-  version "5.1.7-beta.1"
-  resolved "https://registry.yarnpkg.com/react-loader-spinner/-/react-loader-spinner-5.1.7-beta.1.tgz#db47a38a02bbc9316583d9a61938e09221e28674"
-  integrity sha512-Lo5qVWUyhAMs92PffsJRwH6iqPTgBmC7pocFA8Z3fkxS8s9OVKTIKRMvgywQ+CAxEXN9H5AqziYS+8zT7yK3CQ==
+react-loader-spinner@^5.3.3:
+  version "5.3.3"
+  resolved "https://registry.yarnpkg.com/react-loader-spinner/-/react-loader-spinner-5.3.3.tgz#54d396acded36580424901b0ac04f8a573b8b523"
+  integrity sha512-eEUmZBsVli0VAZwsUjeYHU0X3P/utv/Oz5zI8oQa0Xx+ttIZMXYa/WmqHoL2jmqPM01zGB3fyMZjs7xsl+uvRw==
   dependencies:
+    react-is "^18.2.0"
     styled-components "^5.3.5"
     styled-tools "^1.7.2"
 

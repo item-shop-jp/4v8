@@ -16,10 +16,6 @@ export default [
       },
     ],
     external: ['react', 'react-dom'],
-    globals: {
-      react: 'React',
-      'react-dom': 'ReactDOM',
-    },
     plugins: [resolve({ browser: true }), commonjs(), typescript({ tsconfig: './tsconfig.json' })],
   },
 ];

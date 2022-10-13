@@ -6207,6 +6207,7 @@ const EditorEvents = {
     EVENT_BLOCK_RERENDER_FORCE: 'block-rerender-force',
     EVENT_BLOCK_SELECTED: 'block-selected',
     EVENT_SELECTION_CHANGE: 'selection-change',
+    EVENT_LINK_CLICK: 'button-clicked',
     EVENT_LOG_INFO: 'log-info',
     EVENT_LOG_WARNING: 'log-warning',
     EVENT_LOG_ERROR: 'log-error',
@@ -6277,7 +6278,7 @@ function useBlockRenderer({ blockId, editor }) {
 }
 
 const InlineContainer = (_a) => {
-    var { contents, formats } = _a, props = __rest(_a, ["contents", "formats"]);
+    var { contents, formats, editor } = _a, props = __rest(_a, ["contents", "formats", "editor"]);
     return (jsxRuntime.exports.jsx(jsxRuntime.exports.Fragment, { children: contents.map((content) => {
             let Container;
             const inlineFormat = `inline/${content.type.toLocaleLowerCase()}`;
@@ -6288,7 +6289,7 @@ const InlineContainer = (_a) => {
             else {
                 Container = formats[inlineFormat];
             }
-            return (jsxRuntime.exports.jsx(Container, Object.assign({ formats: formats, "data-inline-id": content.id, "data-format": inlineFormat, "data-attributes": JSON.stringify(content.attributes), inline: content }, props), content.id));
+            return (jsxRuntime.exports.jsx(Container, Object.assign({ formats: formats, editor: editor, "data-inline-id": content.id, "data-format": inlineFormat, "data-attributes": JSON.stringify(content.attributes), inline: content }, props), content.id));
         }) }));
 };
 
@@ -6315,15 +6316,15 @@ const Overlay = He.div `
 `;
 const BlockContainer = React__namespace.memo((_a) => {
     var _b, _c, _d;
-    var { blockId, editor, selected, readOnly = false, formats } = _a, props = __rest(_a, ["blockId", "editor", "selected", "readOnly", "formats"]);
+    var { blockId, editor, selected, readOnly = false, scrollContainer, formats } = _a, props = __rest(_a, ["blockId", "editor", "selected", "readOnly", "scrollContainer", "formats"]);
     const block = useBlockRenderer({ blockId, editor });
     const memoContents = React__namespace.useMemo(() => {
         var _a;
-        return InlineContainer({ contents: (_a = block === null || block === void 0 ? void 0 : block.contents) !== null && _a !== void 0 ? _a : [], formats });
+        return InlineContainer({ contents: (_a = block === null || block === void 0 ? void 0 : block.contents) !== null && _a !== void 0 ? _a : [], formats, editor, scrollContainer });
     }, [block === null || block === void 0 ? void 0 : block.contents, formats]);
     const blockFormat = `block/${block === null || block === void 0 ? void 0 : block.type.toLocaleLowerCase()}`;
     const Container = (_b = formats[blockFormat]) !== null && _b !== void 0 ? _b : formats['block/paragraph'];
-    return (jsxRuntime.exports.jsxs(Outer, Object.assign({ "data-id": blockId, style: { '--indent': `${(_d = (_c = block === null || block === void 0 ? void 0 : block.attributes) === null || _c === void 0 ? void 0 : _c.indent) !== null && _d !== void 0 ? _d : 0}` } }, { children: [jsxRuntime.exports.jsx(Container, Object.assign({ suppressContentEditableWarning: true, className: 'notranslate', contentEditable: !readOnly, blockId: blockId, "data-block-id": blockId, "data-attributes": JSON.stringify(block === null || block === void 0 ? void 0 : block.attributes), "data-metas": JSON.stringify(block === null || block === void 0 ? void 0 : block.meta), "data-format": blockFormat, formats: formats, attributes: block === null || block === void 0 ? void 0 : block.attributes, meta: block === null || block === void 0 ? void 0 : block.meta, contents: memoContents, selected: selected }, props)), selected && jsxRuntime.exports.jsx(Overlay, {})] })));
+    return (jsxRuntime.exports.jsxs(Outer, Object.assign({ "data-id": blockId, style: { '--indent': `${(_d = (_c = block === null || block === void 0 ? void 0 : block.attributes) === null || _c === void 0 ? void 0 : _c.indent) !== null && _d !== void 0 ? _d : 0}` } }, { children: [jsxRuntime.exports.jsx(Container, Object.assign({ suppressContentEditableWarning: true, className: 'notranslate', contentEditable: !readOnly, blockId: blockId, "data-block-id": blockId, "data-attributes": JSON.stringify(block === null || block === void 0 ? void 0 : block.attributes), "data-metas": JSON.stringify(block === null || block === void 0 ? void 0 : block.meta), "data-format": blockFormat, formats: formats, attributes: block === null || block === void 0 ? void 0 : block.attributes, meta: block === null || block === void 0 ? void 0 : block.meta, contents: memoContents, editor: editor, selected: selected }, props)), selected && jsxRuntime.exports.jsx(Overlay, {})] })));
 });
 
 function useMutationObserver(ref, callback, options = {
@@ -6630,6 +6631,197 @@ const Paragraph = React__namespace.memo((_a) => {
     return jsxRuntime.exports.jsx(P, Object.assign({}, props, { children: contents }));
 });
 
+var getDefaultStyle = function (visible) { return ({
+    display: visible ? 'flex' : 'none',
+}); };
+
+var DEFAULT_COLOR = '#4fa94d';
+var DEFAULT_WAI_ARIA_ATTRIBUTE = {
+    'aria-busy': true,
+    role: 'status',
+};
+
+var __assign$v = (undefined && undefined.__assign) || function () {
+    __assign$v = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign$v.apply(this, arguments);
+};
+
+var __assign$u = (undefined && undefined.__assign) || function () {
+    __assign$u = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign$u.apply(this, arguments);
+};
+
+var __assign$t = (undefined && undefined.__assign) || function () {
+    __assign$t = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign$t.apply(this, arguments);
+};
+
+var __assign$s = (undefined && undefined.__assign) || function () {
+    __assign$s = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign$s.apply(this, arguments);
+};
+
+var __assign$r = (undefined && undefined.__assign) || function () {
+    __assign$r = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign$r.apply(this, arguments);
+};
+
+var __assign$q = (undefined && undefined.__assign) || function () {
+    __assign$q = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign$q.apply(this, arguments);
+};
+
+var __assign$p = (undefined && undefined.__assign) || function () {
+    __assign$p = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign$p.apply(this, arguments);
+};
+
+var __makeTemplateObject$2 = (undefined && undefined.__makeTemplateObject) || function (cooked, raw) {
+    if (Object.defineProperty) { Object.defineProperty(cooked, "raw", { value: raw }); } else { cooked.raw = raw; }
+    return cooked;
+};
+var len = 242.776657104492;
+var time = 1.6;
+var anim = Ue(templateObject_1$2 || (templateObject_1$2 = __makeTemplateObject$2(["\n  12.5% {\n    stroke-dasharray: ", "px, ", "px;\n    stroke-dashoffset: -", "px;\n  }\n  43.75% {\n    stroke-dasharray: ", "px, ", "px;\n    stroke-dashoffset: -", "px;\n  }\n  100% {\n    stroke-dasharray: ", "px, ", "px;\n    stroke-dashoffset: -", "px;\n  }\n"], ["\n  12.5% {\n    stroke-dasharray: ", "px, ", "px;\n    stroke-dashoffset: -", "px;\n  }\n  43.75% {\n    stroke-dasharray: ", "px, ", "px;\n    stroke-dashoffset: -", "px;\n  }\n  100% {\n    stroke-dasharray: ", "px, ", "px;\n    stroke-dashoffset: -", "px;\n  }\n"])), len * 0.14, len, len * 0.11, len * 0.35, len, len * 0.35, len * 0.01, len, len * 0.99);
+He.path(templateObject_2$2 || (templateObject_2$2 = __makeTemplateObject$2(["\n  stroke-dasharray: ", "px, ", ";\n  stroke-dashoffset: 0;\n  animation: ", " ", "s linear infinite;\n"], ["\n  stroke-dasharray: ", "px, ", ";\n  stroke-dashoffset: 0;\n  animation: ", " ", "s linear infinite;\n"])), len * 0.01, len, anim, time);
+var templateObject_1$2, templateObject_2$2;
+
+var __assign$o = (undefined && undefined.__assign) || function () {
+    __assign$o = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign$o.apply(this, arguments);
+};
+
+var __assign$n = (undefined && undefined.__assign) || function () {
+    __assign$n = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign$n.apply(this, arguments);
+};
+var MutatingDots = function (_a) {
+    var _b = _a.height, height = _b === void 0 ? 90 : _b, _c = _a.width, width = _c === void 0 ? 80 : _c, _d = _a.radius, radius = _d === void 0 ? 12.5 : _d, _e = _a.color, color = _e === void 0 ? DEFAULT_COLOR : _e, _f = _a.secondaryColor, secondaryColor = _f === void 0 ? DEFAULT_COLOR : _f, _g = _a.ariaLabel, ariaLabel = _g === void 0 ? 'mutating-dots-loading' : _g, wrapperStyle = _a.wrapperStyle, wrapperClass = _a.wrapperClass, _h = _a.visible, visible = _h === void 0 ? true : _h;
+    return (React__default["default"].createElement("div", __assign$n({ style: __assign$n(__assign$n({}, getDefaultStyle(visible)), wrapperStyle), className: wrapperClass, "data-testid": "mutating-dots-loading", "aria-label": ariaLabel }, DEFAULT_WAI_ARIA_ATTRIBUTE),
+        React__default["default"].createElement("svg", { id: "goo-loader", width: width, height: height, "data-testid": "mutating-dots-svg" },
+            React__default["default"].createElement("filter", { id: "fancy-goo" },
+                React__default["default"].createElement("feGaussianBlur", { in: "SourceGraphic", stdDeviation: "6", result: "blur" }),
+                React__default["default"].createElement("feColorMatrix", { in: "blur", mode: "matrix", values: "1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9", result: "goo" }),
+                React__default["default"].createElement("feComposite", { in: "SourceGraphic", in2: "goo", operator: "atop" })),
+            React__default["default"].createElement("g", { filter: "url(#fancy-goo)" },
+                React__default["default"].createElement("animateTransform", { id: "mainAnim", attributeName: "transform", attributeType: "XML", type: "rotate", from: "0 50 50", to: "359 50 50", dur: "1.2s", repeatCount: "indefinite" }),
+                React__default["default"].createElement("circle", { cx: "50%", cy: "40", r: radius, fill: color },
+                    React__default["default"].createElement("animate", { id: "cAnim1", attributeType: "XML", attributeName: "cy", dur: "0.6s", begin: "0;cAnim1.end+0.2s", calcMode: "spline", values: "40;20;40", keyTimes: "0;0.3;1", keySplines: "0.09, 0.45, 0.16, 1;0.09, 0.45, 0.16, 1" })),
+                React__default["default"].createElement("circle", { cx: "50%", cy: "60", r: radius, fill: secondaryColor },
+                    React__default["default"].createElement("animate", { id: "cAnim2", attributeType: "XML", attributeName: "cy", dur: "0.6s", begin: "0.4s;cAnim2.end+0.2s", calcMode: "spline", values: "60;80;60", keyTimes: "0;0.3;1", keySplines: "0.09, 0.45, 0.16, 1;0.09, 0.45, 0.16, 1" }))))));
+};
+
+var __assign$m = (undefined && undefined.__assign) || function () {
+    __assign$m = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign$m.apply(this, arguments);
+};
+
+var __assign$l = (undefined && undefined.__assign) || function () {
+    __assign$l = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign$l.apply(this, arguments);
+};
+
+var __assign$k = (undefined && undefined.__assign) || function () {
+    __assign$k = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign$k.apply(this, arguments);
+};
+
+var __assign$j = (undefined && undefined.__assign) || function () {
+    __assign$j = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign$j.apply(this, arguments);
+};
+
 var __assign$i = (undefined && undefined.__assign) || function () {
     __assign$i = Object.assign || function(t) {
         for (var s, i = 1, n = arguments.length; i < n; i++) {
@@ -6642,6 +6834,48 @@ var __assign$i = (undefined && undefined.__assign) || function () {
     return __assign$i.apply(this, arguments);
 };
 
+/**
+ * Returns the value of `props[path]` or `defaultValue`
+ * @example
+ * import styled from "styled-components";
+ * import { prop } from "styled-tools";
+ *
+ * const Button = styled.button`
+ *   color: ${prop("color", "red")};
+ * `;
+ */
+var prop = function prop(path, defaultValue) {
+  return function () {
+    var props = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+    if (typeof props[path] !== "undefined") {
+      return props[path];
+    }
+
+    if (path && path.indexOf(".") > 0) {
+      var paths = path.split(".");
+      var length = paths.length;
+      var object = props[paths[0]];
+      var index = 1;
+
+      while (object != null && index < length) {
+        object = object[paths[index]];
+        index += 1;
+      }
+
+      if (typeof object !== "undefined") {
+        return object;
+      }
+    }
+
+    return defaultValue;
+  };
+};
+
+var __makeTemplateObject$1 = (undefined && undefined.__makeTemplateObject) || function (cooked, raw) {
+    if (Object.defineProperty) { Object.defineProperty(cooked, "raw", { value: raw }); } else { cooked.raw = raw; }
+    return cooked;
+};
 var __assign$h = (undefined && undefined.__assign) || function () {
     __assign$h = Object.assign || function(t) {
         for (var s, i = 1, n = arguments.length; i < n; i++) {
@@ -6653,6 +6887,18 @@ var __assign$h = (undefined && undefined.__assign) || function () {
     };
     return __assign$h.apply(this, arguments);
 };
+var spin = Ue(templateObject_1$1 || (templateObject_1$1 = __makeTemplateObject$1(["\n to {\n    transform: rotate(360deg);\n  }\n"], ["\n to {\n    transform: rotate(360deg);\n  }\n"])));
+var POINTS = [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330];
+var Svg = He.svg(templateObject_2$1 || (templateObject_2$1 = __makeTemplateObject$1(["\n  animation: ", " 0.75s steps(12, end) infinite;\n  animation-duration: ", "s;\n"], ["\n  animation: ", " 0.75s steps(12, end) infinite;\n  animation-duration: ", "s;\n"])), spin, prop('speed', '0.75'));
+var Polyline = He.polyline(templateObject_3$1 || (templateObject_3$1 = __makeTemplateObject$1(["\n  stroke-width: ", "px;\n  stroke-linecap: round;\n\n  &:nth-child(12n + 0) {\n    stroke-opacity: 0.08;\n  }\n\n  &:nth-child(12n + 1) {\n    stroke-opacity: 0.17;\n  }\n\n  &:nth-child(12n + 2) {\n    stroke-opacity: 0.25;\n  }\n\n  &:nth-child(12n + 3) {\n    stroke-opacity: 0.33;\n  }\n\n  &:nth-child(12n + 4) {\n    stroke-opacity: 0.42;\n  }\n\n  &:nth-child(12n + 5) {\n    stroke-opacity: 0.5;\n  }\n\n  &:nth-child(12n + 6) {\n    stroke-opacity: 0.58;\n  }\n\n  &:nth-child(12n + 7) {\n    stroke-opacity: 0.66;\n  }\n\n  &:nth-child(12n + 8) {\n    stroke-opacity: 0.75;\n  }\n\n  &:nth-child(12n + 9) {\n    stroke-opacity: 0.83;\n  }\n\n  &:nth-child(12n + 11) {\n    stroke-opacity: 0.92;\n  }\n"], ["\n  stroke-width: ", "px;\n  stroke-linecap: round;\n\n  &:nth-child(12n + 0) {\n    stroke-opacity: 0.08;\n  }\n\n  &:nth-child(12n + 1) {\n    stroke-opacity: 0.17;\n  }\n\n  &:nth-child(12n + 2) {\n    stroke-opacity: 0.25;\n  }\n\n  &:nth-child(12n + 3) {\n    stroke-opacity: 0.33;\n  }\n\n  &:nth-child(12n + 4) {\n    stroke-opacity: 0.42;\n  }\n\n  &:nth-child(12n + 5) {\n    stroke-opacity: 0.5;\n  }\n\n  &:nth-child(12n + 6) {\n    stroke-opacity: 0.58;\n  }\n\n  &:nth-child(12n + 7) {\n    stroke-opacity: 0.66;\n  }\n\n  &:nth-child(12n + 8) {\n    stroke-opacity: 0.75;\n  }\n\n  &:nth-child(12n + 9) {\n    stroke-opacity: 0.83;\n  }\n\n  &:nth-child(12n + 11) {\n    stroke-opacity: 0.92;\n  }\n"])), function (props) { return props.width; });
+function RotatingLines(_a) {
+    var _b = _a.strokeColor, strokeColor = _b === void 0 ? DEFAULT_COLOR : _b, _c = _a.strokeWidth, strokeWidth = _c === void 0 ? '5' : _c, _d = _a.animationDuration, animationDuration = _d === void 0 ? '0.75' : _d, _e = _a.width, width = _e === void 0 ? '96' : _e, _f = _a.visible, visible = _f === void 0 ? true : _f, _g = _a.ariaLabel, ariaLabel = _g === void 0 ? 'rotating-lines-loading' : _g;
+    var lines = React.useCallback(function () {
+        return POINTS.map(function (point) { return (React__default["default"].createElement(Polyline, { key: point, points: "24,12 24,4", width: strokeWidth, transform: "rotate(".concat(point, ", 24, 24)") })); });
+    }, [strokeWidth]);
+    return !visible ? null : (React__default["default"].createElement(Svg, __assign$h({ xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 48 48", width: width, stroke: strokeColor, speed: animationDuration, "data-testid": "rotating-lines-svg", "aria-label": ariaLabel }, DEFAULT_WAI_ARIA_ATTRIBUTE), lines()));
+}
+var templateObject_1$1, templateObject_2$1, templateObject_3$1;
 
 var __assign$g = (undefined && undefined.__assign) || function () {
     __assign$g = Object.assign || function(t) {
@@ -6690,6 +6936,10 @@ var __assign$e = (undefined && undefined.__assign) || function () {
     return __assign$e.apply(this, arguments);
 };
 
+var __makeTemplateObject = (undefined && undefined.__makeTemplateObject) || function (cooked, raw) {
+    if (Object.defineProperty) { Object.defineProperty(cooked, "raw", { value: raw }); } else { cooked.raw = raw; }
+    return cooked;
+};
 var __assign$d = (undefined && undefined.__assign) || function () {
     __assign$d = Object.assign || function(t) {
         for (var s, i = 1, n = arguments.length; i < n; i++) {
@@ -6701,6 +6951,10 @@ var __assign$d = (undefined && undefined.__assign) || function () {
     };
     return __assign$d.apply(this, arguments);
 };
+var dash = Ue(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n to {\n    stroke-dashoffset: 136;\n  }\n"], ["\n to {\n    stroke-dashoffset: 136;\n  }\n"])));
+He.polygon(templateObject_2 || (templateObject_2 = __makeTemplateObject(["\n  stroke-dasharray: 17;\n  animation: ", " 2.5s cubic-bezier(0.35, 0.04, 0.63, 0.95) infinite;\n"], ["\n  stroke-dasharray: 17;\n  animation: ", " 2.5s cubic-bezier(0.35, 0.04, 0.63, 0.95) infinite;\n"])), dash);
+He.svg(templateObject_3 || (templateObject_3 = __makeTemplateObject(["\n  transform-origin: 50% 65%;\n"], ["\n  transform-origin: 50% 65%;\n"])));
+var templateObject_1, templateObject_2, templateObject_3;
 
 var __assign$c = (undefined && undefined.__assign) || function () {
     __assign$c = Object.assign || function(t) {
@@ -6713,18 +6967,6 @@ var __assign$c = (undefined && undefined.__assign) || function () {
     };
     return __assign$c.apply(this, arguments);
 };
-
-var DEFAULT_COLOR = '#4fa94d';
-
-var __makeTemplateObject$2 = (undefined && undefined.__makeTemplateObject) || function (cooked, raw) {
-    if (Object.defineProperty) { Object.defineProperty(cooked, "raw", { value: raw }); } else { cooked.raw = raw; }
-    return cooked;
-};
-var len = 242.776657104492;
-var time = 1.6;
-var anim = Ue(templateObject_1$2 || (templateObject_1$2 = __makeTemplateObject$2(["\n  12.5% {\n    stroke-dasharray: ", "px, ", "px;\n    stroke-dashoffset: -", "px;\n  }\n  43.75% {\n    stroke-dasharray: ", "px, ", "px;\n    stroke-dashoffset: -", "px;\n  }\n  100% {\n    stroke-dasharray: ", "px, ", "px;\n    stroke-dashoffset: -", "px;\n  }\n"], ["\n  12.5% {\n    stroke-dasharray: ", "px, ", "px;\n    stroke-dashoffset: -", "px;\n  }\n  43.75% {\n    stroke-dasharray: ", "px, ", "px;\n    stroke-dashoffset: -", "px;\n  }\n  100% {\n    stroke-dasharray: ", "px, ", "px;\n    stroke-dashoffset: -", "px;\n  }\n"])), len * 0.14, len, len * 0.11, len * 0.35, len, len * 0.35, len * 0.01, len, len * 0.99);
-He.path(templateObject_2$2 || (templateObject_2$2 = __makeTemplateObject$2(["\n  stroke-dasharray: ", "px, ", ";\n  stroke-dashoffset: 0;\n  animation: ", " ", "s linear infinite;\n"], ["\n  stroke-dasharray: ", "px, ", ";\n  stroke-dashoffset: 0;\n  animation: ", " ", "s linear infinite;\n"])), len * 0.01, len, anim, time);
-var templateObject_1$2, templateObject_2$2;
 
 var __assign$b = (undefined && undefined.__assign) || function () {
     __assign$b = Object.assign || function(t) {
@@ -6748,24 +6990,6 @@ var __assign$a = (undefined && undefined.__assign) || function () {
         return t;
     };
     return __assign$a.apply(this, arguments);
-};
-var getDefaultStyle = function (visible) { return ({
-    display: visible ? 'flex' : 'none'
-}); };
-var MutatingDots = function (_a) {
-    var _b = _a.height, height = _b === void 0 ? 90 : _b, _c = _a.width, width = _c === void 0 ? 80 : _c, _d = _a.radius, radius = _d === void 0 ? 12.5 : _d, _e = _a.color, color = _e === void 0 ? '#4fa94d' : _e, _f = _a.secondaryColor, secondaryColor = _f === void 0 ? '#4fa94d' : _f, _g = _a.ariaLabel, ariaLabel = _g === void 0 ? 'mutating-dots-loading' : _g, wrapperStyle = _a.wrapperStyle, wrapperClass = _a.wrapperClass, _h = _a.visible, visible = _h === void 0 ? true : _h;
-    return (React__default["default"].createElement("div", { style: __assign$a(__assign$a({}, getDefaultStyle(visible)), wrapperStyle), className: wrapperClass, "data-testid": "mutating-dots-loading" },
-        React__default["default"].createElement("svg", { id: "goo-loader", width: width, height: height, "aria-label": ariaLabel, "data-testid": "mutating-dots-svg" },
-            React__default["default"].createElement("filter", { id: "fancy-goo" },
-                React__default["default"].createElement("feGaussianBlur", { in: "SourceGraphic", stdDeviation: "6", result: "blur" }),
-                React__default["default"].createElement("feColorMatrix", { in: "blur", mode: "matrix", values: "1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9", result: "goo" }),
-                React__default["default"].createElement("feComposite", { in: "SourceGraphic", in2: "goo", operator: "atop" })),
-            React__default["default"].createElement("g", { filter: "url(#fancy-goo)" },
-                React__default["default"].createElement("animateTransform", { id: "mainAnim", attributeName: "transform", attributeType: "XML", type: "rotate", from: "0 50 50", to: "359 50 50", dur: "1.2s", repeatCount: "indefinite" }),
-                React__default["default"].createElement("circle", { cx: "50%", cy: "40", r: radius, fill: color },
-                    React__default["default"].createElement("animate", { id: "cAnim1", attributeType: "XML", attributeName: "cy", dur: "0.6s", begin: "0;cAnim1.end+0.2s", calcMode: "spline", values: "40;20;40", keyTimes: "0;0.3;1", keySplines: "0.09, 0.45, 0.16, 1;0.09, 0.45, 0.16, 1" })),
-                React__default["default"].createElement("circle", { cx: "50%", cy: "60", r: radius, fill: secondaryColor },
-                    React__default["default"].createElement("animate", { id: "cAnim2", attributeType: "XML", attributeName: "cy", dur: "0.6s", begin: "0.4s;cAnim2.end+0.2s", calcMode: "spline", values: "60;80;60", keyTimes: "0;0.3;1", keySplines: "0.09, 0.45, 0.16, 1;0.09, 0.45, 0.16, 1" }))))));
 };
 
 var __assign$9 = (undefined && undefined.__assign) || function () {
@@ -6828,63 +7052,6 @@ var __assign$5 = (undefined && undefined.__assign) || function () {
     return __assign$5.apply(this, arguments);
 };
 
-/**
- * Returns the value of `props[path]` or `defaultValue`
- * @example
- * import styled from "styled-components";
- * import { prop } from "styled-tools";
- *
- * const Button = styled.button`
- *   color: ${prop("color", "red")};
- * `;
- */
-var prop = function prop(path, defaultValue) {
-  return function () {
-    var props = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-
-    if (typeof props[path] !== "undefined") {
-      return props[path];
-    }
-
-    if (path && path.indexOf(".") > 0) {
-      var paths = path.split(".");
-      var length = paths.length;
-      var object = props[paths[0]];
-      var index = 1;
-
-      while (object != null && index < length) {
-        object = object[paths[index]];
-        index += 1;
-      }
-
-      if (typeof object !== "undefined") {
-        return object;
-      }
-    }
-
-    return defaultValue;
-  };
-};
-
-var __makeTemplateObject$1 = (undefined && undefined.__makeTemplateObject) || function (cooked, raw) {
-    if (Object.defineProperty) { Object.defineProperty(cooked, "raw", { value: raw }); } else { cooked.raw = raw; }
-    return cooked;
-};
-var spin = Ue(templateObject_1$1 || (templateObject_1$1 = __makeTemplateObject$1(["\n to {\n    transform: rotate(360deg);\n  }\n"], ["\n to {\n    transform: rotate(360deg);\n  }\n"])));
-var POINTS = [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330];
-var Svg = He.svg(templateObject_2$1 || (templateObject_2$1 = __makeTemplateObject$1(["\n  animation: ", " 0.75s steps(12, end) infinite;\n  animation-duration: ", "s;\n"], ["\n  animation: ", " 0.75s steps(12, end) infinite;\n  animation-duration: ", "s;\n"])), spin, prop('speed', '0.75'));
-var Polyline = He.polyline(templateObject_3$1 || (templateObject_3$1 = __makeTemplateObject$1(["\n  stroke-width: ", "px;\n  stroke-linecap: round;\n\n  &:nth-child(12n + 0) {\n    stroke-opacity: 0.08;\n  }\n\n  &:nth-child(12n + 1) {\n    stroke-opacity: 0.17;\n  }\n\n  &:nth-child(12n + 2) {\n    stroke-opacity: 0.25;\n  }\n\n  &:nth-child(12n + 3) {\n    stroke-opacity: 0.33;\n  }\n\n  &:nth-child(12n + 4) {\n    stroke-opacity: 0.42;\n  }\n\n  &:nth-child(12n + 5) {\n    stroke-opacity: 0.5;\n  }\n\n  &:nth-child(12n + 6) {\n    stroke-opacity: 0.58;\n  }\n\n  &:nth-child(12n + 7) {\n    stroke-opacity: 0.66;\n  }\n\n  &:nth-child(12n + 8) {\n    stroke-opacity: 0.75;\n  }\n\n  &:nth-child(12n + 9) {\n    stroke-opacity: 0.83;\n  }\n\n  &:nth-child(12n + 11) {\n    stroke-opacity: 0.92;\n  }\n"], ["\n  stroke-width: ", "px;\n  stroke-linecap: round;\n\n  &:nth-child(12n + 0) {\n    stroke-opacity: 0.08;\n  }\n\n  &:nth-child(12n + 1) {\n    stroke-opacity: 0.17;\n  }\n\n  &:nth-child(12n + 2) {\n    stroke-opacity: 0.25;\n  }\n\n  &:nth-child(12n + 3) {\n    stroke-opacity: 0.33;\n  }\n\n  &:nth-child(12n + 4) {\n    stroke-opacity: 0.42;\n  }\n\n  &:nth-child(12n + 5) {\n    stroke-opacity: 0.5;\n  }\n\n  &:nth-child(12n + 6) {\n    stroke-opacity: 0.58;\n  }\n\n  &:nth-child(12n + 7) {\n    stroke-opacity: 0.66;\n  }\n\n  &:nth-child(12n + 8) {\n    stroke-opacity: 0.75;\n  }\n\n  &:nth-child(12n + 9) {\n    stroke-opacity: 0.83;\n  }\n\n  &:nth-child(12n + 11) {\n    stroke-opacity: 0.92;\n  }\n"])), function (props) { return props.width; });
-function RotatingLines(_a) {
-    var _b = _a.strokeColor, strokeColor = _b === void 0 ? DEFAULT_COLOR : _b, _c = _a.strokeWidth, strokeWidth = _c === void 0 ? '5' : _c, _d = _a.animationDuration, animationDuration = _d === void 0 ? '0.75' : _d, _e = _a.width, width = _e === void 0 ? '96' : _e, _f = _a.visible, visible = _f === void 0 ? true : _f;
-    var lines = React.useCallback(function () {
-        return POINTS.map(function (point) { return (React__default["default"].createElement(Polyline, { key: point, points: "24,12 24,4", width: strokeWidth, transform: "rotate(".concat(point, ", 24, 24)") })); });
-    }, [strokeWidth]);
-    return !visible
-        ? null
-        : (React__default["default"].createElement(Svg, { xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 48 48", width: width, stroke: strokeColor, speed: animationDuration, role: "status", "data-testid": "rotating-lines-svg" }, lines()));
-}
-var templateObject_1$1, templateObject_2$1, templateObject_3$1;
-
 var __assign$4 = (undefined && undefined.__assign) || function () {
     __assign$4 = Object.assign || function(t) {
         for (var s, i = 1, n = arguments.length; i < n; i++) {
@@ -6921,10 +7088,6 @@ var __assign$2 = (undefined && undefined.__assign) || function () {
     return __assign$2.apply(this, arguments);
 };
 
-var __makeTemplateObject = (undefined && undefined.__makeTemplateObject) || function (cooked, raw) {
-    if (Object.defineProperty) { Object.defineProperty(cooked, "raw", { value: raw }); } else { cooked.raw = raw; }
-    return cooked;
-};
 var __assign$1 = (undefined && undefined.__assign) || function () {
     __assign$1 = Object.assign || function(t) {
         for (var s, i = 1, n = arguments.length; i < n; i++) {
@@ -6936,10 +7099,6 @@ var __assign$1 = (undefined && undefined.__assign) || function () {
     };
     return __assign$1.apply(this, arguments);
 };
-var dash = Ue(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n to {\n    stroke-dashoffset: 136;\n  }\n"], ["\n to {\n    stroke-dashoffset: 136;\n  }\n"])));
-He.polygon(templateObject_2 || (templateObject_2 = __makeTemplateObject(["\n  stroke-dasharray: 17;\n  animation: ", " 2.5s cubic-bezier(0.35, 0.04, 0.63, 0.95) infinite;\n"], ["\n  stroke-dasharray: 17;\n  animation: ", " 2.5s cubic-bezier(0.35, 0.04, 0.63, 0.95) infinite;\n"])), dash);
-He.svg(templateObject_3 || (templateObject_3 = __makeTemplateObject(["\n  transform-origin: 50% 65%;\n"], ["\n  transform-origin: 50% 65%;\n"])));
-var templateObject_1, templateObject_2, templateObject_3;
 
 var __assign = (undefined && undefined.__assign) || function () {
     __assign = Object.assign || function(t) {
@@ -6956,10 +7115,16 @@ var __assign = (undefined && undefined.__assign) || function () {
 const Container$4 = He.div `
   outline: none;
   display: flex;
+  margin: 4px 0;
   justify-content: center;
   img {
     max-width: 100%;
+    user-select: none;
+    vertical-align: bottom;
   }
+`;
+const Inner$2 = He.div `
+  position: relative;
 `;
 const Loading$1 = He.div `
   position: absolute;
@@ -6973,15 +7138,111 @@ const Loading$1 = He.div `
   justify-content: center;
   align-items: center;
 `;
+const ImageResizer = He.div `
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 16px;
+  z-index: 1;
+  cursor: col-resize;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+const LeftImageResizer = He(ImageResizer) `
+  left: 0;
+`;
+const RightImageResizer = He(ImageResizer) `
+  right: 0;
+`;
+const ResizeHandler = He.div `
+  pointer-events: none;
+  transition: opacity 0.3s;
+  opacity: ${({ opacity }) => opacity};
+  border-radius: 20px;
+  background: rgba(15, 15, 15, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  width: 6px;
+  height: 48px;
+  max-height: 50%;
+`;
 const Image$1 = React__namespace.memo((_a) => {
-    var { blockId, contents, attributes: { thumbnail, original }, meta: { isUploading = false }, editor } = _a, props = __rest(_a, ["blockId", "contents", "attributes", "meta", "editor"]);
+    var { blockId, contents, attributes: { thumbnail, original, width }, meta: { isUploading = false }, editor } = _a, props = __rest(_a, ["blockId", "contents", "attributes", "meta", "editor"]);
     const imageRef = React__namespace.useRef(null);
-    const handleClick = React__namespace.useCallback((e) => { }, []);
-    const handleMouseDown = React__namespace.useCallback((e) => {
+    const [displayResizer, setDisplayResizer] = React__namespace.useState(false);
+    const [dragParams, setDragParams] = React__namespace.useState();
+    const [imageWidth, setImageWidth] = React__namespace.useState(width !== null && width !== void 0 ? width : 'auto');
+    const handleClick = React__namespace.useCallback((e) => {
         e.preventDefault();
         e.stopPropagation();
     }, []);
-    return (jsxRuntime.exports.jsxs(Container$4, Object.assign({ ref: imageRef }, props, { contentEditable: false }, { children: [jsxRuntime.exports.jsx("img", { src: thumbnail, onClick: handleClick, onMouseDown: handleMouseDown }), isUploading && (jsxRuntime.exports.jsx(Loading$1, { children: jsxRuntime.exports.jsx(MutatingDots, { height: "100", width: "100", color: "#4fa94d", secondaryColor: "#4fa94d", radius: "12.5", ariaLabel: "mutating-dots-loading", visible: true }) }))] })));
+    const handleMouseEnter = React__namespace.useCallback((e) => {
+        setDisplayResizer(true);
+    }, []);
+    const handleMouseLeave = React__namespace.useCallback((e) => {
+        setDisplayResizer(false);
+    }, []);
+    const handleMouseDown = React__namespace.useCallback((type) => (e) => {
+        if (!imageRef.current)
+            return;
+        e.preventDefault();
+        e.stopPropagation();
+        const rect = imageRef.current.getBoundingClientRect();
+        setDragParams({
+            type,
+            left: e.clientX,
+            width: width !== null && width !== void 0 ? width : (rect.width < 100 ? 100 : rect.width),
+        });
+    }, []);
+    React__namespace.useEffect(() => {
+        setImageWidth(width !== null && width !== void 0 ? width : 'auto');
+    }, [width]);
+    React__namespace.useEffect(() => {
+        if (!editor || !dragParams)
+            return;
+        const handleMouseMove = (e) => {
+            if (!dragParams.type)
+                return;
+            let width = 0;
+            if (dragParams.type === 'left') {
+                if (e.clientX < dragParams.left) {
+                    width = dragParams.width - (e.clientX - dragParams.left) * 2;
+                }
+                else {
+                    width = dragParams.width + (dragParams.left - e.clientX) * 2;
+                }
+            }
+            else if (dragParams.type === 'right') {
+                if (e.clientX > dragParams.left) {
+                    width = dragParams.width + (e.clientX - dragParams.left) * 2;
+                }
+                else {
+                    width = dragParams.width - (dragParams.left - e.clientX) * 2;
+                }
+            }
+            if (width < 100) {
+                width = 100;
+            }
+            setImageWidth(width);
+        };
+        const handleMouseUp = (e) => {
+            setDragParams(undefined);
+            if (imageRef.current && typeof imageRef.current.width === 'number') {
+                const currentBlock = editor.getBlock(blockId);
+                if (!currentBlock)
+                    return;
+                editor.updateBlock(Object.assign(Object.assign({}, currentBlock), { attributes: Object.assign(Object.assign({}, currentBlock.attributes), { width: imageRef.current.width }) }));
+                editor.render([blockId]);
+            }
+        };
+        window.addEventListener('mousemove', handleMouseMove, true);
+        window.addEventListener('mouseup', handleMouseUp, true);
+        return () => {
+            window.removeEventListener('mousemove', handleMouseMove, true);
+            window.removeEventListener('mouseup', handleMouseUp, true);
+        };
+    }, [dragParams]);
+    return (jsxRuntime.exports.jsx(Container$4, Object.assign({}, props, { contentEditable: false, draggable: "false" }, { children: jsxRuntime.exports.jsxs(Inner$2, Object.assign({ onMouseEnter: handleMouseEnter, onMouseLeave: handleMouseLeave }, { children: [jsxRuntime.exports.jsx("img", { src: thumbnail, onClick: handleClick, ref: imageRef, width: imageWidth, draggable: "false" }), isUploading ? (jsxRuntime.exports.jsx(Loading$1, { children: jsxRuntime.exports.jsx(MutatingDots, { height: "100", width: "100", color: "#4fa94d", secondaryColor: "#4fa94d", radius: "12.5", ariaLabel: "mutating-dots-loading", visible: true }) })) : (jsxRuntime.exports.jsxs(jsxRuntime.exports.Fragment, { children: [jsxRuntime.exports.jsx(LeftImageResizer, Object.assign({ onMouseDown: handleMouseDown('left') }, { children: jsxRuntime.exports.jsx(ResizeHandler, { opacity: displayResizer ? 1 : 0 }) })), jsxRuntime.exports.jsx(RightImageResizer, Object.assign({ onMouseDown: handleMouseDown('right') }, { children: jsxRuntime.exports.jsx(ResizeHandler, { opacity: displayResizer ? 1 : 0 }) }))] }))] })) })));
 });
 
 const BYTE_UNITS = [
@@ -7107,10 +7368,10 @@ function prettyBytes(number, options) {
 const Container$3 = He.div `
   outline: none;
   display: flex;
-  margin: 0 12px;
   padding: 0 12px;
   background: #eee;
   border-radius: 8px;
+  margin: 4px 12px;
 `;
 const IconContainer = He.div `
   display: flex;
@@ -7174,25 +7435,25 @@ const Text$1 = He.span `
     return Object.keys(attributes).map((key) => {
         const styleFormat = `inline/style/${key}`;
         if (attributes[key] && formats[styleFormat]) {
-            return formats[styleFormat];
+            return formats[styleFormat](attributes[key]);
         }
         return;
     });
 }}
 `;
-const Link = He.a `
+const Link$2 = He.a `
   ${({ attributes, formats }) => {
     return Object.keys(attributes).map((key) => {
         const styleFormat = `inline/style/${key}`;
         if (attributes[key] && formats[styleFormat]) {
-            return formats[styleFormat];
+            return formats[styleFormat](attributes[key]);
         }
         return;
     });
 }}
 `;
 const InlineText = (_a) => {
-    var { inline, formats } = _a, props = __rest(_a, ["inline", "formats"]);
+    var { inline, formats, editor, scrollContainer } = _a, props = __rest(_a, ["inline", "formats", "editor", "scrollContainer"]);
     const memoInnerHTML = React__namespace.useMemo(() => {
         const text = inline.text.replaceAll('\n', '<br>');
         return {
@@ -7202,22 +7463,31 @@ const InlineText = (_a) => {
             }),
         };
     }, [inline]);
-    return (jsxRuntime.exports.jsx(jsxRuntime.exports.Fragment, { children: inline.attributes['link'] ? (jsxRuntime.exports.jsx(Link, Object.assign({ href: inline.attributes['link'], target: "_blank", dangerouslySetInnerHTML: memoInnerHTML, formats: formats, attributes: inline.attributes }, props))) : (jsxRuntime.exports.jsx(Text$1, Object.assign({ dangerouslySetInnerHTML: memoInnerHTML, formats: formats, attributes: inline.attributes }, props))) }));
+    const handleClickLink = () => {
+        const caretPosition = editor.getCaretPosition();
+        const eventEmitter = editor.getEventEmitter();
+        eventEmitter.emit(EditorEvents.EVENT_LINK_CLICK, {
+            mode: 'openPreview',
+            inline,
+            caretPosition,
+        });
+    };
+    return (jsxRuntime.exports.jsx(jsxRuntime.exports.Fragment, { children: inline.attributes['link'] ? (jsxRuntime.exports.jsx(jsxRuntime.exports.Fragment, { children: jsxRuntime.exports.jsx(Link$2, Object.assign({ href: inline.attributes['link'], target: "_blank", dangerouslySetInnerHTML: memoInnerHTML, formats: formats, attributes: inline.attributes, onClick: handleClickLink }, props)) })) : (jsxRuntime.exports.jsx(Text$1, Object.assign({ dangerouslySetInnerHTML: memoInnerHTML, formats: formats, attributes: inline.attributes }, props))) }));
 };
 
-const Bold = Ce `
+const Bold = () => Ce `
   font-weight: bold;
 `;
 
-const Underline = Ce `
+const Underline = () => Ce `
   border-bottom: 0.05em solid;
 `;
 
-const Strike = Ce `
+const Strike = () => Ce `
   text-decoration: line-through;
 `;
 
-const InlineCode = Ce `
+const InlineCode = () => Ce `
   background: rgba(135, 131, 120, 0.15);
   color: #eb5757;
   border-radius: 3px;
@@ -7225,9 +7495,17 @@ const InlineCode = Ce `
   padding: 0.2em 0.4em;
 `;
 
-const Italic = Ce `
+const Italic = () => Ce `
   transform: skewX(-20deg);
   display: inline-block;
+`;
+
+const Color = (color) => Ce `
+  ${color && `color: ${color};`}
+`;
+
+const Link$1 = () => Ce `
+  cursor: pointer;
 `;
 
 const Container$2 = He.div `
@@ -7237,7 +7515,7 @@ const Container$2 = He.div `
   transform: translate(-50%, -50%);
   padding: 8px;
 `;
-const Button$1 = He.a `
+const Button$2 = He.a `
   margin: 8px;
   border: 1px solid #666;
   border-radius: 4px;
@@ -7279,7 +7557,7 @@ const GlobalToolbar = React__namespace.memo((_a) => {
             subs.unsubscribe();
         };
     });
-    return ReactDOM__default["default"].createPortal(jsxRuntime.exports.jsx(jsxRuntime.exports.Fragment, { children: isDisplay && (jsxRuntime.exports.jsxs(Container$2, Object.assign({}, props, { children: [jsxRuntime.exports.jsx(Button$1, Object.assign({ href: "#", onClick: handleHeader1 }, { children: "H1" })), jsxRuntime.exports.jsx(Button$1, Object.assign({ href: "#", onClick: handleBlockquote }, { children: "\u5F15\u7528" })), jsxRuntime.exports.jsx(Button$1, Object.assign({ href: "#", onClick: handleOrderedList }, { children: "\u756A\u53F7\u30EA\u30B9\u30C8" })), jsxRuntime.exports.jsx(Button$1, Object.assign({ href: "#", onClick: handleBulletList }, { children: "\u30EA\u30B9\u30C8" }))] }))) }), document.body);
+    return ReactDOM__default["default"].createPortal(jsxRuntime.exports.jsx(jsxRuntime.exports.Fragment, { children: isDisplay && (jsxRuntime.exports.jsxs(Container$2, Object.assign({}, props, { children: [jsxRuntime.exports.jsx(Button$2, Object.assign({ href: "#", onClick: handleHeader1 }, { children: "H1" })), jsxRuntime.exports.jsx(Button$2, Object.assign({ href: "#", onClick: handleBlockquote }, { children: "\u5F15\u7528" })), jsxRuntime.exports.jsx(Button$2, Object.assign({ href: "#", onClick: handleOrderedList }, { children: "\u756A\u53F7\u30EA\u30B9\u30C8" })), jsxRuntime.exports.jsx(Button$2, Object.assign({ href: "#", onClick: handleBulletList }, { children: "\u30EA\u30B9\u30C8" }))] }))) }), document.body);
 });
 
 function getScrollContainer(scrollContainer) {
@@ -7304,7 +7582,7 @@ const Container$1 = He.div `
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
   z-index: 1;
 `;
-const Button = He.a `
+const Button$1 = He.a `
   display: inline-block;
   padding: 2px 8px;
   text-decoration: none;
@@ -7322,6 +7600,7 @@ const BubbleToolbar = React__namespace.memo((_a) => {
     const [position, setPosition] = React__namespace.useState();
     const [blockType, setBlockType] = React__namespace.useState();
     const [collapsed, setCollapsed] = React__namespace.useState(true);
+    const [currentCaretPosition, setCurrentCaretPosition] = React__namespace.useState();
     const handleBold = React__namespace.useCallback((event) => {
         event.preventDefault();
         editor.getModule('toolbar').formatInline({ bold: !(formats === null || formats === void 0 ? void 0 : formats.bold) });
@@ -7336,8 +7615,12 @@ const BubbleToolbar = React__namespace.memo((_a) => {
     }, [formats]);
     const handleLink = React__namespace.useCallback((event) => {
         event.preventDefault();
-        editor.getModule('toolbar').formatInline({ link: 'https://google.com' });
-    }, [formats]);
+        const eventEmitter = editor.getEventEmitter();
+        eventEmitter.emit(EditorEvents.EVENT_LINK_CLICK, {
+            mode: 'openEnterLink',
+            caretPosition: currentCaretPosition,
+        });
+    }, [formats, currentCaretPosition]);
     const handleInlineCode = React__namespace.useCallback((event) => {
         event.preventDefault();
         editor.getModule('toolbar').formatInline({ code: !(formats === null || formats === void 0 ? void 0 : formats.code) });
@@ -7345,6 +7628,15 @@ const BubbleToolbar = React__namespace.memo((_a) => {
     const handleHeader1 = React__namespace.useCallback((event) => {
         event.preventDefault();
         editor.getModule('toolbar').formatBlock('HEADER1');
+    }, [formats]);
+    const handleColor = React__namespace.useCallback((event) => {
+        event.preventDefault();
+        if (formats === null || formats === void 0 ? void 0 : formats.color) {
+            editor.getModule('toolbar').formatInline({ color: false });
+        }
+        else {
+            editor.getModule('toolbar').formatInline({ color: 'red' });
+        }
     }, [formats]);
     React__namespace.useEffect(() => {
         const subs = new Subscription();
@@ -7379,7 +7671,7 @@ const BubbleToolbar = React__namespace.memo((_a) => {
             subs.unsubscribe();
         };
     }, [editor, scrollContainer]);
-    return ReactDOM__default["default"].createPortal(jsxRuntime.exports.jsx(jsxRuntime.exports.Fragment, { children: !collapsed && (jsxRuntime.exports.jsxs(Container$1, Object.assign({ top: (_b = position === null || position === void 0 ? void 0 : position.top) !== null && _b !== void 0 ? _b : 0, left: (_c = position === null || position === void 0 ? void 0 : position.left) !== null && _c !== void 0 ? _c : 0 }, props, { children: [jsxRuntime.exports.jsx(Button, Object.assign({ href: "#", onClick: handleHeader1, active: blockType === 'HEADER1' }, { children: "H1" })), jsxRuntime.exports.jsx(Button, Object.assign({ href: "#", onClick: handleBold, active: !!(formats === null || formats === void 0 ? void 0 : formats.bold) }, { children: "B" })), jsxRuntime.exports.jsx(Button, Object.assign({ href: "#", onClick: handleUnderline, active: !!(formats === null || formats === void 0 ? void 0 : formats.underline) }, { children: "U" })), jsxRuntime.exports.jsx(Button, Object.assign({ href: "#", onClick: handleStrike, active: !!(formats === null || formats === void 0 ? void 0 : formats.strike) }, { children: "S" })), jsxRuntime.exports.jsx(Button, Object.assign({ href: "#", onClick: handleInlineCode, active: !!(formats === null || formats === void 0 ? void 0 : formats.code) }, { children: "code" })), jsxRuntime.exports.jsx(Button, Object.assign({ href: "#", onClick: handleLink, active: !!(formats === null || formats === void 0 ? void 0 : formats.link) }, { children: "L" }))] }))) }), (_d = getScrollContainer(scrollContainer)) !== null && _d !== void 0 ? _d : document.body);
+    return ReactDOM__default["default"].createPortal(jsxRuntime.exports.jsx(jsxRuntime.exports.Fragment, { children: !collapsed && (jsxRuntime.exports.jsxs(Container$1, Object.assign({ top: (_b = position === null || position === void 0 ? void 0 : position.top) !== null && _b !== void 0 ? _b : 0, left: (_c = position === null || position === void 0 ? void 0 : position.left) !== null && _c !== void 0 ? _c : 0 }, props, { children: [jsxRuntime.exports.jsx(Button$1, Object.assign({ href: "#", onClick: handleHeader1, active: blockType === 'HEADER1' }, { children: "H1" })), jsxRuntime.exports.jsx(Button$1, Object.assign({ href: "#", onClick: handleBold, active: !!(formats === null || formats === void 0 ? void 0 : formats.bold) }, { children: "B" })), jsxRuntime.exports.jsx(Button$1, Object.assign({ href: "#", onClick: handleUnderline, active: !!(formats === null || formats === void 0 ? void 0 : formats.underline) }, { children: "U" })), jsxRuntime.exports.jsx(Button$1, Object.assign({ href: "#", onClick: handleStrike, active: !!(formats === null || formats === void 0 ? void 0 : formats.strike) }, { children: "S" })), jsxRuntime.exports.jsx(Button$1, Object.assign({ href: "#", onClick: handleInlineCode, active: !!(formats === null || formats === void 0 ? void 0 : formats.code) }, { children: "code" })), jsxRuntime.exports.jsx(Button$1, Object.assign({ href: "#", onClick: handleColor, active: !!(formats === null || formats === void 0 ? void 0 : formats.color) }, { children: "color" })), jsxRuntime.exports.jsx(Button$1, Object.assign({ href: "#", onClick: handleLink, active: !!(formats === null || formats === void 0 ? void 0 : formats.link) }, { children: "L" }))] }))) }), (_d = getScrollContainer(scrollContainer)) !== null && _d !== void 0 ? _d : document.body);
 });
 
 /* eslint-disable no-undefined,no-param-reassign,no-shadow */
@@ -11595,6 +11887,7 @@ function useEditor({ settings, eventEmitter, }) {
             sync,
             getCaretPosition,
             setCaretPosition,
+            updateCaretPositionRef,
             updateCaretRect,
             scrollIntoView,
             getNativeRange,
@@ -12130,6 +12423,7 @@ class KeyBoardModule {
         }
     }
     _handleBackspace(caretPosition, editor) {
+        var _a;
         const block = editor.getBlock(caretPosition.blockId);
         const blocks = editor.getBlocks();
         const blockIndex = blocks.findIndex((v) => v.id === caretPosition.blockId);
@@ -12141,6 +12435,29 @@ class KeyBoardModule {
                 return;
             // Ignored for null characters
             if (textLength === 0) {
+                if (block.type !== 'PARAGRAPH') {
+                    editor.updateBlock(Object.assign(Object.assign({}, block), { attributes: Object.assign(Object.assign({}, block.attributes), { indent: false }), type: 'PARAGRAPH' }));
+                    this.editor.numberingList();
+                    (_a = this.editor.getModule('history')) === null || _a === void 0 ? void 0 : _a.optimizeOp();
+                    editor.render([block.id]);
+                    setTimeout(() => {
+                        this.editor.setCaretPosition({
+                            blockId: block.id,
+                            index: 0,
+                        });
+                        this.editor.updateCaretRect();
+                    }, 10);
+                    return;
+                }
+                const { embeddedBlocks } = editor.getSettings();
+                if (blockIndex > 0 && embeddedBlocks.includes(blocks[blockIndex - 1].type)) {
+                    editor.getModule('editor').deleteBlock(blocks[blockIndex - 1].id);
+                    setTimeout(() => {
+                        editor.setCaretPosition({ blockId: block.id, index: caretIndex });
+                        editor.updateCaretRect();
+                    }, 10);
+                    return;
+                }
                 editor.getModule('editor').deleteBlock();
                 return;
             }
@@ -12336,8 +12653,10 @@ class ToolbarModule {
     onDestroy() {
         this.eventEmitter.info('destroy toolbar module');
     }
-    formatInline(attributes = {}) {
-        const caretPosition = this.editor.getCaretPosition();
+    formatInline(attributes = {}, caretPosition = null) {
+        if (!caretPosition) {
+            caretPosition = this.editor.getCaretPosition();
+        }
         if (!caretPosition)
             return;
         const block = this.editor.getBlock(caretPosition.blockId);
@@ -12346,8 +12665,8 @@ class ToolbarModule {
         this.editor.formatText(block.id, caretPosition.index, caretPosition.length, attributes);
         setTimeout(() => this.editor.setCaretPosition({
             blockId: block.id,
-            index: caretPosition.index,
-            length: caretPosition.length,
+            index: caretPosition === null || caretPosition === void 0 ? void 0 : caretPosition.index,
+            length: caretPosition === null || caretPosition === void 0 ? void 0 : caretPosition.length,
         }), 10);
     }
     formatBlock(type, attributes = {}) {
@@ -12663,8 +12982,7 @@ class SelectorModule {
                     const blockEl = getBlockElementById(blocks[i].id);
                     const rect = blockEl === null || blockEl === void 0 ? void 0 : blockEl.getBoundingClientRect();
                     if (rect && rect.top <= e.clientY) {
-                        if (container &&
-                            area.top + this.area.start.containerScrollTop >= rect.top + containerScrollTop) {
+                        if (container && area.top >= rect.top + bodyScrollTop) {
                             continue;
                         }
                         blockIds.push(blocks[i].id);
@@ -14367,12 +14685,19 @@ class ClipboardModule {
                 }, 10);
             }
             else if (type === 'inlines') {
-                const inlineContents = data;
-                const [first, last] = splitInlineContents(prevBlock.contents, caretPosition.index);
-                const appendTextLength = inlineContents.map((v) => v.text).join('').length;
+                const appendContents = data;
+                let contents = copyObject(prevBlock.contents);
+                if (caretPosition.length > 0) {
+                    contents = deleteInlineContents(contents, caretPosition.index, caretPosition.length);
+                }
+                const [first, last] = splitInlineContents(contents, caretPosition.index);
+                const appendTextLength = stringLength(appendContents
+                    .map((v) => v.text)
+                    .join('')
+                    .replaceAll(/\uFEFF/gi, ''));
                 this.editor.updateBlock(Object.assign(Object.assign({}, prevBlock), { contents: [
                         ...first,
-                        ...inlineContents.map((v) => {
+                        ...appendContents.map((v) => {
                             return Object.assign(Object.assign({}, v), { id: nanoid() });
                         }),
                         ...last,
@@ -14386,6 +14711,58 @@ class ClipboardModule {
                     this.editor.updateCaretRect();
                 }, 10);
             }
+            return;
+        }
+        const clipboardText = event.clipboardData.getData('text/plain');
+        const linkRegExp = new RegExp(`^https?://[a-zA-Z0-9-_.!'()*;/?:@&=+$,%#]+$`, 'i');
+        const linkMatch = clipboardText.match(linkRegExp);
+        // if it was url
+        if (prevBlock && caretPosition && linkMatch) {
+            if (caretPosition.length > 0) {
+                this.editor.formatText(prevBlock.id, caretPosition.index, caretPosition.length, {
+                    link: linkMatch[0],
+                });
+                setTimeout(() => {
+                    this.editor.setCaretPosition({
+                        blockId: prevBlock.id,
+                        index: caretPosition.index,
+                        length: caretPosition.length,
+                    });
+                    this.editor.updateCaretRect();
+                }, 10);
+            }
+            else {
+                const [first, last] = splitInlineContents(copyObject(prevBlock.contents), caretPosition.index);
+                const appendContent = createInline('TEXT', clipboardText, { link: linkMatch[0] });
+                this.editor.updateBlock(Object.assign(Object.assign({}, prevBlock), { contents: [...first, appendContent, ...last] }));
+                this.editor.render([prevBlock.id]);
+                setTimeout(() => {
+                    this.editor.setCaretPosition({
+                        blockId: prevBlock.id,
+                        index: caretPosition.index + stringLength(clipboardText),
+                    });
+                    this.editor.updateCaretRect();
+                }, 10);
+            }
+            return;
+        }
+        if (prevBlock && caretPosition && clipboardText.length > 0) {
+            let contents = copyObject(prevBlock.contents);
+            if (caretPosition.length > 0) {
+                contents = deleteInlineContents(contents, caretPosition.index, caretPosition.length);
+            }
+            const [first, last] = splitInlineContents(contents, caretPosition.index);
+            const appendContent = createInline('TEXT', clipboardText);
+            this.editor.updateBlock(Object.assign(Object.assign({}, prevBlock), { contents: [...first, appendContent, ...last] }));
+            this.editor.render([prevBlock.id]);
+            setTimeout(() => {
+                this.editor.setCaretPosition({
+                    blockId: prevBlock.id,
+                    index: caretPosition.index + stringLength(clipboardText),
+                });
+                this.editor.updateCaretRect();
+            }, 10);
+            return;
         }
     }
     onCopy(event) {
@@ -14482,8 +14859,14 @@ class MarkdownShortcutModule {
         this.addShortcut({
             name: 'bullet-list',
             type: 'block',
-            pattern: /^\*$/,
+            pattern: /^(\*|-|\+)$/,
             handler: this._handleBulletList.bind(this),
+        });
+        this.addShortcut({
+            name: 'image',
+            type: 'block',
+            pattern: /^(?:!\[(.+?)\])(?:\((.+?)(?:\s"(.+?)")?\))$/,
+            handler: this._handleImage.bind(this),
         });
         this.addShortcut({
             name: 'bold',
@@ -14565,11 +14948,11 @@ class MarkdownShortcutModule {
             });
         }, 10);
     }
-    formatBlock(blockId, type, index, length) {
+    formatBlock(blockId, type, index, length, attributes = {}) {
         const block = this.editor.getBlock(blockId);
         if (!block)
             return;
-        this.editor.updateBlock(Object.assign(Object.assign({}, block), { contents: deleteInlineContents(block.contents, index, length), type }));
+        this.editor.updateBlock(Object.assign(Object.assign({}, block), { contents: deleteInlineContents(block.contents, index, length), attributes: Object.assign(Object.assign({}, block.attributes), attributes), type }));
         this.editor.numberingList();
         this.editor.render([block.id]);
         setTimeout(() => {
@@ -14587,6 +14970,15 @@ class MarkdownShortcutModule {
     }
     _handleBulletList(caret, match) {
         this.formatBlock(caret.blockId, 'BULLETLIST', 0, stringLength(match[0]));
+    }
+    _handleImage(caret, match) {
+        var _a, _b;
+        this.formatBlock(caret.blockId, 'IMAGE', 0, stringLength(match[0]), {
+            thumbnail: match[2],
+            original: match[2],
+            alt: (_a = match[1]) !== null && _a !== void 0 ? _a : '',
+            title: (_b = match[3]) !== null && _b !== void 0 ? _b : '',
+        });
     }
     _handleHeader(caret, match) {
         const length = stringLength(match[0]);
@@ -14681,7 +15073,7 @@ class UploaderModule {
     onDestroy() {
         this.eventEmitter.info('destroy uploader module');
     }
-    upload(files) {
+    upload(files, blockId) {
         if (!this.options.onUpload || typeof this.options.onUpload !== 'function')
             return;
         files.forEach((file) => {
@@ -14691,6 +15083,7 @@ class UploaderModule {
                 fileReader.onload = (event) => __awaiter(this, void 0, void 0, function* () {
                     var _a;
                     const addedBlock = this.editor.getModule('editor').createBlock({
+                        prevId: blockId,
                         type: 'IMAGE',
                         attributes: {
                             thumbnail: event.target.result,
@@ -14699,6 +15092,10 @@ class UploaderModule {
                             isUploading: true,
                         },
                     });
+                    setTimeout(() => {
+                        const el = getBlockElementById(addedBlock.id);
+                        el === null || el === void 0 ? void 0 : el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }, 20);
                     const res = yield this.options.onUpload({
                         original: file,
                         base64: event.target.result,
@@ -14721,6 +15118,7 @@ class UploaderModule {
                 const fileReader = new FileReader();
                 fileReader.onload = (event) => __awaiter(this, void 0, void 0, function* () {
                     const addedBlock = this.editor.getModule('editor').createBlock({
+                        prevId: blockId,
                         type: 'FILE',
                         attributes: {
                             fileName: file.name,
@@ -14731,6 +15129,10 @@ class UploaderModule {
                             isUploading: true,
                         },
                     });
+                    setTimeout(() => {
+                        const el = getBlockElementById(addedBlock.id);
+                        el === null || el === void 0 ? void 0 : el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }, 20);
                     const res = yield this.options.onUpload({
                         original: file,
                         base64: event.target.result,
@@ -14755,6 +15157,210 @@ class UploaderModule {
         //const base64images = await this.options.onUpload(files);
     }
 }
+
+class DragDropModule {
+    constructor({ eventEmitter, editor }) {
+        this.editor = editor;
+        this.eventEmitter = eventEmitter;
+    }
+    onInit() {
+        this.eventEmitter.info('init dnd module');
+    }
+    onDestroy() {
+        this.eventEmitter.info('destroy dnd module');
+    }
+    handleDrop(e) {
+        e.preventDefault();
+        if (!e.dataTransfer || !e.dataTransfer.files || e.dataTransfer.files.length < 1)
+            return;
+        const [blockId] = getBlockId(e.target);
+        const files = Array.from(e.dataTransfer.files);
+        this.editor.getModule('uploader').upload(files, blockId);
+    }
+}
+
+const EnterLinkContainer = He.div `
+  position: absolute;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0px 0px 5px #ddd;
+  color: #444;
+  padding: 5px 12px;
+  white-space: nowrap;
+  display: flex;
+`;
+const PreviewContainer = He.div `
+  position: absolute;
+  min-width: 300px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0px 0px 5px #ddd;
+  color: #444;
+  padding: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+const Info = He.div `
+  margin-right: 8px;
+`;
+const Link = He.a `
+  padding: 0 8px;
+  max-width: 200px;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`;
+const LinkInput = He.input ``;
+const ButtonContainer = He.div `
+  display: flex;
+  justify-content: flex-end;
+  button:first-child {
+    margin-right: 8px;
+  }
+`;
+const Button = He.button ``;
+const SingleButton = He(Button) `
+  margin-left: 16px;
+`;
+const LinkPopup = React__namespace.memo((_a) => {
+    var _b, _c, _d, _e, _f;
+    var { editor, scrollContainer, onFocus, onBlur, onLinkSave } = _a, props = __rest(_a, ["editor", "scrollContainer", "onFocus", "onBlur", "onLinkSave"]);
+    const [formats, setFormats] = React__namespace.useState({});
+    const [inline, setInline] = React__namespace.useState();
+    const [linkUrl, setLinkUrl] = React__namespace.useState('');
+    const [popupMode, setPopupMode] = React__namespace.useState();
+    const [popupOpen, setPopupOpen] = React__namespace.useState(false);
+    const [popupPosition, setPopupPosition] = React__namespace.useState();
+    const [currentCaretPosition, setCurrentCaretPosition] = React__namespace.useState();
+    const modalRef = React__namespace.useRef(null);
+    const handleChange = React__namespace.useCallback((event) => {
+        setLinkUrl(event.target.value);
+    }, [linkUrl]);
+    const handleSave = React__namespace.useCallback((event) => {
+        event.preventDefault();
+        // attributeにlinkがないときは新規追加する
+        if (!inline) {
+            editor.getModule('toolbar').formatInline({ link: linkUrl }, currentCaretPosition);
+            setPopupOpen(false);
+            setLinkUrl('');
+            setTimeout(() => {
+                editor.focus();
+            }, 10);
+            return;
+        }
+        // それ以外はlinkを更新する
+        if (!currentCaretPosition)
+            return;
+        const block = editor.getBlock(currentCaretPosition.blockId);
+        if (!block)
+            return;
+        const inlineIndex = block.contents.findIndex((v) => v.id === inline.id);
+        if (inlineIndex === -1)
+            return;
+        editor.updateBlock(Object.assign(Object.assign({}, block), { contents: copyObject([
+                ...block.contents.slice(0, inlineIndex),
+                Object.assign(Object.assign({}, block.contents[inlineIndex]), { attributes: Object.assign(Object.assign({}, block.contents[inlineIndex].attributes), { link: linkUrl }) }),
+                ...block.contents.slice(inlineIndex + 1),
+            ]) }));
+        editor.render([block.id]);
+        setPopupOpen(false);
+        setLinkUrl('');
+        setTimeout(() => {
+            editor.focus();
+        }, 10);
+    }, [linkUrl, inline, currentCaretPosition]);
+    const handleClose = React__namespace.useCallback(() => {
+        setPopupOpen(false);
+        setLinkUrl('');
+    }, []);
+    const handleEdit = React__namespace.useCallback(() => {
+        const eventEmitter = editor.getEventEmitter();
+        eventEmitter.emit(EditorEvents.EVENT_LINK_CLICK, {
+            mode: 'openEnterLink',
+            inline,
+            caretPosition: currentCaretPosition,
+        });
+    }, [inline, currentCaretPosition]);
+    const handleRemove = React__namespace.useCallback(() => {
+        if (!currentCaretPosition || !inline)
+            return;
+        const block = editor.getBlock(currentCaretPosition.blockId);
+        if (!block)
+            return;
+        const inlineIndex = block.contents.findIndex((v) => v.id === inline.id);
+        if (inlineIndex === -1)
+            return;
+        editor.updateBlock(Object.assign(Object.assign({}, block), { contents: copyObject([
+                ...block.contents.slice(0, inlineIndex),
+                Object.assign(Object.assign({}, block.contents[inlineIndex]), { attributes: Object.assign(Object.assign({}, block.contents[inlineIndex].attributes), { link: false }) }),
+                ...block.contents.slice(inlineIndex + 1),
+            ]) }));
+        editor.render([block.id]);
+        setPopupOpen(false);
+        setLinkUrl('');
+        setTimeout(() => {
+            editor.focus();
+        }, 10);
+    }, [inline]);
+    React__namespace.useEffect(() => {
+        const subs = new Subscription();
+        const eventEmitter = editor.getEventEmitter();
+        subs.add(eventEmitter.select(EditorEvents.EVENT_LINK_CLICK).subscribe((v) => {
+            var _a, _b;
+            const caret = editor.getCaretPosition();
+            if (!caret) {
+                handleClose();
+                return;
+            }
+            setPopupOpen(true);
+            const container = getScrollContainer(scrollContainer);
+            if (container) {
+                const containerRect = container.getBoundingClientRect();
+                const top = ((_a = container === null || container === void 0 ? void 0 : container.scrollTop) !== null && _a !== void 0 ? _a : 0) + caret.rect.top - containerRect.top;
+                const left = caret.rect.left - containerRect.left;
+                setPopupPosition({ top, left });
+            }
+            else {
+                const scrollEl = document.scrollingElement;
+                const top = scrollEl.scrollTop + caret.rect.top;
+                const left = caret.rect.left;
+                setPopupPosition({ top, left });
+            }
+            setFormats(editor.getFormats(caret.blockId, caret.index, caret.length));
+            if (!currentCaretPosition) {
+                setCurrentCaretPosition(v.caretPosition ? v.caretPosition : caret);
+            }
+            if (v.mode) {
+                setPopupMode(v.mode);
+            }
+            if (v.inline) {
+                setInline(v.inline);
+                setLinkUrl((_b = v.inline) === null || _b === void 0 ? void 0 : _b.attributes['link']);
+            }
+        }));
+        return () => {
+            subs.unsubscribe();
+        };
+    }, []);
+    React__namespace.useEffect(() => {
+        if (!popupOpen)
+            return;
+        const handleClose = (e) => {
+            var _a;
+            if (!((_a = modalRef.current) === null || _a === void 0 ? void 0 : _a.contains(e.target))) {
+                setPopupOpen(false);
+            }
+        };
+        document.addEventListener('click', handleClose, true);
+        return () => {
+            document.removeEventListener('click', handleClose, true);
+        };
+    }, [popupOpen]);
+    return ReactDOM__default["default"].createPortal(popupOpen && (jsxRuntime.exports.jsxs("div", Object.assign({ ref: modalRef }, { children: [popupMode === 'openEnterLink' && (jsxRuntime.exports.jsxs(EnterLinkContainer, Object.assign({ style: { top: (_b = popupPosition === null || popupPosition === void 0 ? void 0 : popupPosition.top) !== null && _b !== void 0 ? _b : 0, left: (_c = popupPosition === null || popupPosition === void 0 ? void 0 : popupPosition.left) !== null && _c !== void 0 ? _c : 0 } }, props, { children: [jsxRuntime.exports.jsx(Info, { children: "Enter link:" }), jsxRuntime.exports.jsx(LinkInput, { value: linkUrl, onFocus: onFocus, onBlur: onBlur, onChange: handleChange }), jsxRuntime.exports.jsx(SingleButton, Object.assign({ onClick: handleSave }, { children: "save" }))] }))), popupMode === 'openPreview' && (jsxRuntime.exports.jsxs(PreviewContainer, Object.assign({ style: { top: (_d = popupPosition === null || popupPosition === void 0 ? void 0 : popupPosition.top) !== null && _d !== void 0 ? _d : 0, left: (_e = popupPosition === null || popupPosition === void 0 ? void 0 : popupPosition.left) !== null && _e !== void 0 ? _e : 0 } }, props, { children: [jsxRuntime.exports.jsx("div", { children: "Visit URL:" }), jsxRuntime.exports.jsx(Link, Object.assign({ target: "_blank", rel: "noopener noreferrer", href: inline === null || inline === void 0 ? void 0 : inline.attributes['link'] }, { children: inline === null || inline === void 0 ? void 0 : inline.attributes['link'] })), jsxRuntime.exports.jsxs(ButtonContainer, { children: [jsxRuntime.exports.jsx(Button, Object.assign({ onClick: handleEdit }, { children: "edit" })), jsxRuntime.exports.jsx(Button, Object.assign({ onClick: handleRemove }, { children: "remove" }))] })] })))] }))), (_f = getScrollContainer(scrollContainer)) !== null && _f !== void 0 ? _f : document.body);
+});
 
 const Container = He.div `
   border: 1px solid #ccc;
@@ -14822,6 +15428,9 @@ const Editor = React__namespace.memo(React__namespace.forwardRef((_a, forwardRef
         'inline/style/strike': Strike,
         'inline/style/code': InlineCode,
         'inline/style/italic': Italic,
+        'inline/style/link': Link$1,
+        'inline/style/color': Color,
+        'popup/link': LinkPopup,
     });
     const [blocks, setBlocks] = React__namespace.useState([]);
     const [selectedIds, setSelectedIds] = React__namespace.useState([]);
@@ -14879,9 +15488,16 @@ const Editor = React__namespace.memo(React__namespace.forwardRef((_a, forwardRef
     }, [editor]);
     const handleDrop = React__namespace.useCallback((e) => {
         e.preventDefault();
+        editor.getModule('drag-drop').handleDrop(e.nativeEvent);
     }, [editor]);
     const handleDrag = React__namespace.useCallback((e) => {
         e.preventDefault();
+    }, [editor]);
+    const handleDragOver = React__namespace.useCallback((e) => {
+        var _a;
+        if (((_a = e.target) === null || _a === void 0 ? void 0 : _a.getAttribute('contenteditable')) !== 'true') {
+            e.preventDefault();
+        }
     }, [editor]);
     const handleContainerClick = React__namespace.useCallback((e) => {
         var _a;
@@ -14910,6 +15526,7 @@ const Editor = React__namespace.memo(React__namespace.forwardRef((_a, forwardRef
             { name: 'clipboard', module: ClipboardModule },
             { name: 'markdown-shortcut', module: MarkdownShortcutModule },
             { name: 'uploader', module: UploaderModule },
+            { name: 'drag-drop', module: DragDropModule },
         ], (_a = settings === null || settings === void 0 ? void 0 : settings.modules) !== null && _a !== void 0 ? _a : {});
         subs.add(eventEmitter.select(EditorEvents.EVENT_BLOCK_RERENDER).subscribe(() => {
             setBlocks(editor.getBlocks());
@@ -14981,10 +15598,13 @@ const Editor = React__namespace.memo(React__namespace.forwardRef((_a, forwardRef
     const MemoBubbleToolbar = React__namespace.useMemo(() => {
         return blockFormats['toolbar/bubble'];
     }, [blockFormats]);
+    const MemoLinkPopup = React__namespace.useMemo(() => {
+        return blockFormats['popup/link'];
+    }, [blockFormats]);
     React__namespace.useImperativeHandle(forwardRef, () => editor, [editor]);
-    return (jsxRuntime.exports.jsxs(Container, Object.assign({ ref: containerRef }, props, { children: [jsxRuntime.exports.jsx(Inner, Object.assign({ ref: editorRef, onClick: handleClick, onKeyDown: handleKeyDown, onPaste: handlePaste, onCopy: handleCopy, onCut: handleCut, onDrop: handleDrop, onDrag: handleDrag }, { children: memoBlocks.map((block, index) => {
-                    return (jsxRuntime.exports.jsx(BlockContainer, { formats: blockFormats, editor: memoEditor, blockId: block.id, readOnly: readOnly, selected: block.selected, onBeforeInput: handleInput, onCompositionStart: handleCompositionStart, onCompositionEnd: handleCompositionEnd }, block.id));
-                }) })), jsxRuntime.exports.jsx(MarginBottom, { onClick: handleContainerClick }), jsxRuntime.exports.jsx(MemoGlobalToolbar, { editor: memoEditor }), jsxRuntime.exports.jsx(MemoBubbleToolbar, { editor: memoEditor, scrollContainer: settings.scrollContainer }), jsxRuntime.exports.jsx(Selector, { contentEditable: true, className: "clipboard", onKeyDown: handleSelectorKeyDown, onBeforeInput: handleSelectorInput, onCopy: handleCopy, onCut: handleCut })] })));
+    return (jsxRuntime.exports.jsxs(Container, Object.assign({ ref: containerRef }, props, { children: [jsxRuntime.exports.jsx(Inner, Object.assign({ ref: editorRef, onClick: handleClick, onKeyDown: handleKeyDown, onPaste: handlePaste, onCopy: handleCopy, onCut: handleCut, onDrop: handleDrop, onDrag: handleDrag, onDragOver: handleDragOver }, { children: memoBlocks.map((block, index) => {
+                    return (jsxRuntime.exports.jsx(BlockContainer, { formats: blockFormats, editor: memoEditor, blockId: block.id, readOnly: readOnly, selected: block.selected, scrollContainer: settings.scrollContainer, onBeforeInput: handleInput, onCompositionStart: handleCompositionStart, onCompositionEnd: handleCompositionEnd }, block.id));
+                }) })), jsxRuntime.exports.jsx(MarginBottom, { onClick: handleContainerClick }), jsxRuntime.exports.jsx(MemoGlobalToolbar, { editor: memoEditor }), jsxRuntime.exports.jsx(MemoBubbleToolbar, { editor: memoEditor, scrollContainer: settings.scrollContainer }), jsxRuntime.exports.jsx(MemoLinkPopup, { editor: memoEditor, scrollContainer: settings.scrollContainer }), jsxRuntime.exports.jsx(Selector, { contentEditable: true, className: "clipboard", onKeyDown: handleSelectorKeyDown, onBeforeInput: handleSelectorInput, onCopy: handleCopy, onCut: handleCut })] })));
 }));
 
 exports.BlockContainer = BlockContainer;
@@ -14993,6 +15613,8 @@ exports.Bold = Bold;
 exports.BubbleToolbar = BubbleToolbar;
 exports.BulletList = BulletList;
 exports.ClipboardModule = ClipboardModule;
+exports.Color = Color;
+exports.DragDropModule = DragDropModule;
 exports.Editor = Editor;
 exports.EditorModule = EditorModule;
 exports.File = File;
@@ -15006,6 +15628,7 @@ exports.InlineCode = InlineCode;
 exports.InlineText = InlineText;
 exports.Italic = Italic;
 exports.KeyBoardModule = KeyBoardModule;
+exports.Link = Link$1;
 exports.LoggerModule = LoggerModule;
 exports.MarkdownShortcutModule = MarkdownShortcutModule;
 exports.OrderedList = OrderedList;
@@ -15014,4 +15637,5 @@ exports.SelectorModule = SelectorModule;
 exports.Strike = Strike;
 exports.ToolbarModule = ToolbarModule;
 exports.Underline = Underline;
+exports.UploaderModule = UploaderModule;
 //# sourceMappingURL=main.js.map

@@ -660,7 +660,6 @@ export function useEditor({
       if (prev.meta) {
         delete prev.meta;
       }
-
       const prevBlock = {
         ...prev,
         contents: prev.contents.map((content) => {
@@ -673,7 +672,6 @@ export function useEditor({
           };
         }),
       };
-
       const currentBlock = {
         ...block,
         contents: contents.map((content) => {

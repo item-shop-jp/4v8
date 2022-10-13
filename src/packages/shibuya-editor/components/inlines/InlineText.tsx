@@ -1,17 +1,26 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import twemoji from 'twemoji';
+import { EditorController } from '../../types/editor';
 import { Formats } from '../../types/format';
 import { Inline } from '../../types/inline';
+import { EditorEvents } from '../../constants';
 
 export interface InlineTextProps {
   inline: Inline;
   formats: Formats;
+  editor: EditorController;
+  scrollContainer?: HTMLElement | string;
 }
 
 interface InlineContentProps {
   attributes: Inline['attributes'];
   formats: Formats;
+}
+
+interface PopupProps {
+  top: number;
+  left: number;
 }
 
 const Text = styled.span<InlineContentProps>`
@@ -50,7 +59,13 @@ const Link = styled.a<InlineContentProps>`
   }}
 `;
 
-export const InlineText = ({ inline, formats, ...props }: InlineTextProps) => {
+export const InlineText = ({
+  inline,
+  formats,
+  editor,
+  scrollContainer,
+  ...props
+}: InlineTextProps) => {
   const memoInnerHTML = React.useMemo(() => {
     const text = inline.text.replaceAll('\n', '<br>');
     return {
@@ -61,17 +76,30 @@ export const InlineText = ({ inline, formats, ...props }: InlineTextProps) => {
     };
   }, [inline]);
 
+  const handleClickLink = () => {
+    const caretPosition = editor.getCaretPosition();
+    const eventEmitter = editor.getEventEmitter();
+    eventEmitter.emit(EditorEvents.EVENT_LINK_CLICK, {
+      mode: 'openPreview',
+      inline,
+      caretPosition,
+    });
+  };
+
   return (
     <>
       {inline.attributes['link'] ? (
-        <Link
-          href={inline.attributes['link']}
-          target="_blank"
-          dangerouslySetInnerHTML={memoInnerHTML}
-          formats={formats}
-          attributes={inline.attributes}
-          {...props}
-        />
+        <>
+          <Link
+            href={inline.attributes['link']}
+            target="_blank"
+            dangerouslySetInnerHTML={memoInnerHTML}
+            formats={formats}
+            attributes={inline.attributes}
+            onClick={handleClickLink}
+            {...props}
+          />
+        </>
       ) : (
         <Text
           dangerouslySetInnerHTML={memoInnerHTML}

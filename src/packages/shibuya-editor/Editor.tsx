@@ -14,7 +14,7 @@ import {
   File,
 } from './components/blocks';
 import { InlineText } from './components/inlines';
-import { Bold, Strike, Underline, InlineCode, Italic, Color } from './components/styles';
+import { Bold, Strike, Underline, InlineCode, Italic, Color, Link } from './components/styles';
 import { GlobalToolbar, BubbleToolbar } from './components/toolbar';
 import { useEditor } from './hooks/use-editor';
 import { useEventEmitter } from './hooks/use-event-emitter';
@@ -32,6 +32,7 @@ import {
 } from './modules';
 import { getBlockElementById } from './utils/block';
 import { EditorEvents } from './constants';
+import { LinkPopup } from './components/popups';
 import { Formats, Block, Settings, EditorController } from './types';
 
 interface Props {
@@ -107,7 +108,9 @@ export const Editor = React.memo(
         'inline/style/strike': Strike,
         'inline/style/code': InlineCode,
         'inline/style/italic': Italic,
+        'inline/style/link': Link,
         'inline/style/color': Color,
+        'popup/link': LinkPopup,
       });
       const [blocks, setBlocks] = React.useState<Block[]>([]);
       const [selectedIds, setSelectedIds] = React.useState<string[]>([]);
@@ -339,6 +342,10 @@ export const Editor = React.memo(
         return blockFormats['toolbar/bubble'];
       }, [blockFormats]);
 
+      const MemoLinkPopup = React.useMemo(() => {
+        return blockFormats['popup/link'];
+      }, [blockFormats]);
+
       React.useImperativeHandle(forwardRef, () => editor, [editor]);
 
       return (
@@ -363,6 +370,7 @@ export const Editor = React.memo(
                   blockId={block.id}
                   readOnly={readOnly}
                   selected={block.selected}
+                  scrollContainer={settings.scrollContainer}
                   onBeforeInput={handleInput}
                   onCompositionStart={handleCompositionStart}
                   onCompositionEnd={handleCompositionEnd}
@@ -373,6 +381,7 @@ export const Editor = React.memo(
           <MarginBottom onClick={handleContainerClick} />
           <MemoGlobalToolbar editor={memoEditor} />
           <MemoBubbleToolbar editor={memoEditor} scrollContainer={settings.scrollContainer} />
+          <MemoLinkPopup editor={memoEditor} scrollContainer={settings.scrollContainer} />
           <Selector
             contentEditable={true}
             className="clipboard"

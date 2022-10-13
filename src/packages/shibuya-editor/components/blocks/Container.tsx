@@ -12,6 +12,7 @@ interface BlockProps {
   selected: boolean;
   formats: Formats;
   editor: EditorController;
+  scrollContainer?: HTMLElement | string;
   onCompositionStart: (e: React.CompositionEvent) => void;
   onCompositionEnd: (e: React.CompositionEvent) => void;
   onBeforeInput: (e: React.FormEvent) => void;
@@ -41,12 +42,12 @@ const Overlay = styled.div`
   background-color: rgba(46, 170, 220, 0.2);
 `;
 
-export const BlockContainer: React.VFC<BlockProps> = React.memo(
-  ({ blockId, editor, selected, readOnly = false, formats, ...props }) => {
+export const BlockContainer: React.FC<BlockProps> = React.memo(
+  ({ blockId, editor, selected, readOnly = false, scrollContainer, formats, ...props }) => {
     const block = useBlockRenderer({ blockId, editor });
 
     const memoContents = React.useMemo(() => {
-      return InlineContainer({ contents: block?.contents ?? [], formats });
+      return InlineContainer({ contents: block?.contents ?? [], formats, editor, scrollContainer });
     }, [block?.contents, formats]);
 
     const blockFormat = `block/${block?.type.toLocaleLowerCase()}`;

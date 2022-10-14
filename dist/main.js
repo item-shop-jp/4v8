@@ -13008,7 +13008,7 @@ class SelectorModule {
                 this.areaEl.remove();
                 this.areaEl = null;
             }
-        }, 10);
+        });
     }
     reset(e) {
         if (this.changed)
@@ -13016,7 +13016,7 @@ class SelectorModule {
         if (this.areaSelecting && e && this.area.start) {
             const movedX = e.clientX - this.area.start.left;
             const movedY = e.clientY - this.area.start.top;
-            if (!((movedX > -5 || movedX < 5) && (movedY > -5 || movedY < 5))) {
+            if ((movedX < -5 || movedX > 5) && (movedY < -5 || movedY > 5)) {
                 return;
             }
         }

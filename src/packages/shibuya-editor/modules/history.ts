@@ -1,6 +1,6 @@
 import { Subscription } from 'rxjs';
 import * as json0 from 'ot-json0';
-import { nanoid } from 'nanoid';
+import { v4 as uuidv4 } from 'uuid';
 import { debounce } from 'throttle-debounce';
 import { Module } from '../types/module';
 import { EventEmitter } from '../utils/event-emitter';
@@ -381,7 +381,7 @@ export class HistoryModule implements Module {
           ...updatedBlock,
           contents: updatedBlock.contents.map((content) => {
             return {
-              id: content.id ?? nanoid(),
+              id: content.id ?? uuidv4(),
               attributes: content.attributes ?? {},
               text: content.text ?? '',
               type: content.type ?? 'TEXT',

@@ -1,4 +1,4 @@
-import { nanoid } from 'nanoid';
+import { v4 as uuidv4 } from 'uuid';
 import isEqual from 'lodash.isequal';
 import stringLength from 'string-length';
 import * as otText from 'ot-text-unicode';
@@ -13,7 +13,7 @@ export function createBlock(
   meta?: BlockAttributes,
 ): Block {
   return {
-    id: nanoid(),
+    id: uuidv4(),
     contents: contents.length < 1 ? [createInline('TEXT')] : contents,
     attributes: attributes ?? {},
     meta: meta ?? {},
@@ -294,7 +294,7 @@ export function setAttributesForInlineContents(
         );
 
         if (firstText.length > 0) {
-          destContents.push({ ...contents[i], id: nanoid(), text: firstText });
+          destContents.push({ ...contents[i], id: uuidv4(), text: firstText });
         }
         if (middleText.length > 0) {
           const mergedAttributes = { ...contents[i].attributes, ...attributes };
@@ -305,13 +305,13 @@ export function setAttributesForInlineContents(
           });
           destContents.push({
             ...contents[i],
-            id: nanoid(),
+            id: uuidv4(),
             text: middleText,
             attributes: mergedAttributes,
           });
         }
         if (lastText.length > 0) {
-          destContents.push({ ...contents[i], id: nanoid(), text: lastText });
+          destContents.push({ ...contents[i], id: uuidv4(), text: lastText });
         }
       } else {
         length--;
@@ -349,7 +349,7 @@ export function splitInlineContents(contents: Inline[], index: number): [Inline[
           firstContents.push({ ...contents[i], text: firstText });
         }
         if (lastText.length > 0) {
-          lastContents.push({ ...contents[i], id: nanoid(), text: lastText });
+          lastContents.push({ ...contents[i], id: uuidv4(), text: lastText });
         }
       } else {
         lastContents.push(contents[i]);

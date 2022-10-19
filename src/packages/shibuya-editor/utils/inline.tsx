@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { nanoid } from 'nanoid';
+import { v4 as uuidv4 } from 'uuid';
 import { Inline, InlineType, InlineAttributes } from '../types/inline';
 
 export function getInlineId(node: HTMLElement): [string, HTMLElement] | [] {
@@ -18,7 +18,7 @@ export function createInline(
   attributes: InlineAttributes = {},
 ): Inline {
   return {
-    id: nanoid(),
+    id: uuidv4(),
     text,
     type,
     attributes,

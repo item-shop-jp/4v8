@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Subscription } from 'rxjs';
-import { nanoid } from 'nanoid';
+import { v4 as uuidv4 } from 'uuid';
 import { Module } from '../types/module';
 import { EventEmitter } from '../utils/event-emitter';
 import { EditorController } from '../types/editor';
@@ -87,7 +87,7 @@ export class ClipboardModule implements Module {
         const appendBlocks = data as Block[];
         let prevBlockId = prevBlock.id;
         const affectedIds = appendBlocks.map((v, i) => {
-          const appendBlock = { ...v, id: nanoid() };
+          const appendBlock = { ...v, id: uuidv4() };
           this.editor.createBlock(appendBlock, prevBlockId);
           prevBlockId = appendBlock.id;
           return appendBlock.id;
@@ -120,7 +120,7 @@ export class ClipboardModule implements Module {
           contents: [
             ...first,
             ...appendContents.map((v) => {
-              return { ...v, id: nanoid() };
+              return { ...v, id: uuidv4() };
             }),
             ...last,
           ],

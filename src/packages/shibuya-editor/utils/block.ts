@@ -375,6 +375,9 @@ export function optimizeInlineContents(contents: Inline[]): Inline[] {
       prevAttributes = { ...v.attributes };
       return r;
     }
+    if (v.text === '' && !v.isEmbed) {
+      return r;
+    }
     if (r.length > 0 && isEqual(v.attributes, prevAttributes)) {
       prevAttributes = { ...v.attributes };
       r[r.length - 1].text += v.text;

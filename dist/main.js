@@ -11579,6 +11579,9 @@ function optimizeInlineContents(contents) {
             prevAttributes = Object.assign({}, v.attributes);
             return r;
         }
+        if (v.text === '' && !v.isEmbed) {
+            return r;
+        }
         if (r.length > 0 && isEqual(v.attributes, prevAttributes)) {
             prevAttributes = Object.assign({}, v.attributes);
             r[r.length - 1].text += v.text;

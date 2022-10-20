@@ -11907,7 +11907,9 @@ function useEditor({ settings, eventEmitter, }) {
         render([block.id]);
     }, []);
     const setBlocks = React__namespace.useCallback((blocks) => {
-        blocksRef.current = blocks;
+        blocksRef.current = blocks.map((block) => {
+            return Object.assign(Object.assign({}, block), { contents: optimizeInlineContents(block.contents) });
+        });
         numberingList();
         render();
     }, []);

@@ -255,7 +255,9 @@ export function useEditor({
   );
 
   const setBlocks = React.useCallback((blocks: Block[]) => {
-    blocksRef.current = blocks;
+    blocksRef.current = blocks.map((block) => {
+      return { ...block, contents: blockUtils.optimizeInlineContents(block.contents) };
+    });
     numberingList();
     render();
   }, []);

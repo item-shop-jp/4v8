@@ -16097,6 +16097,7 @@ exports.Header3 = Header3;
 exports.HistoryModule = HistoryModule;
 exports.Image = Image$1;
 exports.InlineCode = InlineCode;
+exports.InlineContainer = InlineContainer;
 exports.InlineText = InlineText;
 exports.Italic = Italic;
 exports.KeyBoardModule = KeyBoardModule;

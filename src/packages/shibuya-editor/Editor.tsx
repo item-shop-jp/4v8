@@ -93,6 +93,7 @@ export const Editor = React.memo(
       const [blockFormats, setBlockFormats] = React.useState<Formats>({
         'toolbar/global': GlobalToolbar,
         'toolbar/bubble': BubbleToolbar,
+        'block/container': BlockContainer,
         'block/paragraph': Paragraph,
         'block/orderedlist': OrderedList,
         'block/bulletlist': BulletList,
@@ -348,6 +349,8 @@ export const Editor = React.memo(
 
       React.useImperativeHandle(forwardRef, () => editor, [editor]);
 
+      const BlockItem = blockFormats['block/container'];
+
       return (
         <Container ref={containerRef} {...props}>
           <Inner
@@ -363,7 +366,7 @@ export const Editor = React.memo(
           >
             {memoBlocks.map((block, index) => {
               return (
-                <BlockContainer
+                <BlockItem
                   key={block.id}
                   formats={blockFormats}
                   editor={memoEditor}

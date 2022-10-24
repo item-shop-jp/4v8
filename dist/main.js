@@ -15883,6 +15883,7 @@ const Editor = React__namespace.memo(React__namespace.forwardRef((_a, forwardRef
     const [blockFormats, setBlockFormats] = React__namespace.useState({
         'toolbar/global': GlobalToolbar,
         'toolbar/bubble': BubbleToolbar,
+        'block/container': BlockContainer,
         'block/paragraph': Paragraph,
         'block/orderedlist': OrderedList,
         'block/bulletlist': BulletList,
@@ -16072,8 +16073,9 @@ const Editor = React__namespace.memo(React__namespace.forwardRef((_a, forwardRef
         return blockFormats['popup/link'];
     }, [blockFormats]);
     React__namespace.useImperativeHandle(forwardRef, () => editor, [editor]);
+    const BlockItem = blockFormats['block/container'];
     return (jsxRuntime.exports.jsxs(Container, Object.assign({ ref: containerRef }, props, { children: [jsxRuntime.exports.jsx(Inner, Object.assign({ ref: editorRef, onClick: handleClick, onKeyDown: handleKeyDown, onPaste: handlePaste, onCopy: handleCopy, onCut: handleCut, onDrop: handleDrop, onDrag: handleDrag, onDragOver: handleDragOver }, { children: memoBlocks.map((block, index) => {
-                    return (jsxRuntime.exports.jsx(BlockContainer, { formats: blockFormats, editor: memoEditor, blockId: block.id, readOnly: readOnly, selected: block.selected, scrollContainer: settings.scrollContainer, onBeforeInput: handleInput, onCompositionStart: handleCompositionStart, onCompositionEnd: handleCompositionEnd }, block.id));
+                    return (jsxRuntime.exports.jsx(BlockItem, { formats: blockFormats, editor: memoEditor, blockId: block.id, readOnly: readOnly, selected: block.selected, scrollContainer: settings.scrollContainer, onBeforeInput: handleInput, onCompositionStart: handleCompositionStart, onCompositionEnd: handleCompositionEnd }, block.id));
                 }) })), jsxRuntime.exports.jsx(MarginBottom, { onClick: handleContainerClick }), jsxRuntime.exports.jsx(MemoGlobalToolbar, { editor: memoEditor }), jsxRuntime.exports.jsx(MemoBubbleToolbar, { editor: memoEditor, scrollContainer: settings.scrollContainer }), jsxRuntime.exports.jsx(MemoLinkPopup, { editor: memoEditor, scrollContainer: settings.scrollContainer }), jsxRuntime.exports.jsx(Selector, { contentEditable: true, className: "clipboard", onKeyDown: handleSelectorKeyDown, onBeforeInput: handleSelectorInput, onCopy: handleCopy, onCut: handleCut })] })));
 }));
 

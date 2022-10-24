@@ -4,3 +4,4 @@ export * from './components/inlines';
 export * from './components/styles';
 export * from './components/toolbar';
 export * from './modules';
+export * from './hooks';

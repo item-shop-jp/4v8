@@ -24,7 +24,7 @@
     "@types/styled-components": "5.1.25",
     "@types/throttle-debounce": "2.1.0",
     "@types/twemoji": "13.1.1",
-    "@types/uuid": "^8.3.4",
+    "@types/uuid": "8.3.4",
     "diff-match-patch": "1.0.5",
     "lodash.isequal": "4.5.0",
     "ot-json0": "1.1.0",

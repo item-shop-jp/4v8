@@ -40,7 +40,6 @@
     "rollup-plugin-typescript2": "0.33.0",
     "rxjs": "7.5.6",
     "string-length": "5.0.1",
-    "styled-components": "5.3.5",
     "throttle-debounce": "3.0.1",
     "twemoji": "14.0.2",
     "typescript": "4.7.4",
@@ -76,6 +75,7 @@
     ]
   },
   "dependencies": {
-    "json0-ot-diff": "1.1.2"
+    "json0-ot-diff": "1.1.2",
+    "styled-components": "5.3.5"
   }
 }

@@ -13058,7 +13058,8 @@ class KeyBoardModule {
         var _a;
         const blocks = editor.getBlocks();
         const blockLength = (_a = editor.getBlockLength(caretPosition.blockId)) !== null && _a !== void 0 ? _a : 0;
-        if (blocks && caretPosition.index === 0 && caretPosition.length === blockLength) {
+        if (blocks &&
+            (blockLength === 0 || (caretPosition.index === 0 && caretPosition.length === blockLength))) {
             event.preventDefault();
             editor.getModule('selector').selectBlocks(blocks);
             editor.getModule('selector').setStart(caretPosition.blockId);

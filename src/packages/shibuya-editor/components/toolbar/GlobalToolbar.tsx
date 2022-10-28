@@ -1,7 +1,7 @@
 import * as React from 'react';
 import ReactDOM from 'react-dom';
 import styled from 'styled-components';
-import { Subscription } from 'rxjs';
+import { Subscription, pipe, combineLatestWith } from 'rxjs';
 import { EditorEvents } from '../../constants';
 import { EditorController } from '../../types/editor';
 import { InlineAttributes } from '../../types/inline';
@@ -65,20 +65,33 @@ export const GlobalToolbar = React.memo(({ editor, ...props }: GlobalToolbarProp
     const subs = new Subscription();
     const eventEmitter = editor.getEventEmitter();
     subs.add(
-      eventEmitter.select(EditorEvents.EVENT_SELECTION_CHANGE).subscribe((v) => {
-        const caret = editor.getCaretPosition();
-        if (!caret || !editor.hasFocus()) {
+      eventEmitter
+        .select(EditorEvents.EVENT_SELECTION_CHANGE)
+        .pipe(combineLatestWith(eventEmitter.select(EditorEvents.EVENT_BLOCK_SELECTED)))
+        .subscribe((v) => {
+          const caret = editor.getCaretPosition();
+          if (!caret || !editor.hasFocus()) {
+            if (editor.getModule('selector').getSelectedBlocks().length > 0) return;
+            setDisplay(false);
+            return;
+          }
+          setDisplay(true);
+          setFormats(editor.getFormats(caret.blockId, caret.index, caret.length));
+        }),
+    );
+    subs.add(
+      eventEmitter.select(EditorEvents.EVENT_BLOCK_SELECTED).subscribe((blockIds: string[]) => {
+        if (blockIds.length < 1) {
           setDisplay(false);
           return;
         }
         setDisplay(true);
-        setFormats(editor.getFormats(caret.blockId, caret.index, caret.length));
       }),
     );
     return () => {
       subs.unsubscribe();
     };
-  });
+  }, []);
 
   return ReactDOM.createPortal(
     <>

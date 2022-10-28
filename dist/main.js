@@ -56,7 +56,7 @@ function __rest(s, e) {
     return t;
 }
 
-function __awaiter(thisArg, _arguments, P, generator) {
+function __awaiter$1(thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -2754,6 +2754,44 @@ function __extends(d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 }
 
+function __awaiter(thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+}
+
+function __generator(thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+}
+
 function __values(o) {
     var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
     if (m) return m.call(o);
@@ -2791,6 +2829,30 @@ function __spreadArray(to, from, pack) {
         }
     }
     return to.concat(ar || Array.prototype.slice.call(from));
+}
+
+function __await(v) {
+    return this instanceof __await ? (this.v = v, this) : new __await(v);
+}
+
+function __asyncGenerator(thisArg, _arguments, generator) {
+    if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
+    var g = generator.apply(thisArg, _arguments || []), i, q = [];
+    return i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i;
+    function verb(n) { if (g[n]) i[n] = function (v) { return new Promise(function (a, b) { q.push([n, v, a, b]) > 1 || resume(n, v); }); }; }
+    function resume(n, v) { try { step(g[n](v)); } catch (e) { settle(q[0][3], e); } }
+    function step(r) { r.value instanceof __await ? Promise.resolve(r.value.v).then(fulfill, reject) : settle(q[0][2], r); }
+    function fulfill(value) { resume("next", value); }
+    function reject(value) { resume("throw", value); }
+    function settle(f, v) { if (f(v), q.shift(), q.length) resume(q[0][0], q[0][1]); }
+}
+
+function __asyncValues(o) {
+    if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
+    var m = o[Symbol.asyncIterator], i;
+    return m ? m.call(o) : (o = typeof __values === "function" ? __values(o) : o[Symbol.iterator](), i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i);
+    function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
+    function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
 }
 
 function isFunction(value) {
@@ -3168,6 +3230,13 @@ function identity(x) {
     return x;
 }
 
+function pipe() {
+    var fns = [];
+    for (var _i = 0; _i < arguments.length; _i++) {
+        fns[_i] = arguments[_i];
+    }
+    return pipeFromArray(fns);
+}
 function pipeFromArray(fns) {
     if (fns.length === 0) {
         return identity;
@@ -4240,6 +4309,348 @@ var VirtualAction = (function (_super) {
 
 new Observable(function (subscriber) { return subscriber.complete(); });
 
+function last(arr) {
+    return arr[arr.length - 1];
+}
+function popResultSelector(args) {
+    return isFunction(last(args)) ? args.pop() : undefined;
+}
+
+var isArrayLike = (function (x) { return x && typeof x.length === 'number' && typeof x !== 'function'; });
+
+function isPromise(value) {
+    return isFunction(value === null || value === void 0 ? void 0 : value.then);
+}
+
+function isInteropObservable(input) {
+    return isFunction(input[observable]);
+}
+
+function isAsyncIterable(obj) {
+    return Symbol.asyncIterator && isFunction(obj === null || obj === void 0 ? void 0 : obj[Symbol.asyncIterator]);
+}
+
+function createInvalidObservableTypeError(input) {
+    return new TypeError("You provided " + (input !== null && typeof input === 'object' ? 'an invalid object' : "'" + input + "'") + " where a stream was expected. You can provide an Observable, Promise, ReadableStream, Array, AsyncIterable, or Iterable.");
+}
+
+function getSymbolIterator() {
+    if (typeof Symbol !== 'function' || !Symbol.iterator) {
+        return '@@iterator';
+    }
+    return Symbol.iterator;
+}
+var iterator = getSymbolIterator();
+
+function isIterable(input) {
+    return isFunction(input === null || input === void 0 ? void 0 : input[iterator]);
+}
+
+function readableStreamLikeToAsyncGenerator(readableStream) {
+    return __asyncGenerator(this, arguments, function readableStreamLikeToAsyncGenerator_1() {
+        var reader, _a, value, done;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    reader = readableStream.getReader();
+                    _b.label = 1;
+                case 1:
+                    _b.trys.push([1, , 9, 10]);
+                    _b.label = 2;
+                case 2:
+                    return [4, __await(reader.read())];
+                case 3:
+                    _a = _b.sent(), value = _a.value, done = _a.done;
+                    if (!done) return [3, 5];
+                    return [4, __await(void 0)];
+                case 4: return [2, _b.sent()];
+                case 5: return [4, __await(value)];
+                case 6: return [4, _b.sent()];
+                case 7:
+                    _b.sent();
+                    return [3, 2];
+                case 8: return [3, 10];
+                case 9:
+                    reader.releaseLock();
+                    return [7];
+                case 10: return [2];
+            }
+        });
+    });
+}
+function isReadableStreamLike(obj) {
+    return isFunction(obj === null || obj === void 0 ? void 0 : obj.getReader);
+}
+
+function innerFrom(input) {
+    if (input instanceof Observable) {
+        return input;
+    }
+    if (input != null) {
+        if (isInteropObservable(input)) {
+            return fromInteropObservable(input);
+        }
+        if (isArrayLike(input)) {
+            return fromArrayLike(input);
+        }
+        if (isPromise(input)) {
+            return fromPromise(input);
+        }
+        if (isAsyncIterable(input)) {
+            return fromAsyncIterable(input);
+        }
+        if (isIterable(input)) {
+            return fromIterable(input);
+        }
+        if (isReadableStreamLike(input)) {
+            return fromReadableStreamLike(input);
+        }
+    }
+    throw createInvalidObservableTypeError(input);
+}
+function fromInteropObservable(obj) {
+    return new Observable(function (subscriber) {
+        var obs = obj[observable]();
+        if (isFunction(obs.subscribe)) {
+            return obs.subscribe(subscriber);
+        }
+        throw new TypeError('Provided object does not correctly implement Symbol.observable');
+    });
+}
+function fromArrayLike(array) {
+    return new Observable(function (subscriber) {
+        for (var i = 0; i < array.length && !subscriber.closed; i++) {
+            subscriber.next(array[i]);
+        }
+        subscriber.complete();
+    });
+}
+function fromPromise(promise) {
+    return new Observable(function (subscriber) {
+        promise
+            .then(function (value) {
+            if (!subscriber.closed) {
+                subscriber.next(value);
+                subscriber.complete();
+            }
+        }, function (err) { return subscriber.error(err); })
+            .then(null, reportUnhandledError);
+    });
+}
+function fromIterable(iterable) {
+    return new Observable(function (subscriber) {
+        var e_1, _a;
+        try {
+            for (var iterable_1 = __values(iterable), iterable_1_1 = iterable_1.next(); !iterable_1_1.done; iterable_1_1 = iterable_1.next()) {
+                var value = iterable_1_1.value;
+                subscriber.next(value);
+                if (subscriber.closed) {
+                    return;
+                }
+            }
+        }
+        catch (e_1_1) { e_1 = { error: e_1_1 }; }
+        finally {
+            try {
+                if (iterable_1_1 && !iterable_1_1.done && (_a = iterable_1.return)) _a.call(iterable_1);
+            }
+            finally { if (e_1) throw e_1.error; }
+        }
+        subscriber.complete();
+    });
+}
+function fromAsyncIterable(asyncIterable) {
+    return new Observable(function (subscriber) {
+        process$1(asyncIterable, subscriber).catch(function (err) { return subscriber.error(err); });
+    });
+}
+function fromReadableStreamLike(readableStream) {
+    return fromAsyncIterable(readableStreamLikeToAsyncGenerator(readableStream));
+}
+function process$1(asyncIterable, subscriber) {
+    var asyncIterable_1, asyncIterable_1_1;
+    var e_2, _a;
+    return __awaiter(this, void 0, void 0, function () {
+        var value, e_2_1;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    _b.trys.push([0, 5, 6, 11]);
+                    asyncIterable_1 = __asyncValues(asyncIterable);
+                    _b.label = 1;
+                case 1: return [4, asyncIterable_1.next()];
+                case 2:
+                    if (!(asyncIterable_1_1 = _b.sent(), !asyncIterable_1_1.done)) return [3, 4];
+                    value = asyncIterable_1_1.value;
+                    subscriber.next(value);
+                    if (subscriber.closed) {
+                        return [2];
+                    }
+                    _b.label = 3;
+                case 3: return [3, 1];
+                case 4: return [3, 11];
+                case 5:
+                    e_2_1 = _b.sent();
+                    e_2 = { error: e_2_1 };
+                    return [3, 11];
+                case 6:
+                    _b.trys.push([6, , 9, 10]);
+                    if (!(asyncIterable_1_1 && !asyncIterable_1_1.done && (_a = asyncIterable_1.return))) return [3, 8];
+                    return [4, _a.call(asyncIterable_1)];
+                case 7:
+                    _b.sent();
+                    _b.label = 8;
+                case 8: return [3, 10];
+                case 9:
+                    if (e_2) throw e_2.error;
+                    return [7];
+                case 10: return [7];
+                case 11:
+                    subscriber.complete();
+                    return [2];
+            }
+        });
+    });
+}
+
+function executeSchedule(parentSubscription, scheduler, work, delay, repeat) {
+    if (delay === void 0) { delay = 0; }
+    if (repeat === void 0) { repeat = false; }
+    var scheduleSubscription = scheduler.schedule(function () {
+        work();
+        if (repeat) {
+            parentSubscription.add(this.schedule(null, delay));
+        }
+        else {
+            this.unsubscribe();
+        }
+    }, delay);
+    parentSubscription.add(scheduleSubscription);
+    if (!repeat) {
+        return scheduleSubscription;
+    }
+}
+
+function observeOn(scheduler, delay) {
+    if (delay === void 0) { delay = 0; }
+    return operate(function (source, subscriber) {
+        source.subscribe(createOperatorSubscriber(subscriber, function (value) { return executeSchedule(subscriber, scheduler, function () { return subscriber.next(value); }, delay); }, function () { return executeSchedule(subscriber, scheduler, function () { return subscriber.complete(); }, delay); }, function (err) { return executeSchedule(subscriber, scheduler, function () { return subscriber.error(err); }, delay); }));
+    });
+}
+
+function subscribeOn(scheduler, delay) {
+    if (delay === void 0) { delay = 0; }
+    return operate(function (source, subscriber) {
+        subscriber.add(scheduler.schedule(function () { return source.subscribe(subscriber); }, delay));
+    });
+}
+
+function scheduleObservable(input, scheduler) {
+    return innerFrom(input).pipe(subscribeOn(scheduler), observeOn(scheduler));
+}
+
+function schedulePromise(input, scheduler) {
+    return innerFrom(input).pipe(subscribeOn(scheduler), observeOn(scheduler));
+}
+
+function scheduleArray(input, scheduler) {
+    return new Observable(function (subscriber) {
+        var i = 0;
+        return scheduler.schedule(function () {
+            if (i === input.length) {
+                subscriber.complete();
+            }
+            else {
+                subscriber.next(input[i++]);
+                if (!subscriber.closed) {
+                    this.schedule();
+                }
+            }
+        });
+    });
+}
+
+function scheduleIterable(input, scheduler) {
+    return new Observable(function (subscriber) {
+        var iterator$1;
+        executeSchedule(subscriber, scheduler, function () {
+            iterator$1 = input[iterator]();
+            executeSchedule(subscriber, scheduler, function () {
+                var _a;
+                var value;
+                var done;
+                try {
+                    (_a = iterator$1.next(), value = _a.value, done = _a.done);
+                }
+                catch (err) {
+                    subscriber.error(err);
+                    return;
+                }
+                if (done) {
+                    subscriber.complete();
+                }
+                else {
+                    subscriber.next(value);
+                }
+            }, 0, true);
+        });
+        return function () { return isFunction(iterator$1 === null || iterator$1 === void 0 ? void 0 : iterator$1.return) && iterator$1.return(); };
+    });
+}
+
+function scheduleAsyncIterable(input, scheduler) {
+    if (!input) {
+        throw new Error('Iterable cannot be null');
+    }
+    return new Observable(function (subscriber) {
+        executeSchedule(subscriber, scheduler, function () {
+            var iterator = input[Symbol.asyncIterator]();
+            executeSchedule(subscriber, scheduler, function () {
+                iterator.next().then(function (result) {
+                    if (result.done) {
+                        subscriber.complete();
+                    }
+                    else {
+                        subscriber.next(result.value);
+                    }
+                });
+            }, 0, true);
+        });
+    });
+}
+
+function scheduleReadableStreamLike(input, scheduler) {
+    return scheduleAsyncIterable(readableStreamLikeToAsyncGenerator(input), scheduler);
+}
+
+function scheduled(input, scheduler) {
+    if (input != null) {
+        if (isInteropObservable(input)) {
+            return scheduleObservable(input, scheduler);
+        }
+        if (isArrayLike(input)) {
+            return scheduleArray(input, scheduler);
+        }
+        if (isPromise(input)) {
+            return schedulePromise(input, scheduler);
+        }
+        if (isAsyncIterable(input)) {
+            return scheduleAsyncIterable(input, scheduler);
+        }
+        if (isIterable(input)) {
+            return scheduleIterable(input, scheduler);
+        }
+        if (isReadableStreamLike(input)) {
+            return scheduleReadableStreamLike(input, scheduler);
+        }
+    }
+    throw createInvalidObservableTypeError(input);
+}
+
+function from(input, scheduler) {
+    return scheduler ? scheduled(input, scheduler) : innerFrom(input);
+}
+
 var NotificationKind;
 (function (NotificationKind) {
     NotificationKind["NEXT"] = "N";
@@ -4296,13 +4707,90 @@ function map(project, thisArg) {
     });
 }
 
+var isArray$2 = Array.isArray;
+function callOrApply(fn, args) {
+    return isArray$2(args) ? fn.apply(void 0, __spreadArray([], __read(args))) : fn(args);
+}
+function mapOneOrManyArgs(fn) {
+    return map(function (args) { return callOrApply(fn, args); });
+}
+
+function combineLatestInit(observables, scheduler, valueTransform) {
+    if (valueTransform === void 0) { valueTransform = identity; }
+    return function (subscriber) {
+        maybeSchedule(scheduler, function () {
+            var length = observables.length;
+            var values = new Array(length);
+            var active = length;
+            var remainingFirstValues = length;
+            var _loop_1 = function (i) {
+                maybeSchedule(scheduler, function () {
+                    var source = from(observables[i], scheduler);
+                    var hasFirstValue = false;
+                    source.subscribe(createOperatorSubscriber(subscriber, function (value) {
+                        values[i] = value;
+                        if (!hasFirstValue) {
+                            hasFirstValue = true;
+                            remainingFirstValues--;
+                        }
+                        if (!remainingFirstValues) {
+                            subscriber.next(valueTransform(values.slice()));
+                        }
+                    }, function () {
+                        if (!--active) {
+                            subscriber.complete();
+                        }
+                    }));
+                }, subscriber);
+            };
+            for (var i = 0; i < length; i++) {
+                _loop_1(i);
+            }
+        }, subscriber);
+    };
+}
+function maybeSchedule(scheduler, execute, subscription) {
+    if (scheduler) {
+        executeSchedule(subscription, scheduler, execute);
+    }
+    else {
+        execute();
+    }
+}
+
 new Observable(noop);
+
+var isArray$1 = Array.isArray;
+function argsOrArgArray(args) {
+    return args.length === 1 && isArray$1(args[0]) ? args[0] : args;
+}
 
 function filter(predicate, thisArg) {
     return operate(function (source, subscriber) {
         var index = 0;
         source.subscribe(createOperatorSubscriber(subscriber, function (value) { return predicate.call(thisArg, value, index++) && subscriber.next(value); }));
     });
+}
+
+function combineLatest() {
+    var args = [];
+    for (var _i = 0; _i < arguments.length; _i++) {
+        args[_i] = arguments[_i];
+    }
+    var resultSelector = popResultSelector(args);
+    return resultSelector
+        ? pipe(combineLatest.apply(void 0, __spreadArray([], __read(args))), mapOneOrManyArgs(resultSelector))
+        : operate(function (source, subscriber) {
+            combineLatestInit(__spreadArray([source], __read(argsOrArgArray(args))))(subscriber);
+        });
+}
+
+function combineLatestWith() {
+    var otherSources = [];
+    for (var _i = 0; _i < arguments.length; _i++) {
+        otherSources[_i] = arguments[_i];
+    }
+    return combineLatest.apply(void 0, __spreadArray([], __read(otherSources)));
 }
 
 var lodash_isequal = {exports: {}};
@@ -7544,19 +8032,31 @@ const GlobalToolbar = React__namespace.memo((_a) => {
     React__namespace.useEffect(() => {
         const subs = new Subscription();
         const eventEmitter = editor.getEventEmitter();
-        subs.add(eventEmitter.select(EditorEvents.EVENT_SELECTION_CHANGE).subscribe((v) => {
+        subs.add(eventEmitter
+            .select(EditorEvents.EVENT_SELECTION_CHANGE)
+            .pipe(combineLatestWith(eventEmitter.select(EditorEvents.EVENT_BLOCK_SELECTED)))
+            .subscribe((v) => {
             const caret = editor.getCaretPosition();
             if (!caret || !editor.hasFocus()) {
+                if (editor.getModule('selector').getSelectedBlocks().length > 0)
+                    return;
                 setDisplay(false);
                 return;
             }
             setDisplay(true);
             setFormats(editor.getFormats(caret.blockId, caret.index, caret.length));
         }));
+        subs.add(eventEmitter.select(EditorEvents.EVENT_BLOCK_SELECTED).subscribe((blockIds) => {
+            if (blockIds.length < 1) {
+                setDisplay(false);
+                return;
+            }
+            setDisplay(true);
+        }));
         return () => {
             subs.unsubscribe();
         };
-    });
+    }, []);
     return ReactDOM__default["default"].createPortal(jsxRuntime.exports.jsx(jsxRuntime.exports.Fragment, { children: isDisplay && (jsxRuntime.exports.jsxs(Container$2, Object.assign({}, props, { children: [jsxRuntime.exports.jsx(Button$2, Object.assign({ href: "#", onClick: handleHeader1 }, { children: "H1" })), jsxRuntime.exports.jsx(Button$2, Object.assign({ href: "#", onClick: handleBlockquote }, { children: "\u5F15\u7528" })), jsxRuntime.exports.jsx(Button$2, Object.assign({ href: "#", onClick: handleOrderedList }, { children: "\u756A\u53F7\u30EA\u30B9\u30C8" })), jsxRuntime.exports.jsx(Button$2, Object.assign({ href: "#", onClick: handleBulletList }, { children: "\u30EA\u30B9\u30C8" }))] }))) }), document.body);
 });
 
@@ -12200,7 +12700,7 @@ function useEditor({ settings, eventEmitter, }) {
     }, []);
     const updateBlocks = React__namespace.useCallback((blocks) => {
         // If the last block is an embedded element
-        if (settings.embeddedBlocks.includes(blocks[blocks.length - 1].type)) {
+        if (blocks.length > 0 && settings.embeddedBlocks.includes(blocks[blocks.length - 1].type)) {
             blocks = [...blocks, createBlock('PARAGRAPH')];
         }
         blocksRef.current = blocks;
@@ -15551,7 +16051,7 @@ class UploaderModule {
             const isImage = !!file.type.match(/^image\/(gif|jpe?g|a?png|svg|webp|bmp)/i);
             if (isImage) {
                 const fileReader = new FileReader();
-                fileReader.onload = (event) => __awaiter(this, void 0, void 0, function* () {
+                fileReader.onload = (event) => __awaiter$1(this, void 0, void 0, function* () {
                     var _a;
                     const addedBlock = this.editor.getModule('editor').createBlock({
                         prevId: blockId,
@@ -15587,7 +16087,7 @@ class UploaderModule {
             }
             else {
                 const fileReader = new FileReader();
-                fileReader.onload = (event) => __awaiter(this, void 0, void 0, function* () {
+                fileReader.onload = (event) => __awaiter$1(this, void 0, void 0, function* () {
                     const addedBlock = this.editor.getModule('editor').createBlock({
                         prevId: blockId,
                         type: 'FILE',
@@ -16089,20 +16589,25 @@ exports.ClipboardModule = ClipboardModule;
 exports.Color = Color;
 exports.DragDropModule = DragDropModule;
 exports.Editor = Editor;
+exports.EditorEvents = EditorEvents;
 exports.EditorModule = EditorModule;
+exports.EventSources = EventSources;
 exports.File = File;
 exports.GlobalToolbar = GlobalToolbar;
 exports.Header1 = Header1;
 exports.Header2 = Header2;
 exports.Header3 = Header3;
 exports.HistoryModule = HistoryModule;
+exports.HistoryType = HistoryType;
 exports.Image = Image$1;
 exports.InlineCode = InlineCode;
 exports.InlineContainer = InlineContainer;
 exports.InlineText = InlineText;
 exports.Italic = Italic;
 exports.KeyBoardModule = KeyBoardModule;
+exports.KeyCodes = KeyCodes;
 exports.Link = Link$1;
+exports.LogLevels = LogLevels;
 exports.LoggerModule = LoggerModule;
 exports.MarkdownShortcutModule = MarkdownShortcutModule;
 exports.OrderedList = OrderedList;

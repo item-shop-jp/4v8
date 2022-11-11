@@ -6653,6 +6653,7 @@ const KeyCodes = {
     ENTER: 'Enter',
     NUMPAD_ENTER: 'NumpadEnter',
     TAB: 'Tab',
+    DELETE: 'Delete',
     A: 'KeyA',
     B: 'KeyB',
     C: 'KeyC',
@@ -12407,7 +12408,6 @@ function useEditor({ settings, eventEmitter, }) {
             return null;
         const contents = setAttributesForInlineContents(copyObject(block.contents), attributes, index, length);
         updateBlock(Object.assign(Object.assign({}, block), { contents }));
-        render([block.id]);
     }, []);
     const setBlocks = React__namespace.useCallback((blocks) => {
         blocksRef.current = blocks.map((block) => {
@@ -13155,6 +13155,11 @@ class KeyBoardModule {
             handler: this._handleBackspace.bind(this),
         });
         this.addBinding({
+            key: KeyCodes.DELETE,
+            prevented: true,
+            handler: this._handleDelete.bind(this),
+        });
+        this.addBinding({
             key: KeyCodes.SPACE,
             handler: this._handleSpace.bind(this),
         });
@@ -13207,6 +13212,21 @@ class KeyBoardModule {
             shortKey: true,
             handler: this._handleUnderline.bind(this),
         });
+        // Mac only shortcuts
+        if (/Mac/i.test(navigator.platform)) {
+            this.addBinding({
+                key: KeyCodes.D,
+                prevented: true,
+                ctrlKey: true,
+                handler: this._handleDelete.bind(this),
+            });
+            this.addBinding({
+                key: KeyCodes.H,
+                prevented: true,
+                ctrlKey: true,
+                handler: this._handleBackspace.bind(this),
+            });
+        }
     }
     onDestroy() {
         this.bindings = [];
@@ -13455,6 +13475,36 @@ class KeyBoardModule {
             editor.updateCaretRect();
         }, 10);
     }
+    _handleDelete(caretPosition, editor) {
+        var _a;
+        const block = editor.getBlock(caretPosition.blockId);
+        const blocks = editor.getBlocks();
+        const blockIndex = blocks.findIndex((v) => v.id === caretPosition.blockId);
+        const textLength = (_a = editor.getBlockLength(caretPosition.blockId)) !== null && _a !== void 0 ? _a : 0;
+        let deletedContents;
+        if (caretPosition.collapsed) {
+            if (!block)
+                return;
+            // Ignored for null characters
+            if (caretPosition.index >= textLength) {
+                editor.getModule('editor').mergeBlock(blocks[blockIndex].id, blocks[blockIndex + 1].id);
+                return;
+            }
+            deletedContents = deleteInlineContents(block.contents, caretPosition.index, 1);
+        }
+        else {
+            if (!block || caretPosition.length < 1)
+                return;
+            deletedContents = deleteInlineContents(block.contents, caretPosition.index, caretPosition.length);
+        }
+        editor.updateBlock(Object.assign(Object.assign({}, block), { contents: deletedContents }));
+        editor.blur();
+        editor.render([block.id]);
+        setTimeout(() => {
+            editor.setCaretPosition({ blockId: block.id, index: caretPosition.index });
+            editor.updateCaretRect();
+        }, 10);
+    }
     _handleUndo(caretPosition, editor, event) {
         editor.getModule('history').undo();
     }
@@ -13634,11 +13684,22 @@ class ToolbarModule {
         if (!block)
             return;
         this.editor.formatText(block.id, caretPosition.index, caretPosition.length, attributes);
+        this.editor.render([block.id]);
         setTimeout(() => this.editor.setCaretPosition({
             blockId: block.id,
             index: caretPosition === null || caretPosition === void 0 ? void 0 : caretPosition.index,
             length: caretPosition === null || caretPosition === void 0 ? void 0 : caretPosition.length,
         }), 10);
+    }
+    formatInlineMultiBlocks(blockIds, attributes = {}) {
+        blockIds.forEach((blockId) => {
+            const block = this.editor.getBlock(blockId);
+            const blockLength = this.editor.getBlockLength(blockId);
+            if (!block)
+                return;
+            this.editor.formatText(block.id, 0, blockLength !== null && blockLength !== void 0 ? blockLength : 0, attributes);
+        });
+        this.editor.render(blockIds);
     }
     formatBlock(type, attributes = {}) {
         const caretPosition = this.editor.getCaretPosition();
@@ -13804,6 +13865,25 @@ class SelectorModule {
             shiftKey: true,
             prevented: true,
             handler: this._handleOutdent.bind(this),
+        });
+        // override native events
+        this.addBinding({
+            key: KeyCodes.B,
+            prevented: true,
+            shortKey: true,
+            handler: this._handleBold.bind(this),
+        });
+        this.addBinding({
+            key: KeyCodes.I,
+            prevented: true,
+            shortKey: true,
+            handler: this._handleItalic.bind(this),
+        });
+        this.addBinding({
+            key: KeyCodes.U,
+            prevented: true,
+            shortKey: true,
+            handler: this._handleUnderline.bind(this),
         });
     }
     onDestroy() {
@@ -14038,6 +14118,57 @@ class SelectorModule {
             return false;
         handler(this.editor, e);
         return prevented;
+    }
+    _handleBold(editor) {
+        const selectedBlocks = editor.getModule('selector').getSelectedBlocks();
+        if (selectedBlocks.length < 1)
+            return;
+        let isFormatted = true;
+        const blockIds = selectedBlocks.map((v) => {
+            if (isFormatted) {
+                const blockLength = editor.getBlockLength(v.id);
+                const formats = editor.getFormats(v.id, 0, blockLength !== null && blockLength !== void 0 ? blockLength : 0);
+                if (!(formats === null || formats === void 0 ? void 0 : formats.bold)) {
+                    isFormatted = false;
+                }
+            }
+            return v.id;
+        });
+        editor.getModule('toolbar').formatInlineMultiBlocks(blockIds, { bold: !isFormatted });
+    }
+    _handleItalic(editor) {
+        const selectedBlocks = editor.getModule('selector').getSelectedBlocks();
+        if (selectedBlocks.length < 1)
+            return;
+        let isFormatted = true;
+        const blockIds = selectedBlocks.map((v) => {
+            if (isFormatted) {
+                const blockLength = editor.getBlockLength(v.id);
+                const formats = editor.getFormats(v.id, 0, blockLength !== null && blockLength !== void 0 ? blockLength : 0);
+                if (!(formats === null || formats === void 0 ? void 0 : formats.italic)) {
+                    isFormatted = false;
+                }
+            }
+            return v.id;
+        });
+        editor.getModule('toolbar').formatInlineMultiBlocks(blockIds, { italic: !isFormatted });
+    }
+    _handleUnderline(editor) {
+        const selectedBlocks = editor.getModule('selector').getSelectedBlocks();
+        if (selectedBlocks.length < 1)
+            return;
+        let isFormatted = true;
+        const blockIds = selectedBlocks.map((v) => {
+            if (isFormatted) {
+                const blockLength = editor.getBlockLength(v.id);
+                const formats = editor.getFormats(v.id, 0, blockLength !== null && blockLength !== void 0 ? blockLength : 0);
+                if (!(formats === null || formats === void 0 ? void 0 : formats.underline)) {
+                    isFormatted = false;
+                }
+            }
+            return v.id;
+        });
+        editor.getModule('toolbar').formatInlineMultiBlocks(blockIds, { underline: !isFormatted });
     }
     _handleBackspace(editor) {
         const selectedBlocks = editor.getModule('selector').getSelectedBlocks();
@@ -15693,6 +15824,7 @@ class ClipboardModule {
                 this.editor.formatText(prevBlock.id, caretPosition.index, caretPosition.length, {
                     link: linkMatch[0],
                 });
+                this.editor.render([prevBlock.id]);
                 setTimeout(() => {
                     this.editor.setCaretPosition({
                         blockId: prevBlock.id,

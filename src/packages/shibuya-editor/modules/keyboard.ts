@@ -1,12 +1,11 @@
 import * as React from 'react';
-import { debounce, throttle } from 'throttle-debounce';
+import { throttle } from 'throttle-debounce';
 import { Module } from '../types/module';
 import { EventEmitter } from '../utils/event-emitter';
-import { KeyCodes, EditorEvents } from '../constants';
+import { KeyCodes } from '../constants';
 import { EditorController } from '../types/editor';
 import { deleteInlineContents, getBlockId } from '../utils/block';
 import { CaretPosition } from '../types/caret';
-import { EditorModule } from './editor';
 
 const ShortKey = /Mac/i.test(navigator.platform) ? 'metaKey' : 'ctrlKey';
 
@@ -118,6 +117,11 @@ export class KeyBoardModule implements Module {
       prevented: true,
       handler: this._handleBackspace.bind(this),
     });
+    this.addBinding({
+      key: KeyCodes.DELETE,
+      prevented: true,
+      handler: this._handleDelete.bind(this),
+    });
 
     this.addBinding({
       key: KeyCodes.SPACE,
@@ -178,6 +182,22 @@ export class KeyBoardModule implements Module {
       shortKey: true,
       handler: this._handleUnderline.bind(this),
     });
+
+    // Mac only shortcuts
+    if (/Mac/i.test(navigator.platform)) {
+      this.addBinding({
+        key: KeyCodes.D,
+        prevented: true,
+        ctrlKey: true,
+        handler: this._handleDelete.bind(this),
+      });
+      this.addBinding({
+        key: KeyCodes.H,
+        prevented: true,
+        ctrlKey: true,
+        handler: this._handleBackspace.bind(this),
+      });
+    }
   }
 
   onDestroy() {
@@ -477,6 +497,39 @@ export class KeyBoardModule implements Module {
     editor.render([block.id]);
     setTimeout(() => {
       editor.setCaretPosition({ blockId: block.id, index: caretIndex });
+      editor.updateCaretRect();
+    }, 10);
+  }
+
+  private _handleDelete(caretPosition: CaretPosition, editor: EditorController) {
+    const block = editor.getBlock(caretPosition.blockId);
+    const blocks = editor.getBlocks();
+    const blockIndex = blocks.findIndex((v) => v.id === caretPosition.blockId);
+    const textLength = editor.getBlockLength(caretPosition.blockId) ?? 0;
+    let deletedContents;
+
+    if (caretPosition.collapsed) {
+      if (!block) return;
+      // Ignored for null characters
+      if (caretPosition.index >= textLength) {
+        editor.getModule('editor').mergeBlock(blocks[blockIndex].id, blocks[blockIndex + 1].id);
+        return;
+      }
+
+      deletedContents = deleteInlineContents(block.contents, caretPosition.index, 1);
+    } else {
+      if (!block || caretPosition.length < 1) return;
+      deletedContents = deleteInlineContents(
+        block.contents,
+        caretPosition.index,
+        caretPosition.length,
+      );
+    }
+    editor.updateBlock({ ...block, contents: deletedContents });
+    editor.blur();
+    editor.render([block.id]);
+    setTimeout(() => {
+      editor.setCaretPosition({ blockId: block.id, index: caretPosition.index });
       editor.updateCaretRect();
     }, 10);
   }

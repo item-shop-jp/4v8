@@ -146,6 +146,7 @@ export class ClipboardModule implements Module {
         this.editor.formatText(prevBlock.id, caretPosition.index, caretPosition.length, {
           link: linkMatch[0],
         });
+        this.editor.render([prevBlock.id]);
         setTimeout(() => {
           this.editor.setCaretPosition({
             blockId: prevBlock.id,

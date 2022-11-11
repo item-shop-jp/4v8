@@ -34,7 +34,7 @@ export class ToolbarModule implements Module {
     const block = this.editor.getBlock(caretPosition.blockId);
     if (!block) return;
     this.editor.formatText(block.id, caretPosition.index, caretPosition.length, attributes);
-
+    this.editor.render([block.id]);
     setTimeout(
       () =>
         this.editor.setCaretPosition({
@@ -44,6 +44,16 @@ export class ToolbarModule implements Module {
         }),
       10,
     );
+  }
+
+  formatInlineMultiBlocks(blockIds: string[], attributes: InlineAttributes = {}) {
+    blockIds.forEach((blockId) => {
+      const block = this.editor.getBlock(blockId);
+      const blockLength = this.editor.getBlockLength(blockId);
+      if (!block) return;
+      this.editor.formatText(block.id, 0, blockLength ?? 0, attributes);
+    });
+    this.editor.render(blockIds);
   }
 
   formatBlock(type: BlockType, attributes: BlockAttributes = {}) {

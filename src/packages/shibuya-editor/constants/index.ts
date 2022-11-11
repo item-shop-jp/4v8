@@ -6,6 +6,7 @@ export const KeyCodes = {
   ENTER: 'Enter',
   NUMPAD_ENTER: 'NumpadEnter',
   TAB: 'Tab',
+  DELETE: 'Delete',
   A: 'KeyA',
   B: 'KeyB',
   C: 'KeyC',

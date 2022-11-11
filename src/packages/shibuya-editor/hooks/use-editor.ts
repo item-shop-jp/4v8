@@ -249,7 +249,6 @@ export function useEditor({
         length,
       );
       updateBlock({ ...block, contents });
-      render([block.id]);
     },
     [],
   );

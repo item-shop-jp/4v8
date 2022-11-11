@@ -195,6 +195,26 @@ export class SelectorModule implements Module {
       prevented: true,
       handler: this._handleOutdent.bind(this),
     });
+
+    // override native events
+    this.addBinding({
+      key: KeyCodes.B,
+      prevented: true,
+      shortKey: true,
+      handler: this._handleBold.bind(this),
+    });
+    this.addBinding({
+      key: KeyCodes.I,
+      prevented: true,
+      shortKey: true,
+      handler: this._handleItalic.bind(this),
+    });
+    this.addBinding({
+      key: KeyCodes.U,
+      prevented: true,
+      shortKey: true,
+      handler: this._handleUnderline.bind(this),
+    });
   }
 
   onDestroy() {
@@ -451,6 +471,55 @@ export class SelectorModule implements Module {
     handler(this.editor, e);
 
     return prevented;
+  }
+
+  private _handleBold(editor: EditorController) {
+    const selectedBlocks = editor.getModule('selector').getSelectedBlocks();
+    if (selectedBlocks.length < 1) return;
+    let isFormatted = true;
+    const blockIds = selectedBlocks.map((v) => {
+      if (isFormatted) {
+        const blockLength = editor.getBlockLength(v.id);
+        const formats = editor.getFormats(v.id, 0, blockLength ?? 0);
+        if (!formats?.bold) {
+          isFormatted = false;
+        }
+      }
+      return v.id;
+    });
+    editor.getModule('toolbar').formatInlineMultiBlocks(blockIds, { bold: !isFormatted });
+  }
+  private _handleItalic(editor: EditorController) {
+    const selectedBlocks = editor.getModule('selector').getSelectedBlocks();
+    if (selectedBlocks.length < 1) return;
+    let isFormatted = true;
+    const blockIds = selectedBlocks.map((v) => {
+      if (isFormatted) {
+        const blockLength = editor.getBlockLength(v.id);
+        const formats = editor.getFormats(v.id, 0, blockLength ?? 0);
+        if (!formats?.italic) {
+          isFormatted = false;
+        }
+      }
+      return v.id;
+    });
+    editor.getModule('toolbar').formatInlineMultiBlocks(blockIds, { italic: !isFormatted });
+  }
+  private _handleUnderline(editor: EditorController) {
+    const selectedBlocks = editor.getModule('selector').getSelectedBlocks();
+    if (selectedBlocks.length < 1) return;
+    let isFormatted = true;
+    const blockIds = selectedBlocks.map((v) => {
+      if (isFormatted) {
+        const blockLength = editor.getBlockLength(v.id);
+        const formats = editor.getFormats(v.id, 0, blockLength ?? 0);
+        if (!formats?.underline) {
+          isFormatted = false;
+        }
+      }
+      return v.id;
+    });
+    editor.getModule('toolbar').formatInlineMultiBlocks(blockIds, { underline: !isFormatted });
   }
 
   private _handleBackspace(editor: EditorController) {

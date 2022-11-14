@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import isEqual from 'lodash.isequal';
+import { v4 as uuidv4 } from 'uuid';
 import { EditorController } from '../types/editor';
 import { Block } from '../types/block';
 import { EditorEvents } from '../constants';
@@ -31,12 +32,11 @@ export function useBlockRenderer({ blockId, editor }: Props): Block | null {
         .subscribe(() => {
           const currentBlock = editor.getBlock(blockId);
           if (currentBlock) {
-            setBlock((prev) => {
-              if (currentBlock.contents.length > 0 && isEqual(currentBlock, prev)) {
-                setTimeout(() => setBlock(currentBlock));
-                return { ...currentBlock, contents: [] };
-              }
-              return copyObject(currentBlock);
+            setBlock({
+              ...currentBlock,
+              contents: currentBlock.contents.map((v) => {
+                return { ...v, id: uuidv4() };
+              }),
             });
           }
         }),

@@ -4793,6 +4793,2017 @@ function combineLatestWith() {
     return combineLatest.apply(void 0, __spreadArray([], __read(otherSources)));
 }
 
+// Unique ID creation requires a high quality random # generator. In the browser we therefore
+// require the crypto API and do not support built-in fallback to lower quality random number
+// generators (like Math.random()).
+let getRandomValues;
+const rnds8 = new Uint8Array(16);
+function rng() {
+  // lazy load so that environments that need to polyfill have a chance to do so
+  if (!getRandomValues) {
+    // getRandomValues needs to be invoked in a context where "this" is a Crypto implementation.
+    getRandomValues = typeof crypto !== 'undefined' && crypto.getRandomValues && crypto.getRandomValues.bind(crypto);
+
+    if (!getRandomValues) {
+      throw new Error('crypto.getRandomValues() not supported. See https://github.com/uuidjs/uuid#getrandomvalues-not-supported');
+    }
+  }
+
+  return getRandomValues(rnds8);
+}
+
+var REGEX = /^(?:[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}|00000000-0000-0000-0000-000000000000)$/i;
+
+function validate(uuid) {
+  return typeof uuid === 'string' && REGEX.test(uuid);
+}
+
+/**
+ * Convert array of 16 byte values to UUID string format of the form:
+ * XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
+ */
+
+const byteToHex = [];
+
+for (let i = 0; i < 256; ++i) {
+  byteToHex.push((i + 0x100).toString(16).slice(1));
+}
+
+function unsafeStringify(arr, offset = 0) {
+  // Note: Be careful editing this code!  It's been tuned for performance
+  // and works in ways you may not expect. See https://github.com/uuidjs/uuid/pull/434
+  return (byteToHex[arr[offset + 0]] + byteToHex[arr[offset + 1]] + byteToHex[arr[offset + 2]] + byteToHex[arr[offset + 3]] + '-' + byteToHex[arr[offset + 4]] + byteToHex[arr[offset + 5]] + '-' + byteToHex[arr[offset + 6]] + byteToHex[arr[offset + 7]] + '-' + byteToHex[arr[offset + 8]] + byteToHex[arr[offset + 9]] + '-' + byteToHex[arr[offset + 10]] + byteToHex[arr[offset + 11]] + byteToHex[arr[offset + 12]] + byteToHex[arr[offset + 13]] + byteToHex[arr[offset + 14]] + byteToHex[arr[offset + 15]]).toLowerCase();
+}
+
+function parse(uuid) {
+  if (!validate(uuid)) {
+    throw TypeError('Invalid UUID');
+  }
+
+  let v;
+  const arr = new Uint8Array(16); // Parse ########-....-....-....-............
+
+  arr[0] = (v = parseInt(uuid.slice(0, 8), 16)) >>> 24;
+  arr[1] = v >>> 16 & 0xff;
+  arr[2] = v >>> 8 & 0xff;
+  arr[3] = v & 0xff; // Parse ........-####-....-....-............
+
+  arr[4] = (v = parseInt(uuid.slice(9, 13), 16)) >>> 8;
+  arr[5] = v & 0xff; // Parse ........-....-####-....-............
+
+  arr[6] = (v = parseInt(uuid.slice(14, 18), 16)) >>> 8;
+  arr[7] = v & 0xff; // Parse ........-....-....-####-............
+
+  arr[8] = (v = parseInt(uuid.slice(19, 23), 16)) >>> 8;
+  arr[9] = v & 0xff; // Parse ........-....-....-....-############
+  // (Use "/" to avoid 32-bit truncation when bit-shifting high-order bytes)
+
+  arr[10] = (v = parseInt(uuid.slice(24, 36), 16)) / 0x10000000000 & 0xff;
+  arr[11] = v / 0x100000000 & 0xff;
+  arr[12] = v >>> 24 & 0xff;
+  arr[13] = v >>> 16 & 0xff;
+  arr[14] = v >>> 8 & 0xff;
+  arr[15] = v & 0xff;
+  return arr;
+}
+
+function stringToBytes(str) {
+  str = unescape(encodeURIComponent(str)); // UTF8 escape
+
+  const bytes = [];
+
+  for (let i = 0; i < str.length; ++i) {
+    bytes.push(str.charCodeAt(i));
+  }
+
+  return bytes;
+}
+
+const DNS = '6ba7b810-9dad-11d1-80b4-00c04fd430c8';
+const URL = '6ba7b811-9dad-11d1-80b4-00c04fd430c8';
+function v35(name, version, hashfunc) {
+  function generateUUID(value, namespace, buf, offset) {
+    var _namespace;
+
+    if (typeof value === 'string') {
+      value = stringToBytes(value);
+    }
+
+    if (typeof namespace === 'string') {
+      namespace = parse(namespace);
+    }
+
+    if (((_namespace = namespace) === null || _namespace === void 0 ? void 0 : _namespace.length) !== 16) {
+      throw TypeError('Namespace must be array-like (16 iterable integer values, 0-255)');
+    } // Compute hash of namespace and value, Per 4.3
+    // Future: Use spread syntax when supported on all platforms, e.g. `bytes =
+    // hashfunc([...namespace, ... value])`
+
+
+    let bytes = new Uint8Array(16 + value.length);
+    bytes.set(namespace);
+    bytes.set(value, namespace.length);
+    bytes = hashfunc(bytes);
+    bytes[6] = bytes[6] & 0x0f | version;
+    bytes[8] = bytes[8] & 0x3f | 0x80;
+
+    if (buf) {
+      offset = offset || 0;
+
+      for (let i = 0; i < 16; ++i) {
+        buf[offset + i] = bytes[i];
+      }
+
+      return buf;
+    }
+
+    return unsafeStringify(bytes);
+  } // Function#name is not settable on some platforms (#270)
+
+
+  try {
+    generateUUID.name = name; // eslint-disable-next-line no-empty
+  } catch (err) {} // For CommonJS default export support
+
+
+  generateUUID.DNS = DNS;
+  generateUUID.URL = URL;
+  return generateUUID;
+}
+
+/*
+ * Browser-compatible JavaScript MD5
+ *
+ * Modification of JavaScript MD5
+ * https://github.com/blueimp/JavaScript-MD5
+ *
+ * Copyright 2011, Sebastian Tschan
+ * https://blueimp.net
+ *
+ * Licensed under the MIT license:
+ * https://opensource.org/licenses/MIT
+ *
+ * Based on
+ * A JavaScript implementation of the RSA Data Security, Inc. MD5 Message
+ * Digest Algorithm, as defined in RFC 1321.
+ * Version 2.2 Copyright (C) Paul Johnston 1999 - 2009
+ * Other contributors: Greg Holt, Andrew Kepert, Ydnar, Lostinet
+ * Distributed under the BSD License
+ * See http://pajhome.org.uk/crypt/md5 for more info.
+ */
+function md5(bytes) {
+  if (typeof bytes === 'string') {
+    const msg = unescape(encodeURIComponent(bytes)); // UTF8 escape
+
+    bytes = new Uint8Array(msg.length);
+
+    for (let i = 0; i < msg.length; ++i) {
+      bytes[i] = msg.charCodeAt(i);
+    }
+  }
+
+  return md5ToHexEncodedArray(wordsToMd5(bytesToWords(bytes), bytes.length * 8));
+}
+/*
+ * Convert an array of little-endian words to an array of bytes
+ */
+
+
+function md5ToHexEncodedArray(input) {
+  const output = [];
+  const length32 = input.length * 32;
+  const hexTab = '0123456789abcdef';
+
+  for (let i = 0; i < length32; i += 8) {
+    const x = input[i >> 5] >>> i % 32 & 0xff;
+    const hex = parseInt(hexTab.charAt(x >>> 4 & 0x0f) + hexTab.charAt(x & 0x0f), 16);
+    output.push(hex);
+  }
+
+  return output;
+}
+/**
+ * Calculate output length with padding and bit length
+ */
+
+
+function getOutputLength(inputLength8) {
+  return (inputLength8 + 64 >>> 9 << 4) + 14 + 1;
+}
+/*
+ * Calculate the MD5 of an array of little-endian words, and a bit length.
+ */
+
+
+function wordsToMd5(x, len) {
+  /* append padding */
+  x[len >> 5] |= 0x80 << len % 32;
+  x[getOutputLength(len) - 1] = len;
+  let a = 1732584193;
+  let b = -271733879;
+  let c = -1732584194;
+  let d = 271733878;
+
+  for (let i = 0; i < x.length; i += 16) {
+    const olda = a;
+    const oldb = b;
+    const oldc = c;
+    const oldd = d;
+    a = md5ff(a, b, c, d, x[i], 7, -680876936);
+    d = md5ff(d, a, b, c, x[i + 1], 12, -389564586);
+    c = md5ff(c, d, a, b, x[i + 2], 17, 606105819);
+    b = md5ff(b, c, d, a, x[i + 3], 22, -1044525330);
+    a = md5ff(a, b, c, d, x[i + 4], 7, -176418897);
+    d = md5ff(d, a, b, c, x[i + 5], 12, 1200080426);
+    c = md5ff(c, d, a, b, x[i + 6], 17, -1473231341);
+    b = md5ff(b, c, d, a, x[i + 7], 22, -45705983);
+    a = md5ff(a, b, c, d, x[i + 8], 7, 1770035416);
+    d = md5ff(d, a, b, c, x[i + 9], 12, -1958414417);
+    c = md5ff(c, d, a, b, x[i + 10], 17, -42063);
+    b = md5ff(b, c, d, a, x[i + 11], 22, -1990404162);
+    a = md5ff(a, b, c, d, x[i + 12], 7, 1804603682);
+    d = md5ff(d, a, b, c, x[i + 13], 12, -40341101);
+    c = md5ff(c, d, a, b, x[i + 14], 17, -1502002290);
+    b = md5ff(b, c, d, a, x[i + 15], 22, 1236535329);
+    a = md5gg(a, b, c, d, x[i + 1], 5, -165796510);
+    d = md5gg(d, a, b, c, x[i + 6], 9, -1069501632);
+    c = md5gg(c, d, a, b, x[i + 11], 14, 643717713);
+    b = md5gg(b, c, d, a, x[i], 20, -373897302);
+    a = md5gg(a, b, c, d, x[i + 5], 5, -701558691);
+    d = md5gg(d, a, b, c, x[i + 10], 9, 38016083);
+    c = md5gg(c, d, a, b, x[i + 15], 14, -660478335);
+    b = md5gg(b, c, d, a, x[i + 4], 20, -405537848);
+    a = md5gg(a, b, c, d, x[i + 9], 5, 568446438);
+    d = md5gg(d, a, b, c, x[i + 14], 9, -1019803690);
+    c = md5gg(c, d, a, b, x[i + 3], 14, -187363961);
+    b = md5gg(b, c, d, a, x[i + 8], 20, 1163531501);
+    a = md5gg(a, b, c, d, x[i + 13], 5, -1444681467);
+    d = md5gg(d, a, b, c, x[i + 2], 9, -51403784);
+    c = md5gg(c, d, a, b, x[i + 7], 14, 1735328473);
+    b = md5gg(b, c, d, a, x[i + 12], 20, -1926607734);
+    a = md5hh(a, b, c, d, x[i + 5], 4, -378558);
+    d = md5hh(d, a, b, c, x[i + 8], 11, -2022574463);
+    c = md5hh(c, d, a, b, x[i + 11], 16, 1839030562);
+    b = md5hh(b, c, d, a, x[i + 14], 23, -35309556);
+    a = md5hh(a, b, c, d, x[i + 1], 4, -1530992060);
+    d = md5hh(d, a, b, c, x[i + 4], 11, 1272893353);
+    c = md5hh(c, d, a, b, x[i + 7], 16, -155497632);
+    b = md5hh(b, c, d, a, x[i + 10], 23, -1094730640);
+    a = md5hh(a, b, c, d, x[i + 13], 4, 681279174);
+    d = md5hh(d, a, b, c, x[i], 11, -358537222);
+    c = md5hh(c, d, a, b, x[i + 3], 16, -722521979);
+    b = md5hh(b, c, d, a, x[i + 6], 23, 76029189);
+    a = md5hh(a, b, c, d, x[i + 9], 4, -640364487);
+    d = md5hh(d, a, b, c, x[i + 12], 11, -421815835);
+    c = md5hh(c, d, a, b, x[i + 15], 16, 530742520);
+    b = md5hh(b, c, d, a, x[i + 2], 23, -995338651);
+    a = md5ii(a, b, c, d, x[i], 6, -198630844);
+    d = md5ii(d, a, b, c, x[i + 7], 10, 1126891415);
+    c = md5ii(c, d, a, b, x[i + 14], 15, -1416354905);
+    b = md5ii(b, c, d, a, x[i + 5], 21, -57434055);
+    a = md5ii(a, b, c, d, x[i + 12], 6, 1700485571);
+    d = md5ii(d, a, b, c, x[i + 3], 10, -1894986606);
+    c = md5ii(c, d, a, b, x[i + 10], 15, -1051523);
+    b = md5ii(b, c, d, a, x[i + 1], 21, -2054922799);
+    a = md5ii(a, b, c, d, x[i + 8], 6, 1873313359);
+    d = md5ii(d, a, b, c, x[i + 15], 10, -30611744);
+    c = md5ii(c, d, a, b, x[i + 6], 15, -1560198380);
+    b = md5ii(b, c, d, a, x[i + 13], 21, 1309151649);
+    a = md5ii(a, b, c, d, x[i + 4], 6, -145523070);
+    d = md5ii(d, a, b, c, x[i + 11], 10, -1120210379);
+    c = md5ii(c, d, a, b, x[i + 2], 15, 718787259);
+    b = md5ii(b, c, d, a, x[i + 9], 21, -343485551);
+    a = safeAdd(a, olda);
+    b = safeAdd(b, oldb);
+    c = safeAdd(c, oldc);
+    d = safeAdd(d, oldd);
+  }
+
+  return [a, b, c, d];
+}
+/*
+ * Convert an array bytes to an array of little-endian words
+ * Characters >255 have their high-byte silently ignored.
+ */
+
+
+function bytesToWords(input) {
+  if (input.length === 0) {
+    return [];
+  }
+
+  const length8 = input.length * 8;
+  const output = new Uint32Array(getOutputLength(length8));
+
+  for (let i = 0; i < length8; i += 8) {
+    output[i >> 5] |= (input[i / 8] & 0xff) << i % 32;
+  }
+
+  return output;
+}
+/*
+ * Add integers, wrapping at 2^32. This uses 16-bit operations internally
+ * to work around bugs in some JS interpreters.
+ */
+
+
+function safeAdd(x, y) {
+  const lsw = (x & 0xffff) + (y & 0xffff);
+  const msw = (x >> 16) + (y >> 16) + (lsw >> 16);
+  return msw << 16 | lsw & 0xffff;
+}
+/*
+ * Bitwise rotate a 32-bit number to the left.
+ */
+
+
+function bitRotateLeft(num, cnt) {
+  return num << cnt | num >>> 32 - cnt;
+}
+/*
+ * These functions implement the four basic operations the algorithm uses.
+ */
+
+
+function md5cmn(q, a, b, x, s, t) {
+  return safeAdd(bitRotateLeft(safeAdd(safeAdd(a, q), safeAdd(x, t)), s), b);
+}
+
+function md5ff(a, b, c, d, x, s, t) {
+  return md5cmn(b & c | ~b & d, a, b, x, s, t);
+}
+
+function md5gg(a, b, c, d, x, s, t) {
+  return md5cmn(b & d | c & ~d, a, b, x, s, t);
+}
+
+function md5hh(a, b, c, d, x, s, t) {
+  return md5cmn(b ^ c ^ d, a, b, x, s, t);
+}
+
+function md5ii(a, b, c, d, x, s, t) {
+  return md5cmn(c ^ (b | ~d), a, b, x, s, t);
+}
+
+v35('v3', 0x30, md5);
+
+const randomUUID = typeof crypto !== 'undefined' && crypto.randomUUID && crypto.randomUUID.bind(crypto);
+var native = {
+  randomUUID
+};
+
+function v4(options, buf, offset) {
+  if (native.randomUUID && !buf && !options) {
+    return native.randomUUID();
+  }
+
+  options = options || {};
+  const rnds = options.random || (options.rng || rng)(); // Per 4.4, set bits for version and `clock_seq_hi_and_reserved`
+
+  rnds[6] = rnds[6] & 0x0f | 0x40;
+  rnds[8] = rnds[8] & 0x3f | 0x80; // Copy bytes to buffer, if provided
+
+  if (buf) {
+    offset = offset || 0;
+
+    for (let i = 0; i < 16; ++i) {
+      buf[offset + i] = rnds[i];
+    }
+
+    return buf;
+  }
+
+  return unsafeStringify(rnds);
+}
+
+// Adapted from Chris Veness' SHA1 code at
+// http://www.movable-type.co.uk/scripts/sha1.html
+function f(s, x, y, z) {
+  switch (s) {
+    case 0:
+      return x & y ^ ~x & z;
+
+    case 1:
+      return x ^ y ^ z;
+
+    case 2:
+      return x & y ^ x & z ^ y & z;
+
+    case 3:
+      return x ^ y ^ z;
+  }
+}
+
+function ROTL(x, n) {
+  return x << n | x >>> 32 - n;
+}
+
+function sha1(bytes) {
+  const K = [0x5a827999, 0x6ed9eba1, 0x8f1bbcdc, 0xca62c1d6];
+  const H = [0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476, 0xc3d2e1f0];
+
+  if (typeof bytes === 'string') {
+    const msg = unescape(encodeURIComponent(bytes)); // UTF8 escape
+
+    bytes = [];
+
+    for (let i = 0; i < msg.length; ++i) {
+      bytes.push(msg.charCodeAt(i));
+    }
+  } else if (!Array.isArray(bytes)) {
+    // Convert Array-like to Array
+    bytes = Array.prototype.slice.call(bytes);
+  }
+
+  bytes.push(0x80);
+  const l = bytes.length / 4 + 2;
+  const N = Math.ceil(l / 16);
+  const M = new Array(N);
+
+  for (let i = 0; i < N; ++i) {
+    const arr = new Uint32Array(16);
+
+    for (let j = 0; j < 16; ++j) {
+      arr[j] = bytes[i * 64 + j * 4] << 24 | bytes[i * 64 + j * 4 + 1] << 16 | bytes[i * 64 + j * 4 + 2] << 8 | bytes[i * 64 + j * 4 + 3];
+    }
+
+    M[i] = arr;
+  }
+
+  M[N - 1][14] = (bytes.length - 1) * 8 / Math.pow(2, 32);
+  M[N - 1][14] = Math.floor(M[N - 1][14]);
+  M[N - 1][15] = (bytes.length - 1) * 8 & 0xffffffff;
+
+  for (let i = 0; i < N; ++i) {
+    const W = new Uint32Array(80);
+
+    for (let t = 0; t < 16; ++t) {
+      W[t] = M[i][t];
+    }
+
+    for (let t = 16; t < 80; ++t) {
+      W[t] = ROTL(W[t - 3] ^ W[t - 8] ^ W[t - 14] ^ W[t - 16], 1);
+    }
+
+    let a = H[0];
+    let b = H[1];
+    let c = H[2];
+    let d = H[3];
+    let e = H[4];
+
+    for (let t = 0; t < 80; ++t) {
+      const s = Math.floor(t / 20);
+      const T = ROTL(a, 5) + f(s, b, c, d) + e + K[s] + W[t] >>> 0;
+      e = d;
+      d = c;
+      c = ROTL(b, 30) >>> 0;
+      b = a;
+      a = T;
+    }
+
+    H[0] = H[0] + a >>> 0;
+    H[1] = H[1] + b >>> 0;
+    H[2] = H[2] + c >>> 0;
+    H[3] = H[3] + d >>> 0;
+    H[4] = H[4] + e >>> 0;
+  }
+
+  return [H[0] >> 24 & 0xff, H[0] >> 16 & 0xff, H[0] >> 8 & 0xff, H[0] & 0xff, H[1] >> 24 & 0xff, H[1] >> 16 & 0xff, H[1] >> 8 & 0xff, H[1] & 0xff, H[2] >> 24 & 0xff, H[2] >> 16 & 0xff, H[2] >> 8 & 0xff, H[2] & 0xff, H[3] >> 24 & 0xff, H[3] >> 16 & 0xff, H[3] >> 8 & 0xff, H[3] & 0xff, H[4] >> 24 & 0xff, H[4] >> 16 & 0xff, H[4] >> 8 & 0xff, H[4] & 0xff];
+}
+
+v35('v5', 0x50, sha1);
+
+const KeyCodes = {
+    ESC: 'Escape',
+    ENTER: 'Enter',
+    NUMPAD_ENTER: 'NumpadEnter',
+    TAB: 'Tab',
+    DELETE: 'Delete',
+    A: 'KeyA',
+    B: 'KeyB',
+    C: 'KeyC',
+    D: 'KeyD',
+    E: 'KeyE',
+    F: 'KeyF',
+    G: 'KeyG',
+    H: 'KeyH',
+    I: 'KeyI',
+    J: 'KeyJ',
+    K: 'KeyK',
+    L: 'KeyL',
+    M: 'KeyM',
+    N: 'KeyN',
+    O: 'KeyO',
+    P: 'KeyP',
+    Q: 'KeyQ',
+    R: 'KeyR',
+    S: 'KeyS',
+    T: 'KeyT',
+    U: 'KeyU',
+    V: 'KeyV',
+    W: 'KeyW',
+    X: 'KeyX',
+    Y: 'KeyY',
+    Z: 'KeyZ',
+    SPACE: 'Space',
+    BACKSPACE: 'Backspace',
+    DEL: 'Delete',
+    ARROW_UP: 'ArrowUp',
+    ARROW_LEFT: 'ArrowLeft',
+    ARROW_RIGHT: 'ArrowRight',
+    ARROW_DOWN: 'ArrowDown',
+};
+const EditorEvents = {
+    EVENT_EDITOR_CREATE: 'editor-create',
+    EVENT_EDITOR_HISTORY_PUSH: 'editor-history-push',
+    EVENT_EDITOR_CHANGED: 'editor-changed',
+    EVENT_BLOCK_RERENDER: 'block-rerender',
+    EVENT_BLOCK_RERENDER_FORCE: 'block-rerender-force',
+    EVENT_BLOCK_SELECTED: 'block-selected',
+    EVENT_SELECTION_CHANGE: 'selection-change',
+    EVENT_LINK_CLICK: 'button-clicked',
+    EVENT_LOG_INFO: 'log-info',
+    EVENT_LOG_WARNING: 'log-warning',
+    EVENT_LOG_ERROR: 'log-error',
+};
+const HistoryType = {
+    UPDATE_CONTENTS: 'update_contents',
+    ADD_BLOCK: 'add_block',
+    REMOVE_BLOCK: 'remove_block',
+};
+const EventSources = {
+    SILENT: 'silent',
+    USER: 'user',
+    COLLABORATOR: 'collaborator',
+};
+const LogLevels = {
+    NONE: 0,
+    ERROR: 1,
+    WARNING: 2,
+    INFO: 3,
+};
+
+function useBlockRenderer({ blockId, editor }) {
+    const [block, setBlock] = React__namespace.useState(null);
+    React__namespace.useEffect(() => {
+        const currentBlock = editor.getBlock(blockId);
+        const eventEmitter = editor.getEventEmitter();
+        if (currentBlock) {
+            setBlock(currentBlock);
+        }
+        const subs = new Subscription();
+        subs.add(eventEmitter
+            .select(EditorEvents.EVENT_BLOCK_RERENDER)
+            .pipe(filter((affectedIds) => affectedIds.includes(blockId)))
+            .subscribe(() => {
+            const currentBlock = editor.getBlock(blockId);
+            if (currentBlock) {
+                setBlock(Object.assign(Object.assign({}, currentBlock), { contents: currentBlock.contents.map((v) => {
+                        return Object.assign(Object.assign({}, v), { id: v4() });
+                    }) }));
+            }
+        }));
+        subs.add(eventEmitter
+            .select(EditorEvents.EVENT_BLOCK_RERENDER_FORCE)
+            .pipe(filter((affectedIds) => affectedIds.includes(blockId)))
+            .subscribe(() => {
+            const currentBlock = editor.getBlock(blockId);
+            if (currentBlock) {
+                setBlock((prev) => {
+                    setTimeout(() => setBlock(currentBlock));
+                    return Object.assign(Object.assign({}, currentBlock), { contents: [] });
+                });
+            }
+        }));
+        return () => {
+            subs.unsubscribe();
+        };
+    }, [blockId]);
+    return block;
+}
+
+const InlineContainer = (_a) => {
+    var { contents, formats, editor } = _a, props = __rest(_a, ["contents", "formats", "editor"]);
+    return (jsxRuntime.exports.jsx(jsxRuntime.exports.Fragment, { children: contents.map((content) => {
+            let Container;
+            const inlineFormat = `inline/${content.type.toLocaleLowerCase()}`;
+            if (!formats[inlineFormat]) {
+                // defalut block format
+                Container = formats['inline/text'];
+            }
+            else {
+                Container = formats[inlineFormat];
+            }
+            return (jsxRuntime.exports.jsx(Container, Object.assign({ formats: formats, editor: editor, "data-inline-id": content.id, "data-format": inlineFormat, "data-attributes": JSON.stringify(content.attributes), inline: content }, props), content.id));
+        }) }));
+};
+
+Ue `
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+`;
+const Outer = He.div `
+  position: relative;
+`;
+const Overlay = He.div `
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 1;
+  pointer-events: none;
+  background-color: rgba(46, 170, 220, 0.2);
+`;
+const BlockContainer = React__namespace.memo((_a) => {
+    var _b, _c, _d;
+    var { blockId, editor, selected, readOnly = false, scrollContainer, formats } = _a, props = __rest(_a, ["blockId", "editor", "selected", "readOnly", "scrollContainer", "formats"]);
+    const block = useBlockRenderer({ blockId, editor });
+    const memoContents = React__namespace.useMemo(() => {
+        var _a;
+        return InlineContainer({ contents: (_a = block === null || block === void 0 ? void 0 : block.contents) !== null && _a !== void 0 ? _a : [], formats, editor, scrollContainer });
+    }, [block === null || block === void 0 ? void 0 : block.contents, formats]);
+    const blockFormat = `block/${block === null || block === void 0 ? void 0 : block.type.toLocaleLowerCase()}`;
+    const Container = (_b = formats[blockFormat]) !== null && _b !== void 0 ? _b : formats['block/paragraph'];
+    return (jsxRuntime.exports.jsxs(Outer, Object.assign({ "data-id": blockId, style: { '--indent': `${(_d = (_c = block === null || block === void 0 ? void 0 : block.attributes) === null || _c === void 0 ? void 0 : _c.indent) !== null && _d !== void 0 ? _d : 0}` } }, { children: [jsxRuntime.exports.jsx(Container, Object.assign({ suppressContentEditableWarning: true, className: 'notranslate', contentEditable: !readOnly, blockId: blockId, "data-block-id": blockId, "data-attributes": JSON.stringify(block === null || block === void 0 ? void 0 : block.attributes), "data-metas": JSON.stringify(block === null || block === void 0 ? void 0 : block.meta), "data-format": blockFormat, formats: formats, attributes: block === null || block === void 0 ? void 0 : block.attributes, meta: block === null || block === void 0 ? void 0 : block.meta, contents: memoContents, editor: editor, selected: selected }, props)), selected && jsxRuntime.exports.jsx(Overlay, {})] })));
+});
+
+function useMutationObserver(ref, callback, options = {
+    childList: true,
+    attributes: true,
+    subtree: true,
+    characterData: true,
+}) {
+    React__namespace.useEffect(() => {
+        if (!ref.current)
+            return;
+        const observer = new MutationObserver(callback);
+        observer.observe(ref.current, options);
+        return () => observer.disconnect();
+    }, []);
+}
+
+const Header$2 = He.h1 `
+  font-size: 24px;
+  outline: 0;
+  padding: 2px 12px;
+  box-sizing: border-box;
+  padding-left: calc(12px + 1.5em * var(--indent));
+  ::after {
+    opacity: 0.3;
+    content: attr(placeholder);
+  }
+`;
+const Header1 = React__namespace.memo((_a) => {
+    var { blockId, contents, placeholder = 'Header 1', attributes, editor } = _a, props = __rest(_a, ["blockId", "contents", "placeholder", "attributes", "editor"]);
+    const headerRef = React__namespace.useRef(null);
+    const [showPlaceholder, setShowPlaceholder] = React__namespace.useState(false);
+    const handleChangeElement = React__namespace.useCallback(() => {
+        if (!headerRef.current)
+            return;
+        const innerText = headerRef.current.innerText.replaceAll(/\uFEFF/gi, '');
+        setShowPlaceholder(innerText.length < 1);
+    }, []);
+    useMutationObserver(headerRef, handleChangeElement);
+    React__namespace.useEffect(() => {
+        handleChangeElement();
+    }, []);
+    return (jsxRuntime.exports.jsx(Header$2, Object.assign({ ref: headerRef, placeholder: showPlaceholder ? placeholder : '' }, props, { children: contents })));
+});
+
+const Header$1 = He.h2 `
+  font-size: 20px;
+  outline: 0;
+  padding: 2px 12px;
+  box-sizing: border-box;
+  padding-left: calc(12px + 1.5em * var(--indent));
+  ::after {
+    opacity: 0.3;
+    content: attr(placeholder);
+  }
+`;
+const Header2 = React__namespace.memo((_a) => {
+    var { blockId, contents, placeholder = 'Header 2', attributes, editor } = _a, props = __rest(_a, ["blockId", "contents", "placeholder", "attributes", "editor"]);
+    const headerRef = React__namespace.useRef(null);
+    const [showPlaceholder, setShowPlaceholder] = React__namespace.useState(false);
+    const handleChangeElement = React__namespace.useCallback(() => {
+        if (!headerRef.current)
+            return;
+        const innerText = headerRef.current.innerText.replaceAll(/\uFEFF/gi, '');
+        setShowPlaceholder(innerText.length < 1);
+    }, []);
+    useMutationObserver(headerRef, handleChangeElement);
+    React__namespace.useEffect(() => {
+        handleChangeElement();
+    }, []);
+    return (jsxRuntime.exports.jsx(Header$1, Object.assign({ ref: headerRef, placeholder: showPlaceholder ? placeholder : '' }, props, { children: contents })));
+});
+
+const Header = He.h3 `
+  font-size: 16px;
+  outline: 0;
+  padding: 2px 12px;
+  box-sizing: border-box;
+  padding-left: calc(12px + 1.5em * var(--indent));
+  ::after {
+    opacity: 0.3;
+    content: attr(placeholder);
+  }
+`;
+const Header3 = React__namespace.memo((_a) => {
+    var { blockId, contents, placeholder = 'Header 3', attributes, editor } = _a, props = __rest(_a, ["blockId", "contents", "placeholder", "attributes", "editor"]);
+    const headerRef = React__namespace.useRef(null);
+    const [showPlaceholder, setShowPlaceholder] = React__namespace.useState(false);
+    const handleChangeElement = React__namespace.useCallback(() => {
+        if (!headerRef.current)
+            return;
+        const innerText = headerRef.current.innerText.replaceAll(/\uFEFF/gi, '');
+        setShowPlaceholder(innerText.length < 1);
+    }, []);
+    useMutationObserver(headerRef, handleChangeElement);
+    React__namespace.useEffect(() => {
+        handleChangeElement();
+    }, []);
+    return (jsxRuntime.exports.jsx(Header, Object.assign({ ref: headerRef, placeholder: showPlaceholder ? placeholder : '' }, props, { children: contents })));
+});
+
+function decimalToRoman(num) {
+    const decimal = [1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1];
+    const roman = ['m', 'cm', 'd', 'cd', 'c', 'xc', 'l', 'xl', 'x', 'ix', 'v', 'iv', 'i'];
+    let dest = '';
+    for (let i = 0; i < decimal.length; i++) {
+        while (decimal[i] <= num) {
+            dest += roman[i];
+            num -= decimal[i];
+        }
+    }
+    return dest;
+}
+function decimalToAlphabet(num) {
+    const alphabet = [
+        'a',
+        'b',
+        'c',
+        'd',
+        'e',
+        'f',
+        'g',
+        'h',
+        'i',
+        'j',
+        'k',
+        'l',
+        'm',
+        'n',
+        'o',
+        'p',
+        'q',
+        'r',
+        's',
+        't',
+        'u',
+        'v',
+        'w',
+        'x',
+        'y',
+        'z',
+    ];
+    let dest = '';
+    /* eslint-disable-next-line */
+    while (true) {
+        const remainder = --num % alphabet.length;
+        dest = alphabet[remainder] + dest;
+        if (num < alphabet.length)
+            break;
+        num = Math.floor(num / alphabet.length);
+    }
+    return dest;
+}
+
+const ListItem$1 = He.div `
+  font-size: 1rem;
+  outline: 0;
+  margin: 0;
+  padding: 2px 12px 2px;
+  box-sizing: border-box;
+  position: relative;
+  padding-left: calc(40px + 1.5em * var(--indent));
+  ::before {
+    position: absolute;
+    height: 1em;
+    left: calc(8px + 1.5em * (var(--indent) - 1));
+    width: 3em;
+    text-align: right;
+    content: var(--content);
+  }
+  ${({ placeholder }) => {
+    return (placeholder &&
+        Ce `
+        ::after {
+          opacity: 0.3;
+          content: attr(placeholder);
+        }
+      `);
+}}
+`;
+const OrderedList = React__namespace.memo((_a) => {
+    var { blockId, contents, placeholder = 'List', attributes, editor, meta } = _a, props = __rest(_a, ["blockId", "contents", "placeholder", "attributes", "editor", "meta"]);
+    const headerRef = React__namespace.useRef(null);
+    const [showPlaceholder, setShowPlaceholder] = React__namespace.useState(false);
+    const handleChangeElement = React__namespace.useCallback(() => {
+        if (!headerRef.current)
+            return;
+        const innerText = headerRef.current.innerText.replaceAll(/\uFEFF/gi, '');
+        setShowPlaceholder(innerText.length < 1);
+    }, []);
+    useMutationObserver(headerRef, handleChangeElement);
+    const memoStyle = React__namespace.useMemo(() => {
+        var _a, _b;
+        const numberType = ((_a = attributes === null || attributes === void 0 ? void 0 : attributes.indent) !== null && _a !== void 0 ? _a : 0) % 3;
+        const listNumber = (_b = meta === null || meta === void 0 ? void 0 : meta.listNumber) !== null && _b !== void 0 ? _b : 1;
+        if (listNumber < 1) {
+            return {};
+        }
+        let content = '';
+        switch (numberType) {
+            case 1:
+                content = decimalToAlphabet(listNumber);
+                break;
+            case 2:
+                content = decimalToRoman(listNumber);
+                break;
+            default:
+                content = listNumber;
+                break;
+        }
+        return { '--content': `'${content}.'` };
+    }, [meta === null || meta === void 0 ? void 0 : meta.listNumber, attributes === null || attributes === void 0 ? void 0 : attributes.indent]);
+    React__namespace.useEffect(() => {
+        handleChangeElement();
+    }, []);
+    return (jsxRuntime.exports.jsx(ListItem$1, Object.assign({ ref: headerRef, style: memoStyle, placeholder: showPlaceholder ? placeholder : '' }, props, { children: contents })));
+});
+
+const ListItem = He.div `
+  font-size: 1rem;
+  outline: 0;
+  margin: 0;
+  padding: 2px 12px 2px;
+  padding-left: calc(40px + 1.5em * var(--indent));
+  box-sizing: border-box;
+  position: relative;
+  ::before {
+    position: absolute;
+    font-family: Arial;
+    font-size: 1.5em;
+    line-height: 1;
+    top: 3px;
+    content: var(--content);
+    left: calc(18px + 1em * var(--indent));
+  }
+  ${({ placeholder }) => {
+    return (placeholder &&
+        Ce `
+        ::after {
+          opacity: 0.3;
+          content: attr(placeholder);
+        }
+      `);
+}}
+`;
+const BulletList = React__namespace.memo((_a) => {
+    var { blockId, contents, placeholder = 'List', attributes, editor } = _a, props = __rest(_a, ["blockId", "contents", "placeholder", "attributes", "editor"]);
+    const headerRef = React__namespace.useRef(null);
+    const [showPlaceholder, setShowPlaceholder] = React__namespace.useState(false);
+    const handleChangeElement = React__namespace.useCallback(() => {
+        if (!headerRef.current)
+            return;
+        const innerText = headerRef.current.innerText.replaceAll(/\uFEFF/gi, '');
+        setShowPlaceholder(innerText.length < 1);
+    }, []);
+    useMutationObserver(headerRef, handleChangeElement);
+    React__namespace.useEffect(() => {
+        handleChangeElement();
+    }, []);
+    const memoStyle = React__namespace.useMemo(() => {
+        var _a;
+        const numberType = ((_a = attributes === null || attributes === void 0 ? void 0 : attributes.indent) !== null && _a !== void 0 ? _a : 0) % 3;
+        let content = '';
+        switch (numberType) {
+            case 1:
+                content = '◦';
+                break;
+            case 2:
+                content = '▪';
+                break;
+            default:
+                content = '•';
+                break;
+        }
+        return { '--content': `'${content}'` };
+    }, [attributes === null || attributes === void 0 ? void 0 : attributes.indent]);
+    return (jsxRuntime.exports.jsx(ListItem, Object.assign({ ref: headerRef, style: memoStyle, placeholder: showPlaceholder ? placeholder : '' }, props, { children: contents })));
+});
+
+const Container$5 = He.blockquote `
+  outline: 0;
+  margin: 0 0 0 12px;
+  padding: 2px 12px;
+  box-sizing: border-box;
+  border-left: 3px solid #ccc;
+  padding-left: calc(12px + 1.5em * var(--indent));
+`;
+const Blockquote = React__namespace.memo((_a) => {
+    var { blockId, contents, editor } = _a, props = __rest(_a, ["blockId", "contents", "editor"]);
+    return jsxRuntime.exports.jsx(Container$5, Object.assign({}, props, { children: contents }));
+});
+
+const P = He.p `
+  width: 100%;
+  font-size: 1rem;
+  outline: 0;
+  margin: 0;
+  padding: 2px 12px;
+  box-sizing: border-box;
+  padding-left: calc(12px + 1.5em * var(--indent));
+`;
+const Paragraph = React__namespace.memo((_a) => {
+    var { blockId, formats, editor, contents } = _a, props = __rest(_a, ["blockId", "formats", "editor", "contents"]);
+    return jsxRuntime.exports.jsx(P, Object.assign({}, props, { children: contents }));
+});
+
+var getDefaultStyle = function (visible) { return ({
+    display: visible ? 'flex' : 'none',
+}); };
+
+var DEFAULT_COLOR = '#4fa94d';
+var DEFAULT_WAI_ARIA_ATTRIBUTE = {
+    'aria-busy': true,
+    role: 'status',
+};
+
+var __assign$v = (undefined && undefined.__assign) || function () {
+    __assign$v = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign$v.apply(this, arguments);
+};
+
+var __assign$u = (undefined && undefined.__assign) || function () {
+    __assign$u = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign$u.apply(this, arguments);
+};
+
+var __assign$t = (undefined && undefined.__assign) || function () {
+    __assign$t = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign$t.apply(this, arguments);
+};
+
+var __assign$s = (undefined && undefined.__assign) || function () {
+    __assign$s = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign$s.apply(this, arguments);
+};
+
+var __assign$r = (undefined && undefined.__assign) || function () {
+    __assign$r = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign$r.apply(this, arguments);
+};
+
+var __assign$q = (undefined && undefined.__assign) || function () {
+    __assign$q = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign$q.apply(this, arguments);
+};
+
+var __assign$p = (undefined && undefined.__assign) || function () {
+    __assign$p = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign$p.apply(this, arguments);
+};
+
+var __makeTemplateObject$2 = (undefined && undefined.__makeTemplateObject) || function (cooked, raw) {
+    if (Object.defineProperty) { Object.defineProperty(cooked, "raw", { value: raw }); } else { cooked.raw = raw; }
+    return cooked;
+};
+var len = 242.776657104492;
+var time = 1.6;
+var anim = Ue(templateObject_1$2 || (templateObject_1$2 = __makeTemplateObject$2(["\n  12.5% {\n    stroke-dasharray: ", "px, ", "px;\n    stroke-dashoffset: -", "px;\n  }\n  43.75% {\n    stroke-dasharray: ", "px, ", "px;\n    stroke-dashoffset: -", "px;\n  }\n  100% {\n    stroke-dasharray: ", "px, ", "px;\n    stroke-dashoffset: -", "px;\n  }\n"], ["\n  12.5% {\n    stroke-dasharray: ", "px, ", "px;\n    stroke-dashoffset: -", "px;\n  }\n  43.75% {\n    stroke-dasharray: ", "px, ", "px;\n    stroke-dashoffset: -", "px;\n  }\n  100% {\n    stroke-dasharray: ", "px, ", "px;\n    stroke-dashoffset: -", "px;\n  }\n"])), len * 0.14, len, len * 0.11, len * 0.35, len, len * 0.35, len * 0.01, len, len * 0.99);
+He.path(templateObject_2$2 || (templateObject_2$2 = __makeTemplateObject$2(["\n  stroke-dasharray: ", "px, ", ";\n  stroke-dashoffset: 0;\n  animation: ", " ", "s linear infinite;\n"], ["\n  stroke-dasharray: ", "px, ", ";\n  stroke-dashoffset: 0;\n  animation: ", " ", "s linear infinite;\n"])), len * 0.01, len, anim, time);
+var templateObject_1$2, templateObject_2$2;
+
+var __assign$o = (undefined && undefined.__assign) || function () {
+    __assign$o = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign$o.apply(this, arguments);
+};
+
+var __assign$n = (undefined && undefined.__assign) || function () {
+    __assign$n = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign$n.apply(this, arguments);
+};
+var MutatingDots = function (_a) {
+    var _b = _a.height, height = _b === void 0 ? 90 : _b, _c = _a.width, width = _c === void 0 ? 80 : _c, _d = _a.radius, radius = _d === void 0 ? 12.5 : _d, _e = _a.color, color = _e === void 0 ? DEFAULT_COLOR : _e, _f = _a.secondaryColor, secondaryColor = _f === void 0 ? DEFAULT_COLOR : _f, _g = _a.ariaLabel, ariaLabel = _g === void 0 ? 'mutating-dots-loading' : _g, wrapperStyle = _a.wrapperStyle, wrapperClass = _a.wrapperClass, _h = _a.visible, visible = _h === void 0 ? true : _h;
+    return (React__default["default"].createElement("div", __assign$n({ style: __assign$n(__assign$n({}, getDefaultStyle(visible)), wrapperStyle), className: wrapperClass, "data-testid": "mutating-dots-loading", "aria-label": ariaLabel }, DEFAULT_WAI_ARIA_ATTRIBUTE),
+        React__default["default"].createElement("svg", { id: "goo-loader", width: width, height: height, "data-testid": "mutating-dots-svg" },
+            React__default["default"].createElement("filter", { id: "fancy-goo" },
+                React__default["default"].createElement("feGaussianBlur", { in: "SourceGraphic", stdDeviation: "6", result: "blur" }),
+                React__default["default"].createElement("feColorMatrix", { in: "blur", mode: "matrix", values: "1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9", result: "goo" }),
+                React__default["default"].createElement("feComposite", { in: "SourceGraphic", in2: "goo", operator: "atop" })),
+            React__default["default"].createElement("g", { filter: "url(#fancy-goo)" },
+                React__default["default"].createElement("animateTransform", { id: "mainAnim", attributeName: "transform", attributeType: "XML", type: "rotate", from: "0 50 50", to: "359 50 50", dur: "1.2s", repeatCount: "indefinite" }),
+                React__default["default"].createElement("circle", { cx: "50%", cy: "40", r: radius, fill: color },
+                    React__default["default"].createElement("animate", { id: "cAnim1", attributeType: "XML", attributeName: "cy", dur: "0.6s", begin: "0;cAnim1.end+0.2s", calcMode: "spline", values: "40;20;40", keyTimes: "0;0.3;1", keySplines: "0.09, 0.45, 0.16, 1;0.09, 0.45, 0.16, 1" })),
+                React__default["default"].createElement("circle", { cx: "50%", cy: "60", r: radius, fill: secondaryColor },
+                    React__default["default"].createElement("animate", { id: "cAnim2", attributeType: "XML", attributeName: "cy", dur: "0.6s", begin: "0.4s;cAnim2.end+0.2s", calcMode: "spline", values: "60;80;60", keyTimes: "0;0.3;1", keySplines: "0.09, 0.45, 0.16, 1;0.09, 0.45, 0.16, 1" }))))));
+};
+
+var __assign$m = (undefined && undefined.__assign) || function () {
+    __assign$m = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign$m.apply(this, arguments);
+};
+
+var __assign$l = (undefined && undefined.__assign) || function () {
+    __assign$l = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign$l.apply(this, arguments);
+};
+
+var __assign$k = (undefined && undefined.__assign) || function () {
+    __assign$k = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign$k.apply(this, arguments);
+};
+
+var __assign$j = (undefined && undefined.__assign) || function () {
+    __assign$j = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign$j.apply(this, arguments);
+};
+
+var __assign$i = (undefined && undefined.__assign) || function () {
+    __assign$i = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign$i.apply(this, arguments);
+};
+
+/**
+ * Returns the value of `props[path]` or `defaultValue`
+ * @example
+ * import styled from "styled-components";
+ * import { prop } from "styled-tools";
+ *
+ * const Button = styled.button`
+ *   color: ${prop("color", "red")};
+ * `;
+ */
+var prop = function prop(path, defaultValue) {
+  return function () {
+    var props = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+    if (typeof props[path] !== "undefined") {
+      return props[path];
+    }
+
+    if (path && path.indexOf(".") > 0) {
+      var paths = path.split(".");
+      var length = paths.length;
+      var object = props[paths[0]];
+      var index = 1;
+
+      while (object != null && index < length) {
+        object = object[paths[index]];
+        index += 1;
+      }
+
+      if (typeof object !== "undefined") {
+        return object;
+      }
+    }
+
+    return defaultValue;
+  };
+};
+
+var __makeTemplateObject$1 = (undefined && undefined.__makeTemplateObject) || function (cooked, raw) {
+    if (Object.defineProperty) { Object.defineProperty(cooked, "raw", { value: raw }); } else { cooked.raw = raw; }
+    return cooked;
+};
+var __assign$h = (undefined && undefined.__assign) || function () {
+    __assign$h = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign$h.apply(this, arguments);
+};
+var spin = Ue(templateObject_1$1 || (templateObject_1$1 = __makeTemplateObject$1(["\n to {\n    transform: rotate(360deg);\n  }\n"], ["\n to {\n    transform: rotate(360deg);\n  }\n"])));
+var POINTS = [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330];
+var Svg = He.svg(templateObject_2$1 || (templateObject_2$1 = __makeTemplateObject$1(["\n  animation: ", " 0.75s steps(12, end) infinite;\n  animation-duration: ", "s;\n"], ["\n  animation: ", " 0.75s steps(12, end) infinite;\n  animation-duration: ", "s;\n"])), spin, prop('speed', '0.75'));
+var Polyline = He.polyline(templateObject_3$1 || (templateObject_3$1 = __makeTemplateObject$1(["\n  stroke-width: ", "px;\n  stroke-linecap: round;\n\n  &:nth-child(12n + 0) {\n    stroke-opacity: 0.08;\n  }\n\n  &:nth-child(12n + 1) {\n    stroke-opacity: 0.17;\n  }\n\n  &:nth-child(12n + 2) {\n    stroke-opacity: 0.25;\n  }\n\n  &:nth-child(12n + 3) {\n    stroke-opacity: 0.33;\n  }\n\n  &:nth-child(12n + 4) {\n    stroke-opacity: 0.42;\n  }\n\n  &:nth-child(12n + 5) {\n    stroke-opacity: 0.5;\n  }\n\n  &:nth-child(12n + 6) {\n    stroke-opacity: 0.58;\n  }\n\n  &:nth-child(12n + 7) {\n    stroke-opacity: 0.66;\n  }\n\n  &:nth-child(12n + 8) {\n    stroke-opacity: 0.75;\n  }\n\n  &:nth-child(12n + 9) {\n    stroke-opacity: 0.83;\n  }\n\n  &:nth-child(12n + 11) {\n    stroke-opacity: 0.92;\n  }\n"], ["\n  stroke-width: ", "px;\n  stroke-linecap: round;\n\n  &:nth-child(12n + 0) {\n    stroke-opacity: 0.08;\n  }\n\n  &:nth-child(12n + 1) {\n    stroke-opacity: 0.17;\n  }\n\n  &:nth-child(12n + 2) {\n    stroke-opacity: 0.25;\n  }\n\n  &:nth-child(12n + 3) {\n    stroke-opacity: 0.33;\n  }\n\n  &:nth-child(12n + 4) {\n    stroke-opacity: 0.42;\n  }\n\n  &:nth-child(12n + 5) {\n    stroke-opacity: 0.5;\n  }\n\n  &:nth-child(12n + 6) {\n    stroke-opacity: 0.58;\n  }\n\n  &:nth-child(12n + 7) {\n    stroke-opacity: 0.66;\n  }\n\n  &:nth-child(12n + 8) {\n    stroke-opacity: 0.75;\n  }\n\n  &:nth-child(12n + 9) {\n    stroke-opacity: 0.83;\n  }\n\n  &:nth-child(12n + 11) {\n    stroke-opacity: 0.92;\n  }\n"])), function (props) { return props.width; });
+function RotatingLines(_a) {
+    var _b = _a.strokeColor, strokeColor = _b === void 0 ? DEFAULT_COLOR : _b, _c = _a.strokeWidth, strokeWidth = _c === void 0 ? '5' : _c, _d = _a.animationDuration, animationDuration = _d === void 0 ? '0.75' : _d, _e = _a.width, width = _e === void 0 ? '96' : _e, _f = _a.visible, visible = _f === void 0 ? true : _f, _g = _a.ariaLabel, ariaLabel = _g === void 0 ? 'rotating-lines-loading' : _g;
+    var lines = React.useCallback(function () {
+        return POINTS.map(function (point) { return (React__default["default"].createElement(Polyline, { key: point, points: "24,12 24,4", width: strokeWidth, transform: "rotate(".concat(point, ", 24, 24)") })); });
+    }, [strokeWidth]);
+    return !visible ? null : (React__default["default"].createElement(Svg, __assign$h({ xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 48 48", width: width, stroke: strokeColor, speed: animationDuration, "data-testid": "rotating-lines-svg", "aria-label": ariaLabel }, DEFAULT_WAI_ARIA_ATTRIBUTE), lines()));
+}
+var templateObject_1$1, templateObject_2$1, templateObject_3$1;
+
+var __assign$g = (undefined && undefined.__assign) || function () {
+    __assign$g = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign$g.apply(this, arguments);
+};
+
+var __assign$f = (undefined && undefined.__assign) || function () {
+    __assign$f = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign$f.apply(this, arguments);
+};
+
+var __assign$e = (undefined && undefined.__assign) || function () {
+    __assign$e = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign$e.apply(this, arguments);
+};
+
+var __makeTemplateObject = (undefined && undefined.__makeTemplateObject) || function (cooked, raw) {
+    if (Object.defineProperty) { Object.defineProperty(cooked, "raw", { value: raw }); } else { cooked.raw = raw; }
+    return cooked;
+};
+var __assign$d = (undefined && undefined.__assign) || function () {
+    __assign$d = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign$d.apply(this, arguments);
+};
+var dash = Ue(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n to {\n    stroke-dashoffset: 136;\n  }\n"], ["\n to {\n    stroke-dashoffset: 136;\n  }\n"])));
+He.polygon(templateObject_2 || (templateObject_2 = __makeTemplateObject(["\n  stroke-dasharray: 17;\n  animation: ", " 2.5s cubic-bezier(0.35, 0.04, 0.63, 0.95) infinite;\n"], ["\n  stroke-dasharray: 17;\n  animation: ", " 2.5s cubic-bezier(0.35, 0.04, 0.63, 0.95) infinite;\n"])), dash);
+He.svg(templateObject_3 || (templateObject_3 = __makeTemplateObject(["\n  transform-origin: 50% 65%;\n"], ["\n  transform-origin: 50% 65%;\n"])));
+var templateObject_1, templateObject_2, templateObject_3;
+
+var __assign$c = (undefined && undefined.__assign) || function () {
+    __assign$c = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign$c.apply(this, arguments);
+};
+
+var __assign$b = (undefined && undefined.__assign) || function () {
+    __assign$b = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign$b.apply(this, arguments);
+};
+
+var __assign$a = (undefined && undefined.__assign) || function () {
+    __assign$a = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign$a.apply(this, arguments);
+};
+
+var __assign$9 = (undefined && undefined.__assign) || function () {
+    __assign$9 = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign$9.apply(this, arguments);
+};
+
+var __assign$8 = (undefined && undefined.__assign) || function () {
+    __assign$8 = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign$8.apply(this, arguments);
+};
+
+var __assign$7 = (undefined && undefined.__assign) || function () {
+    __assign$7 = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign$7.apply(this, arguments);
+};
+
+var __assign$6 = (undefined && undefined.__assign) || function () {
+    __assign$6 = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign$6.apply(this, arguments);
+};
+
+var __assign$5 = (undefined && undefined.__assign) || function () {
+    __assign$5 = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign$5.apply(this, arguments);
+};
+
+var __assign$4 = (undefined && undefined.__assign) || function () {
+    __assign$4 = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign$4.apply(this, arguments);
+};
+
+var __assign$3 = (undefined && undefined.__assign) || function () {
+    __assign$3 = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign$3.apply(this, arguments);
+};
+
+var __assign$2 = (undefined && undefined.__assign) || function () {
+    __assign$2 = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign$2.apply(this, arguments);
+};
+
+var __assign$1 = (undefined && undefined.__assign) || function () {
+    __assign$1 = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign$1.apply(this, arguments);
+};
+
+var __assign = (undefined && undefined.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+
+const Container$4 = He.div `
+  outline: none;
+  display: flex;
+  margin: 4px 0;
+  justify-content: center;
+  img {
+    max-width: 100%;
+    user-select: none;
+    vertical-align: bottom;
+  }
+`;
+const Inner$2 = He.div `
+  position: relative;
+`;
+const Loading$1 = He.div `
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(3px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+const ImageResizer = He.div `
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 16px;
+  z-index: 1;
+  cursor: col-resize;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+const LeftImageResizer = He(ImageResizer) `
+  left: 0;
+`;
+const RightImageResizer = He(ImageResizer) `
+  right: 0;
+`;
+const ResizeHandler = He.div `
+  pointer-events: none;
+  transition: opacity 0.3s;
+  opacity: ${({ opacity }) => opacity};
+  border-radius: 20px;
+  background: rgba(15, 15, 15, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  width: 6px;
+  height: 48px;
+  max-height: 50%;
+`;
+const Image$1 = React__namespace.memo((_a) => {
+    var { blockId, contents, attributes: { thumbnail, original, width }, meta: { isUploading = false }, editor } = _a, props = __rest(_a, ["blockId", "contents", "attributes", "meta", "editor"]);
+    const imageRef = React__namespace.useRef(null);
+    const [displayResizer, setDisplayResizer] = React__namespace.useState(false);
+    const [dragParams, setDragParams] = React__namespace.useState();
+    const [imageWidth, setImageWidth] = React__namespace.useState(width !== null && width !== void 0 ? width : 'auto');
+    const handleClick = React__namespace.useCallback((e) => {
+        e.preventDefault();
+        e.stopPropagation();
+    }, []);
+    const handleMouseEnter = React__namespace.useCallback((e) => {
+        setDisplayResizer(true);
+    }, []);
+    const handleMouseLeave = React__namespace.useCallback((e) => {
+        setDisplayResizer(false);
+    }, []);
+    const handleMouseDown = React__namespace.useCallback((type) => (e) => {
+        if (!imageRef.current)
+            return;
+        e.preventDefault();
+        e.stopPropagation();
+        const rect = imageRef.current.getBoundingClientRect();
+        setDragParams({
+            type,
+            left: e.clientX,
+            width: width !== null && width !== void 0 ? width : (rect.width < 100 ? 100 : rect.width),
+        });
+    }, []);
+    React__namespace.useEffect(() => {
+        setImageWidth(width !== null && width !== void 0 ? width : 'auto');
+    }, [width]);
+    React__namespace.useEffect(() => {
+        if (!editor || !dragParams)
+            return;
+        const handleMouseMove = (e) => {
+            if (!dragParams.type)
+                return;
+            let width = 0;
+            if (dragParams.type === 'left') {
+                if (e.clientX < dragParams.left) {
+                    width = dragParams.width - (e.clientX - dragParams.left) * 2;
+                }
+                else {
+                    width = dragParams.width + (dragParams.left - e.clientX) * 2;
+                }
+            }
+            else if (dragParams.type === 'right') {
+                if (e.clientX > dragParams.left) {
+                    width = dragParams.width + (e.clientX - dragParams.left) * 2;
+                }
+                else {
+                    width = dragParams.width - (dragParams.left - e.clientX) * 2;
+                }
+            }
+            if (width < 100) {
+                width = 100;
+            }
+            setImageWidth(width);
+        };
+        const handleMouseUp = (e) => {
+            setDragParams(undefined);
+            if (imageRef.current && typeof imageRef.current.width === 'number') {
+                const currentBlock = editor.getBlock(blockId);
+                if (!currentBlock)
+                    return;
+                editor.updateBlock(Object.assign(Object.assign({}, currentBlock), { attributes: Object.assign(Object.assign({}, currentBlock.attributes), { width: imageRef.current.width }) }));
+                editor.render([blockId]);
+            }
+        };
+        window.addEventListener('mousemove', handleMouseMove, true);
+        window.addEventListener('mouseup', handleMouseUp, true);
+        return () => {
+            window.removeEventListener('mousemove', handleMouseMove, true);
+            window.removeEventListener('mouseup', handleMouseUp, true);
+        };
+    }, [dragParams]);
+    return (jsxRuntime.exports.jsx(Container$4, Object.assign({}, props, { contentEditable: false, draggable: "false" }, { children: jsxRuntime.exports.jsxs(Inner$2, Object.assign({ onMouseEnter: handleMouseEnter, onMouseLeave: handleMouseLeave }, { children: [jsxRuntime.exports.jsx("img", { src: thumbnail, onClick: handleClick, ref: imageRef, width: imageWidth, draggable: "false" }), isUploading ? (jsxRuntime.exports.jsx(Loading$1, { children: jsxRuntime.exports.jsx(MutatingDots, { height: "100", width: "100", color: "#4fa94d", secondaryColor: "#4fa94d", radius: "12.5", ariaLabel: "mutating-dots-loading", visible: true }) })) : (jsxRuntime.exports.jsxs(jsxRuntime.exports.Fragment, { children: [jsxRuntime.exports.jsx(LeftImageResizer, Object.assign({ onMouseDown: handleMouseDown('left') }, { children: jsxRuntime.exports.jsx(ResizeHandler, { opacity: displayResizer ? 1 : 0 }) })), jsxRuntime.exports.jsx(RightImageResizer, Object.assign({ onMouseDown: handleMouseDown('right') }, { children: jsxRuntime.exports.jsx(ResizeHandler, { opacity: displayResizer ? 1 : 0 }) }))] }))] })) })));
+});
+
+const BYTE_UNITS = [
+	'B',
+	'kB',
+	'MB',
+	'GB',
+	'TB',
+	'PB',
+	'EB',
+	'ZB',
+	'YB',
+];
+
+const BIBYTE_UNITS = [
+	'B',
+	'kiB',
+	'MiB',
+	'GiB',
+	'TiB',
+	'PiB',
+	'EiB',
+	'ZiB',
+	'YiB',
+];
+
+const BIT_UNITS = [
+	'b',
+	'kbit',
+	'Mbit',
+	'Gbit',
+	'Tbit',
+	'Pbit',
+	'Ebit',
+	'Zbit',
+	'Ybit',
+];
+
+const BIBIT_UNITS = [
+	'b',
+	'kibit',
+	'Mibit',
+	'Gibit',
+	'Tibit',
+	'Pibit',
+	'Eibit',
+	'Zibit',
+	'Yibit',
+];
+
+/*
+Formats the given number using `Number#toLocaleString`.
+- If locale is a string, the value is expected to be a locale-key (for example: `de`).
+- If locale is true, the system default locale is used for translation.
+- If no value for locale is specified, the number is returned unmodified.
+*/
+const toLocaleString = (number, locale, options) => {
+	let result = number;
+	if (typeof locale === 'string' || Array.isArray(locale)) {
+		result = number.toLocaleString(locale, options);
+	} else if (locale === true || options !== undefined) {
+		result = number.toLocaleString(undefined, options);
+	}
+
+	return result;
+};
+
+function prettyBytes(number, options) {
+	if (!Number.isFinite(number)) {
+		throw new TypeError(`Expected a finite number, got ${typeof number}: ${number}`);
+	}
+
+	options = {
+		bits: false,
+		binary: false,
+		...options,
+	};
+
+	const UNITS = options.bits
+		? (options.binary ? BIBIT_UNITS : BIT_UNITS)
+		: (options.binary ? BIBYTE_UNITS : BYTE_UNITS);
+
+	if (options.signed && number === 0) {
+		return ` 0 ${UNITS[0]}`;
+	}
+
+	const isNegative = number < 0;
+	const prefix = isNegative ? '-' : (options.signed ? '+' : '');
+
+	if (isNegative) {
+		number = -number;
+	}
+
+	let localeOptions;
+
+	if (options.minimumFractionDigits !== undefined) {
+		localeOptions = {minimumFractionDigits: options.minimumFractionDigits};
+	}
+
+	if (options.maximumFractionDigits !== undefined) {
+		localeOptions = {maximumFractionDigits: options.maximumFractionDigits, ...localeOptions};
+	}
+
+	if (number < 1) {
+		const numberString = toLocaleString(number, options.locale, localeOptions);
+		return prefix + numberString + ' ' + UNITS[0];
+	}
+
+	const exponent = Math.min(Math.floor(options.binary ? Math.log(number) / Math.log(1024) : Math.log10(number) / 3), UNITS.length - 1);
+	number /= (options.binary ? 1024 : 1000) ** exponent;
+
+	if (!localeOptions) {
+		number = number.toPrecision(3);
+	}
+
+	const numberString = toLocaleString(Number(number), options.locale, localeOptions);
+
+	const unit = UNITS[exponent];
+
+	return prefix + numberString + ' ' + unit;
+}
+
+const Container$3 = He.div `
+  outline: none;
+  display: flex;
+  padding: 0 12px;
+  background: #eee;
+  border-radius: 8px;
+  margin: 4px 12px;
+`;
+const IconContainer = He.div `
+  display: flex;
+  flex-shrink: 0;
+  width: 50px;
+  justify-content: center;
+  align-items: center;
+`;
+const Inner$1 = He.div `
+  flex-shrink: 1;
+  width: 100%;
+  padding: 12px;
+  box-sizing: border-box;
+`;
+He.div `
+  display: flex;
+  flex-shrink: 0;
+  width: 50px;
+`;
+const FileName = He.div `
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+const Size = He.div `
+  font-size: 12px;
+  color: #999;
+  display: flex;
+`;
+const Loading = He.div `
+  margin-left: 8px;
+`;
+const File = React__namespace.memo((_a) => {
+    var { blockId, contents, attributes: { fileName, original, size }, meta: { isUploading = false }, editor } = _a, props = __rest(_a, ["blockId", "contents", "attributes", "meta", "editor"]);
+    const imageRef = React__namespace.useRef(null);
+    React__namespace.useCallback((e) => { }, []);
+    React__namespace.useCallback((e) => {
+        e.preventDefault();
+        e.stopPropagation();
+    }, []);
+    return (jsxRuntime.exports.jsxs(Container$3, Object.assign({ ref: imageRef }, props, { contentEditable: false }, { children: [jsxRuntime.exports.jsx(IconContainer, { children: jsxRuntime.exports.jsxs("svg", Object.assign({ width: "32", height: "32", viewBox: "0 0 24 24", fill: "none", xmlns: "http://www.w3.org/2000/svg" }, { children: [jsxRuntime.exports.jsx("path", { d: "M14 3V7C14 7.26522 14.1054 7.51957 14.2929 7.70711C14.4804 7.89464 14.7348 8 15 8H19", stroke: "#666666", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round" }), jsxRuntime.exports.jsx("path", { d: "M12 11V17M17 21H7C6.46957 21 5.96086 20.7893 5.58579 20.4142C5.21071 20.0391 5 19.5304 5 19V5C5 4.46957 5.21071 3.96086 5.58579 3.58579C5.96086 3.21071 6.46957 3 7 3H14L19 8V19C19 19.5304 18.7893 20.0391 18.4142 20.4142C18.0391 20.7893 17.5304 21 17 21Z", stroke: "#666666", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round" }), jsxRuntime.exports.jsx("path", { d: "M9.5 13.5L12 11L14.5 13.5", stroke: "#666666", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round" })] })) }), jsxRuntime.exports.jsxs(Inner$1, { children: [jsxRuntime.exports.jsx(FileName, { children: fileName }), jsxRuntime.exports.jsxs(Size, { children: [prettyBytes(size), isUploading && (jsxRuntime.exports.jsx(Loading, { children: jsxRuntime.exports.jsx(RotatingLines, { strokeColor: "grey", strokeWidth: "5", animationDuration: "0.75", width: "18", visible: true }) }))] })] }), jsxRuntime.exports.jsx(IconContainer, {})] })));
+});
+
+/*! Copyright Twitter Inc. and other contributors. Licensed under MIT */
+var twemoji=function(){var twemoji={base:"https://twemoji.maxcdn.com/v/14.0.2/",ext:".png",size:"72x72",className:"emoji",convert:{fromCodePoint:fromCodePoint,toCodePoint:toCodePoint},onerror:function onerror(){if(this.parentNode){this.parentNode.replaceChild(createText(this.alt,false),this);}},parse:parse,replace:replace,test:test},escaper={"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"},re=/(?:\ud83d\udc68\ud83c\udffb\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc68\ud83c\udffc\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc68\ud83c\udffd\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc68\ud83c\udffe\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc68\ud83c\udfff\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffb\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffb\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc69\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffc\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffc\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc69\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffd\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffd\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc69\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffe\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffe\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc69\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udfff\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udfff\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc69\ud83c[\udffb-\udfff]|\ud83e\uddd1\ud83c\udffb\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83e\uddd1\ud83c[\udffc-\udfff]|\ud83e\uddd1\ud83c\udffc\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83e\uddd1\ud83c[\udffb\udffd-\udfff]|\ud83e\uddd1\ud83c\udffd\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83e\uddd1\ud83c[\udffb\udffc\udffe\udfff]|\ud83e\uddd1\ud83c\udffe\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83e\uddd1\ud83c[\udffb-\udffd\udfff]|\ud83e\uddd1\ud83c\udfff\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83e\uddd1\ud83c[\udffb-\udffe]|\ud83d\udc68\ud83c\udffb\u200d\u2764\ufe0f\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc68\ud83c\udffb\u200d\ud83e\udd1d\u200d\ud83d\udc68\ud83c[\udffc-\udfff]|\ud83d\udc68\ud83c\udffc\u200d\u2764\ufe0f\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc68\ud83c\udffc\u200d\ud83e\udd1d\u200d\ud83d\udc68\ud83c[\udffb\udffd-\udfff]|\ud83d\udc68\ud83c\udffd\u200d\u2764\ufe0f\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc68\ud83c\udffd\u200d\ud83e\udd1d\u200d\ud83d\udc68\ud83c[\udffb\udffc\udffe\udfff]|\ud83d\udc68\ud83c\udffe\u200d\u2764\ufe0f\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc68\ud83c\udffe\u200d\ud83e\udd1d\u200d\ud83d\udc68\ud83c[\udffb-\udffd\udfff]|\ud83d\udc68\ud83c\udfff\u200d\u2764\ufe0f\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc68\ud83c\udfff\u200d\ud83e\udd1d\u200d\ud83d\udc68\ud83c[\udffb-\udffe]|\ud83d\udc69\ud83c\udffb\u200d\u2764\ufe0f\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffb\u200d\u2764\ufe0f\u200d\ud83d\udc69\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffb\u200d\ud83e\udd1d\u200d\ud83d\udc68\ud83c[\udffc-\udfff]|\ud83d\udc69\ud83c\udffb\u200d\ud83e\udd1d\u200d\ud83d\udc69\ud83c[\udffc-\udfff]|\ud83d\udc69\ud83c\udffc\u200d\u2764\ufe0f\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffc\u200d\u2764\ufe0f\u200d\ud83d\udc69\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffc\u200d\ud83e\udd1d\u200d\ud83d\udc68\ud83c[\udffb\udffd-\udfff]|\ud83d\udc69\ud83c\udffc\u200d\ud83e\udd1d\u200d\ud83d\udc69\ud83c[\udffb\udffd-\udfff]|\ud83d\udc69\ud83c\udffd\u200d\u2764\ufe0f\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffd\u200d\u2764\ufe0f\u200d\ud83d\udc69\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffd\u200d\ud83e\udd1d\u200d\ud83d\udc68\ud83c[\udffb\udffc\udffe\udfff]|\ud83d\udc69\ud83c\udffd\u200d\ud83e\udd1d\u200d\ud83d\udc69\ud83c[\udffb\udffc\udffe\udfff]|\ud83d\udc69\ud83c\udffe\u200d\u2764\ufe0f\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffe\u200d\u2764\ufe0f\u200d\ud83d\udc69\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffe\u200d\ud83e\udd1d\u200d\ud83d\udc68\ud83c[\udffb-\udffd\udfff]|\ud83d\udc69\ud83c\udffe\u200d\ud83e\udd1d\u200d\ud83d\udc69\ud83c[\udffb-\udffd\udfff]|\ud83d\udc69\ud83c\udfff\u200d\u2764\ufe0f\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udfff\u200d\u2764\ufe0f\u200d\ud83d\udc69\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udfff\u200d\ud83e\udd1d\u200d\ud83d\udc68\ud83c[\udffb-\udffe]|\ud83d\udc69\ud83c\udfff\u200d\ud83e\udd1d\u200d\ud83d\udc69\ud83c[\udffb-\udffe]|\ud83e\uddd1\ud83c\udffb\u200d\u2764\ufe0f\u200d\ud83e\uddd1\ud83c[\udffc-\udfff]|\ud83e\uddd1\ud83c\udffb\u200d\ud83e\udd1d\u200d\ud83e\uddd1\ud83c[\udffb-\udfff]|\ud83e\uddd1\ud83c\udffc\u200d\u2764\ufe0f\u200d\ud83e\uddd1\ud83c[\udffb\udffd-\udfff]|\ud83e\uddd1\ud83c\udffc\u200d\ud83e\udd1d\u200d\ud83e\uddd1\ud83c[\udffb-\udfff]|\ud83e\uddd1\ud83c\udffd\u200d\u2764\ufe0f\u200d\ud83e\uddd1\ud83c[\udffb\udffc\udffe\udfff]|\ud83e\uddd1\ud83c\udffd\u200d\ud83e\udd1d\u200d\ud83e\uddd1\ud83c[\udffb-\udfff]|\ud83e\uddd1\ud83c\udffe\u200d\u2764\ufe0f\u200d\ud83e\uddd1\ud83c[\udffb-\udffd\udfff]|\ud83e\uddd1\ud83c\udffe\u200d\ud83e\udd1d\u200d\ud83e\uddd1\ud83c[\udffb-\udfff]|\ud83e\uddd1\ud83c\udfff\u200d\u2764\ufe0f\u200d\ud83e\uddd1\ud83c[\udffb-\udffe]|\ud83e\uddd1\ud83c\udfff\u200d\ud83e\udd1d\u200d\ud83e\uddd1\ud83c[\udffb-\udfff]|\ud83d\udc68\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68|\ud83d\udc69\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d[\udc68\udc69]|\ud83e\udef1\ud83c\udffb\u200d\ud83e\udef2\ud83c[\udffc-\udfff]|\ud83e\udef1\ud83c\udffc\u200d\ud83e\udef2\ud83c[\udffb\udffd-\udfff]|\ud83e\udef1\ud83c\udffd\u200d\ud83e\udef2\ud83c[\udffb\udffc\udffe\udfff]|\ud83e\udef1\ud83c\udffe\u200d\ud83e\udef2\ud83c[\udffb-\udffd\udfff]|\ud83e\udef1\ud83c\udfff\u200d\ud83e\udef2\ud83c[\udffb-\udffe]|\ud83d\udc68\u200d\u2764\ufe0f\u200d\ud83d\udc68|\ud83d\udc69\u200d\u2764\ufe0f\u200d\ud83d[\udc68\udc69]|\ud83e\uddd1\u200d\ud83e\udd1d\u200d\ud83e\uddd1|\ud83d\udc6b\ud83c[\udffb-\udfff]|\ud83d\udc6c\ud83c[\udffb-\udfff]|\ud83d\udc6d\ud83c[\udffb-\udfff]|\ud83d\udc8f\ud83c[\udffb-\udfff]|\ud83d\udc91\ud83c[\udffb-\udfff]|\ud83e\udd1d\ud83c[\udffb-\udfff]|\ud83d[\udc6b-\udc6d\udc8f\udc91]|\ud83e\udd1d)|(?:\ud83d[\udc68\udc69]|\ud83e\uddd1)(?:\ud83c[\udffb-\udfff])?\u200d(?:\u2695\ufe0f|\u2696\ufe0f|\u2708\ufe0f|\ud83c[\udf3e\udf73\udf7c\udf84\udf93\udfa4\udfa8\udfeb\udfed]|\ud83d[\udcbb\udcbc\udd27\udd2c\ude80\ude92]|\ud83e[\uddaf-\uddb3\uddbc\uddbd])|(?:\ud83c[\udfcb\udfcc]|\ud83d[\udd74\udd75]|\u26f9)((?:\ud83c[\udffb-\udfff]|\ufe0f)\u200d[\u2640\u2642]\ufe0f)|(?:\ud83c[\udfc3\udfc4\udfca]|\ud83d[\udc6e\udc70\udc71\udc73\udc77\udc81\udc82\udc86\udc87\ude45-\ude47\ude4b\ude4d\ude4e\udea3\udeb4-\udeb6]|\ud83e[\udd26\udd35\udd37-\udd39\udd3d\udd3e\uddb8\uddb9\uddcd-\uddcf\uddd4\uddd6-\udddd])(?:\ud83c[\udffb-\udfff])?\u200d[\u2640\u2642]\ufe0f|(?:\ud83d\udc68\u200d\ud83d\udc68\u200d\ud83d\udc66\u200d\ud83d\udc66|\ud83d\udc68\u200d\ud83d\udc68\u200d\ud83d\udc67\u200d\ud83d[\udc66\udc67]|\ud83d\udc68\u200d\ud83d\udc69\u200d\ud83d\udc66\u200d\ud83d\udc66|\ud83d\udc68\u200d\ud83d\udc69\u200d\ud83d\udc67\u200d\ud83d[\udc66\udc67]|\ud83d\udc69\u200d\ud83d\udc69\u200d\ud83d\udc66\u200d\ud83d\udc66|\ud83d\udc69\u200d\ud83d\udc69\u200d\ud83d\udc67\u200d\ud83d[\udc66\udc67]|\ud83d\udc68\u200d\ud83d\udc66\u200d\ud83d\udc66|\ud83d\udc68\u200d\ud83d\udc67\u200d\ud83d[\udc66\udc67]|\ud83d\udc68\u200d\ud83d\udc68\u200d\ud83d[\udc66\udc67]|\ud83d\udc68\u200d\ud83d\udc69\u200d\ud83d[\udc66\udc67]|\ud83d\udc69\u200d\ud83d\udc66\u200d\ud83d\udc66|\ud83d\udc69\u200d\ud83d\udc67\u200d\ud83d[\udc66\udc67]|\ud83d\udc69\u200d\ud83d\udc69\u200d\ud83d[\udc66\udc67]|\ud83c\udff3\ufe0f\u200d\u26a7\ufe0f|\ud83c\udff3\ufe0f\u200d\ud83c\udf08|\ud83d\ude36\u200d\ud83c\udf2b\ufe0f|\u2764\ufe0f\u200d\ud83d\udd25|\u2764\ufe0f\u200d\ud83e\ude79|\ud83c\udff4\u200d\u2620\ufe0f|\ud83d\udc15\u200d\ud83e\uddba|\ud83d\udc3b\u200d\u2744\ufe0f|\ud83d\udc41\u200d\ud83d\udde8|\ud83d\udc68\u200d\ud83d[\udc66\udc67]|\ud83d\udc69\u200d\ud83d[\udc66\udc67]|\ud83d\udc6f\u200d\u2640\ufe0f|\ud83d\udc6f\u200d\u2642\ufe0f|\ud83d\ude2e\u200d\ud83d\udca8|\ud83d\ude35\u200d\ud83d\udcab|\ud83e\udd3c\u200d\u2640\ufe0f|\ud83e\udd3c\u200d\u2642\ufe0f|\ud83e\uddde\u200d\u2640\ufe0f|\ud83e\uddde\u200d\u2642\ufe0f|\ud83e\udddf\u200d\u2640\ufe0f|\ud83e\udddf\u200d\u2642\ufe0f|\ud83d\udc08\u200d\u2b1b)|[#*0-9]\ufe0f?\u20e3|(?:[©®\u2122\u265f]\ufe0f)|(?:\ud83c[\udc04\udd70\udd71\udd7e\udd7f\ude02\ude1a\ude2f\ude37\udf21\udf24-\udf2c\udf36\udf7d\udf96\udf97\udf99-\udf9b\udf9e\udf9f\udfcd\udfce\udfd4-\udfdf\udff3\udff5\udff7]|\ud83d[\udc3f\udc41\udcfd\udd49\udd4a\udd6f\udd70\udd73\udd76-\udd79\udd87\udd8a-\udd8d\udda5\udda8\uddb1\uddb2\uddbc\uddc2-\uddc4\uddd1-\uddd3\udddc-\uddde\udde1\udde3\udde8\uddef\uddf3\uddfa\udecb\udecd-\udecf\udee0-\udee5\udee9\udef0\udef3]|[\u203c\u2049\u2139\u2194-\u2199\u21a9\u21aa\u231a\u231b\u2328\u23cf\u23ed-\u23ef\u23f1\u23f2\u23f8-\u23fa\u24c2\u25aa\u25ab\u25b6\u25c0\u25fb-\u25fe\u2600-\u2604\u260e\u2611\u2614\u2615\u2618\u2620\u2622\u2623\u2626\u262a\u262e\u262f\u2638-\u263a\u2640\u2642\u2648-\u2653\u2660\u2663\u2665\u2666\u2668\u267b\u267f\u2692-\u2697\u2699\u269b\u269c\u26a0\u26a1\u26a7\u26aa\u26ab\u26b0\u26b1\u26bd\u26be\u26c4\u26c5\u26c8\u26cf\u26d1\u26d3\u26d4\u26e9\u26ea\u26f0-\u26f5\u26f8\u26fa\u26fd\u2702\u2708\u2709\u270f\u2712\u2714\u2716\u271d\u2721\u2733\u2734\u2744\u2747\u2757\u2763\u2764\u27a1\u2934\u2935\u2b05-\u2b07\u2b1b\u2b1c\u2b50\u2b55\u3030\u303d\u3297\u3299])(?:\ufe0f|(?!\ufe0e))|(?:(?:\ud83c[\udfcb\udfcc]|\ud83d[\udd74\udd75\udd90]|[\u261d\u26f7\u26f9\u270c\u270d])(?:\ufe0f|(?!\ufe0e))|(?:\ud83c[\udf85\udfc2-\udfc4\udfc7\udfca]|\ud83d[\udc42\udc43\udc46-\udc50\udc66-\udc69\udc6e\udc70-\udc78\udc7c\udc81-\udc83\udc85-\udc87\udcaa\udd7a\udd95\udd96\ude45-\ude47\ude4b-\ude4f\udea3\udeb4-\udeb6\udec0\udecc]|\ud83e[\udd0c\udd0f\udd18-\udd1c\udd1e\udd1f\udd26\udd30-\udd39\udd3d\udd3e\udd77\uddb5\uddb6\uddb8\uddb9\uddbb\uddcd-\uddcf\uddd1-\udddd\udec3-\udec5\udef0-\udef6]|[\u270a\u270b]))(?:\ud83c[\udffb-\udfff])?|(?:\ud83c\udff4\udb40\udc67\udb40\udc62\udb40\udc65\udb40\udc6e\udb40\udc67\udb40\udc7f|\ud83c\udff4\udb40\udc67\udb40\udc62\udb40\udc73\udb40\udc63\udb40\udc74\udb40\udc7f|\ud83c\udff4\udb40\udc67\udb40\udc62\udb40\udc77\udb40\udc6c\udb40\udc73\udb40\udc7f|\ud83c\udde6\ud83c[\udde8-\uddec\uddee\uddf1\uddf2\uddf4\uddf6-\uddfa\uddfc\uddfd\uddff]|\ud83c\udde7\ud83c[\udde6\udde7\udde9-\uddef\uddf1-\uddf4\uddf6-\uddf9\uddfb\uddfc\uddfe\uddff]|\ud83c\udde8\ud83c[\udde6\udde8\udde9\uddeb-\uddee\uddf0-\uddf5\uddf7\uddfa-\uddff]|\ud83c\udde9\ud83c[\uddea\uddec\uddef\uddf0\uddf2\uddf4\uddff]|\ud83c\uddea\ud83c[\udde6\udde8\uddea\uddec\udded\uddf7-\uddfa]|\ud83c\uddeb\ud83c[\uddee-\uddf0\uddf2\uddf4\uddf7]|\ud83c\uddec\ud83c[\udde6\udde7\udde9-\uddee\uddf1-\uddf3\uddf5-\uddfa\uddfc\uddfe]|\ud83c\udded\ud83c[\uddf0\uddf2\uddf3\uddf7\uddf9\uddfa]|\ud83c\uddee\ud83c[\udde8-\uddea\uddf1-\uddf4\uddf6-\uddf9]|\ud83c\uddef\ud83c[\uddea\uddf2\uddf4\uddf5]|\ud83c\uddf0\ud83c[\uddea\uddec-\uddee\uddf2\uddf3\uddf5\uddf7\uddfc\uddfe\uddff]|\ud83c\uddf1\ud83c[\udde6-\udde8\uddee\uddf0\uddf7-\uddfb\uddfe]|\ud83c\uddf2\ud83c[\udde6\udde8-\udded\uddf0-\uddff]|\ud83c\uddf3\ud83c[\udde6\udde8\uddea-\uddec\uddee\uddf1\uddf4\uddf5\uddf7\uddfa\uddff]|\ud83c\uddf4\ud83c\uddf2|\ud83c\uddf5\ud83c[\udde6\uddea-\udded\uddf0-\uddf3\uddf7-\uddf9\uddfc\uddfe]|\ud83c\uddf6\ud83c\udde6|\ud83c\uddf7\ud83c[\uddea\uddf4\uddf8\uddfa\uddfc]|\ud83c\uddf8\ud83c[\udde6-\uddea\uddec-\uddf4\uddf7-\uddf9\uddfb\uddfd-\uddff]|\ud83c\uddf9\ud83c[\udde6\udde8\udde9\uddeb-\udded\uddef-\uddf4\uddf7\uddf9\uddfb\uddfc\uddff]|\ud83c\uddfa\ud83c[\udde6\uddec\uddf2\uddf3\uddf8\uddfe\uddff]|\ud83c\uddfb\ud83c[\udde6\udde8\uddea\uddec\uddee\uddf3\uddfa]|\ud83c\uddfc\ud83c[\uddeb\uddf8]|\ud83c\uddfd\ud83c\uddf0|\ud83c\uddfe\ud83c[\uddea\uddf9]|\ud83c\uddff\ud83c[\udde6\uddf2\uddfc]|\ud83c[\udccf\udd8e\udd91-\udd9a\udde6-\uddff\ude01\ude32-\ude36\ude38-\ude3a\ude50\ude51\udf00-\udf20\udf2d-\udf35\udf37-\udf7c\udf7e-\udf84\udf86-\udf93\udfa0-\udfc1\udfc5\udfc6\udfc8\udfc9\udfcf-\udfd3\udfe0-\udff0\udff4\udff8-\udfff]|\ud83d[\udc00-\udc3e\udc40\udc44\udc45\udc51-\udc65\udc6a\udc6f\udc79-\udc7b\udc7d-\udc80\udc84\udc88-\udc8e\udc90\udc92-\udca9\udcab-\udcfc\udcff-\udd3d\udd4b-\udd4e\udd50-\udd67\udda4\uddfb-\ude44\ude48-\ude4a\ude80-\udea2\udea4-\udeb3\udeb7-\udebf\udec1-\udec5\uded0-\uded2\uded5-\uded7\udedd-\udedf\udeeb\udeec\udef4-\udefc\udfe0-\udfeb\udff0]|\ud83e[\udd0d\udd0e\udd10-\udd17\udd20-\udd25\udd27-\udd2f\udd3a\udd3c\udd3f-\udd45\udd47-\udd76\udd78-\uddb4\uddb7\uddba\uddbc-\uddcc\uddd0\uddde-\uddff\ude70-\ude74\ude78-\ude7c\ude80-\ude86\ude90-\udeac\udeb0-\udeba\udec0-\udec2\uded0-\uded9\udee0-\udee7]|[\u23e9-\u23ec\u23f0\u23f3\u267e\u26ce\u2705\u2728\u274c\u274e\u2753-\u2755\u2795-\u2797\u27b0\u27bf\ue50a])|\ufe0f/g,UFE0Fg=/\uFE0F/g,U200D=String.fromCharCode(8205),rescaper=/[&<>'"]/g,shouldntBeParsed=/^(?:iframe|noframes|noscript|script|select|style|textarea)$/,fromCharCode=String.fromCharCode;return twemoji;function createText(text,clean){return document.createTextNode(clean?text.replace(UFE0Fg,""):text)}function escapeHTML(s){return s.replace(rescaper,replacer)}function defaultImageSrcGenerator(icon,options){return "".concat(options.base,options.size,"/",icon,options.ext)}function grabAllTextNodes(node,allText){var childNodes=node.childNodes,length=childNodes.length,subnode,nodeType;while(length--){subnode=childNodes[length];nodeType=subnode.nodeType;if(nodeType===3){allText.push(subnode);}else if(nodeType===1&&!("ownerSVGElement"in subnode)&&!shouldntBeParsed.test(subnode.nodeName.toLowerCase())){grabAllTextNodes(subnode,allText);}}return allText}function grabTheRightIcon(rawText){return toCodePoint(rawText.indexOf(U200D)<0?rawText.replace(UFE0Fg,""):rawText)}function parseNode(node,options){var allText=grabAllTextNodes(node,[]),length=allText.length,attrib,attrname,modified,fragment,subnode,text,match,i,index,img,rawText,iconId,src;while(length--){modified=false;fragment=document.createDocumentFragment();subnode=allText[length];text=subnode.nodeValue;i=0;while(match=re.exec(text)){index=match.index;if(index!==i){fragment.appendChild(createText(text.slice(i,index),true));}rawText=match[0];iconId=grabTheRightIcon(rawText);i=index+rawText.length;src=options.callback(iconId,options);if(iconId&&src){img=new Image;img.onerror=options.onerror;img.setAttribute("draggable","false");attrib=options.attributes(rawText,iconId);for(attrname in attrib){if(attrib.hasOwnProperty(attrname)&&attrname.indexOf("on")!==0&&!img.hasAttribute(attrname)){img.setAttribute(attrname,attrib[attrname]);}}img.className=options.className;img.alt=rawText;img.src=src;modified=true;fragment.appendChild(img);}if(!img)fragment.appendChild(createText(rawText,false));img=null;}if(modified){if(i<text.length){fragment.appendChild(createText(text.slice(i),true));}subnode.parentNode.replaceChild(fragment,subnode);}}return node}function parseString(str,options){return replace(str,function(rawText){var ret=rawText,iconId=grabTheRightIcon(rawText),src=options.callback(iconId,options),attrib,attrname;if(iconId&&src){ret="<img ".concat('class="',options.className,'" ','draggable="false" ','alt="',rawText,'"',' src="',src,'"');attrib=options.attributes(rawText,iconId);for(attrname in attrib){if(attrib.hasOwnProperty(attrname)&&attrname.indexOf("on")!==0&&ret.indexOf(" "+attrname+"=")===-1){ret=ret.concat(" ",attrname,'="',escapeHTML(attrib[attrname]),'"');}}ret=ret.concat("/>");}return ret})}function replacer(m){return escaper[m]}function returnNull(){return null}function toSizeSquaredAsset(value){return typeof value==="number"?value+"x"+value:value}function fromCodePoint(codepoint){var code=typeof codepoint==="string"?parseInt(codepoint,16):codepoint;if(code<65536){return fromCharCode(code)}code-=65536;return fromCharCode(55296+(code>>10),56320+(code&1023))}function parse(what,how){if(!how||typeof how==="function"){how={callback:how};}return (typeof what==="string"?parseString:parseNode)(what,{callback:how.callback||defaultImageSrcGenerator,attributes:typeof how.attributes==="function"?how.attributes:returnNull,base:typeof how.base==="string"?how.base:twemoji.base,ext:how.ext||twemoji.ext,size:how.folder||toSizeSquaredAsset(how.size||twemoji.size),className:how.className||twemoji.className,onerror:how.onerror||twemoji.onerror})}function replace(text,callback){return String(text).replace(re,callback)}function test(text){re.lastIndex=0;var result=re.test(text);re.lastIndex=0;return result}function toCodePoint(unicodeSurrogates,sep){var r=[],c=0,p=0,i=0;while(i<unicodeSurrogates.length){c=unicodeSurrogates.charCodeAt(i++);if(p){r.push((65536+(p-55296<<10)+(c-56320)).toString(16));p=0;}else if(55296<=c&&c<=56319){p=c;}else {r.push(c.toString(16));}}return r.join(sep||"-")}}();
+
+const Text$1 = He.span `
+  &::selection {
+    background: rgba(46, 170, 220, 0.2);
+  }
+  img.emoji {
+    height: 1em;
+    width: 1em;
+    margin: 0 0.05em 0 0.1em;
+    vertical-align: -0.1em;
+    &::selection {
+      background: rgba(46, 170, 220, 0.2);
+    }
+  }
+  ${({ attributes, formats }) => {
+    return Object.keys(attributes).map((key) => {
+        const styleFormat = `inline/style/${key}`;
+        if (attributes[key] && formats[styleFormat]) {
+            return formats[styleFormat](attributes[key]);
+        }
+        return;
+    });
+}}
+`;
+const Link$2 = He.a `
+  ${({ attributes, formats }) => {
+    return Object.keys(attributes).map((key) => {
+        const styleFormat = `inline/style/${key}`;
+        if (attributes[key] && formats[styleFormat]) {
+            return formats[styleFormat](attributes[key]);
+        }
+        return;
+    });
+}}
+`;
+const InlineText = (_a) => {
+    var { inline, formats, editor, scrollContainer } = _a, props = __rest(_a, ["inline", "formats", "editor", "scrollContainer"]);
+    const memoInnerHTML = React__namespace.useMemo(() => {
+        const text = inline.text.replaceAll('\n', '<br>');
+        return {
+            __html: twemoji.parse(text, {
+                folder: 'svg',
+                ext: '.svg',
+            }),
+        };
+    }, [inline]);
+    const handleClickLink = () => {
+        const caretPosition = editor.getCaretPosition();
+        const eventEmitter = editor.getEventEmitter();
+        eventEmitter.emit(EditorEvents.EVENT_LINK_CLICK, {
+            mode: 'openPreview',
+            inline,
+            caretPosition,
+        });
+    };
+    return (jsxRuntime.exports.jsx(jsxRuntime.exports.Fragment, { children: inline.attributes['link'] ? (jsxRuntime.exports.jsx(jsxRuntime.exports.Fragment, { children: jsxRuntime.exports.jsx(Link$2, Object.assign({ href: inline.attributes['link'], target: "_blank", dangerouslySetInnerHTML: memoInnerHTML, formats: formats, attributes: inline.attributes, onClick: handleClickLink }, props)) })) : (jsxRuntime.exports.jsx(Text$1, Object.assign({ dangerouslySetInnerHTML: memoInnerHTML, formats: formats, attributes: inline.attributes }, props))) }));
+};
+
+const Bold = () => Ce `
+  font-weight: bold;
+`;
+
+const Underline = () => Ce `
+  border-bottom: 0.05em solid;
+`;
+
+const Strike = () => Ce `
+  text-decoration: line-through;
+`;
+
+const InlineCode = () => Ce `
+  background: rgba(135, 131, 120, 0.15);
+  color: #eb5757;
+  border-radius: 3px;
+  font-size: 85%;
+  padding: 0.2em 0.4em;
+`;
+
+const Italic = () => Ce `
+  transform: skewX(-20deg);
+  display: inline-block;
+`;
+
+const Color = (color) => Ce `
+  ${color && `color: ${color};`}
+`;
+
+const Link$1 = () => Ce `
+  cursor: pointer;
+`;
+
+const Container$2 = He.div `
+  position: fixed;
+  bottom: 12px;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 8px;
+`;
+const Button$2 = He.a `
+  margin: 8px;
+  border: 1px solid #666;
+  border-radius: 4px;
+  padding: 4px;
+`;
+const GlobalToolbar = React__namespace.memo((_a) => {
+    var { editor } = _a, props = __rest(_a, ["editor"]);
+    const [formats, setFormats] = React__namespace.useState({});
+    const [isDisplay, setDisplay] = React__namespace.useState(false);
+    const handleHeader1 = React__namespace.useCallback((event) => {
+        event.preventDefault();
+        editor.getModule('toolbar').formatBlock('HEADER1');
+    }, [formats]);
+    const handleBlockquote = React__namespace.useCallback((event) => {
+        event.preventDefault();
+        editor.getModule('toolbar').formatBlock('BLOCKQUOTE');
+    }, [formats]);
+    const handleOrderedList = React__namespace.useCallback((event) => {
+        event.preventDefault();
+        editor.getModule('toolbar').formatBlock('ORDEREDLIST');
+    }, [formats]);
+    const handleBulletList = React__namespace.useCallback((event) => {
+        event.preventDefault();
+        editor.getModule('toolbar').formatBlock('BULLETLIST');
+    }, [formats]);
+    React__namespace.useEffect(() => {
+        const subs = new Subscription();
+        const eventEmitter = editor.getEventEmitter();
+        subs.add(eventEmitter
+            .select(EditorEvents.EVENT_SELECTION_CHANGE)
+            .pipe(combineLatestWith(eventEmitter.select(EditorEvents.EVENT_BLOCK_SELECTED)))
+            .subscribe((v) => {
+            const caret = editor.getCaretPosition();
+            if (!caret || !editor.hasFocus()) {
+                if (editor.getModule('selector').getSelectedBlocks().length > 0)
+                    return;
+                setDisplay(false);
+                return;
+            }
+            setDisplay(true);
+            setFormats(editor.getFormats(caret.blockId, caret.index, caret.length));
+        }));
+        subs.add(eventEmitter.select(EditorEvents.EVENT_BLOCK_SELECTED).subscribe((blockIds) => {
+            if (blockIds.length < 1) {
+                setDisplay(false);
+                return;
+            }
+            setDisplay(true);
+        }));
+        return () => {
+            subs.unsubscribe();
+        };
+    }, []);
+    return ReactDOM__default["default"].createPortal(jsxRuntime.exports.jsx(jsxRuntime.exports.Fragment, { children: isDisplay && (jsxRuntime.exports.jsxs(Container$2, Object.assign({}, props, { children: [jsxRuntime.exports.jsx(Button$2, Object.assign({ href: "#", onClick: handleHeader1 }, { children: "H1" })), jsxRuntime.exports.jsx(Button$2, Object.assign({ href: "#", onClick: handleBlockquote }, { children: "\u5F15\u7528" })), jsxRuntime.exports.jsx(Button$2, Object.assign({ href: "#", onClick: handleOrderedList }, { children: "\u756A\u53F7\u30EA\u30B9\u30C8" })), jsxRuntime.exports.jsx(Button$2, Object.assign({ href: "#", onClick: handleBulletList }, { children: "\u30EA\u30B9\u30C8" }))] }))) }), document.body);
+});
+
+function getScrollContainer(scrollContainer) {
+    if (!scrollContainer) {
+        return null;
+    }
+    if (typeof scrollContainer === 'string') {
+        return document.querySelector(scrollContainer);
+    }
+    return scrollContainer !== null && scrollContainer !== void 0 ? scrollContainer : null;
+}
+
+const Container$1 = He.div `
+  position: absolute;
+  top: ${({ top }) => `${top}px`};
+  left: ${({ left }) => `${left}px`};
+  display: ${({ isDisplay }) => (isDisplay ? 'auto' : 'none')};
+  transform: translateY(-100%);
+  background-color: #fff;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  padding: 4px;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  z-index: 1;
+`;
+const Button$1 = He.a `
+  display: inline-block;
+  padding: 2px 8px;
+  text-decoration: none;
+  border-radius: 8px;
+  margin: 0 4px;
+  ${({ active }) => active && 'background-color: #e3def3'};
+  &:hover {
+    background-color: #e3def3;
+  }
+`;
+const BubbleToolbar = React__namespace.memo((_a) => {
+    var _b, _c, _d;
+    var { editor, scrollContainer } = _a, props = __rest(_a, ["editor", "scrollContainer"]);
+    const [formats, setFormats] = React__namespace.useState({});
+    const [position, setPosition] = React__namespace.useState();
+    const [blockType, setBlockType] = React__namespace.useState();
+    const [collapsed, setCollapsed] = React__namespace.useState(true);
+    const [currentCaretPosition, setCurrentCaretPosition] = React__namespace.useState();
+    const containerRef = React__namespace.useRef(null);
+    const handleBold = React__namespace.useCallback((event) => {
+        event.preventDefault();
+        editor.getModule('toolbar').formatInline({ bold: !(formats === null || formats === void 0 ? void 0 : formats.bold) });
+    }, [formats]);
+    const handleUnderline = React__namespace.useCallback((event) => {
+        event.preventDefault();
+        editor.getModule('toolbar').formatInline({ underline: !(formats === null || formats === void 0 ? void 0 : formats.underline) });
+    }, [formats]);
+    const handleStrike = React__namespace.useCallback((event) => {
+        event.preventDefault();
+        editor.getModule('toolbar').formatInline({ strike: !(formats === null || formats === void 0 ? void 0 : formats.strike) });
+    }, [formats]);
+    const handleLink = React__namespace.useCallback((event) => {
+        event.preventDefault();
+        const eventEmitter = editor.getEventEmitter();
+        eventEmitter.emit(EditorEvents.EVENT_LINK_CLICK, {
+            mode: 'openEnterLink',
+            caretPosition: currentCaretPosition,
+        });
+    }, [formats, currentCaretPosition]);
+    const handleInlineCode = React__namespace.useCallback((event) => {
+        event.preventDefault();
+        editor.getModule('toolbar').formatInline({ code: !(formats === null || formats === void 0 ? void 0 : formats.code) });
+    }, [formats]);
+    const handleHeader1 = React__namespace.useCallback((event) => {
+        event.preventDefault();
+        editor.getModule('toolbar').formatBlock('HEADER1');
+    }, [formats]);
+    const handleColor = React__namespace.useCallback((event) => {
+        event.preventDefault();
+        if (formats === null || formats === void 0 ? void 0 : formats.color) {
+            editor.getModule('toolbar').formatInline({ color: false });
+        }
+        else {
+            editor.getModule('toolbar').formatInline({ color: 'red' });
+        }
+    }, [formats]);
+    const handleMouseDown = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+    };
+    React__namespace.useEffect(() => {
+        const subs = new Subscription();
+        const eventEmitter = editor.getEventEmitter();
+        subs.add(eventEmitter.select(EditorEvents.EVENT_SELECTION_CHANGE).subscribe((v) => {
+            var _a, _b, _c, _d;
+            const caret = editor.getCaretPosition();
+            const blockLength = (_b = editor.getBlockLength((_a = caret === null || caret === void 0 ? void 0 : caret.blockId) !== null && _a !== void 0 ? _a : '')) !== null && _b !== void 0 ? _b : 0;
+            if (!caret || !editor.hasFocus() || blockLength < 1) {
+                setPosition(undefined);
+                setCollapsed(true);
+                return;
+            }
+            const container = getScrollContainer(scrollContainer);
+            if (container) {
+                const containerRect = container.getBoundingClientRect();
+                const top = ((_c = container === null || container === void 0 ? void 0 : container.scrollTop) !== null && _c !== void 0 ? _c : 0) + caret.rect.top - containerRect.top;
+                const left = caret.rect.left - containerRect.left;
+                setPosition({ top, left });
+            }
+            else {
+                const scrollEl = document.scrollingElement;
+                const top = scrollEl.scrollTop + caret.rect.top;
+                const left = caret.rect.left;
+                setPosition({ top, left });
+            }
+            setCollapsed(caret.collapsed);
+            setFormats(editor.getFormats(caret.blockId, caret.index, caret.length));
+            setBlockType((_d = editor.getBlock(caret.blockId)) === null || _d === void 0 ? void 0 : _d.type);
+        }));
+        return () => {
+            subs.unsubscribe();
+        };
+    }, [editor, scrollContainer]);
+    React__namespace.useEffect(() => {
+        setTimeout(() => {
+            if (!containerRef.current)
+                return;
+            editor.getModule('toolbar').setBubbleToolbarRef(containerRef.current);
+        });
+    }, [editor]);
+    return ReactDOM__default["default"].createPortal(jsxRuntime.exports.jsx(jsxRuntime.exports.Fragment, { children: jsxRuntime.exports.jsxs(Container$1, Object.assign({ top: (_b = position === null || position === void 0 ? void 0 : position.top) !== null && _b !== void 0 ? _b : 0, left: (_c = position === null || position === void 0 ? void 0 : position.left) !== null && _c !== void 0 ? _c : 0, isDisplay: !collapsed, ref: containerRef, onMouseDown: handleMouseDown }, props, { children: [jsxRuntime.exports.jsx(Button$1, Object.assign({ href: "#", onClick: handleHeader1, active: blockType === 'HEADER1' }, { children: "H1" })), jsxRuntime.exports.jsx(Button$1, Object.assign({ href: "#", onClick: handleBold, active: !!(formats === null || formats === void 0 ? void 0 : formats.bold) }, { children: "B" })), jsxRuntime.exports.jsx(Button$1, Object.assign({ href: "#", onClick: handleUnderline, active: !!(formats === null || formats === void 0 ? void 0 : formats.underline) }, { children: "U" })), jsxRuntime.exports.jsx(Button$1, Object.assign({ href: "#", onClick: handleStrike, active: !!(formats === null || formats === void 0 ? void 0 : formats.strike) }, { children: "S" })), jsxRuntime.exports.jsx(Button$1, Object.assign({ href: "#", onClick: handleInlineCode, active: !!(formats === null || formats === void 0 ? void 0 : formats.code) }, { children: "code" })), jsxRuntime.exports.jsx(Button$1, Object.assign({ href: "#", onClick: handleColor, active: !!(formats === null || formats === void 0 ? void 0 : formats.color) }, { children: "color" })), jsxRuntime.exports.jsx(Button$1, Object.assign({ href: "#", onClick: handleLink, active: !!(formats === null || formats === void 0 ? void 0 : formats.link) }, { children: "L" }))] })) }), (_d = getScrollContainer(scrollContainer)) !== null && _d !== void 0 ? _d : document.body);
+});
+
 var lodash_isequal = {exports: {}};
 
 /**
@@ -6647,1533 +8658,6 @@ var lodash_isequal = {exports: {}};
 } (lodash_isequal, lodash_isequal.exports));
 
 var isEqual = lodash_isequal.exports;
-
-const KeyCodes = {
-    ESC: 'Escape',
-    ENTER: 'Enter',
-    NUMPAD_ENTER: 'NumpadEnter',
-    TAB: 'Tab',
-    DELETE: 'Delete',
-    A: 'KeyA',
-    B: 'KeyB',
-    C: 'KeyC',
-    D: 'KeyD',
-    E: 'KeyE',
-    F: 'KeyF',
-    G: 'KeyG',
-    H: 'KeyH',
-    I: 'KeyI',
-    J: 'KeyJ',
-    K: 'KeyK',
-    L: 'KeyL',
-    M: 'KeyM',
-    N: 'KeyN',
-    O: 'KeyO',
-    P: 'KeyP',
-    Q: 'KeyQ',
-    R: 'KeyR',
-    S: 'KeyS',
-    T: 'KeyT',
-    U: 'KeyU',
-    V: 'KeyV',
-    W: 'KeyW',
-    X: 'KeyX',
-    Y: 'KeyY',
-    Z: 'KeyZ',
-    SPACE: 'Space',
-    BACKSPACE: 'Backspace',
-    DEL: 'Delete',
-    ARROW_UP: 'ArrowUp',
-    ARROW_LEFT: 'ArrowLeft',
-    ARROW_RIGHT: 'ArrowRight',
-    ARROW_DOWN: 'ArrowDown',
-};
-const EditorEvents = {
-    EVENT_EDITOR_CREATE: 'editor-create',
-    EVENT_EDITOR_HISTORY_PUSH: 'editor-history-push',
-    EVENT_EDITOR_CHANGED: 'editor-changed',
-    EVENT_BLOCK_RERENDER: 'block-rerender',
-    EVENT_BLOCK_RERENDER_FORCE: 'block-rerender-force',
-    EVENT_BLOCK_SELECTED: 'block-selected',
-    EVENT_SELECTION_CHANGE: 'selection-change',
-    EVENT_LINK_CLICK: 'button-clicked',
-    EVENT_LOG_INFO: 'log-info',
-    EVENT_LOG_WARNING: 'log-warning',
-    EVENT_LOG_ERROR: 'log-error',
-};
-const HistoryType = {
-    UPDATE_CONTENTS: 'update_contents',
-    ADD_BLOCK: 'add_block',
-    REMOVE_BLOCK: 'remove_block',
-};
-const EventSources = {
-    SILENT: 'silent',
-    USER: 'user',
-    COLLABORATOR: 'collaborator',
-};
-const LogLevels = {
-    NONE: 0,
-    ERROR: 1,
-    WARNING: 2,
-    INFO: 3,
-};
-
-function copyObject(object) {
-    const json = JSON.stringify(object);
-    return JSON.parse(json);
-}
-
-function useBlockRenderer({ blockId, editor }) {
-    const [block, setBlock] = React__namespace.useState(null);
-    React__namespace.useEffect(() => {
-        const currentBlock = editor.getBlock(blockId);
-        const eventEmitter = editor.getEventEmitter();
-        if (currentBlock) {
-            setBlock(currentBlock);
-        }
-        const subs = new Subscription();
-        subs.add(eventEmitter
-            .select(EditorEvents.EVENT_BLOCK_RERENDER)
-            .pipe(filter((affectedIds) => affectedIds.includes(blockId)))
-            .subscribe(() => {
-            const currentBlock = editor.getBlock(blockId);
-            if (currentBlock) {
-                setBlock((prev) => {
-                    if (currentBlock.contents.length > 0 && isEqual(currentBlock, prev)) {
-                        setTimeout(() => setBlock(currentBlock));
-                        return Object.assign(Object.assign({}, currentBlock), { contents: [] });
-                    }
-                    return copyObject(currentBlock);
-                });
-            }
-        }));
-        subs.add(eventEmitter
-            .select(EditorEvents.EVENT_BLOCK_RERENDER_FORCE)
-            .pipe(filter((affectedIds) => affectedIds.includes(blockId)))
-            .subscribe(() => {
-            const currentBlock = editor.getBlock(blockId);
-            if (currentBlock) {
-                setBlock((prev) => {
-                    setTimeout(() => setBlock(currentBlock));
-                    return Object.assign(Object.assign({}, currentBlock), { contents: [] });
-                });
-            }
-        }));
-        return () => {
-            subs.unsubscribe();
-        };
-    }, [blockId]);
-    return block;
-}
-
-const InlineContainer = (_a) => {
-    var { contents, formats, editor } = _a, props = __rest(_a, ["contents", "formats", "editor"]);
-    return (jsxRuntime.exports.jsx(jsxRuntime.exports.Fragment, { children: contents.map((content) => {
-            let Container;
-            const inlineFormat = `inline/${content.type.toLocaleLowerCase()}`;
-            if (!formats[inlineFormat]) {
-                // defalut block format
-                Container = formats['inline/text'];
-            }
-            else {
-                Container = formats[inlineFormat];
-            }
-            return (jsxRuntime.exports.jsx(Container, Object.assign({ formats: formats, editor: editor, "data-inline-id": content.id, "data-format": inlineFormat, "data-attributes": JSON.stringify(content.attributes), inline: content }, props), content.id));
-        }) }));
-};
-
-Ue `
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-`;
-const Outer = He.div `
-  position: relative;
-`;
-const Overlay = He.div `
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  opacity: 1;
-  pointer-events: none;
-  background-color: rgba(46, 170, 220, 0.2);
-`;
-const BlockContainer = React__namespace.memo((_a) => {
-    var _b, _c, _d;
-    var { blockId, editor, selected, readOnly = false, scrollContainer, formats } = _a, props = __rest(_a, ["blockId", "editor", "selected", "readOnly", "scrollContainer", "formats"]);
-    const block = useBlockRenderer({ blockId, editor });
-    const memoContents = React__namespace.useMemo(() => {
-        var _a;
-        return InlineContainer({ contents: (_a = block === null || block === void 0 ? void 0 : block.contents) !== null && _a !== void 0 ? _a : [], formats, editor, scrollContainer });
-    }, [block === null || block === void 0 ? void 0 : block.contents, formats]);
-    const blockFormat = `block/${block === null || block === void 0 ? void 0 : block.type.toLocaleLowerCase()}`;
-    const Container = (_b = formats[blockFormat]) !== null && _b !== void 0 ? _b : formats['block/paragraph'];
-    return (jsxRuntime.exports.jsxs(Outer, Object.assign({ "data-id": blockId, style: { '--indent': `${(_d = (_c = block === null || block === void 0 ? void 0 : block.attributes) === null || _c === void 0 ? void 0 : _c.indent) !== null && _d !== void 0 ? _d : 0}` } }, { children: [jsxRuntime.exports.jsx(Container, Object.assign({ suppressContentEditableWarning: true, className: 'notranslate', contentEditable: !readOnly, blockId: blockId, "data-block-id": blockId, "data-attributes": JSON.stringify(block === null || block === void 0 ? void 0 : block.attributes), "data-metas": JSON.stringify(block === null || block === void 0 ? void 0 : block.meta), "data-format": blockFormat, formats: formats, attributes: block === null || block === void 0 ? void 0 : block.attributes, meta: block === null || block === void 0 ? void 0 : block.meta, contents: memoContents, editor: editor, selected: selected }, props)), selected && jsxRuntime.exports.jsx(Overlay, {})] })));
-});
-
-function useMutationObserver(ref, callback, options = {
-    childList: true,
-    attributes: true,
-    subtree: true,
-    characterData: true,
-}) {
-    React__namespace.useEffect(() => {
-        if (!ref.current)
-            return;
-        const observer = new MutationObserver(callback);
-        observer.observe(ref.current, options);
-        return () => observer.disconnect();
-    }, []);
-}
-
-const Header$2 = He.h1 `
-  font-size: 24px;
-  outline: 0;
-  padding: 2px 12px;
-  box-sizing: border-box;
-  padding-left: calc(12px + 1.5em * var(--indent));
-  ::after {
-    opacity: 0.3;
-    content: attr(placeholder);
-  }
-`;
-const Header1 = React__namespace.memo((_a) => {
-    var { blockId, contents, placeholder = 'Header 1', attributes, editor } = _a, props = __rest(_a, ["blockId", "contents", "placeholder", "attributes", "editor"]);
-    const headerRef = React__namespace.useRef(null);
-    const [showPlaceholder, setShowPlaceholder] = React__namespace.useState(false);
-    const handleChangeElement = React__namespace.useCallback(() => {
-        if (!headerRef.current)
-            return;
-        const innerText = headerRef.current.innerText.replaceAll(/\uFEFF/gi, '');
-        setShowPlaceholder(innerText.length < 1);
-    }, []);
-    useMutationObserver(headerRef, handleChangeElement);
-    React__namespace.useEffect(() => {
-        handleChangeElement();
-    }, []);
-    return (jsxRuntime.exports.jsx(Header$2, Object.assign({ ref: headerRef, placeholder: showPlaceholder ? placeholder : '' }, props, { children: contents })));
-});
-
-const Header$1 = He.h2 `
-  font-size: 20px;
-  outline: 0;
-  padding: 2px 12px;
-  box-sizing: border-box;
-  padding-left: calc(12px + 1.5em * var(--indent));
-  ::after {
-    opacity: 0.3;
-    content: attr(placeholder);
-  }
-`;
-const Header2 = React__namespace.memo((_a) => {
-    var { blockId, contents, placeholder = 'Header 2', attributes, editor } = _a, props = __rest(_a, ["blockId", "contents", "placeholder", "attributes", "editor"]);
-    const headerRef = React__namespace.useRef(null);
-    const [showPlaceholder, setShowPlaceholder] = React__namespace.useState(false);
-    const handleChangeElement = React__namespace.useCallback(() => {
-        if (!headerRef.current)
-            return;
-        const innerText = headerRef.current.innerText.replaceAll(/\uFEFF/gi, '');
-        setShowPlaceholder(innerText.length < 1);
-    }, []);
-    useMutationObserver(headerRef, handleChangeElement);
-    React__namespace.useEffect(() => {
-        handleChangeElement();
-    }, []);
-    return (jsxRuntime.exports.jsx(Header$1, Object.assign({ ref: headerRef, placeholder: showPlaceholder ? placeholder : '' }, props, { children: contents })));
-});
-
-const Header = He.h3 `
-  font-size: 16px;
-  outline: 0;
-  padding: 2px 12px;
-  box-sizing: border-box;
-  padding-left: calc(12px + 1.5em * var(--indent));
-  ::after {
-    opacity: 0.3;
-    content: attr(placeholder);
-  }
-`;
-const Header3 = React__namespace.memo((_a) => {
-    var { blockId, contents, placeholder = 'Header 3', attributes, editor } = _a, props = __rest(_a, ["blockId", "contents", "placeholder", "attributes", "editor"]);
-    const headerRef = React__namespace.useRef(null);
-    const [showPlaceholder, setShowPlaceholder] = React__namespace.useState(false);
-    const handleChangeElement = React__namespace.useCallback(() => {
-        if (!headerRef.current)
-            return;
-        const innerText = headerRef.current.innerText.replaceAll(/\uFEFF/gi, '');
-        setShowPlaceholder(innerText.length < 1);
-    }, []);
-    useMutationObserver(headerRef, handleChangeElement);
-    React__namespace.useEffect(() => {
-        handleChangeElement();
-    }, []);
-    return (jsxRuntime.exports.jsx(Header, Object.assign({ ref: headerRef, placeholder: showPlaceholder ? placeholder : '' }, props, { children: contents })));
-});
-
-function decimalToRoman(num) {
-    const decimal = [1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1];
-    const roman = ['m', 'cm', 'd', 'cd', 'c', 'xc', 'l', 'xl', 'x', 'ix', 'v', 'iv', 'i'];
-    let dest = '';
-    for (let i = 0; i < decimal.length; i++) {
-        while (decimal[i] <= num) {
-            dest += roman[i];
-            num -= decimal[i];
-        }
-    }
-    return dest;
-}
-function decimalToAlphabet(num) {
-    const alphabet = [
-        'a',
-        'b',
-        'c',
-        'd',
-        'e',
-        'f',
-        'g',
-        'h',
-        'i',
-        'j',
-        'k',
-        'l',
-        'm',
-        'n',
-        'o',
-        'p',
-        'q',
-        'r',
-        's',
-        't',
-        'u',
-        'v',
-        'w',
-        'x',
-        'y',
-        'z',
-    ];
-    let dest = '';
-    /* eslint-disable-next-line */
-    while (true) {
-        const remainder = --num % alphabet.length;
-        dest = alphabet[remainder] + dest;
-        if (num < alphabet.length)
-            break;
-        num = Math.floor(num / alphabet.length);
-    }
-    return dest;
-}
-
-const ListItem$1 = He.div `
-  font-size: 1rem;
-  outline: 0;
-  margin: 0;
-  padding: 2px 12px 2px;
-  box-sizing: border-box;
-  position: relative;
-  padding-left: calc(40px + 1.5em * var(--indent));
-  ::before {
-    position: absolute;
-    height: 1em;
-    left: calc(8px + 1.5em * (var(--indent) - 1));
-    width: 3em;
-    text-align: right;
-    content: var(--content);
-  }
-  ${({ placeholder }) => {
-    return (placeholder &&
-        Ce `
-        ::after {
-          opacity: 0.3;
-          content: attr(placeholder);
-        }
-      `);
-}}
-`;
-const OrderedList = React__namespace.memo((_a) => {
-    var { blockId, contents, placeholder = 'List', attributes, editor, meta } = _a, props = __rest(_a, ["blockId", "contents", "placeholder", "attributes", "editor", "meta"]);
-    const headerRef = React__namespace.useRef(null);
-    const [showPlaceholder, setShowPlaceholder] = React__namespace.useState(false);
-    const handleChangeElement = React__namespace.useCallback(() => {
-        if (!headerRef.current)
-            return;
-        const innerText = headerRef.current.innerText.replaceAll(/\uFEFF/gi, '');
-        setShowPlaceholder(innerText.length < 1);
-    }, []);
-    useMutationObserver(headerRef, handleChangeElement);
-    const memoStyle = React__namespace.useMemo(() => {
-        var _a, _b;
-        const numberType = ((_a = attributes === null || attributes === void 0 ? void 0 : attributes.indent) !== null && _a !== void 0 ? _a : 0) % 3;
-        const listNumber = (_b = meta === null || meta === void 0 ? void 0 : meta.listNumber) !== null && _b !== void 0 ? _b : 1;
-        if (listNumber < 1) {
-            return {};
-        }
-        let content = '';
-        switch (numberType) {
-            case 1:
-                content = decimalToAlphabet(listNumber);
-                break;
-            case 2:
-                content = decimalToRoman(listNumber);
-                break;
-            default:
-                content = listNumber;
-                break;
-        }
-        return { '--content': `'${content}.'` };
-    }, [meta === null || meta === void 0 ? void 0 : meta.listNumber, attributes === null || attributes === void 0 ? void 0 : attributes.indent]);
-    React__namespace.useEffect(() => {
-        handleChangeElement();
-    }, []);
-    return (jsxRuntime.exports.jsx(ListItem$1, Object.assign({ ref: headerRef, style: memoStyle, placeholder: showPlaceholder ? placeholder : '' }, props, { children: contents })));
-});
-
-const ListItem = He.div `
-  font-size: 1rem;
-  outline: 0;
-  margin: 0;
-  padding: 2px 12px 2px;
-  padding-left: calc(40px + 1.5em * var(--indent));
-  box-sizing: border-box;
-  position: relative;
-  ::before {
-    position: absolute;
-    font-family: Arial;
-    font-size: 1.5em;
-    line-height: 1;
-    top: 3px;
-    content: var(--content);
-    left: calc(18px + 1em * var(--indent));
-  }
-  ${({ placeholder }) => {
-    return (placeholder &&
-        Ce `
-        ::after {
-          opacity: 0.3;
-          content: attr(placeholder);
-        }
-      `);
-}}
-`;
-const BulletList = React__namespace.memo((_a) => {
-    var { blockId, contents, placeholder = 'List', attributes, editor } = _a, props = __rest(_a, ["blockId", "contents", "placeholder", "attributes", "editor"]);
-    const headerRef = React__namespace.useRef(null);
-    const [showPlaceholder, setShowPlaceholder] = React__namespace.useState(false);
-    const handleChangeElement = React__namespace.useCallback(() => {
-        if (!headerRef.current)
-            return;
-        const innerText = headerRef.current.innerText.replaceAll(/\uFEFF/gi, '');
-        setShowPlaceholder(innerText.length < 1);
-    }, []);
-    useMutationObserver(headerRef, handleChangeElement);
-    React__namespace.useEffect(() => {
-        handleChangeElement();
-    }, []);
-    const memoStyle = React__namespace.useMemo(() => {
-        var _a;
-        const numberType = ((_a = attributes === null || attributes === void 0 ? void 0 : attributes.indent) !== null && _a !== void 0 ? _a : 0) % 3;
-        let content = '';
-        switch (numberType) {
-            case 1:
-                content = '◦';
-                break;
-            case 2:
-                content = '▪';
-                break;
-            default:
-                content = '•';
-                break;
-        }
-        return { '--content': `'${content}'` };
-    }, [attributes === null || attributes === void 0 ? void 0 : attributes.indent]);
-    return (jsxRuntime.exports.jsx(ListItem, Object.assign({ ref: headerRef, style: memoStyle, placeholder: showPlaceholder ? placeholder : '' }, props, { children: contents })));
-});
-
-const Container$5 = He.blockquote `
-  outline: 0;
-  margin: 0 0 0 12px;
-  padding: 2px 12px;
-  box-sizing: border-box;
-  border-left: 3px solid #ccc;
-  padding-left: calc(12px + 1.5em * var(--indent));
-`;
-const Blockquote = React__namespace.memo((_a) => {
-    var { blockId, contents, editor } = _a, props = __rest(_a, ["blockId", "contents", "editor"]);
-    return jsxRuntime.exports.jsx(Container$5, Object.assign({}, props, { children: contents }));
-});
-
-const P = He.p `
-  width: 100%;
-  font-size: 1rem;
-  outline: 0;
-  margin: 0;
-  padding: 2px 12px;
-  box-sizing: border-box;
-  padding-left: calc(12px + 1.5em * var(--indent));
-`;
-const Paragraph = React__namespace.memo((_a) => {
-    var { blockId, formats, editor, contents } = _a, props = __rest(_a, ["blockId", "formats", "editor", "contents"]);
-    return jsxRuntime.exports.jsx(P, Object.assign({}, props, { children: contents }));
-});
-
-var getDefaultStyle = function (visible) { return ({
-    display: visible ? 'flex' : 'none',
-}); };
-
-var DEFAULT_COLOR = '#4fa94d';
-var DEFAULT_WAI_ARIA_ATTRIBUTE = {
-    'aria-busy': true,
-    role: 'status',
-};
-
-var __assign$v = (undefined && undefined.__assign) || function () {
-    __assign$v = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign$v.apply(this, arguments);
-};
-
-var __assign$u = (undefined && undefined.__assign) || function () {
-    __assign$u = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign$u.apply(this, arguments);
-};
-
-var __assign$t = (undefined && undefined.__assign) || function () {
-    __assign$t = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign$t.apply(this, arguments);
-};
-
-var __assign$s = (undefined && undefined.__assign) || function () {
-    __assign$s = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign$s.apply(this, arguments);
-};
-
-var __assign$r = (undefined && undefined.__assign) || function () {
-    __assign$r = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign$r.apply(this, arguments);
-};
-
-var __assign$q = (undefined && undefined.__assign) || function () {
-    __assign$q = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign$q.apply(this, arguments);
-};
-
-var __assign$p = (undefined && undefined.__assign) || function () {
-    __assign$p = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign$p.apply(this, arguments);
-};
-
-var __makeTemplateObject$2 = (undefined && undefined.__makeTemplateObject) || function (cooked, raw) {
-    if (Object.defineProperty) { Object.defineProperty(cooked, "raw", { value: raw }); } else { cooked.raw = raw; }
-    return cooked;
-};
-var len = 242.776657104492;
-var time = 1.6;
-var anim = Ue(templateObject_1$2 || (templateObject_1$2 = __makeTemplateObject$2(["\n  12.5% {\n    stroke-dasharray: ", "px, ", "px;\n    stroke-dashoffset: -", "px;\n  }\n  43.75% {\n    stroke-dasharray: ", "px, ", "px;\n    stroke-dashoffset: -", "px;\n  }\n  100% {\n    stroke-dasharray: ", "px, ", "px;\n    stroke-dashoffset: -", "px;\n  }\n"], ["\n  12.5% {\n    stroke-dasharray: ", "px, ", "px;\n    stroke-dashoffset: -", "px;\n  }\n  43.75% {\n    stroke-dasharray: ", "px, ", "px;\n    stroke-dashoffset: -", "px;\n  }\n  100% {\n    stroke-dasharray: ", "px, ", "px;\n    stroke-dashoffset: -", "px;\n  }\n"])), len * 0.14, len, len * 0.11, len * 0.35, len, len * 0.35, len * 0.01, len, len * 0.99);
-He.path(templateObject_2$2 || (templateObject_2$2 = __makeTemplateObject$2(["\n  stroke-dasharray: ", "px, ", ";\n  stroke-dashoffset: 0;\n  animation: ", " ", "s linear infinite;\n"], ["\n  stroke-dasharray: ", "px, ", ";\n  stroke-dashoffset: 0;\n  animation: ", " ", "s linear infinite;\n"])), len * 0.01, len, anim, time);
-var templateObject_1$2, templateObject_2$2;
-
-var __assign$o = (undefined && undefined.__assign) || function () {
-    __assign$o = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign$o.apply(this, arguments);
-};
-
-var __assign$n = (undefined && undefined.__assign) || function () {
-    __assign$n = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign$n.apply(this, arguments);
-};
-var MutatingDots = function (_a) {
-    var _b = _a.height, height = _b === void 0 ? 90 : _b, _c = _a.width, width = _c === void 0 ? 80 : _c, _d = _a.radius, radius = _d === void 0 ? 12.5 : _d, _e = _a.color, color = _e === void 0 ? DEFAULT_COLOR : _e, _f = _a.secondaryColor, secondaryColor = _f === void 0 ? DEFAULT_COLOR : _f, _g = _a.ariaLabel, ariaLabel = _g === void 0 ? 'mutating-dots-loading' : _g, wrapperStyle = _a.wrapperStyle, wrapperClass = _a.wrapperClass, _h = _a.visible, visible = _h === void 0 ? true : _h;
-    return (React__default["default"].createElement("div", __assign$n({ style: __assign$n(__assign$n({}, getDefaultStyle(visible)), wrapperStyle), className: wrapperClass, "data-testid": "mutating-dots-loading", "aria-label": ariaLabel }, DEFAULT_WAI_ARIA_ATTRIBUTE),
-        React__default["default"].createElement("svg", { id: "goo-loader", width: width, height: height, "data-testid": "mutating-dots-svg" },
-            React__default["default"].createElement("filter", { id: "fancy-goo" },
-                React__default["default"].createElement("feGaussianBlur", { in: "SourceGraphic", stdDeviation: "6", result: "blur" }),
-                React__default["default"].createElement("feColorMatrix", { in: "blur", mode: "matrix", values: "1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9", result: "goo" }),
-                React__default["default"].createElement("feComposite", { in: "SourceGraphic", in2: "goo", operator: "atop" })),
-            React__default["default"].createElement("g", { filter: "url(#fancy-goo)" },
-                React__default["default"].createElement("animateTransform", { id: "mainAnim", attributeName: "transform", attributeType: "XML", type: "rotate", from: "0 50 50", to: "359 50 50", dur: "1.2s", repeatCount: "indefinite" }),
-                React__default["default"].createElement("circle", { cx: "50%", cy: "40", r: radius, fill: color },
-                    React__default["default"].createElement("animate", { id: "cAnim1", attributeType: "XML", attributeName: "cy", dur: "0.6s", begin: "0;cAnim1.end+0.2s", calcMode: "spline", values: "40;20;40", keyTimes: "0;0.3;1", keySplines: "0.09, 0.45, 0.16, 1;0.09, 0.45, 0.16, 1" })),
-                React__default["default"].createElement("circle", { cx: "50%", cy: "60", r: radius, fill: secondaryColor },
-                    React__default["default"].createElement("animate", { id: "cAnim2", attributeType: "XML", attributeName: "cy", dur: "0.6s", begin: "0.4s;cAnim2.end+0.2s", calcMode: "spline", values: "60;80;60", keyTimes: "0;0.3;1", keySplines: "0.09, 0.45, 0.16, 1;0.09, 0.45, 0.16, 1" }))))));
-};
-
-var __assign$m = (undefined && undefined.__assign) || function () {
-    __assign$m = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign$m.apply(this, arguments);
-};
-
-var __assign$l = (undefined && undefined.__assign) || function () {
-    __assign$l = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign$l.apply(this, arguments);
-};
-
-var __assign$k = (undefined && undefined.__assign) || function () {
-    __assign$k = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign$k.apply(this, arguments);
-};
-
-var __assign$j = (undefined && undefined.__assign) || function () {
-    __assign$j = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign$j.apply(this, arguments);
-};
-
-var __assign$i = (undefined && undefined.__assign) || function () {
-    __assign$i = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign$i.apply(this, arguments);
-};
-
-/**
- * Returns the value of `props[path]` or `defaultValue`
- * @example
- * import styled from "styled-components";
- * import { prop } from "styled-tools";
- *
- * const Button = styled.button`
- *   color: ${prop("color", "red")};
- * `;
- */
-var prop = function prop(path, defaultValue) {
-  return function () {
-    var props = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-
-    if (typeof props[path] !== "undefined") {
-      return props[path];
-    }
-
-    if (path && path.indexOf(".") > 0) {
-      var paths = path.split(".");
-      var length = paths.length;
-      var object = props[paths[0]];
-      var index = 1;
-
-      while (object != null && index < length) {
-        object = object[paths[index]];
-        index += 1;
-      }
-
-      if (typeof object !== "undefined") {
-        return object;
-      }
-    }
-
-    return defaultValue;
-  };
-};
-
-var __makeTemplateObject$1 = (undefined && undefined.__makeTemplateObject) || function (cooked, raw) {
-    if (Object.defineProperty) { Object.defineProperty(cooked, "raw", { value: raw }); } else { cooked.raw = raw; }
-    return cooked;
-};
-var __assign$h = (undefined && undefined.__assign) || function () {
-    __assign$h = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign$h.apply(this, arguments);
-};
-var spin = Ue(templateObject_1$1 || (templateObject_1$1 = __makeTemplateObject$1(["\n to {\n    transform: rotate(360deg);\n  }\n"], ["\n to {\n    transform: rotate(360deg);\n  }\n"])));
-var POINTS = [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330];
-var Svg = He.svg(templateObject_2$1 || (templateObject_2$1 = __makeTemplateObject$1(["\n  animation: ", " 0.75s steps(12, end) infinite;\n  animation-duration: ", "s;\n"], ["\n  animation: ", " 0.75s steps(12, end) infinite;\n  animation-duration: ", "s;\n"])), spin, prop('speed', '0.75'));
-var Polyline = He.polyline(templateObject_3$1 || (templateObject_3$1 = __makeTemplateObject$1(["\n  stroke-width: ", "px;\n  stroke-linecap: round;\n\n  &:nth-child(12n + 0) {\n    stroke-opacity: 0.08;\n  }\n\n  &:nth-child(12n + 1) {\n    stroke-opacity: 0.17;\n  }\n\n  &:nth-child(12n + 2) {\n    stroke-opacity: 0.25;\n  }\n\n  &:nth-child(12n + 3) {\n    stroke-opacity: 0.33;\n  }\n\n  &:nth-child(12n + 4) {\n    stroke-opacity: 0.42;\n  }\n\n  &:nth-child(12n + 5) {\n    stroke-opacity: 0.5;\n  }\n\n  &:nth-child(12n + 6) {\n    stroke-opacity: 0.58;\n  }\n\n  &:nth-child(12n + 7) {\n    stroke-opacity: 0.66;\n  }\n\n  &:nth-child(12n + 8) {\n    stroke-opacity: 0.75;\n  }\n\n  &:nth-child(12n + 9) {\n    stroke-opacity: 0.83;\n  }\n\n  &:nth-child(12n + 11) {\n    stroke-opacity: 0.92;\n  }\n"], ["\n  stroke-width: ", "px;\n  stroke-linecap: round;\n\n  &:nth-child(12n + 0) {\n    stroke-opacity: 0.08;\n  }\n\n  &:nth-child(12n + 1) {\n    stroke-opacity: 0.17;\n  }\n\n  &:nth-child(12n + 2) {\n    stroke-opacity: 0.25;\n  }\n\n  &:nth-child(12n + 3) {\n    stroke-opacity: 0.33;\n  }\n\n  &:nth-child(12n + 4) {\n    stroke-opacity: 0.42;\n  }\n\n  &:nth-child(12n + 5) {\n    stroke-opacity: 0.5;\n  }\n\n  &:nth-child(12n + 6) {\n    stroke-opacity: 0.58;\n  }\n\n  &:nth-child(12n + 7) {\n    stroke-opacity: 0.66;\n  }\n\n  &:nth-child(12n + 8) {\n    stroke-opacity: 0.75;\n  }\n\n  &:nth-child(12n + 9) {\n    stroke-opacity: 0.83;\n  }\n\n  &:nth-child(12n + 11) {\n    stroke-opacity: 0.92;\n  }\n"])), function (props) { return props.width; });
-function RotatingLines(_a) {
-    var _b = _a.strokeColor, strokeColor = _b === void 0 ? DEFAULT_COLOR : _b, _c = _a.strokeWidth, strokeWidth = _c === void 0 ? '5' : _c, _d = _a.animationDuration, animationDuration = _d === void 0 ? '0.75' : _d, _e = _a.width, width = _e === void 0 ? '96' : _e, _f = _a.visible, visible = _f === void 0 ? true : _f, _g = _a.ariaLabel, ariaLabel = _g === void 0 ? 'rotating-lines-loading' : _g;
-    var lines = React.useCallback(function () {
-        return POINTS.map(function (point) { return (React__default["default"].createElement(Polyline, { key: point, points: "24,12 24,4", width: strokeWidth, transform: "rotate(".concat(point, ", 24, 24)") })); });
-    }, [strokeWidth]);
-    return !visible ? null : (React__default["default"].createElement(Svg, __assign$h({ xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 48 48", width: width, stroke: strokeColor, speed: animationDuration, "data-testid": "rotating-lines-svg", "aria-label": ariaLabel }, DEFAULT_WAI_ARIA_ATTRIBUTE), lines()));
-}
-var templateObject_1$1, templateObject_2$1, templateObject_3$1;
-
-var __assign$g = (undefined && undefined.__assign) || function () {
-    __assign$g = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign$g.apply(this, arguments);
-};
-
-var __assign$f = (undefined && undefined.__assign) || function () {
-    __assign$f = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign$f.apply(this, arguments);
-};
-
-var __assign$e = (undefined && undefined.__assign) || function () {
-    __assign$e = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign$e.apply(this, arguments);
-};
-
-var __makeTemplateObject = (undefined && undefined.__makeTemplateObject) || function (cooked, raw) {
-    if (Object.defineProperty) { Object.defineProperty(cooked, "raw", { value: raw }); } else { cooked.raw = raw; }
-    return cooked;
-};
-var __assign$d = (undefined && undefined.__assign) || function () {
-    __assign$d = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign$d.apply(this, arguments);
-};
-var dash = Ue(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n to {\n    stroke-dashoffset: 136;\n  }\n"], ["\n to {\n    stroke-dashoffset: 136;\n  }\n"])));
-He.polygon(templateObject_2 || (templateObject_2 = __makeTemplateObject(["\n  stroke-dasharray: 17;\n  animation: ", " 2.5s cubic-bezier(0.35, 0.04, 0.63, 0.95) infinite;\n"], ["\n  stroke-dasharray: 17;\n  animation: ", " 2.5s cubic-bezier(0.35, 0.04, 0.63, 0.95) infinite;\n"])), dash);
-He.svg(templateObject_3 || (templateObject_3 = __makeTemplateObject(["\n  transform-origin: 50% 65%;\n"], ["\n  transform-origin: 50% 65%;\n"])));
-var templateObject_1, templateObject_2, templateObject_3;
-
-var __assign$c = (undefined && undefined.__assign) || function () {
-    __assign$c = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign$c.apply(this, arguments);
-};
-
-var __assign$b = (undefined && undefined.__assign) || function () {
-    __assign$b = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign$b.apply(this, arguments);
-};
-
-var __assign$a = (undefined && undefined.__assign) || function () {
-    __assign$a = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign$a.apply(this, arguments);
-};
-
-var __assign$9 = (undefined && undefined.__assign) || function () {
-    __assign$9 = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign$9.apply(this, arguments);
-};
-
-var __assign$8 = (undefined && undefined.__assign) || function () {
-    __assign$8 = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign$8.apply(this, arguments);
-};
-
-var __assign$7 = (undefined && undefined.__assign) || function () {
-    __assign$7 = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign$7.apply(this, arguments);
-};
-
-var __assign$6 = (undefined && undefined.__assign) || function () {
-    __assign$6 = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign$6.apply(this, arguments);
-};
-
-var __assign$5 = (undefined && undefined.__assign) || function () {
-    __assign$5 = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign$5.apply(this, arguments);
-};
-
-var __assign$4 = (undefined && undefined.__assign) || function () {
-    __assign$4 = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign$4.apply(this, arguments);
-};
-
-var __assign$3 = (undefined && undefined.__assign) || function () {
-    __assign$3 = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign$3.apply(this, arguments);
-};
-
-var __assign$2 = (undefined && undefined.__assign) || function () {
-    __assign$2 = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign$2.apply(this, arguments);
-};
-
-var __assign$1 = (undefined && undefined.__assign) || function () {
-    __assign$1 = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign$1.apply(this, arguments);
-};
-
-var __assign = (undefined && undefined.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
-
-const Container$4 = He.div `
-  outline: none;
-  display: flex;
-  margin: 4px 0;
-  justify-content: center;
-  img {
-    max-width: 100%;
-    user-select: none;
-    vertical-align: bottom;
-  }
-`;
-const Inner$2 = He.div `
-  position: relative;
-`;
-const Loading$1 = He.div `
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(255, 255, 255, 0.3);
-  backdrop-filter: blur(3px);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-const ImageResizer = He.div `
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 16px;
-  z-index: 1;
-  cursor: col-resize;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-const LeftImageResizer = He(ImageResizer) `
-  left: 0;
-`;
-const RightImageResizer = He(ImageResizer) `
-  right: 0;
-`;
-const ResizeHandler = He.div `
-  pointer-events: none;
-  transition: opacity 0.3s;
-  opacity: ${({ opacity }) => opacity};
-  border-radius: 20px;
-  background: rgba(15, 15, 15, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.9);
-  width: 6px;
-  height: 48px;
-  max-height: 50%;
-`;
-const Image$1 = React__namespace.memo((_a) => {
-    var { blockId, contents, attributes: { thumbnail, original, width }, meta: { isUploading = false }, editor } = _a, props = __rest(_a, ["blockId", "contents", "attributes", "meta", "editor"]);
-    const imageRef = React__namespace.useRef(null);
-    const [displayResizer, setDisplayResizer] = React__namespace.useState(false);
-    const [dragParams, setDragParams] = React__namespace.useState();
-    const [imageWidth, setImageWidth] = React__namespace.useState(width !== null && width !== void 0 ? width : 'auto');
-    const handleClick = React__namespace.useCallback((e) => {
-        e.preventDefault();
-        e.stopPropagation();
-    }, []);
-    const handleMouseEnter = React__namespace.useCallback((e) => {
-        setDisplayResizer(true);
-    }, []);
-    const handleMouseLeave = React__namespace.useCallback((e) => {
-        setDisplayResizer(false);
-    }, []);
-    const handleMouseDown = React__namespace.useCallback((type) => (e) => {
-        if (!imageRef.current)
-            return;
-        e.preventDefault();
-        e.stopPropagation();
-        const rect = imageRef.current.getBoundingClientRect();
-        setDragParams({
-            type,
-            left: e.clientX,
-            width: width !== null && width !== void 0 ? width : (rect.width < 100 ? 100 : rect.width),
-        });
-    }, []);
-    React__namespace.useEffect(() => {
-        setImageWidth(width !== null && width !== void 0 ? width : 'auto');
-    }, [width]);
-    React__namespace.useEffect(() => {
-        if (!editor || !dragParams)
-            return;
-        const handleMouseMove = (e) => {
-            if (!dragParams.type)
-                return;
-            let width = 0;
-            if (dragParams.type === 'left') {
-                if (e.clientX < dragParams.left) {
-                    width = dragParams.width - (e.clientX - dragParams.left) * 2;
-                }
-                else {
-                    width = dragParams.width + (dragParams.left - e.clientX) * 2;
-                }
-            }
-            else if (dragParams.type === 'right') {
-                if (e.clientX > dragParams.left) {
-                    width = dragParams.width + (e.clientX - dragParams.left) * 2;
-                }
-                else {
-                    width = dragParams.width - (dragParams.left - e.clientX) * 2;
-                }
-            }
-            if (width < 100) {
-                width = 100;
-            }
-            setImageWidth(width);
-        };
-        const handleMouseUp = (e) => {
-            setDragParams(undefined);
-            if (imageRef.current && typeof imageRef.current.width === 'number') {
-                const currentBlock = editor.getBlock(blockId);
-                if (!currentBlock)
-                    return;
-                editor.updateBlock(Object.assign(Object.assign({}, currentBlock), { attributes: Object.assign(Object.assign({}, currentBlock.attributes), { width: imageRef.current.width }) }));
-                editor.render([blockId]);
-            }
-        };
-        window.addEventListener('mousemove', handleMouseMove, true);
-        window.addEventListener('mouseup', handleMouseUp, true);
-        return () => {
-            window.removeEventListener('mousemove', handleMouseMove, true);
-            window.removeEventListener('mouseup', handleMouseUp, true);
-        };
-    }, [dragParams]);
-    return (jsxRuntime.exports.jsx(Container$4, Object.assign({}, props, { contentEditable: false, draggable: "false" }, { children: jsxRuntime.exports.jsxs(Inner$2, Object.assign({ onMouseEnter: handleMouseEnter, onMouseLeave: handleMouseLeave }, { children: [jsxRuntime.exports.jsx("img", { src: thumbnail, onClick: handleClick, ref: imageRef, width: imageWidth, draggable: "false" }), isUploading ? (jsxRuntime.exports.jsx(Loading$1, { children: jsxRuntime.exports.jsx(MutatingDots, { height: "100", width: "100", color: "#4fa94d", secondaryColor: "#4fa94d", radius: "12.5", ariaLabel: "mutating-dots-loading", visible: true }) })) : (jsxRuntime.exports.jsxs(jsxRuntime.exports.Fragment, { children: [jsxRuntime.exports.jsx(LeftImageResizer, Object.assign({ onMouseDown: handleMouseDown('left') }, { children: jsxRuntime.exports.jsx(ResizeHandler, { opacity: displayResizer ? 1 : 0 }) })), jsxRuntime.exports.jsx(RightImageResizer, Object.assign({ onMouseDown: handleMouseDown('right') }, { children: jsxRuntime.exports.jsx(ResizeHandler, { opacity: displayResizer ? 1 : 0 }) }))] }))] })) })));
-});
-
-const BYTE_UNITS = [
-	'B',
-	'kB',
-	'MB',
-	'GB',
-	'TB',
-	'PB',
-	'EB',
-	'ZB',
-	'YB',
-];
-
-const BIBYTE_UNITS = [
-	'B',
-	'kiB',
-	'MiB',
-	'GiB',
-	'TiB',
-	'PiB',
-	'EiB',
-	'ZiB',
-	'YiB',
-];
-
-const BIT_UNITS = [
-	'b',
-	'kbit',
-	'Mbit',
-	'Gbit',
-	'Tbit',
-	'Pbit',
-	'Ebit',
-	'Zbit',
-	'Ybit',
-];
-
-const BIBIT_UNITS = [
-	'b',
-	'kibit',
-	'Mibit',
-	'Gibit',
-	'Tibit',
-	'Pibit',
-	'Eibit',
-	'Zibit',
-	'Yibit',
-];
-
-/*
-Formats the given number using `Number#toLocaleString`.
-- If locale is a string, the value is expected to be a locale-key (for example: `de`).
-- If locale is true, the system default locale is used for translation.
-- If no value for locale is specified, the number is returned unmodified.
-*/
-const toLocaleString = (number, locale, options) => {
-	let result = number;
-	if (typeof locale === 'string' || Array.isArray(locale)) {
-		result = number.toLocaleString(locale, options);
-	} else if (locale === true || options !== undefined) {
-		result = number.toLocaleString(undefined, options);
-	}
-
-	return result;
-};
-
-function prettyBytes(number, options) {
-	if (!Number.isFinite(number)) {
-		throw new TypeError(`Expected a finite number, got ${typeof number}: ${number}`);
-	}
-
-	options = {
-		bits: false,
-		binary: false,
-		...options,
-	};
-
-	const UNITS = options.bits
-		? (options.binary ? BIBIT_UNITS : BIT_UNITS)
-		: (options.binary ? BIBYTE_UNITS : BYTE_UNITS);
-
-	if (options.signed && number === 0) {
-		return ` 0 ${UNITS[0]}`;
-	}
-
-	const isNegative = number < 0;
-	const prefix = isNegative ? '-' : (options.signed ? '+' : '');
-
-	if (isNegative) {
-		number = -number;
-	}
-
-	let localeOptions;
-
-	if (options.minimumFractionDigits !== undefined) {
-		localeOptions = {minimumFractionDigits: options.minimumFractionDigits};
-	}
-
-	if (options.maximumFractionDigits !== undefined) {
-		localeOptions = {maximumFractionDigits: options.maximumFractionDigits, ...localeOptions};
-	}
-
-	if (number < 1) {
-		const numberString = toLocaleString(number, options.locale, localeOptions);
-		return prefix + numberString + ' ' + UNITS[0];
-	}
-
-	const exponent = Math.min(Math.floor(options.binary ? Math.log(number) / Math.log(1024) : Math.log10(number) / 3), UNITS.length - 1);
-	number /= (options.binary ? 1024 : 1000) ** exponent;
-
-	if (!localeOptions) {
-		number = number.toPrecision(3);
-	}
-
-	const numberString = toLocaleString(Number(number), options.locale, localeOptions);
-
-	const unit = UNITS[exponent];
-
-	return prefix + numberString + ' ' + unit;
-}
-
-const Container$3 = He.div `
-  outline: none;
-  display: flex;
-  padding: 0 12px;
-  background: #eee;
-  border-radius: 8px;
-  margin: 4px 12px;
-`;
-const IconContainer = He.div `
-  display: flex;
-  flex-shrink: 0;
-  width: 50px;
-  justify-content: center;
-  align-items: center;
-`;
-const Inner$1 = He.div `
-  flex-shrink: 1;
-  width: 100%;
-  padding: 12px;
-  box-sizing: border-box;
-`;
-He.div `
-  display: flex;
-  flex-shrink: 0;
-  width: 50px;
-`;
-const FileName = He.div `
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-`;
-const Size = He.div `
-  font-size: 12px;
-  color: #999;
-  display: flex;
-`;
-const Loading = He.div `
-  margin-left: 8px;
-`;
-const File = React__namespace.memo((_a) => {
-    var { blockId, contents, attributes: { fileName, original, size }, meta: { isUploading = false }, editor } = _a, props = __rest(_a, ["blockId", "contents", "attributes", "meta", "editor"]);
-    const imageRef = React__namespace.useRef(null);
-    React__namespace.useCallback((e) => { }, []);
-    React__namespace.useCallback((e) => {
-        e.preventDefault();
-        e.stopPropagation();
-    }, []);
-    return (jsxRuntime.exports.jsxs(Container$3, Object.assign({ ref: imageRef }, props, { contentEditable: false }, { children: [jsxRuntime.exports.jsx(IconContainer, { children: jsxRuntime.exports.jsxs("svg", Object.assign({ width: "32", height: "32", viewBox: "0 0 24 24", fill: "none", xmlns: "http://www.w3.org/2000/svg" }, { children: [jsxRuntime.exports.jsx("path", { d: "M14 3V7C14 7.26522 14.1054 7.51957 14.2929 7.70711C14.4804 7.89464 14.7348 8 15 8H19", stroke: "#666666", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round" }), jsxRuntime.exports.jsx("path", { d: "M12 11V17M17 21H7C6.46957 21 5.96086 20.7893 5.58579 20.4142C5.21071 20.0391 5 19.5304 5 19V5C5 4.46957 5.21071 3.96086 5.58579 3.58579C5.96086 3.21071 6.46957 3 7 3H14L19 8V19C19 19.5304 18.7893 20.0391 18.4142 20.4142C18.0391 20.7893 17.5304 21 17 21Z", stroke: "#666666", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round" }), jsxRuntime.exports.jsx("path", { d: "M9.5 13.5L12 11L14.5 13.5", stroke: "#666666", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round" })] })) }), jsxRuntime.exports.jsxs(Inner$1, { children: [jsxRuntime.exports.jsx(FileName, { children: fileName }), jsxRuntime.exports.jsxs(Size, { children: [prettyBytes(size), isUploading && (jsxRuntime.exports.jsx(Loading, { children: jsxRuntime.exports.jsx(RotatingLines, { strokeColor: "grey", strokeWidth: "5", animationDuration: "0.75", width: "18", visible: true }) }))] })] }), jsxRuntime.exports.jsx(IconContainer, {})] })));
-});
-
-/*! Copyright Twitter Inc. and other contributors. Licensed under MIT */
-var twemoji=function(){var twemoji={base:"https://twemoji.maxcdn.com/v/14.0.2/",ext:".png",size:"72x72",className:"emoji",convert:{fromCodePoint:fromCodePoint,toCodePoint:toCodePoint},onerror:function onerror(){if(this.parentNode){this.parentNode.replaceChild(createText(this.alt,false),this);}},parse:parse,replace:replace,test:test},escaper={"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"},re=/(?:\ud83d\udc68\ud83c\udffb\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc68\ud83c\udffc\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc68\ud83c\udffd\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc68\ud83c\udffe\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc68\ud83c\udfff\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffb\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffb\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc69\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffc\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffc\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc69\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffd\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffd\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc69\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffe\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffe\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc69\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udfff\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udfff\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc69\ud83c[\udffb-\udfff]|\ud83e\uddd1\ud83c\udffb\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83e\uddd1\ud83c[\udffc-\udfff]|\ud83e\uddd1\ud83c\udffc\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83e\uddd1\ud83c[\udffb\udffd-\udfff]|\ud83e\uddd1\ud83c\udffd\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83e\uddd1\ud83c[\udffb\udffc\udffe\udfff]|\ud83e\uddd1\ud83c\udffe\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83e\uddd1\ud83c[\udffb-\udffd\udfff]|\ud83e\uddd1\ud83c\udfff\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83e\uddd1\ud83c[\udffb-\udffe]|\ud83d\udc68\ud83c\udffb\u200d\u2764\ufe0f\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc68\ud83c\udffb\u200d\ud83e\udd1d\u200d\ud83d\udc68\ud83c[\udffc-\udfff]|\ud83d\udc68\ud83c\udffc\u200d\u2764\ufe0f\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc68\ud83c\udffc\u200d\ud83e\udd1d\u200d\ud83d\udc68\ud83c[\udffb\udffd-\udfff]|\ud83d\udc68\ud83c\udffd\u200d\u2764\ufe0f\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc68\ud83c\udffd\u200d\ud83e\udd1d\u200d\ud83d\udc68\ud83c[\udffb\udffc\udffe\udfff]|\ud83d\udc68\ud83c\udffe\u200d\u2764\ufe0f\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc68\ud83c\udffe\u200d\ud83e\udd1d\u200d\ud83d\udc68\ud83c[\udffb-\udffd\udfff]|\ud83d\udc68\ud83c\udfff\u200d\u2764\ufe0f\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc68\ud83c\udfff\u200d\ud83e\udd1d\u200d\ud83d\udc68\ud83c[\udffb-\udffe]|\ud83d\udc69\ud83c\udffb\u200d\u2764\ufe0f\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffb\u200d\u2764\ufe0f\u200d\ud83d\udc69\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffb\u200d\ud83e\udd1d\u200d\ud83d\udc68\ud83c[\udffc-\udfff]|\ud83d\udc69\ud83c\udffb\u200d\ud83e\udd1d\u200d\ud83d\udc69\ud83c[\udffc-\udfff]|\ud83d\udc69\ud83c\udffc\u200d\u2764\ufe0f\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffc\u200d\u2764\ufe0f\u200d\ud83d\udc69\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffc\u200d\ud83e\udd1d\u200d\ud83d\udc68\ud83c[\udffb\udffd-\udfff]|\ud83d\udc69\ud83c\udffc\u200d\ud83e\udd1d\u200d\ud83d\udc69\ud83c[\udffb\udffd-\udfff]|\ud83d\udc69\ud83c\udffd\u200d\u2764\ufe0f\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffd\u200d\u2764\ufe0f\u200d\ud83d\udc69\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffd\u200d\ud83e\udd1d\u200d\ud83d\udc68\ud83c[\udffb\udffc\udffe\udfff]|\ud83d\udc69\ud83c\udffd\u200d\ud83e\udd1d\u200d\ud83d\udc69\ud83c[\udffb\udffc\udffe\udfff]|\ud83d\udc69\ud83c\udffe\u200d\u2764\ufe0f\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffe\u200d\u2764\ufe0f\u200d\ud83d\udc69\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffe\u200d\ud83e\udd1d\u200d\ud83d\udc68\ud83c[\udffb-\udffd\udfff]|\ud83d\udc69\ud83c\udffe\u200d\ud83e\udd1d\u200d\ud83d\udc69\ud83c[\udffb-\udffd\udfff]|\ud83d\udc69\ud83c\udfff\u200d\u2764\ufe0f\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udfff\u200d\u2764\ufe0f\u200d\ud83d\udc69\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udfff\u200d\ud83e\udd1d\u200d\ud83d\udc68\ud83c[\udffb-\udffe]|\ud83d\udc69\ud83c\udfff\u200d\ud83e\udd1d\u200d\ud83d\udc69\ud83c[\udffb-\udffe]|\ud83e\uddd1\ud83c\udffb\u200d\u2764\ufe0f\u200d\ud83e\uddd1\ud83c[\udffc-\udfff]|\ud83e\uddd1\ud83c\udffb\u200d\ud83e\udd1d\u200d\ud83e\uddd1\ud83c[\udffb-\udfff]|\ud83e\uddd1\ud83c\udffc\u200d\u2764\ufe0f\u200d\ud83e\uddd1\ud83c[\udffb\udffd-\udfff]|\ud83e\uddd1\ud83c\udffc\u200d\ud83e\udd1d\u200d\ud83e\uddd1\ud83c[\udffb-\udfff]|\ud83e\uddd1\ud83c\udffd\u200d\u2764\ufe0f\u200d\ud83e\uddd1\ud83c[\udffb\udffc\udffe\udfff]|\ud83e\uddd1\ud83c\udffd\u200d\ud83e\udd1d\u200d\ud83e\uddd1\ud83c[\udffb-\udfff]|\ud83e\uddd1\ud83c\udffe\u200d\u2764\ufe0f\u200d\ud83e\uddd1\ud83c[\udffb-\udffd\udfff]|\ud83e\uddd1\ud83c\udffe\u200d\ud83e\udd1d\u200d\ud83e\uddd1\ud83c[\udffb-\udfff]|\ud83e\uddd1\ud83c\udfff\u200d\u2764\ufe0f\u200d\ud83e\uddd1\ud83c[\udffb-\udffe]|\ud83e\uddd1\ud83c\udfff\u200d\ud83e\udd1d\u200d\ud83e\uddd1\ud83c[\udffb-\udfff]|\ud83d\udc68\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68|\ud83d\udc69\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d[\udc68\udc69]|\ud83e\udef1\ud83c\udffb\u200d\ud83e\udef2\ud83c[\udffc-\udfff]|\ud83e\udef1\ud83c\udffc\u200d\ud83e\udef2\ud83c[\udffb\udffd-\udfff]|\ud83e\udef1\ud83c\udffd\u200d\ud83e\udef2\ud83c[\udffb\udffc\udffe\udfff]|\ud83e\udef1\ud83c\udffe\u200d\ud83e\udef2\ud83c[\udffb-\udffd\udfff]|\ud83e\udef1\ud83c\udfff\u200d\ud83e\udef2\ud83c[\udffb-\udffe]|\ud83d\udc68\u200d\u2764\ufe0f\u200d\ud83d\udc68|\ud83d\udc69\u200d\u2764\ufe0f\u200d\ud83d[\udc68\udc69]|\ud83e\uddd1\u200d\ud83e\udd1d\u200d\ud83e\uddd1|\ud83d\udc6b\ud83c[\udffb-\udfff]|\ud83d\udc6c\ud83c[\udffb-\udfff]|\ud83d\udc6d\ud83c[\udffb-\udfff]|\ud83d\udc8f\ud83c[\udffb-\udfff]|\ud83d\udc91\ud83c[\udffb-\udfff]|\ud83e\udd1d\ud83c[\udffb-\udfff]|\ud83d[\udc6b-\udc6d\udc8f\udc91]|\ud83e\udd1d)|(?:\ud83d[\udc68\udc69]|\ud83e\uddd1)(?:\ud83c[\udffb-\udfff])?\u200d(?:\u2695\ufe0f|\u2696\ufe0f|\u2708\ufe0f|\ud83c[\udf3e\udf73\udf7c\udf84\udf93\udfa4\udfa8\udfeb\udfed]|\ud83d[\udcbb\udcbc\udd27\udd2c\ude80\ude92]|\ud83e[\uddaf-\uddb3\uddbc\uddbd])|(?:\ud83c[\udfcb\udfcc]|\ud83d[\udd74\udd75]|\u26f9)((?:\ud83c[\udffb-\udfff]|\ufe0f)\u200d[\u2640\u2642]\ufe0f)|(?:\ud83c[\udfc3\udfc4\udfca]|\ud83d[\udc6e\udc70\udc71\udc73\udc77\udc81\udc82\udc86\udc87\ude45-\ude47\ude4b\ude4d\ude4e\udea3\udeb4-\udeb6]|\ud83e[\udd26\udd35\udd37-\udd39\udd3d\udd3e\uddb8\uddb9\uddcd-\uddcf\uddd4\uddd6-\udddd])(?:\ud83c[\udffb-\udfff])?\u200d[\u2640\u2642]\ufe0f|(?:\ud83d\udc68\u200d\ud83d\udc68\u200d\ud83d\udc66\u200d\ud83d\udc66|\ud83d\udc68\u200d\ud83d\udc68\u200d\ud83d\udc67\u200d\ud83d[\udc66\udc67]|\ud83d\udc68\u200d\ud83d\udc69\u200d\ud83d\udc66\u200d\ud83d\udc66|\ud83d\udc68\u200d\ud83d\udc69\u200d\ud83d\udc67\u200d\ud83d[\udc66\udc67]|\ud83d\udc69\u200d\ud83d\udc69\u200d\ud83d\udc66\u200d\ud83d\udc66|\ud83d\udc69\u200d\ud83d\udc69\u200d\ud83d\udc67\u200d\ud83d[\udc66\udc67]|\ud83d\udc68\u200d\ud83d\udc66\u200d\ud83d\udc66|\ud83d\udc68\u200d\ud83d\udc67\u200d\ud83d[\udc66\udc67]|\ud83d\udc68\u200d\ud83d\udc68\u200d\ud83d[\udc66\udc67]|\ud83d\udc68\u200d\ud83d\udc69\u200d\ud83d[\udc66\udc67]|\ud83d\udc69\u200d\ud83d\udc66\u200d\ud83d\udc66|\ud83d\udc69\u200d\ud83d\udc67\u200d\ud83d[\udc66\udc67]|\ud83d\udc69\u200d\ud83d\udc69\u200d\ud83d[\udc66\udc67]|\ud83c\udff3\ufe0f\u200d\u26a7\ufe0f|\ud83c\udff3\ufe0f\u200d\ud83c\udf08|\ud83d\ude36\u200d\ud83c\udf2b\ufe0f|\u2764\ufe0f\u200d\ud83d\udd25|\u2764\ufe0f\u200d\ud83e\ude79|\ud83c\udff4\u200d\u2620\ufe0f|\ud83d\udc15\u200d\ud83e\uddba|\ud83d\udc3b\u200d\u2744\ufe0f|\ud83d\udc41\u200d\ud83d\udde8|\ud83d\udc68\u200d\ud83d[\udc66\udc67]|\ud83d\udc69\u200d\ud83d[\udc66\udc67]|\ud83d\udc6f\u200d\u2640\ufe0f|\ud83d\udc6f\u200d\u2642\ufe0f|\ud83d\ude2e\u200d\ud83d\udca8|\ud83d\ude35\u200d\ud83d\udcab|\ud83e\udd3c\u200d\u2640\ufe0f|\ud83e\udd3c\u200d\u2642\ufe0f|\ud83e\uddde\u200d\u2640\ufe0f|\ud83e\uddde\u200d\u2642\ufe0f|\ud83e\udddf\u200d\u2640\ufe0f|\ud83e\udddf\u200d\u2642\ufe0f|\ud83d\udc08\u200d\u2b1b)|[#*0-9]\ufe0f?\u20e3|(?:[©®\u2122\u265f]\ufe0f)|(?:\ud83c[\udc04\udd70\udd71\udd7e\udd7f\ude02\ude1a\ude2f\ude37\udf21\udf24-\udf2c\udf36\udf7d\udf96\udf97\udf99-\udf9b\udf9e\udf9f\udfcd\udfce\udfd4-\udfdf\udff3\udff5\udff7]|\ud83d[\udc3f\udc41\udcfd\udd49\udd4a\udd6f\udd70\udd73\udd76-\udd79\udd87\udd8a-\udd8d\udda5\udda8\uddb1\uddb2\uddbc\uddc2-\uddc4\uddd1-\uddd3\udddc-\uddde\udde1\udde3\udde8\uddef\uddf3\uddfa\udecb\udecd-\udecf\udee0-\udee5\udee9\udef0\udef3]|[\u203c\u2049\u2139\u2194-\u2199\u21a9\u21aa\u231a\u231b\u2328\u23cf\u23ed-\u23ef\u23f1\u23f2\u23f8-\u23fa\u24c2\u25aa\u25ab\u25b6\u25c0\u25fb-\u25fe\u2600-\u2604\u260e\u2611\u2614\u2615\u2618\u2620\u2622\u2623\u2626\u262a\u262e\u262f\u2638-\u263a\u2640\u2642\u2648-\u2653\u2660\u2663\u2665\u2666\u2668\u267b\u267f\u2692-\u2697\u2699\u269b\u269c\u26a0\u26a1\u26a7\u26aa\u26ab\u26b0\u26b1\u26bd\u26be\u26c4\u26c5\u26c8\u26cf\u26d1\u26d3\u26d4\u26e9\u26ea\u26f0-\u26f5\u26f8\u26fa\u26fd\u2702\u2708\u2709\u270f\u2712\u2714\u2716\u271d\u2721\u2733\u2734\u2744\u2747\u2757\u2763\u2764\u27a1\u2934\u2935\u2b05-\u2b07\u2b1b\u2b1c\u2b50\u2b55\u3030\u303d\u3297\u3299])(?:\ufe0f|(?!\ufe0e))|(?:(?:\ud83c[\udfcb\udfcc]|\ud83d[\udd74\udd75\udd90]|[\u261d\u26f7\u26f9\u270c\u270d])(?:\ufe0f|(?!\ufe0e))|(?:\ud83c[\udf85\udfc2-\udfc4\udfc7\udfca]|\ud83d[\udc42\udc43\udc46-\udc50\udc66-\udc69\udc6e\udc70-\udc78\udc7c\udc81-\udc83\udc85-\udc87\udcaa\udd7a\udd95\udd96\ude45-\ude47\ude4b-\ude4f\udea3\udeb4-\udeb6\udec0\udecc]|\ud83e[\udd0c\udd0f\udd18-\udd1c\udd1e\udd1f\udd26\udd30-\udd39\udd3d\udd3e\udd77\uddb5\uddb6\uddb8\uddb9\uddbb\uddcd-\uddcf\uddd1-\udddd\udec3-\udec5\udef0-\udef6]|[\u270a\u270b]))(?:\ud83c[\udffb-\udfff])?|(?:\ud83c\udff4\udb40\udc67\udb40\udc62\udb40\udc65\udb40\udc6e\udb40\udc67\udb40\udc7f|\ud83c\udff4\udb40\udc67\udb40\udc62\udb40\udc73\udb40\udc63\udb40\udc74\udb40\udc7f|\ud83c\udff4\udb40\udc67\udb40\udc62\udb40\udc77\udb40\udc6c\udb40\udc73\udb40\udc7f|\ud83c\udde6\ud83c[\udde8-\uddec\uddee\uddf1\uddf2\uddf4\uddf6-\uddfa\uddfc\uddfd\uddff]|\ud83c\udde7\ud83c[\udde6\udde7\udde9-\uddef\uddf1-\uddf4\uddf6-\uddf9\uddfb\uddfc\uddfe\uddff]|\ud83c\udde8\ud83c[\udde6\udde8\udde9\uddeb-\uddee\uddf0-\uddf5\uddf7\uddfa-\uddff]|\ud83c\udde9\ud83c[\uddea\uddec\uddef\uddf0\uddf2\uddf4\uddff]|\ud83c\uddea\ud83c[\udde6\udde8\uddea\uddec\udded\uddf7-\uddfa]|\ud83c\uddeb\ud83c[\uddee-\uddf0\uddf2\uddf4\uddf7]|\ud83c\uddec\ud83c[\udde6\udde7\udde9-\uddee\uddf1-\uddf3\uddf5-\uddfa\uddfc\uddfe]|\ud83c\udded\ud83c[\uddf0\uddf2\uddf3\uddf7\uddf9\uddfa]|\ud83c\uddee\ud83c[\udde8-\uddea\uddf1-\uddf4\uddf6-\uddf9]|\ud83c\uddef\ud83c[\uddea\uddf2\uddf4\uddf5]|\ud83c\uddf0\ud83c[\uddea\uddec-\uddee\uddf2\uddf3\uddf5\uddf7\uddfc\uddfe\uddff]|\ud83c\uddf1\ud83c[\udde6-\udde8\uddee\uddf0\uddf7-\uddfb\uddfe]|\ud83c\uddf2\ud83c[\udde6\udde8-\udded\uddf0-\uddff]|\ud83c\uddf3\ud83c[\udde6\udde8\uddea-\uddec\uddee\uddf1\uddf4\uddf5\uddf7\uddfa\uddff]|\ud83c\uddf4\ud83c\uddf2|\ud83c\uddf5\ud83c[\udde6\uddea-\udded\uddf0-\uddf3\uddf7-\uddf9\uddfc\uddfe]|\ud83c\uddf6\ud83c\udde6|\ud83c\uddf7\ud83c[\uddea\uddf4\uddf8\uddfa\uddfc]|\ud83c\uddf8\ud83c[\udde6-\uddea\uddec-\uddf4\uddf7-\uddf9\uddfb\uddfd-\uddff]|\ud83c\uddf9\ud83c[\udde6\udde8\udde9\uddeb-\udded\uddef-\uddf4\uddf7\uddf9\uddfb\uddfc\uddff]|\ud83c\uddfa\ud83c[\udde6\uddec\uddf2\uddf3\uddf8\uddfe\uddff]|\ud83c\uddfb\ud83c[\udde6\udde8\uddea\uddec\uddee\uddf3\uddfa]|\ud83c\uddfc\ud83c[\uddeb\uddf8]|\ud83c\uddfd\ud83c\uddf0|\ud83c\uddfe\ud83c[\uddea\uddf9]|\ud83c\uddff\ud83c[\udde6\uddf2\uddfc]|\ud83c[\udccf\udd8e\udd91-\udd9a\udde6-\uddff\ude01\ude32-\ude36\ude38-\ude3a\ude50\ude51\udf00-\udf20\udf2d-\udf35\udf37-\udf7c\udf7e-\udf84\udf86-\udf93\udfa0-\udfc1\udfc5\udfc6\udfc8\udfc9\udfcf-\udfd3\udfe0-\udff0\udff4\udff8-\udfff]|\ud83d[\udc00-\udc3e\udc40\udc44\udc45\udc51-\udc65\udc6a\udc6f\udc79-\udc7b\udc7d-\udc80\udc84\udc88-\udc8e\udc90\udc92-\udca9\udcab-\udcfc\udcff-\udd3d\udd4b-\udd4e\udd50-\udd67\udda4\uddfb-\ude44\ude48-\ude4a\ude80-\udea2\udea4-\udeb3\udeb7-\udebf\udec1-\udec5\uded0-\uded2\uded5-\uded7\udedd-\udedf\udeeb\udeec\udef4-\udefc\udfe0-\udfeb\udff0]|\ud83e[\udd0d\udd0e\udd10-\udd17\udd20-\udd25\udd27-\udd2f\udd3a\udd3c\udd3f-\udd45\udd47-\udd76\udd78-\uddb4\uddb7\uddba\uddbc-\uddcc\uddd0\uddde-\uddff\ude70-\ude74\ude78-\ude7c\ude80-\ude86\ude90-\udeac\udeb0-\udeba\udec0-\udec2\uded0-\uded9\udee0-\udee7]|[\u23e9-\u23ec\u23f0\u23f3\u267e\u26ce\u2705\u2728\u274c\u274e\u2753-\u2755\u2795-\u2797\u27b0\u27bf\ue50a])|\ufe0f/g,UFE0Fg=/\uFE0F/g,U200D=String.fromCharCode(8205),rescaper=/[&<>'"]/g,shouldntBeParsed=/^(?:iframe|noframes|noscript|script|select|style|textarea)$/,fromCharCode=String.fromCharCode;return twemoji;function createText(text,clean){return document.createTextNode(clean?text.replace(UFE0Fg,""):text)}function escapeHTML(s){return s.replace(rescaper,replacer)}function defaultImageSrcGenerator(icon,options){return "".concat(options.base,options.size,"/",icon,options.ext)}function grabAllTextNodes(node,allText){var childNodes=node.childNodes,length=childNodes.length,subnode,nodeType;while(length--){subnode=childNodes[length];nodeType=subnode.nodeType;if(nodeType===3){allText.push(subnode);}else if(nodeType===1&&!("ownerSVGElement"in subnode)&&!shouldntBeParsed.test(subnode.nodeName.toLowerCase())){grabAllTextNodes(subnode,allText);}}return allText}function grabTheRightIcon(rawText){return toCodePoint(rawText.indexOf(U200D)<0?rawText.replace(UFE0Fg,""):rawText)}function parseNode(node,options){var allText=grabAllTextNodes(node,[]),length=allText.length,attrib,attrname,modified,fragment,subnode,text,match,i,index,img,rawText,iconId,src;while(length--){modified=false;fragment=document.createDocumentFragment();subnode=allText[length];text=subnode.nodeValue;i=0;while(match=re.exec(text)){index=match.index;if(index!==i){fragment.appendChild(createText(text.slice(i,index),true));}rawText=match[0];iconId=grabTheRightIcon(rawText);i=index+rawText.length;src=options.callback(iconId,options);if(iconId&&src){img=new Image;img.onerror=options.onerror;img.setAttribute("draggable","false");attrib=options.attributes(rawText,iconId);for(attrname in attrib){if(attrib.hasOwnProperty(attrname)&&attrname.indexOf("on")!==0&&!img.hasAttribute(attrname)){img.setAttribute(attrname,attrib[attrname]);}}img.className=options.className;img.alt=rawText;img.src=src;modified=true;fragment.appendChild(img);}if(!img)fragment.appendChild(createText(rawText,false));img=null;}if(modified){if(i<text.length){fragment.appendChild(createText(text.slice(i),true));}subnode.parentNode.replaceChild(fragment,subnode);}}return node}function parseString(str,options){return replace(str,function(rawText){var ret=rawText,iconId=grabTheRightIcon(rawText),src=options.callback(iconId,options),attrib,attrname;if(iconId&&src){ret="<img ".concat('class="',options.className,'" ','draggable="false" ','alt="',rawText,'"',' src="',src,'"');attrib=options.attributes(rawText,iconId);for(attrname in attrib){if(attrib.hasOwnProperty(attrname)&&attrname.indexOf("on")!==0&&ret.indexOf(" "+attrname+"=")===-1){ret=ret.concat(" ",attrname,'="',escapeHTML(attrib[attrname]),'"');}}ret=ret.concat("/>");}return ret})}function replacer(m){return escaper[m]}function returnNull(){return null}function toSizeSquaredAsset(value){return typeof value==="number"?value+"x"+value:value}function fromCodePoint(codepoint){var code=typeof codepoint==="string"?parseInt(codepoint,16):codepoint;if(code<65536){return fromCharCode(code)}code-=65536;return fromCharCode(55296+(code>>10),56320+(code&1023))}function parse(what,how){if(!how||typeof how==="function"){how={callback:how};}return (typeof what==="string"?parseString:parseNode)(what,{callback:how.callback||defaultImageSrcGenerator,attributes:typeof how.attributes==="function"?how.attributes:returnNull,base:typeof how.base==="string"?how.base:twemoji.base,ext:how.ext||twemoji.ext,size:how.folder||toSizeSquaredAsset(how.size||twemoji.size),className:how.className||twemoji.className,onerror:how.onerror||twemoji.onerror})}function replace(text,callback){return String(text).replace(re,callback)}function test(text){re.lastIndex=0;var result=re.test(text);re.lastIndex=0;return result}function toCodePoint(unicodeSurrogates,sep){var r=[],c=0,p=0,i=0;while(i<unicodeSurrogates.length){c=unicodeSurrogates.charCodeAt(i++);if(p){r.push((65536+(p-55296<<10)+(c-56320)).toString(16));p=0;}else if(55296<=c&&c<=56319){p=c;}else {r.push(c.toString(16));}}return r.join(sep||"-")}}();
-
-const Text$1 = He.span `
-  &::selection {
-    background: rgba(46, 170, 220, 0.2);
-  }
-  img.emoji {
-    height: 1em;
-    width: 1em;
-    margin: 0 0.05em 0 0.1em;
-    vertical-align: -0.1em;
-    &::selection {
-      background: rgba(46, 170, 220, 0.2);
-    }
-  }
-  ${({ attributes, formats }) => {
-    return Object.keys(attributes).map((key) => {
-        const styleFormat = `inline/style/${key}`;
-        if (attributes[key] && formats[styleFormat]) {
-            return formats[styleFormat](attributes[key]);
-        }
-        return;
-    });
-}}
-`;
-const Link$2 = He.a `
-  ${({ attributes, formats }) => {
-    return Object.keys(attributes).map((key) => {
-        const styleFormat = `inline/style/${key}`;
-        if (attributes[key] && formats[styleFormat]) {
-            return formats[styleFormat](attributes[key]);
-        }
-        return;
-    });
-}}
-`;
-const InlineText = (_a) => {
-    var { inline, formats, editor, scrollContainer } = _a, props = __rest(_a, ["inline", "formats", "editor", "scrollContainer"]);
-    const memoInnerHTML = React__namespace.useMemo(() => {
-        const text = inline.text.replaceAll('\n', '<br>');
-        return {
-            __html: twemoji.parse(text, {
-                folder: 'svg',
-                ext: '.svg',
-            }),
-        };
-    }, [inline]);
-    const handleClickLink = () => {
-        const caretPosition = editor.getCaretPosition();
-        const eventEmitter = editor.getEventEmitter();
-        eventEmitter.emit(EditorEvents.EVENT_LINK_CLICK, {
-            mode: 'openPreview',
-            inline,
-            caretPosition,
-        });
-    };
-    return (jsxRuntime.exports.jsx(jsxRuntime.exports.Fragment, { children: inline.attributes['link'] ? (jsxRuntime.exports.jsx(jsxRuntime.exports.Fragment, { children: jsxRuntime.exports.jsx(Link$2, Object.assign({ href: inline.attributes['link'], target: "_blank", dangerouslySetInnerHTML: memoInnerHTML, formats: formats, attributes: inline.attributes, onClick: handleClickLink }, props)) })) : (jsxRuntime.exports.jsx(Text$1, Object.assign({ dangerouslySetInnerHTML: memoInnerHTML, formats: formats, attributes: inline.attributes }, props))) }));
-};
-
-const Bold = () => Ce `
-  font-weight: bold;
-`;
-
-const Underline = () => Ce `
-  border-bottom: 0.05em solid;
-`;
-
-const Strike = () => Ce `
-  text-decoration: line-through;
-`;
-
-const InlineCode = () => Ce `
-  background: rgba(135, 131, 120, 0.15);
-  color: #eb5757;
-  border-radius: 3px;
-  font-size: 85%;
-  padding: 0.2em 0.4em;
-`;
-
-const Italic = () => Ce `
-  transform: skewX(-20deg);
-  display: inline-block;
-`;
-
-const Color = (color) => Ce `
-  ${color && `color: ${color};`}
-`;
-
-const Link$1 = () => Ce `
-  cursor: pointer;
-`;
-
-const Container$2 = He.div `
-  position: fixed;
-  bottom: 12px;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  padding: 8px;
-`;
-const Button$2 = He.a `
-  margin: 8px;
-  border: 1px solid #666;
-  border-radius: 4px;
-  padding: 4px;
-`;
-const GlobalToolbar = React__namespace.memo((_a) => {
-    var { editor } = _a, props = __rest(_a, ["editor"]);
-    const [formats, setFormats] = React__namespace.useState({});
-    const [isDisplay, setDisplay] = React__namespace.useState(false);
-    const handleHeader1 = React__namespace.useCallback((event) => {
-        event.preventDefault();
-        editor.getModule('toolbar').formatBlock('HEADER1');
-    }, [formats]);
-    const handleBlockquote = React__namespace.useCallback((event) => {
-        event.preventDefault();
-        editor.getModule('toolbar').formatBlock('BLOCKQUOTE');
-    }, [formats]);
-    const handleOrderedList = React__namespace.useCallback((event) => {
-        event.preventDefault();
-        editor.getModule('toolbar').formatBlock('ORDEREDLIST');
-    }, [formats]);
-    const handleBulletList = React__namespace.useCallback((event) => {
-        event.preventDefault();
-        editor.getModule('toolbar').formatBlock('BULLETLIST');
-    }, [formats]);
-    React__namespace.useEffect(() => {
-        const subs = new Subscription();
-        const eventEmitter = editor.getEventEmitter();
-        subs.add(eventEmitter
-            .select(EditorEvents.EVENT_SELECTION_CHANGE)
-            .pipe(combineLatestWith(eventEmitter.select(EditorEvents.EVENT_BLOCK_SELECTED)))
-            .subscribe((v) => {
-            const caret = editor.getCaretPosition();
-            if (!caret || !editor.hasFocus()) {
-                if (editor.getModule('selector').getSelectedBlocks().length > 0)
-                    return;
-                setDisplay(false);
-                return;
-            }
-            setDisplay(true);
-            setFormats(editor.getFormats(caret.blockId, caret.index, caret.length));
-        }));
-        subs.add(eventEmitter.select(EditorEvents.EVENT_BLOCK_SELECTED).subscribe((blockIds) => {
-            if (blockIds.length < 1) {
-                setDisplay(false);
-                return;
-            }
-            setDisplay(true);
-        }));
-        return () => {
-            subs.unsubscribe();
-        };
-    }, []);
-    return ReactDOM__default["default"].createPortal(jsxRuntime.exports.jsx(jsxRuntime.exports.Fragment, { children: isDisplay && (jsxRuntime.exports.jsxs(Container$2, Object.assign({}, props, { children: [jsxRuntime.exports.jsx(Button$2, Object.assign({ href: "#", onClick: handleHeader1 }, { children: "H1" })), jsxRuntime.exports.jsx(Button$2, Object.assign({ href: "#", onClick: handleBlockquote }, { children: "\u5F15\u7528" })), jsxRuntime.exports.jsx(Button$2, Object.assign({ href: "#", onClick: handleOrderedList }, { children: "\u756A\u53F7\u30EA\u30B9\u30C8" })), jsxRuntime.exports.jsx(Button$2, Object.assign({ href: "#", onClick: handleBulletList }, { children: "\u30EA\u30B9\u30C8" }))] }))) }), document.body);
-});
-
-function getScrollContainer(scrollContainer) {
-    if (!scrollContainer) {
-        return null;
-    }
-    if (typeof scrollContainer === 'string') {
-        return document.querySelector(scrollContainer);
-    }
-    return scrollContainer !== null && scrollContainer !== void 0 ? scrollContainer : null;
-}
-
-const Container$1 = He.div `
-  position: absolute;
-  top: ${({ top }) => `${top}px`};
-  left: ${({ left }) => `${left}px`};
-  transform: translateY(-100%);
-  background-color: #fff;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  padding: 4px;
-  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-  z-index: 1;
-`;
-const Button$1 = He.a `
-  display: inline-block;
-  padding: 2px 8px;
-  text-decoration: none;
-  border-radius: 8px;
-  margin: 0 4px;
-  ${({ active }) => active && 'background-color: #e3def3'};
-  &:hover {
-    background-color: #e3def3;
-  }
-`;
-const BubbleToolbar = React__namespace.memo((_a) => {
-    var _b, _c, _d;
-    var { editor, scrollContainer } = _a, props = __rest(_a, ["editor", "scrollContainer"]);
-    const [formats, setFormats] = React__namespace.useState({});
-    const [position, setPosition] = React__namespace.useState();
-    const [blockType, setBlockType] = React__namespace.useState();
-    const [collapsed, setCollapsed] = React__namespace.useState(true);
-    const [currentCaretPosition, setCurrentCaretPosition] = React__namespace.useState();
-    const handleBold = React__namespace.useCallback((event) => {
-        event.preventDefault();
-        editor.getModule('toolbar').formatInline({ bold: !(formats === null || formats === void 0 ? void 0 : formats.bold) });
-    }, [formats]);
-    const handleUnderline = React__namespace.useCallback((event) => {
-        event.preventDefault();
-        editor.getModule('toolbar').formatInline({ underline: !(formats === null || formats === void 0 ? void 0 : formats.underline) });
-    }, [formats]);
-    const handleStrike = React__namespace.useCallback((event) => {
-        event.preventDefault();
-        editor.getModule('toolbar').formatInline({ strike: !(formats === null || formats === void 0 ? void 0 : formats.strike) });
-    }, [formats]);
-    const handleLink = React__namespace.useCallback((event) => {
-        event.preventDefault();
-        const eventEmitter = editor.getEventEmitter();
-        eventEmitter.emit(EditorEvents.EVENT_LINK_CLICK, {
-            mode: 'openEnterLink',
-            caretPosition: currentCaretPosition,
-        });
-    }, [formats, currentCaretPosition]);
-    const handleInlineCode = React__namespace.useCallback((event) => {
-        event.preventDefault();
-        editor.getModule('toolbar').formatInline({ code: !(formats === null || formats === void 0 ? void 0 : formats.code) });
-    }, [formats]);
-    const handleHeader1 = React__namespace.useCallback((event) => {
-        event.preventDefault();
-        editor.getModule('toolbar').formatBlock('HEADER1');
-    }, [formats]);
-    const handleColor = React__namespace.useCallback((event) => {
-        event.preventDefault();
-        if (formats === null || formats === void 0 ? void 0 : formats.color) {
-            editor.getModule('toolbar').formatInline({ color: false });
-        }
-        else {
-            editor.getModule('toolbar').formatInline({ color: 'red' });
-        }
-    }, [formats]);
-    React__namespace.useEffect(() => {
-        const subs = new Subscription();
-        const eventEmitter = editor.getEventEmitter();
-        subs.add(eventEmitter.select(EditorEvents.EVENT_SELECTION_CHANGE).subscribe((v) => {
-            var _a, _b, _c, _d;
-            const caret = editor.getCaretPosition();
-            const blockLength = (_b = editor.getBlockLength((_a = caret === null || caret === void 0 ? void 0 : caret.blockId) !== null && _a !== void 0 ? _a : '')) !== null && _b !== void 0 ? _b : 0;
-            if (!caret || !editor.hasFocus() || blockLength < 1) {
-                setPosition(undefined);
-                setCollapsed(true);
-                return;
-            }
-            const container = getScrollContainer(scrollContainer);
-            if (container) {
-                const containerRect = container.getBoundingClientRect();
-                const top = ((_c = container === null || container === void 0 ? void 0 : container.scrollTop) !== null && _c !== void 0 ? _c : 0) + caret.rect.top - containerRect.top;
-                const left = caret.rect.left - containerRect.left;
-                setPosition({ top, left });
-            }
-            else {
-                const scrollEl = document.scrollingElement;
-                const top = scrollEl.scrollTop + caret.rect.top;
-                const left = caret.rect.left;
-                setPosition({ top, left });
-            }
-            setCollapsed(caret.collapsed);
-            setFormats(editor.getFormats(caret.blockId, caret.index, caret.length));
-            setBlockType((_d = editor.getBlock(caret.blockId)) === null || _d === void 0 ? void 0 : _d.type);
-        }));
-        return () => {
-            subs.unsubscribe();
-        };
-    }, [editor, scrollContainer]);
-    return ReactDOM__default["default"].createPortal(jsxRuntime.exports.jsx(jsxRuntime.exports.Fragment, { children: !collapsed && (jsxRuntime.exports.jsxs(Container$1, Object.assign({ top: (_b = position === null || position === void 0 ? void 0 : position.top) !== null && _b !== void 0 ? _b : 0, left: (_c = position === null || position === void 0 ? void 0 : position.left) !== null && _c !== void 0 ? _c : 0 }, props, { children: [jsxRuntime.exports.jsx(Button$1, Object.assign({ href: "#", onClick: handleHeader1, active: blockType === 'HEADER1' }, { children: "H1" })), jsxRuntime.exports.jsx(Button$1, Object.assign({ href: "#", onClick: handleBold, active: !!(formats === null || formats === void 0 ? void 0 : formats.bold) }, { children: "B" })), jsxRuntime.exports.jsx(Button$1, Object.assign({ href: "#", onClick: handleUnderline, active: !!(formats === null || formats === void 0 ? void 0 : formats.underline) }, { children: "U" })), jsxRuntime.exports.jsx(Button$1, Object.assign({ href: "#", onClick: handleStrike, active: !!(formats === null || formats === void 0 ? void 0 : formats.strike) }, { children: "S" })), jsxRuntime.exports.jsx(Button$1, Object.assign({ href: "#", onClick: handleInlineCode, active: !!(formats === null || formats === void 0 ? void 0 : formats.code) }, { children: "code" })), jsxRuntime.exports.jsx(Button$1, Object.assign({ href: "#", onClick: handleColor, active: !!(formats === null || formats === void 0 ? void 0 : formats.color) }, { children: "color" })), jsxRuntime.exports.jsx(Button$1, Object.assign({ href: "#", onClick: handleLink, active: !!(formats === null || formats === void 0 ? void 0 : formats.link) }, { children: "L" }))] }))) }), (_d = getScrollContainer(scrollContainer)) !== null && _d !== void 0 ? _d : document.body);
-});
 
 /* eslint-disable no-undefined,no-param-reassign,no-shadow */
 
@@ -10536,486 +11020,6 @@ var diffMatchPatch = {exports: {}};
 
 var DiffMatchPatch = diffMatchPatch.exports;
 
-// Unique ID creation requires a high quality random # generator. In the browser we therefore
-// require the crypto API and do not support built-in fallback to lower quality random number
-// generators (like Math.random()).
-let getRandomValues;
-const rnds8 = new Uint8Array(16);
-function rng() {
-  // lazy load so that environments that need to polyfill have a chance to do so
-  if (!getRandomValues) {
-    // getRandomValues needs to be invoked in a context where "this" is a Crypto implementation.
-    getRandomValues = typeof crypto !== 'undefined' && crypto.getRandomValues && crypto.getRandomValues.bind(crypto);
-
-    if (!getRandomValues) {
-      throw new Error('crypto.getRandomValues() not supported. See https://github.com/uuidjs/uuid#getrandomvalues-not-supported');
-    }
-  }
-
-  return getRandomValues(rnds8);
-}
-
-var REGEX = /^(?:[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}|00000000-0000-0000-0000-000000000000)$/i;
-
-function validate(uuid) {
-  return typeof uuid === 'string' && REGEX.test(uuid);
-}
-
-/**
- * Convert array of 16 byte values to UUID string format of the form:
- * XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
- */
-
-const byteToHex = [];
-
-for (let i = 0; i < 256; ++i) {
-  byteToHex.push((i + 0x100).toString(16).slice(1));
-}
-
-function unsafeStringify(arr, offset = 0) {
-  // Note: Be careful editing this code!  It's been tuned for performance
-  // and works in ways you may not expect. See https://github.com/uuidjs/uuid/pull/434
-  return (byteToHex[arr[offset + 0]] + byteToHex[arr[offset + 1]] + byteToHex[arr[offset + 2]] + byteToHex[arr[offset + 3]] + '-' + byteToHex[arr[offset + 4]] + byteToHex[arr[offset + 5]] + '-' + byteToHex[arr[offset + 6]] + byteToHex[arr[offset + 7]] + '-' + byteToHex[arr[offset + 8]] + byteToHex[arr[offset + 9]] + '-' + byteToHex[arr[offset + 10]] + byteToHex[arr[offset + 11]] + byteToHex[arr[offset + 12]] + byteToHex[arr[offset + 13]] + byteToHex[arr[offset + 14]] + byteToHex[arr[offset + 15]]).toLowerCase();
-}
-
-function parse(uuid) {
-  if (!validate(uuid)) {
-    throw TypeError('Invalid UUID');
-  }
-
-  let v;
-  const arr = new Uint8Array(16); // Parse ########-....-....-....-............
-
-  arr[0] = (v = parseInt(uuid.slice(0, 8), 16)) >>> 24;
-  arr[1] = v >>> 16 & 0xff;
-  arr[2] = v >>> 8 & 0xff;
-  arr[3] = v & 0xff; // Parse ........-####-....-....-............
-
-  arr[4] = (v = parseInt(uuid.slice(9, 13), 16)) >>> 8;
-  arr[5] = v & 0xff; // Parse ........-....-####-....-............
-
-  arr[6] = (v = parseInt(uuid.slice(14, 18), 16)) >>> 8;
-  arr[7] = v & 0xff; // Parse ........-....-....-####-............
-
-  arr[8] = (v = parseInt(uuid.slice(19, 23), 16)) >>> 8;
-  arr[9] = v & 0xff; // Parse ........-....-....-....-############
-  // (Use "/" to avoid 32-bit truncation when bit-shifting high-order bytes)
-
-  arr[10] = (v = parseInt(uuid.slice(24, 36), 16)) / 0x10000000000 & 0xff;
-  arr[11] = v / 0x100000000 & 0xff;
-  arr[12] = v >>> 24 & 0xff;
-  arr[13] = v >>> 16 & 0xff;
-  arr[14] = v >>> 8 & 0xff;
-  arr[15] = v & 0xff;
-  return arr;
-}
-
-function stringToBytes(str) {
-  str = unescape(encodeURIComponent(str)); // UTF8 escape
-
-  const bytes = [];
-
-  for (let i = 0; i < str.length; ++i) {
-    bytes.push(str.charCodeAt(i));
-  }
-
-  return bytes;
-}
-
-const DNS = '6ba7b810-9dad-11d1-80b4-00c04fd430c8';
-const URL = '6ba7b811-9dad-11d1-80b4-00c04fd430c8';
-function v35(name, version, hashfunc) {
-  function generateUUID(value, namespace, buf, offset) {
-    var _namespace;
-
-    if (typeof value === 'string') {
-      value = stringToBytes(value);
-    }
-
-    if (typeof namespace === 'string') {
-      namespace = parse(namespace);
-    }
-
-    if (((_namespace = namespace) === null || _namespace === void 0 ? void 0 : _namespace.length) !== 16) {
-      throw TypeError('Namespace must be array-like (16 iterable integer values, 0-255)');
-    } // Compute hash of namespace and value, Per 4.3
-    // Future: Use spread syntax when supported on all platforms, e.g. `bytes =
-    // hashfunc([...namespace, ... value])`
-
-
-    let bytes = new Uint8Array(16 + value.length);
-    bytes.set(namespace);
-    bytes.set(value, namespace.length);
-    bytes = hashfunc(bytes);
-    bytes[6] = bytes[6] & 0x0f | version;
-    bytes[8] = bytes[8] & 0x3f | 0x80;
-
-    if (buf) {
-      offset = offset || 0;
-
-      for (let i = 0; i < 16; ++i) {
-        buf[offset + i] = bytes[i];
-      }
-
-      return buf;
-    }
-
-    return unsafeStringify(bytes);
-  } // Function#name is not settable on some platforms (#270)
-
-
-  try {
-    generateUUID.name = name; // eslint-disable-next-line no-empty
-  } catch (err) {} // For CommonJS default export support
-
-
-  generateUUID.DNS = DNS;
-  generateUUID.URL = URL;
-  return generateUUID;
-}
-
-/*
- * Browser-compatible JavaScript MD5
- *
- * Modification of JavaScript MD5
- * https://github.com/blueimp/JavaScript-MD5
- *
- * Copyright 2011, Sebastian Tschan
- * https://blueimp.net
- *
- * Licensed under the MIT license:
- * https://opensource.org/licenses/MIT
- *
- * Based on
- * A JavaScript implementation of the RSA Data Security, Inc. MD5 Message
- * Digest Algorithm, as defined in RFC 1321.
- * Version 2.2 Copyright (C) Paul Johnston 1999 - 2009
- * Other contributors: Greg Holt, Andrew Kepert, Ydnar, Lostinet
- * Distributed under the BSD License
- * See http://pajhome.org.uk/crypt/md5 for more info.
- */
-function md5(bytes) {
-  if (typeof bytes === 'string') {
-    const msg = unescape(encodeURIComponent(bytes)); // UTF8 escape
-
-    bytes = new Uint8Array(msg.length);
-
-    for (let i = 0; i < msg.length; ++i) {
-      bytes[i] = msg.charCodeAt(i);
-    }
-  }
-
-  return md5ToHexEncodedArray(wordsToMd5(bytesToWords(bytes), bytes.length * 8));
-}
-/*
- * Convert an array of little-endian words to an array of bytes
- */
-
-
-function md5ToHexEncodedArray(input) {
-  const output = [];
-  const length32 = input.length * 32;
-  const hexTab = '0123456789abcdef';
-
-  for (let i = 0; i < length32; i += 8) {
-    const x = input[i >> 5] >>> i % 32 & 0xff;
-    const hex = parseInt(hexTab.charAt(x >>> 4 & 0x0f) + hexTab.charAt(x & 0x0f), 16);
-    output.push(hex);
-  }
-
-  return output;
-}
-/**
- * Calculate output length with padding and bit length
- */
-
-
-function getOutputLength(inputLength8) {
-  return (inputLength8 + 64 >>> 9 << 4) + 14 + 1;
-}
-/*
- * Calculate the MD5 of an array of little-endian words, and a bit length.
- */
-
-
-function wordsToMd5(x, len) {
-  /* append padding */
-  x[len >> 5] |= 0x80 << len % 32;
-  x[getOutputLength(len) - 1] = len;
-  let a = 1732584193;
-  let b = -271733879;
-  let c = -1732584194;
-  let d = 271733878;
-
-  for (let i = 0; i < x.length; i += 16) {
-    const olda = a;
-    const oldb = b;
-    const oldc = c;
-    const oldd = d;
-    a = md5ff(a, b, c, d, x[i], 7, -680876936);
-    d = md5ff(d, a, b, c, x[i + 1], 12, -389564586);
-    c = md5ff(c, d, a, b, x[i + 2], 17, 606105819);
-    b = md5ff(b, c, d, a, x[i + 3], 22, -1044525330);
-    a = md5ff(a, b, c, d, x[i + 4], 7, -176418897);
-    d = md5ff(d, a, b, c, x[i + 5], 12, 1200080426);
-    c = md5ff(c, d, a, b, x[i + 6], 17, -1473231341);
-    b = md5ff(b, c, d, a, x[i + 7], 22, -45705983);
-    a = md5ff(a, b, c, d, x[i + 8], 7, 1770035416);
-    d = md5ff(d, a, b, c, x[i + 9], 12, -1958414417);
-    c = md5ff(c, d, a, b, x[i + 10], 17, -42063);
-    b = md5ff(b, c, d, a, x[i + 11], 22, -1990404162);
-    a = md5ff(a, b, c, d, x[i + 12], 7, 1804603682);
-    d = md5ff(d, a, b, c, x[i + 13], 12, -40341101);
-    c = md5ff(c, d, a, b, x[i + 14], 17, -1502002290);
-    b = md5ff(b, c, d, a, x[i + 15], 22, 1236535329);
-    a = md5gg(a, b, c, d, x[i + 1], 5, -165796510);
-    d = md5gg(d, a, b, c, x[i + 6], 9, -1069501632);
-    c = md5gg(c, d, a, b, x[i + 11], 14, 643717713);
-    b = md5gg(b, c, d, a, x[i], 20, -373897302);
-    a = md5gg(a, b, c, d, x[i + 5], 5, -701558691);
-    d = md5gg(d, a, b, c, x[i + 10], 9, 38016083);
-    c = md5gg(c, d, a, b, x[i + 15], 14, -660478335);
-    b = md5gg(b, c, d, a, x[i + 4], 20, -405537848);
-    a = md5gg(a, b, c, d, x[i + 9], 5, 568446438);
-    d = md5gg(d, a, b, c, x[i + 14], 9, -1019803690);
-    c = md5gg(c, d, a, b, x[i + 3], 14, -187363961);
-    b = md5gg(b, c, d, a, x[i + 8], 20, 1163531501);
-    a = md5gg(a, b, c, d, x[i + 13], 5, -1444681467);
-    d = md5gg(d, a, b, c, x[i + 2], 9, -51403784);
-    c = md5gg(c, d, a, b, x[i + 7], 14, 1735328473);
-    b = md5gg(b, c, d, a, x[i + 12], 20, -1926607734);
-    a = md5hh(a, b, c, d, x[i + 5], 4, -378558);
-    d = md5hh(d, a, b, c, x[i + 8], 11, -2022574463);
-    c = md5hh(c, d, a, b, x[i + 11], 16, 1839030562);
-    b = md5hh(b, c, d, a, x[i + 14], 23, -35309556);
-    a = md5hh(a, b, c, d, x[i + 1], 4, -1530992060);
-    d = md5hh(d, a, b, c, x[i + 4], 11, 1272893353);
-    c = md5hh(c, d, a, b, x[i + 7], 16, -155497632);
-    b = md5hh(b, c, d, a, x[i + 10], 23, -1094730640);
-    a = md5hh(a, b, c, d, x[i + 13], 4, 681279174);
-    d = md5hh(d, a, b, c, x[i], 11, -358537222);
-    c = md5hh(c, d, a, b, x[i + 3], 16, -722521979);
-    b = md5hh(b, c, d, a, x[i + 6], 23, 76029189);
-    a = md5hh(a, b, c, d, x[i + 9], 4, -640364487);
-    d = md5hh(d, a, b, c, x[i + 12], 11, -421815835);
-    c = md5hh(c, d, a, b, x[i + 15], 16, 530742520);
-    b = md5hh(b, c, d, a, x[i + 2], 23, -995338651);
-    a = md5ii(a, b, c, d, x[i], 6, -198630844);
-    d = md5ii(d, a, b, c, x[i + 7], 10, 1126891415);
-    c = md5ii(c, d, a, b, x[i + 14], 15, -1416354905);
-    b = md5ii(b, c, d, a, x[i + 5], 21, -57434055);
-    a = md5ii(a, b, c, d, x[i + 12], 6, 1700485571);
-    d = md5ii(d, a, b, c, x[i + 3], 10, -1894986606);
-    c = md5ii(c, d, a, b, x[i + 10], 15, -1051523);
-    b = md5ii(b, c, d, a, x[i + 1], 21, -2054922799);
-    a = md5ii(a, b, c, d, x[i + 8], 6, 1873313359);
-    d = md5ii(d, a, b, c, x[i + 15], 10, -30611744);
-    c = md5ii(c, d, a, b, x[i + 6], 15, -1560198380);
-    b = md5ii(b, c, d, a, x[i + 13], 21, 1309151649);
-    a = md5ii(a, b, c, d, x[i + 4], 6, -145523070);
-    d = md5ii(d, a, b, c, x[i + 11], 10, -1120210379);
-    c = md5ii(c, d, a, b, x[i + 2], 15, 718787259);
-    b = md5ii(b, c, d, a, x[i + 9], 21, -343485551);
-    a = safeAdd(a, olda);
-    b = safeAdd(b, oldb);
-    c = safeAdd(c, oldc);
-    d = safeAdd(d, oldd);
-  }
-
-  return [a, b, c, d];
-}
-/*
- * Convert an array bytes to an array of little-endian words
- * Characters >255 have their high-byte silently ignored.
- */
-
-
-function bytesToWords(input) {
-  if (input.length === 0) {
-    return [];
-  }
-
-  const length8 = input.length * 8;
-  const output = new Uint32Array(getOutputLength(length8));
-
-  for (let i = 0; i < length8; i += 8) {
-    output[i >> 5] |= (input[i / 8] & 0xff) << i % 32;
-  }
-
-  return output;
-}
-/*
- * Add integers, wrapping at 2^32. This uses 16-bit operations internally
- * to work around bugs in some JS interpreters.
- */
-
-
-function safeAdd(x, y) {
-  const lsw = (x & 0xffff) + (y & 0xffff);
-  const msw = (x >> 16) + (y >> 16) + (lsw >> 16);
-  return msw << 16 | lsw & 0xffff;
-}
-/*
- * Bitwise rotate a 32-bit number to the left.
- */
-
-
-function bitRotateLeft(num, cnt) {
-  return num << cnt | num >>> 32 - cnt;
-}
-/*
- * These functions implement the four basic operations the algorithm uses.
- */
-
-
-function md5cmn(q, a, b, x, s, t) {
-  return safeAdd(bitRotateLeft(safeAdd(safeAdd(a, q), safeAdd(x, t)), s), b);
-}
-
-function md5ff(a, b, c, d, x, s, t) {
-  return md5cmn(b & c | ~b & d, a, b, x, s, t);
-}
-
-function md5gg(a, b, c, d, x, s, t) {
-  return md5cmn(b & d | c & ~d, a, b, x, s, t);
-}
-
-function md5hh(a, b, c, d, x, s, t) {
-  return md5cmn(b ^ c ^ d, a, b, x, s, t);
-}
-
-function md5ii(a, b, c, d, x, s, t) {
-  return md5cmn(c ^ (b | ~d), a, b, x, s, t);
-}
-
-v35('v3', 0x30, md5);
-
-const randomUUID = typeof crypto !== 'undefined' && crypto.randomUUID && crypto.randomUUID.bind(crypto);
-var native = {
-  randomUUID
-};
-
-function v4(options, buf, offset) {
-  if (native.randomUUID && !buf && !options) {
-    return native.randomUUID();
-  }
-
-  options = options || {};
-  const rnds = options.random || (options.rng || rng)(); // Per 4.4, set bits for version and `clock_seq_hi_and_reserved`
-
-  rnds[6] = rnds[6] & 0x0f | 0x40;
-  rnds[8] = rnds[8] & 0x3f | 0x80; // Copy bytes to buffer, if provided
-
-  if (buf) {
-    offset = offset || 0;
-
-    for (let i = 0; i < 16; ++i) {
-      buf[offset + i] = rnds[i];
-    }
-
-    return buf;
-  }
-
-  return unsafeStringify(rnds);
-}
-
-// Adapted from Chris Veness' SHA1 code at
-// http://www.movable-type.co.uk/scripts/sha1.html
-function f(s, x, y, z) {
-  switch (s) {
-    case 0:
-      return x & y ^ ~x & z;
-
-    case 1:
-      return x ^ y ^ z;
-
-    case 2:
-      return x & y ^ x & z ^ y & z;
-
-    case 3:
-      return x ^ y ^ z;
-  }
-}
-
-function ROTL(x, n) {
-  return x << n | x >>> 32 - n;
-}
-
-function sha1(bytes) {
-  const K = [0x5a827999, 0x6ed9eba1, 0x8f1bbcdc, 0xca62c1d6];
-  const H = [0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476, 0xc3d2e1f0];
-
-  if (typeof bytes === 'string') {
-    const msg = unescape(encodeURIComponent(bytes)); // UTF8 escape
-
-    bytes = [];
-
-    for (let i = 0; i < msg.length; ++i) {
-      bytes.push(msg.charCodeAt(i));
-    }
-  } else if (!Array.isArray(bytes)) {
-    // Convert Array-like to Array
-    bytes = Array.prototype.slice.call(bytes);
-  }
-
-  bytes.push(0x80);
-  const l = bytes.length / 4 + 2;
-  const N = Math.ceil(l / 16);
-  const M = new Array(N);
-
-  for (let i = 0; i < N; ++i) {
-    const arr = new Uint32Array(16);
-
-    for (let j = 0; j < 16; ++j) {
-      arr[j] = bytes[i * 64 + j * 4] << 24 | bytes[i * 64 + j * 4 + 1] << 16 | bytes[i * 64 + j * 4 + 2] << 8 | bytes[i * 64 + j * 4 + 3];
-    }
-
-    M[i] = arr;
-  }
-
-  M[N - 1][14] = (bytes.length - 1) * 8 / Math.pow(2, 32);
-  M[N - 1][14] = Math.floor(M[N - 1][14]);
-  M[N - 1][15] = (bytes.length - 1) * 8 & 0xffffffff;
-
-  for (let i = 0; i < N; ++i) {
-    const W = new Uint32Array(80);
-
-    for (let t = 0; t < 16; ++t) {
-      W[t] = M[i][t];
-    }
-
-    for (let t = 16; t < 80; ++t) {
-      W[t] = ROTL(W[t - 3] ^ W[t - 8] ^ W[t - 14] ^ W[t - 16], 1);
-    }
-
-    let a = H[0];
-    let b = H[1];
-    let c = H[2];
-    let d = H[3];
-    let e = H[4];
-
-    for (let t = 0; t < 80; ++t) {
-      const s = Math.floor(t / 20);
-      const T = ROTL(a, 5) + f(s, b, c, d) + e + K[s] + W[t] >>> 0;
-      e = d;
-      d = c;
-      c = ROTL(b, 30) >>> 0;
-      b = a;
-      a = T;
-    }
-
-    H[0] = H[0] + a >>> 0;
-    H[1] = H[1] + b >>> 0;
-    H[2] = H[2] + c >>> 0;
-    H[3] = H[3] + d >>> 0;
-    H[4] = H[4] + e >>> 0;
-  }
-
-  return [H[0] >> 24 & 0xff, H[0] >> 16 & 0xff, H[0] >> 8 & 0xff, H[0] & 0xff, H[1] >> 24 & 0xff, H[1] >> 16 & 0xff, H[1] >> 8 & 0xff, H[1] & 0xff, H[2] >> 24 & 0xff, H[2] >> 16 & 0xff, H[2] >> 8 & 0xff, H[2] & 0xff, H[3] >> 24 & 0xff, H[3] >> 16 & 0xff, H[3] >> 8 & 0xff, H[3] & 0xff, H[4] >> 24 & 0xff, H[4] >> 16 & 0xff, H[4] >> 8 & 0xff, H[4] & 0xff];
-}
-
-v35('v5', 0x50, sha1);
-
 function ansiRegex({onlyFirst = false} = {}) {
 	const pattern = [
 	    '[\\u001B\\u009B][[\\]()#;?]*(?:(?:(?:(?:;[-a-zA-Z\\d\\/#&.:=?%@~_]+)*|[a-zA-Z\\d]+(?:;[-a-zA-Z\\d\\/#&.:=?%@~_]*)*)?\\u0007)',
@@ -12222,6 +12226,11 @@ function getRectByRange(range) {
         }
     }
     return clientRect;
+}
+
+function copyObject(object) {
+    const json = JSON.stringify(object);
+    return JSON.parse(json);
 }
 
 const json0diff = require('json0-ot-diff');
@@ -13667,12 +13676,19 @@ class ToolbarModule {
     constructor({ eventEmitter, editor }) {
         this.editor = editor;
         this.eventEmitter = eventEmitter;
+        this.bubbleRef = null;
     }
     onInit() {
         this.eventEmitter.info('init toolbar module');
     }
     onDestroy() {
         this.eventEmitter.info('destroy toolbar module');
+    }
+    setBubbleToolbarRef(ref) {
+        this.bubbleRef = ref;
+    }
+    getBubbleToolbarRef() {
+        return this.bubbleRef;
     }
     formatInline(attributes = {}, caretPosition = null) {
         if (!caretPosition) {

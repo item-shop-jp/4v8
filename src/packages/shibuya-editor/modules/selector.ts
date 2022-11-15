@@ -489,6 +489,7 @@ export class SelectorModule implements Module {
     });
     editor.getModule('toolbar').formatInlineMultiBlocks(blockIds, { bold: !isFormatted });
   }
+
   private _handleItalic(editor: EditorController) {
     const selectedBlocks = editor.getModule('selector').getSelectedBlocks();
     if (selectedBlocks.length < 1) return;
@@ -505,6 +506,7 @@ export class SelectorModule implements Module {
     });
     editor.getModule('toolbar').formatInlineMultiBlocks(blockIds, { italic: !isFormatted });
   }
+
   private _handleUnderline(editor: EditorController) {
     const selectedBlocks = editor.getModule('selector').getSelectedBlocks();
     if (selectedBlocks.length < 1) return;

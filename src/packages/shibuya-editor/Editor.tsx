@@ -212,12 +212,14 @@ export const Editor = React.memo(
         },
         [editor],
       );
+
       const handleDrag = React.useCallback(
         (e: React.DragEvent) => {
           e.preventDefault();
         },
         [editor],
       );
+
       const handleDragOver = React.useCallback(
         (e: React.DragEvent) => {
           if ((e.target as HTMLElement)?.getAttribute('contenteditable') !== 'true') {

@@ -12,10 +12,12 @@ interface Props {
 export class ToolbarModule implements Module {
   private eventEmitter;
   private editor;
+  private bubbleRef: HTMLDivElement | null;
 
   constructor({ eventEmitter, editor }: Props) {
     this.editor = editor;
     this.eventEmitter = eventEmitter;
+    this.bubbleRef = null;
   }
 
   onInit() {
@@ -24,6 +26,14 @@ export class ToolbarModule implements Module {
 
   onDestroy() {
     this.eventEmitter.info('destroy toolbar module');
+  }
+
+  setBubbleToolbarRef(ref: HTMLDivElement) {
+    this.bubbleRef = ref;
+  }
+
+  getBubbleToolbarRef() {
+    return this.bubbleRef;
   }
 
   formatInline(attributes: InlineAttributes = {}, caretPosition: CaretPosition | null = null) {

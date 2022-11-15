@@ -18,6 +18,7 @@ export interface BubbleToolbarProps {
 interface ContainerProps {
   top: number;
   left: number;
+  isDisplay: boolean;
 }
 
 interface ToolbarPosition {
@@ -33,6 +34,7 @@ const Container = styled.div<ContainerProps>`
   position: absolute;
   top: ${({ top }) => `${top}px`};
   left: ${({ left }) => `${left}px`};
+  display: ${({ isDisplay }) => (isDisplay ? 'auto' : 'none')};
   transform: translateY(-100%);
   background-color: #fff;
   border-radius: 8px;
@@ -61,6 +63,7 @@ export const BubbleToolbar = React.memo(
     const [blockType, setBlockType] = React.useState<BlockType>();
     const [collapsed, setCollapsed] = React.useState<boolean>(true);
     const [currentCaretPosition, setCurrentCaretPosition] = React.useState<CaretPosition | null>();
+    const containerRef = React.useRef<HTMLDivElement>(null);
 
     const handleBold = React.useCallback(
       (event: React.MouseEvent) => {
@@ -126,6 +129,11 @@ export const BubbleToolbar = React.memo(
       [formats],
     );
 
+    const handleMouseDown = (e: React.MouseEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+    };
+
     React.useEffect(() => {
       const subs = new Subscription();
       const eventEmitter = editor.getEventEmitter();
@@ -161,33 +169,45 @@ export const BubbleToolbar = React.memo(
       };
     }, [editor, scrollContainer]);
 
+    React.useEffect(() => {
+      setTimeout(() => {
+        if (!containerRef.current) return;
+        editor.getModule('toolbar').setBubbleToolbarRef(containerRef.current);
+      });
+    }, [editor]);
+
     return ReactDOM.createPortal(
       <>
-        {!collapsed && (
-          <Container top={position?.top ?? 0} left={position?.left ?? 0} {...props}>
-            <Button href="#" onClick={handleHeader1} active={blockType === 'HEADER1'}>
-              H1
-            </Button>
-            <Button href="#" onClick={handleBold} active={!!formats?.bold}>
-              B
-            </Button>
-            <Button href="#" onClick={handleUnderline} active={!!formats?.underline}>
-              U
-            </Button>
-            <Button href="#" onClick={handleStrike} active={!!formats?.strike}>
-              S
-            </Button>
-            <Button href="#" onClick={handleInlineCode} active={!!formats?.code}>
-              code
-            </Button>
-            <Button href="#" onClick={handleColor} active={!!formats?.color}>
-              color
-            </Button>
-            <Button href="#" onClick={handleLink} active={!!formats?.link}>
-              L
-            </Button>
-          </Container>
-        )}
+        <Container
+          top={position?.top ?? 0}
+          left={position?.left ?? 0}
+          isDisplay={!collapsed}
+          ref={containerRef}
+          onMouseDown={handleMouseDown}
+          {...props}
+        >
+          <Button href="#" onClick={handleHeader1} active={blockType === 'HEADER1'}>
+            H1
+          </Button>
+          <Button href="#" onClick={handleBold} active={!!formats?.bold}>
+            B
+          </Button>
+          <Button href="#" onClick={handleUnderline} active={!!formats?.underline}>
+            U
+          </Button>
+          <Button href="#" onClick={handleStrike} active={!!formats?.strike}>
+            S
+          </Button>
+          <Button href="#" onClick={handleInlineCode} active={!!formats?.code}>
+            code
+          </Button>
+          <Button href="#" onClick={handleColor} active={!!formats?.color}>
+            color
+          </Button>
+          <Button href="#" onClick={handleLink} active={!!formats?.link}>
+            L
+          </Button>
+        </Container>
       </>,
       getScrollContainer(scrollContainer) ?? document.body,
     );

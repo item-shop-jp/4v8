@@ -6,7 +6,7 @@ import { EditorEvents } from '../../constants';
 import { CaretPosition } from '../../types/caret';
 import { EditorController } from '../../types/editor';
 import { Inline, InlineAttributes } from '../../types/inline';
-import { getScrollContainer } from '../../utils/dom';
+import { getHtmlElement } from '../../utils/dom';
 import { copyObject } from '../../utils/object';
 
 export interface LinkPopupProps {
@@ -196,7 +196,7 @@ export const LinkPopup = React.memo(
             return;
           }
           setPopupOpen(true);
-          const container = getScrollContainer(scrollContainer);
+          const container = getHtmlElement(scrollContainer);
           if (container) {
             const containerRect = container.getBoundingClientRect();
             const top = (container?.scrollTop ?? 0) + caret.rect.top - containerRect.top;
@@ -274,7 +274,7 @@ export const LinkPopup = React.memo(
           )}
         </div>
       ),
-      getScrollContainer(scrollContainer) ?? document.body,
+      getHtmlElement(scrollContainer) ?? document.body,
     );
   },
 );

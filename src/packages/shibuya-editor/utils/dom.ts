@@ -1,9 +1,9 @@
-export function getScrollContainer(scrollContainer?: HTMLElement | string) {
-  if (!scrollContainer) {
+export function getHtmlElement(el?: HTMLElement | string) {
+  if (!el) {
     return null;
   }
-  if (typeof scrollContainer === 'string') {
-    return document.querySelector<HTMLElement>(scrollContainer);
+  if (typeof el === 'string') {
+    return document.querySelector<HTMLElement>(el);
   }
-  return scrollContainer ?? null;
+  return el ?? null;
 }

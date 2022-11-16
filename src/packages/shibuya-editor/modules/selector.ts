@@ -7,13 +7,16 @@ import { getBlockId, getBlockElementById } from '../utils/block';
 import { KeyCodes, EditorEvents } from '../constants';
 import { Block } from '../types/block';
 import { copyObject } from '../utils/object';
-import { getScrollContainer } from '../utils/dom';
+import { getHtmlElement } from '../utils/dom';
 
 const ShortKey = /Mac/i.test(navigator.platform) ? 'metaKey' : 'ctrlKey';
 
-interface Props {
+export interface SelectorModuleProps {
   eventEmitter: EventEmitter;
   editor: EditorController;
+  options: {
+    selectableArea?: HTMLElement | string;
+  };
 }
 
 interface Area {
@@ -42,6 +45,7 @@ interface KeyBindingProps {
 export class SelectorModule implements Module {
   private eventEmitter;
   private editor;
+  private options;
   private startBlockId: string | null = null;
   private enabled = false;
   private mousePressed = false;
@@ -115,9 +119,10 @@ export class SelectorModule implements Module {
     }
   });
 
-  constructor({ eventEmitter, editor }: Props) {
+  constructor({ eventEmitter, editor, options }: SelectorModuleProps) {
     this.editor = editor;
     this.eventEmitter = eventEmitter;
+    this.options = options;
   }
 
   selectBlocks(blocks: Block[]) {
@@ -257,6 +262,15 @@ export class SelectorModule implements Module {
   }
 
   areaStart(e: MouseEvent) {
+    if (this.options.selectableArea) {
+      // determines if the area is selectable
+      console.log('a');
+      const selectableArea = getHtmlElement(this.options.selectableArea);
+      if (!selectableArea || !selectableArea.contains(e.target as HTMLElement)) {
+        return;
+      }
+    }
+
     const [blockId] = getBlockId(e.target as HTMLElement);
     if (blockId) return;
 
@@ -271,7 +285,7 @@ export class SelectorModule implements Module {
       }
     }
 
-    const container = getScrollContainer(this.editor.getSettings().scrollContainer);
+    const container = getHtmlElement(this.editor.getSettings().scrollContainer);
     const containerScrollTop = container ? container.scrollTop : 0;
     const scrollEl = document.scrollingElement as HTMLElement;
     const bodyScrollTop = scrollEl?.scrollTop ?? 0;
@@ -299,7 +313,7 @@ export class SelectorModule implements Module {
     if (!this.area.start) return;
 
     let isUpward = false;
-    const container = getScrollContainer(this.editor.getSettings().scrollContainer);
+    const container = getHtmlElement(this.editor.getSettings().scrollContainer);
     const containerScrollTop = container ? container.scrollTop : 0;
     const scrollEl = document.scrollingElement as HTMLElement;
     const bodyScrollTop = scrollEl?.scrollTop ?? 0;
@@ -342,10 +356,18 @@ export class SelectorModule implements Module {
       this.areaEl.style.width = `${area.width}px`;
     }
 
-    const editorRect = container
+    let editorRect = container
       ? this.editor.getEditorRef().parentElement?.parentElement?.getBoundingClientRect()
       : this.editor.getEditorRef().getBoundingClientRect();
     if (!editorRect) return;
+
+    const blocks = this.editor.getBlocks();
+    const firstBlock = getBlockElementById(blocks[0].id);
+    if (!firstBlock) return;
+    const firstBlockRect = firstBlock.getBoundingClientRect();
+    if (firstBlockRect.y > editorRect.y) {
+      editorRect.y = firstBlockRect.y;
+    }
 
     if (
       ((editorRect.x < area.left && editorRect.x + editorRect.width > area.left + area.width) ||
@@ -358,14 +380,13 @@ export class SelectorModule implements Module {
         (editorRect.y + editorRect.height < area.top - bodyScrollTop + area.height &&
           editorRect.y + editorRect.height > area.top - bodyScrollTop))
     ) {
-      const blocks = this.editor.getBlocks();
       let blockIds: string[] = [];
       let selectedBlocks: Block[] = [];
+
       if (isUpward) {
         for (let i = this.area.start.blockIndex ?? blocks.length - 1; i >= 0; i--) {
           const blockEl = getBlockElementById(blocks[i].id);
           const rect = blockEl?.getBoundingClientRect();
-
           if (rect && rect.top + rect.height > e.clientY) {
             blockIds.push(blocks[i].id);
           } else {
@@ -376,10 +397,8 @@ export class SelectorModule implements Module {
         for (let i = this.area.start.blockIndex ?? 0; i < blocks.length; i++) {
           const blockEl = getBlockElementById(blocks[i].id);
           const rect = blockEl?.getBoundingClientRect();
+
           if (rect && rect.top <= e.clientY) {
-            if (container && area.top >= rect.top + bodyScrollTop) {
-              continue;
-            }
             blockIds.push(blocks[i].id);
           } else {
             break;

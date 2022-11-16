@@ -6677,14 +6677,14 @@ const GlobalToolbar = React__namespace.memo((_a) => {
     return ReactDOM__default["default"].createPortal(jsxRuntime.exports.jsx(jsxRuntime.exports.Fragment, { children: isDisplay && (jsxRuntime.exports.jsxs(Container$2, Object.assign({}, props, { children: [jsxRuntime.exports.jsx(Button$2, Object.assign({ href: "#", onClick: handleHeader1 }, { children: "H1" })), jsxRuntime.exports.jsx(Button$2, Object.assign({ href: "#", onClick: handleBlockquote }, { children: "\u5F15\u7528" })), jsxRuntime.exports.jsx(Button$2, Object.assign({ href: "#", onClick: handleOrderedList }, { children: "\u756A\u53F7\u30EA\u30B9\u30C8" })), jsxRuntime.exports.jsx(Button$2, Object.assign({ href: "#", onClick: handleBulletList }, { children: "\u30EA\u30B9\u30C8" }))] }))) }), document.body);
 });
 
-function getScrollContainer(scrollContainer) {
-    if (!scrollContainer) {
+function getHtmlElement(el) {
+    if (!el) {
         return null;
     }
-    if (typeof scrollContainer === 'string') {
-        return document.querySelector(scrollContainer);
+    if (typeof el === 'string') {
+        return document.querySelector(el);
     }
-    return scrollContainer !== null && scrollContainer !== void 0 ? scrollContainer : null;
+    return el !== null && el !== void 0 ? el : null;
 }
 
 const Container$1 = He.div `
@@ -6773,7 +6773,7 @@ const BubbleToolbar = React__namespace.memo((_a) => {
                 setCollapsed(true);
                 return;
             }
-            const container = getScrollContainer(scrollContainer);
+            const container = getHtmlElement(scrollContainer);
             if (container) {
                 const containerRect = container.getBoundingClientRect();
                 const top = ((_c = container === null || container === void 0 ? void 0 : container.scrollTop) !== null && _c !== void 0 ? _c : 0) + caret.rect.top - containerRect.top;
@@ -6801,7 +6801,7 @@ const BubbleToolbar = React__namespace.memo((_a) => {
             editor.getModule('toolbar').setBubbleToolbarRef(containerRef.current);
         });
     }, [editor]);
-    return ReactDOM__default["default"].createPortal(jsxRuntime.exports.jsx(jsxRuntime.exports.Fragment, { children: jsxRuntime.exports.jsxs(Container$1, Object.assign({ top: (_b = position === null || position === void 0 ? void 0 : position.top) !== null && _b !== void 0 ? _b : 0, left: (_c = position === null || position === void 0 ? void 0 : position.left) !== null && _c !== void 0 ? _c : 0, isDisplay: !collapsed, ref: containerRef, onMouseDown: handleMouseDown }, props, { children: [jsxRuntime.exports.jsx(Button$1, Object.assign({ href: "#", onClick: handleHeader1, active: blockType === 'HEADER1' }, { children: "H1" })), jsxRuntime.exports.jsx(Button$1, Object.assign({ href: "#", onClick: handleBold, active: !!(formats === null || formats === void 0 ? void 0 : formats.bold) }, { children: "B" })), jsxRuntime.exports.jsx(Button$1, Object.assign({ href: "#", onClick: handleUnderline, active: !!(formats === null || formats === void 0 ? void 0 : formats.underline) }, { children: "U" })), jsxRuntime.exports.jsx(Button$1, Object.assign({ href: "#", onClick: handleStrike, active: !!(formats === null || formats === void 0 ? void 0 : formats.strike) }, { children: "S" })), jsxRuntime.exports.jsx(Button$1, Object.assign({ href: "#", onClick: handleInlineCode, active: !!(formats === null || formats === void 0 ? void 0 : formats.code) }, { children: "code" })), jsxRuntime.exports.jsx(Button$1, Object.assign({ href: "#", onClick: handleColor, active: !!(formats === null || formats === void 0 ? void 0 : formats.color) }, { children: "color" })), jsxRuntime.exports.jsx(Button$1, Object.assign({ href: "#", onClick: handleLink, active: !!(formats === null || formats === void 0 ? void 0 : formats.link) }, { children: "L" }))] })) }), (_d = getScrollContainer(scrollContainer)) !== null && _d !== void 0 ? _d : document.body);
+    return ReactDOM__default["default"].createPortal(jsxRuntime.exports.jsx(jsxRuntime.exports.Fragment, { children: jsxRuntime.exports.jsxs(Container$1, Object.assign({ top: (_b = position === null || position === void 0 ? void 0 : position.top) !== null && _b !== void 0 ? _b : 0, left: (_c = position === null || position === void 0 ? void 0 : position.left) !== null && _c !== void 0 ? _c : 0, isDisplay: !collapsed, ref: containerRef, onMouseDown: handleMouseDown }, props, { children: [jsxRuntime.exports.jsx(Button$1, Object.assign({ href: "#", onClick: handleHeader1, active: blockType === 'HEADER1' }, { children: "H1" })), jsxRuntime.exports.jsx(Button$1, Object.assign({ href: "#", onClick: handleBold, active: !!(formats === null || formats === void 0 ? void 0 : formats.bold) }, { children: "B" })), jsxRuntime.exports.jsx(Button$1, Object.assign({ href: "#", onClick: handleUnderline, active: !!(formats === null || formats === void 0 ? void 0 : formats.underline) }, { children: "U" })), jsxRuntime.exports.jsx(Button$1, Object.assign({ href: "#", onClick: handleStrike, active: !!(formats === null || formats === void 0 ? void 0 : formats.strike) }, { children: "S" })), jsxRuntime.exports.jsx(Button$1, Object.assign({ href: "#", onClick: handleInlineCode, active: !!(formats === null || formats === void 0 ? void 0 : formats.code) }, { children: "code" })), jsxRuntime.exports.jsx(Button$1, Object.assign({ href: "#", onClick: handleColor, active: !!(formats === null || formats === void 0 ? void 0 : formats.color) }, { children: "color" })), jsxRuntime.exports.jsx(Button$1, Object.assign({ href: "#", onClick: handleLink, active: !!(formats === null || formats === void 0 ? void 0 : formats.link) }, { children: "L" }))] })) }), (_d = getHtmlElement(scrollContainer)) !== null && _d !== void 0 ? _d : document.body);
 });
 
 var lodash_isequal = {exports: {}};
@@ -12296,7 +12296,7 @@ function useEditor({ settings, eventEmitter, }) {
             return prev({ blockId: prevBlock.dataset.blockId });
         }
         let prevRect = prevBlock.getBoundingClientRect();
-        const container = getScrollContainer(settings.scrollContainer);
+        const container = getHtmlElement(settings.scrollContainer);
         const containerOffsetTop = container ? container.getBoundingClientRect().top : 0;
         if (prevRect.top <=
             (container ? containerOffsetTop : containerOffsetTop + settings.scrollMarginTop)) {
@@ -12360,7 +12360,7 @@ function useEditor({ settings, eventEmitter, }) {
             return next({ blockId: nextBlock.dataset.blockId });
         }
         let nextRect = (_b = (_a = nextBlock.parentElement) === null || _a === void 0 ? void 0 : _a.getBoundingClientRect()) !== null && _b !== void 0 ? _b : nextBlock.getBoundingClientRect();
-        const container = getScrollContainer(settings.scrollContainer);
+        const container = getHtmlElement(settings.scrollContainer);
         const scrollHeight = (_c = container === null || container === void 0 ? void 0 : container.clientHeight) !== null && _c !== void 0 ? _c : window.innerHeight;
         if (container) {
             const containerRect = (_d = container.getBoundingClientRect()) !== null && _d !== void 0 ? _d : 0;
@@ -12535,7 +12535,7 @@ function useEditor({ settings, eventEmitter, }) {
         if (!element)
             return;
         let nextRect = (_d = (_c = element.parentElement) === null || _c === void 0 ? void 0 : _c.getBoundingClientRect()) !== null && _d !== void 0 ? _d : element.getBoundingClientRect();
-        const container = getScrollContainer(settings.scrollContainer);
+        const container = getHtmlElement(settings.scrollContainer);
         const scrollHeight = (_e = container === null || container === void 0 ? void 0 : container.clientHeight) !== null && _e !== void 0 ? _e : window.innerHeight;
         if (container) {
             const containerRect = (_f = container.getBoundingClientRect()) !== null && _f !== void 0 ? _f : 0;
@@ -12743,7 +12743,6 @@ function useEditor({ settings, eventEmitter, }) {
                     text: content.text,
                     type: content.type,
                     isEmbed: content.isEmbed,
-                    data: content.data,
                 };
             }) });
         const currentBlock = Object.assign(Object.assign({}, block), { contents: contents.map((content) => {
@@ -12752,7 +12751,6 @@ function useEditor({ settings, eventEmitter, }) {
                     text: content.text,
                     type: content.type,
                     isEmbed: content.isEmbed,
-                    data: content.data,
                 };
             }) });
         const redo = json0diff(prevBlock, currentBlock, DiffMatchPatch);
@@ -13737,7 +13735,7 @@ class ToolbarModule {
 
 const ShortKey = /Mac/i.test(navigator.platform) ? 'metaKey' : 'ctrlKey';
 class SelectorModule {
-    constructor({ eventEmitter, editor }) {
+    constructor({ eventEmitter, editor, options }) {
         this.startBlockId = null;
         this.enabled = false;
         this.mousePressed = false;
@@ -13816,6 +13814,7 @@ class SelectorModule {
         });
         this.editor = editor;
         this.eventEmitter = eventEmitter;
+        this.options = options;
     }
     selectBlocks(blocks) {
         this.selectedBlocks = blocks;
@@ -13935,6 +13934,14 @@ class SelectorModule {
     }
     areaStart(e) {
         var _a;
+        if (this.options.selectableArea) {
+            // determines if the area is selectable
+            console.log('a');
+            const selectableArea = getHtmlElement(this.options.selectableArea);
+            if (!selectableArea || !selectableArea.contains(e.target)) {
+                return;
+            }
+        }
         const [blockId] = getBlockId(e.target);
         if (blockId)
             return;
@@ -13948,7 +13955,7 @@ class SelectorModule {
                 break;
             }
         }
-        const container = getScrollContainer(this.editor.getSettings().scrollContainer);
+        const container = getHtmlElement(this.editor.getSettings().scrollContainer);
         const containerScrollTop = container ? container.scrollTop : 0;
         const scrollEl = document.scrollingElement;
         const bodyScrollTop = (_a = scrollEl === null || scrollEl === void 0 ? void 0 : scrollEl.scrollTop) !== null && _a !== void 0 ? _a : 0;
@@ -13975,7 +13982,7 @@ class SelectorModule {
         if (!this.area.start)
             return;
         let isUpward = false;
-        const container = getScrollContainer(this.editor.getSettings().scrollContainer);
+        const container = getHtmlElement(this.editor.getSettings().scrollContainer);
         const containerScrollTop = container ? container.scrollTop : 0;
         const scrollEl = document.scrollingElement;
         const bodyScrollTop = (_a = scrollEl === null || scrollEl === void 0 ? void 0 : scrollEl.scrollTop) !== null && _a !== void 0 ? _a : 0;
@@ -14015,11 +14022,19 @@ class SelectorModule {
             this.areaEl.style.height = `${area.height}px`;
             this.areaEl.style.width = `${area.width}px`;
         }
-        const editorRect = container
+        let editorRect = container
             ? (_c = (_b = this.editor.getEditorRef().parentElement) === null || _b === void 0 ? void 0 : _b.parentElement) === null || _c === void 0 ? void 0 : _c.getBoundingClientRect()
             : this.editor.getEditorRef().getBoundingClientRect();
         if (!editorRect)
             return;
+        const blocks = this.editor.getBlocks();
+        const firstBlock = getBlockElementById(blocks[0].id);
+        if (!firstBlock)
+            return;
+        const firstBlockRect = firstBlock.getBoundingClientRect();
+        if (firstBlockRect.y > editorRect.y) {
+            editorRect.y = firstBlockRect.y;
+        }
         if (((editorRect.x < area.left && editorRect.x + editorRect.width > area.left + area.width) ||
             (editorRect.x > area.left && editorRect.x < area.left + area.width) ||
             (editorRect.x + editorRect.width < area.left + area.width &&
@@ -14029,7 +14044,6 @@ class SelectorModule {
                 (editorRect.y > area.top && editorRect.y < area.top - bodyScrollTop + area.height) ||
                 (editorRect.y + editorRect.height < area.top - bodyScrollTop + area.height &&
                     editorRect.y + editorRect.height > area.top - bodyScrollTop))) {
-            const blocks = this.editor.getBlocks();
             let blockIds = [];
             let selectedBlocks = [];
             if (isUpward) {
@@ -14049,9 +14063,6 @@ class SelectorModule {
                     const blockEl = getBlockElementById(blocks[i].id);
                     const rect = blockEl === null || blockEl === void 0 ? void 0 : blockEl.getBoundingClientRect();
                     if (rect && rect.top <= e.clientY) {
-                        if (container && area.top >= rect.top + bodyScrollTop) {
-                            continue;
-                        }
                         blockIds.push(blocks[i].id);
                     }
                     else {
@@ -16435,7 +16446,7 @@ const LinkPopup = React__namespace.memo((_a) => {
                 return;
             }
             setPopupOpen(true);
-            const container = getScrollContainer(scrollContainer);
+            const container = getHtmlElement(scrollContainer);
             if (container) {
                 const containerRect = container.getBoundingClientRect();
                 const top = ((_a = container === null || container === void 0 ? void 0 : container.scrollTop) !== null && _a !== void 0 ? _a : 0) + caret.rect.top - containerRect.top;
@@ -16478,7 +16489,7 @@ const LinkPopup = React__namespace.memo((_a) => {
             document.removeEventListener('click', handleClose, true);
         };
     }, [popupOpen]);
-    return ReactDOM__default["default"].createPortal(popupOpen && (jsxRuntime.exports.jsxs("div", Object.assign({ ref: modalRef }, { children: [popupMode === 'openEnterLink' && (jsxRuntime.exports.jsxs(EnterLinkContainer, Object.assign({ style: { top: (_b = popupPosition === null || popupPosition === void 0 ? void 0 : popupPosition.top) !== null && _b !== void 0 ? _b : 0, left: (_c = popupPosition === null || popupPosition === void 0 ? void 0 : popupPosition.left) !== null && _c !== void 0 ? _c : 0 } }, props, { children: [jsxRuntime.exports.jsx(Info, { children: "Enter link:" }), jsxRuntime.exports.jsx(LinkInput, { value: linkUrl, onFocus: onFocus, onBlur: onBlur, onChange: handleChange }), jsxRuntime.exports.jsx(SingleButton, Object.assign({ onClick: handleSave }, { children: "save" }))] }))), popupMode === 'openPreview' && (jsxRuntime.exports.jsxs(PreviewContainer, Object.assign({ style: { top: (_d = popupPosition === null || popupPosition === void 0 ? void 0 : popupPosition.top) !== null && _d !== void 0 ? _d : 0, left: (_e = popupPosition === null || popupPosition === void 0 ? void 0 : popupPosition.left) !== null && _e !== void 0 ? _e : 0 } }, props, { children: [jsxRuntime.exports.jsx("div", { children: "Visit URL:" }), jsxRuntime.exports.jsx(Link, Object.assign({ target: "_blank", rel: "noopener noreferrer", href: inline === null || inline === void 0 ? void 0 : inline.attributes['link'] }, { children: inline === null || inline === void 0 ? void 0 : inline.attributes['link'] })), jsxRuntime.exports.jsxs(ButtonContainer, { children: [jsxRuntime.exports.jsx(Button, Object.assign({ onClick: handleEdit }, { children: "edit" })), jsxRuntime.exports.jsx(Button, Object.assign({ onClick: handleRemove }, { children: "remove" }))] })] })))] }))), (_f = getScrollContainer(scrollContainer)) !== null && _f !== void 0 ? _f : document.body);
+    return ReactDOM__default["default"].createPortal(popupOpen && (jsxRuntime.exports.jsxs("div", Object.assign({ ref: modalRef }, { children: [popupMode === 'openEnterLink' && (jsxRuntime.exports.jsxs(EnterLinkContainer, Object.assign({ style: { top: (_b = popupPosition === null || popupPosition === void 0 ? void 0 : popupPosition.top) !== null && _b !== void 0 ? _b : 0, left: (_c = popupPosition === null || popupPosition === void 0 ? void 0 : popupPosition.left) !== null && _c !== void 0 ? _c : 0 } }, props, { children: [jsxRuntime.exports.jsx(Info, { children: "Enter link:" }), jsxRuntime.exports.jsx(LinkInput, { value: linkUrl, onFocus: onFocus, onBlur: onBlur, onChange: handleChange }), jsxRuntime.exports.jsx(SingleButton, Object.assign({ onClick: handleSave }, { children: "save" }))] }))), popupMode === 'openPreview' && (jsxRuntime.exports.jsxs(PreviewContainer, Object.assign({ style: { top: (_d = popupPosition === null || popupPosition === void 0 ? void 0 : popupPosition.top) !== null && _d !== void 0 ? _d : 0, left: (_e = popupPosition === null || popupPosition === void 0 ? void 0 : popupPosition.left) !== null && _e !== void 0 ? _e : 0 } }, props, { children: [jsxRuntime.exports.jsx("div", { children: "Visit URL:" }), jsxRuntime.exports.jsx(Link, Object.assign({ target: "_blank", rel: "noopener noreferrer", href: inline === null || inline === void 0 ? void 0 : inline.attributes['link'] }, { children: inline === null || inline === void 0 ? void 0 : inline.attributes['link'] })), jsxRuntime.exports.jsxs(ButtonContainer, { children: [jsxRuntime.exports.jsx(Button, Object.assign({ onClick: handleEdit }, { children: "edit" })), jsxRuntime.exports.jsx(Button, Object.assign({ onClick: handleRemove }, { children: "remove" }))] })] })))] }))), (_f = getHtmlElement(scrollContainer)) !== null && _f !== void 0 ? _f : document.body);
 });
 
 const Container = He.div `
@@ -16522,7 +16533,7 @@ const Editor = React__namespace.memo(React__namespace.forwardRef((_a, forwardRef
             scrollMarginBottom: (_c = settings.scrollMarginBottom) !== null && _c !== void 0 ? _c : 250,
             allowFormats: (_d = settings.allowFormats) !== null && _d !== void 0 ? _d : [],
             embeddedBlocks: (_e = settings.embeddedBlocks) !== null && _e !== void 0 ? _e : ['IMAGE', 'FILE'],
-            collaborationLevel: (_f = settings.collaborationLevel) !== null && _f !== void 0 ? _f : 'inline',
+            collaborationLevel: (_f = settings.collaborationLevel) !== null && _f !== void 0 ? _f : 'block',
             indentatableFormats: (_g = settings.indentatableFormats) !== null && _g !== void 0 ? _g : ['ORDEREDLIST', 'BULLETLIST'],
             scrollContainer: settings.scrollContainer,
         },

@@ -1,3 +1,5 @@
+import { SelectorModuleProps } from '../modules/selector';
+
 export interface Modules {
   [key: string]: Module;
 }
@@ -8,5 +10,6 @@ export interface Module {
 }
 
 export interface ModuleOptions {
+  selector?: SelectorModuleProps['options'];
   [key: string]: any;
 }

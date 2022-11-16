@@ -6,7 +6,7 @@ import { EditorEvents } from '../../constants';
 import { EditorController } from '../../types/editor';
 import { InlineAttributes } from '../../types/inline';
 import { BlockType } from '../../types/block';
-import { getScrollContainer } from '../../utils/dom';
+import { getHtmlElement } from '../../utils/dom';
 import { LinkPopup } from '../popups';
 import { CaretPosition } from '../../types/caret';
 
@@ -146,7 +146,7 @@ export const BubbleToolbar = React.memo(
             setCollapsed(true);
             return;
           }
-          const container = getScrollContainer(scrollContainer);
+          const container = getHtmlElement(scrollContainer);
           if (container) {
             const containerRect = container.getBoundingClientRect();
             const top = (container?.scrollTop ?? 0) + caret.rect.top - containerRect.top;
@@ -209,7 +209,7 @@ export const BubbleToolbar = React.memo(
           </Button>
         </Container>
       </>,
-      getScrollContainer(scrollContainer) ?? document.body,
+      getHtmlElement(scrollContainer) ?? document.body,
     );
   },
 );

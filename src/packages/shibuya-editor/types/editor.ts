@@ -18,11 +18,11 @@ import { UploaderModule } from '../modules/uploader';
 export interface Settings {
   scrollMarginBottom: number;
   scrollMarginTop: number;
-  allowFormats?: string[];
-  embeddedBlocks?: BlockType[];
+  allowFormats: string[];
+  embeddedBlocks: BlockType[];
   modules?: ModuleOptions;
-  collaborationLevel?: 'block' | 'inline';
-  indentatableFormats?: BlockType[];
+  collaborationLevel: 'block' | 'inline';
+  indentatableFormats: BlockType[];
   scrollContainer?: HTMLElement | string;
 }
 

@@ -6,6 +6,7 @@ import {
   LoggerModule,
   MarkdownShortcutModule,
   SelectorModule,
+  SelectorModuleProps,
   ToolbarModule,
   UploaderModule,
 } from './src/packages/shibuya-editor/modules';
@@ -75,6 +76,7 @@ export interface Module {
 }
 
 export interface ModuleOptions {
+  selector?: SelectorModuleProps['options'];
   [key: string]: any;
 }
 

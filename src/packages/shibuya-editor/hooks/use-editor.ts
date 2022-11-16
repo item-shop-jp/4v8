@@ -8,7 +8,7 @@ import { EventEmitter } from '../utils/event-emitter';
 import * as blockUtils from '../utils/block';
 import { getInlineId } from '../utils/inline';
 import { caretRangeFromPoint, getRectByRange } from '../utils/range';
-import { getScrollContainer } from '../utils/dom';
+import { getHtmlElement } from '../utils/dom';
 import { CaretPosition } from '../types/caret';
 import { ModuleOptions } from '../types/module';
 import { Block } from '../types/block';
@@ -96,7 +96,7 @@ export function useEditor({
         return prev({ blockId: prevBlock.dataset.blockId });
       }
       let prevRect = prevBlock.getBoundingClientRect();
-      const container = getScrollContainer(settings.scrollContainer);
+      const container = getHtmlElement(settings.scrollContainer);
       const containerOffsetTop = container ? container.getBoundingClientRect().top : 0;
 
       if (
@@ -178,7 +178,7 @@ export function useEditor({
       }
       let nextRect =
         nextBlock.parentElement?.getBoundingClientRect() ?? nextBlock.getBoundingClientRect();
-      const container = getScrollContainer(settings.scrollContainer);
+      const container = getHtmlElement(settings.scrollContainer);
       const scrollHeight = container?.clientHeight ?? window.innerHeight;
 
       if (container) {
@@ -378,7 +378,7 @@ export function useEditor({
     if (!element) return;
     let nextRect =
       element.parentElement?.getBoundingClientRect() ?? element.getBoundingClientRect();
-    const container = getScrollContainer(settings.scrollContainer);
+    const container = getHtmlElement(settings.scrollContainer);
     const scrollHeight = container?.clientHeight ?? window.innerHeight;
     if (container) {
       const containerRect = container.getBoundingClientRect() ?? 0;

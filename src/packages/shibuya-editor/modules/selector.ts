@@ -398,6 +398,9 @@ export class SelectorModule implements Module {
           const rect = blockEl?.getBoundingClientRect();
 
           if (rect && rect.top <= e.clientY) {
+            if (container && area.top >= rect.top + rect.height + bodyScrollTop) {
+              continue;
+            }
             blockIds.push(blocks[i].id);
           } else {
             break;

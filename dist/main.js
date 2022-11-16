@@ -13936,7 +13936,6 @@ class SelectorModule {
         var _a;
         if (this.options.selectableArea) {
             // determines if the area is selectable
-            console.log('a');
             const selectableArea = getHtmlElement(this.options.selectableArea);
             if (!selectableArea || !selectableArea.contains(e.target)) {
                 return;
@@ -14063,6 +14062,9 @@ class SelectorModule {
                     const blockEl = getBlockElementById(blocks[i].id);
                     const rect = blockEl === null || blockEl === void 0 ? void 0 : blockEl.getBoundingClientRect();
                     if (rect && rect.top <= e.clientY) {
+                        if (container && area.top >= rect.top + rect.height + bodyScrollTop) {
+                            continue;
+                        }
                         blockIds.push(blocks[i].id);
                     }
                     else {

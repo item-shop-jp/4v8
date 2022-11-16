@@ -83,7 +83,7 @@ export const Editor = React.memo(
           scrollMarginBottom: settings.scrollMarginBottom ?? 250,
           allowFormats: settings.allowFormats ?? [],
           embeddedBlocks: settings.embeddedBlocks ?? ['IMAGE', 'FILE'],
-          collaborationLevel: settings.collaborationLevel ?? 'inline',
+          collaborationLevel: settings.collaborationLevel ?? 'block',
           indentatableFormats: settings.indentatableFormats ?? ['ORDEREDLIST', 'BULLETLIST'],
           scrollContainer: settings.scrollContainer,
         },

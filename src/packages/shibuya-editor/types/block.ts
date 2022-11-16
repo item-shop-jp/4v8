@@ -20,7 +20,6 @@ export interface Block {
   contents: Inline[];
   attributes: BlockAttributes;
   type: BlockType;
-  data?: any;
   meta?: BlockAttributes;
 }
 

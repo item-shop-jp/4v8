@@ -90,7 +90,6 @@ export interface Inline {
   text: string;
   type: InlineType;
   isEmbed: boolean;
-  data?: any;
 }
 
 export type BlockType =
@@ -117,7 +116,6 @@ export interface Block {
   contents: Inline[];
   attributes: BlockAttributes;
   type: BlockType;
-  data?: any;
   meta?: BlockAttributes;
 }
 
@@ -130,13 +128,13 @@ export const BulletList: React.MemoExoticComponent<(props: BlockProps) => JSX.El
 export const Blockquote: React.MemoExoticComponent<(props: BlockProps) => JSX.Element>;
 
 export interface Settings {
-  scrollMarginBottom: number;
-  scrollMarginTop: number;
-  allowFormats: string[];
-  embeddedBlocks: BlockType[];
+  scrollMarginBottom?: number;
+  scrollMarginTop?: number;
+  allowFormats?: string[];
+  embeddedBlocks?: BlockType[];
   modules?: ModuleOptions;
-  collaborationLevel: 'block' | 'inline';
-  indentatableFormats: BlockType[];
+  collaborationLevel?: 'block' | 'inline';
+  indentatableFormats?: BlockType[];
   scrollContainer?: HTMLElement | string;
 }
 

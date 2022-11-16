@@ -6,7 +6,6 @@ export interface Inline {
   text: string;
   type: InlineType;
   isEmbed: boolean;
-  data?: any;
 }
 
 export interface InlineAttributes {

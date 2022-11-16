@@ -669,7 +669,6 @@ export function useEditor({
             text: content.text,
             type: content.type,
             isEmbed: content.isEmbed,
-            data: content.data,
           };
         }),
       };
@@ -681,7 +680,6 @@ export function useEditor({
             text: content.text,
             type: content.type,
             isEmbed: content.isEmbed,
-            data: content.data,
           };
         }),
       };

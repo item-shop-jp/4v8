@@ -63,7 +63,6 @@ const settings = {
     'HEADER2',
     'HEADER3',
   ],
-  exclusiveLockMode: true,
 };
 
 export const Container: React.FC = React.memo(() => {

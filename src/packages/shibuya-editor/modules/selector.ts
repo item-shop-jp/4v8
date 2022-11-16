@@ -264,7 +264,6 @@ export class SelectorModule implements Module {
   areaStart(e: MouseEvent) {
     if (this.options.selectableArea) {
       // determines if the area is selectable
-      console.log('a');
       const selectableArea = getHtmlElement(this.options.selectableArea);
       if (!selectableArea || !selectableArea.contains(e.target as HTMLElement)) {
         return;

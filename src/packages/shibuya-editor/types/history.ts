@@ -1,6 +1,5 @@
 import { Block } from './block';
 import { Inline } from './inline';
-import { HistoryType } from '../constants';
 import { CaretPosition } from './caret';
 
 export interface JSON0 {

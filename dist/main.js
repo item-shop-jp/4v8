@@ -14034,6 +14034,8 @@ class SelectorModule {
         if (firstBlockRect.y > editorRect.y) {
             editorRect.y = firstBlockRect.y;
         }
+        editorRect.x = firstBlockRect.x;
+        editorRect.width = firstBlockRect.width;
         if (((editorRect.x < area.left && editorRect.x + editorRect.width > area.left + area.width) ||
             (editorRect.x > area.left && editorRect.x < area.left + area.width) ||
             (editorRect.x + editorRect.width < area.left + area.width &&

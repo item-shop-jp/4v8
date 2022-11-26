@@ -284,7 +284,13 @@ export class HistoryModule implements Module {
       this.stack.redo.push(ops);
       setTimeout(() => {
         const chenged = ops.map((v) => {
-          if (v.type !== 'update_contents') return v;
+          if (v.type === HistoryType.ADD_BLOCK) {
+            return { ...v, type: HistoryType.REMOVE_BLOCK };
+          }
+          if (v.type === HistoryType.REMOVE_BLOCK) {
+            return { ...v, type: HistoryType.ADD_BLOCK };
+          }
+          if (v.type !== HistoryType.UPDATE_CONTENTS) return v;
           return {
             ...v,
             undo: v.redo,

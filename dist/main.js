@@ -13698,6 +13698,7 @@ class ToolbarModule {
         if (!block)
             return;
         this.editor.formatText(block.id, caretPosition.index, caretPosition.length, attributes);
+        this.editor.blur();
         this.editor.render([block.id]);
         setTimeout(() => this.editor.setCaretPosition({
             blockId: block.id,
@@ -13725,6 +13726,7 @@ class ToolbarModule {
         this.editor.updateBlock(Object.assign(Object.assign({}, block), { type, attributes }));
         this.editor.numberingList();
         this.editor.render([block.id]);
+        this.editor.blur();
         setTimeout(() => this.editor.setCaretPosition({
             blockId: block.id,
             index: caretPosition.index,
@@ -15609,7 +15611,13 @@ class HistoryModule {
             this.stack.redo.push(ops);
             setTimeout(() => {
                 const chenged = ops.map((v) => {
-                    if (v.type !== 'update_contents')
+                    if (v.type === HistoryType.ADD_BLOCK) {
+                        return Object.assign(Object.assign({}, v), { type: HistoryType.REMOVE_BLOCK });
+                    }
+                    if (v.type === HistoryType.REMOVE_BLOCK) {
+                        return Object.assign(Object.assign({}, v), { type: HistoryType.ADD_BLOCK });
+                    }
+                    if (v.type !== HistoryType.UPDATE_CONTENTS)
                         return v;
                     return Object.assign(Object.assign({}, v), { undo: v.redo, redo: v.undo });
                 });

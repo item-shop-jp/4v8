@@ -44,6 +44,7 @@ export class ToolbarModule implements Module {
     const block = this.editor.getBlock(caretPosition.blockId);
     if (!block) return;
     this.editor.formatText(block.id, caretPosition.index, caretPosition.length, attributes);
+    this.editor.blur();
     this.editor.render([block.id]);
     setTimeout(
       () =>
@@ -74,6 +75,7 @@ export class ToolbarModule implements Module {
     this.editor.updateBlock({ ...block, type, attributes });
     this.editor.numberingList();
     this.editor.render([block.id]);
+    this.editor.blur();
     setTimeout(
       () =>
         this.editor.setCaretPosition({

@@ -13748,85 +13748,11 @@ class SelectorModule {
         this.area = { start: null, end: null };
         this.areaSelecting = false;
         this.areaEl = null;
-        this.mouseMove = throttle(20, (e) => {
-            var _a, _b;
-            if (this.areaSelecting) {
-                this.areaMove(e);
-                return;
-            }
-            if (!this.mousePressed)
-                return;
-            const blocks = this.editor.getBlocks();
-            const startIndex = blocks.findIndex((v) => v.id === this.startBlockId);
-            if (startIndex === -1)
-                return;
-            const [blockId] = getBlockId(e.target);
-            let blockIds = [];
-            let selectedBlocks = [];
-            const blockIndex = blocks.findIndex((v) => v.id === blockId);
-            if (!blockId || blockIndex === -1) {
-                const startEl = getBlockElementById(blocks[startIndex].id);
-                const startTop = (_b = (_a = startEl === null || startEl === void 0 ? void 0 : startEl.getBoundingClientRect()) === null || _a === void 0 ? void 0 : _a.top) !== null && _b !== void 0 ? _b : 0;
-                const isUpward = startTop > e.clientY;
-                if (isUpward) {
-                    for (let i = startIndex; i >= 0; i--) {
-                        const blockEl = getBlockElementById(blocks[i].id);
-                        const rect = blockEl === null || blockEl === void 0 ? void 0 : blockEl.getBoundingClientRect();
-                        if (rect && rect.top + rect.height > e.clientY) {
-                            blockIds.push(blocks[i].id);
-                        }
-                        else {
-                            break;
-                        }
-                    }
-                }
-                else {
-                    for (let i = startIndex; i < blocks.length; i++) {
-                        const blockEl = getBlockElementById(blocks[i].id);
-                        const rect = blockEl === null || blockEl === void 0 ? void 0 : blockEl.getBoundingClientRect();
-                        if (rect && rect.top < e.clientY) {
-                            blockIds.push(blocks[i].id);
-                        }
-                        else {
-                            break;
-                        }
-                    }
-                }
-                selectedBlocks = copyObject(blocks.filter((v) => blockIds.includes(v.id)));
-            }
-            else {
-                const endIndex = blocks.findIndex((v) => v.id === blockId);
-                if (startIndex > endIndex) {
-                    selectedBlocks = copyObject(blocks.slice(endIndex, startIndex + 1));
-                    blockIds = selectedBlocks.map((v) => v.id);
-                }
-                else {
-                    selectedBlocks = copyObject(blocks.slice(startIndex, endIndex + 1));
-                    blockIds = selectedBlocks.map((v) => v.id);
-                }
-            }
-            if (!this.enabled && blockIds.length > 1) {
-                this.enabled = true;
-                this.changed = true;
-                this.editor.blur();
-            }
-            if (this.enabled) {
-                this.selectBlocks(selectedBlocks);
-            }
-        });
+        this.mouseMove = throttle(20, this.handleMouseMove);
+        this.throttledCalc = throttle(20, this.calc);
         this.editor = editor;
         this.eventEmitter = eventEmitter;
         this.options = options;
-    }
-    selectBlocks(blocks) {
-        this.selectedBlocks = blocks;
-        this.sendBlockSelectedEvent(blocks.map((v) => v.id));
-    }
-    setStart(id) {
-        this.startBlockId = id;
-    }
-    sendBlockSelectedEvent(blockIds) {
-        this.eventEmitter.emit(EditorEvents.EVENT_BLOCK_SELECTED, blockIds);
     }
     onInit() {
         this.eventEmitter.info('init selector module');
@@ -13906,6 +13832,88 @@ class SelectorModule {
     onDestroy() {
         this.eventEmitter.info('destroy selector module');
     }
+    changeAreaMoveDelay(ms = 20) {
+        this.throttledCalc = throttle(ms, this.calc);
+    }
+    handleMouseMove(e) {
+        if (this.areaSelecting && this.area.start) {
+            this.areaMove(e);
+            return;
+        }
+        if (!this.mousePressed)
+            return;
+        this.blockMove(e);
+    }
+    blockMove(e) {
+        var _a, _b;
+        const blocks = this.editor.getBlocks();
+        const startIndex = blocks.findIndex((v) => v.id === this.startBlockId);
+        if (startIndex === -1)
+            return;
+        const [blockId] = getBlockId(e.target);
+        let blockIds = [];
+        let selectedBlocks = [];
+        const blockIndex = blocks.findIndex((v) => v.id === blockId);
+        if (!blockId || blockIndex === -1) {
+            const startEl = getBlockElementById(blocks[startIndex].id);
+            const startTop = (_b = (_a = startEl === null || startEl === void 0 ? void 0 : startEl.getBoundingClientRect()) === null || _a === void 0 ? void 0 : _a.top) !== null && _b !== void 0 ? _b : 0;
+            const isUpward = startTop > e.clientY;
+            if (isUpward) {
+                for (let i = startIndex; i >= 0; i--) {
+                    const blockEl = getBlockElementById(blocks[i].id);
+                    const rect = blockEl === null || blockEl === void 0 ? void 0 : blockEl.getBoundingClientRect();
+                    if (rect && rect.top + rect.height > e.clientY) {
+                        blockIds.push(blocks[i].id);
+                    }
+                    else {
+                        break;
+                    }
+                }
+            }
+            else {
+                for (let i = startIndex; i < blocks.length; i++) {
+                    const blockEl = getBlockElementById(blocks[i].id);
+                    const rect = blockEl === null || blockEl === void 0 ? void 0 : blockEl.getBoundingClientRect();
+                    if (rect && rect.top < e.clientY) {
+                        blockIds.push(blocks[i].id);
+                    }
+                    else {
+                        break;
+                    }
+                }
+            }
+            selectedBlocks = copyObject(blocks.filter((v) => blockIds.includes(v.id)));
+        }
+        else {
+            const endIndex = blocks.findIndex((v) => v.id === blockId);
+            if (startIndex > endIndex) {
+                selectedBlocks = copyObject(blocks.slice(endIndex, startIndex + 1));
+                blockIds = selectedBlocks.map((v) => v.id);
+            }
+            else {
+                selectedBlocks = copyObject(blocks.slice(startIndex, endIndex + 1));
+                blockIds = selectedBlocks.map((v) => v.id);
+            }
+        }
+        if (!this.enabled && blockIds.length > 1) {
+            this.enabled = true;
+            this.changed = true;
+            this.editor.blur();
+        }
+        if (this.enabled) {
+            this.selectBlocks(selectedBlocks);
+        }
+    }
+    selectBlocks(blocks) {
+        this.selectedBlocks = blocks;
+        this.sendBlockSelectedEvent(blocks.map((v) => v.id));
+    }
+    setStart(id) {
+        this.startBlockId = id;
+    }
+    sendBlockSelectedEvent(blockIds) {
+        this.eventEmitter.emit(EditorEvents.EVENT_BLOCK_SELECTED, blockIds);
+    }
     mouseDown(e) {
         if (e.shiftKey && this.startBlockId) {
             const blocks = this.editor.getBlocks();
@@ -13979,10 +13987,9 @@ class SelectorModule {
         }
     }
     areaMove(e) {
-        var _a, _b, _c, _d, _e;
+        var _a;
         if (!this.area.start)
             return;
-        let isUpward = false;
         const container = getHtmlElement(this.editor.getSettings().scrollContainer);
         const containerScrollTop = container ? container.scrollTop : 0;
         const scrollEl = document.scrollingElement;
@@ -14014,19 +14021,31 @@ class SelectorModule {
             area.left = endLeft;
             area.width = startLeft - endLeft;
         }
-        if (containerScrollTop + startTop > containerScrollTop + endTop) {
-            isUpward = true;
-        }
         if (this.areaEl) {
             this.areaEl.style.top = `${area.top}px`;
             this.areaEl.style.left = `${area.left}px`;
             this.areaEl.style.height = `${area.height}px`;
             this.areaEl.style.width = `${area.width}px`;
         }
+        this.throttledCalc(e, {
+            container,
+            containerScrollTop,
+            bodyScrollTop,
+            startTop,
+            endTop,
+            area,
+        });
+    }
+    calc(e, { container, containerScrollTop, bodyScrollTop, startTop, endTop, area, }) {
+        var _a, _b, _c, _d;
+        let isUpward = false;
+        if (containerScrollTop + startTop > containerScrollTop + endTop) {
+            isUpward = true;
+        }
         let editorRect = container
-            ? (_c = (_b = this.editor.getEditorRef().parentElement) === null || _b === void 0 ? void 0 : _b.parentElement) === null || _c === void 0 ? void 0 : _c.getBoundingClientRect()
+            ? (_b = (_a = this.editor.getEditorRef().parentElement) === null || _a === void 0 ? void 0 : _a.parentElement) === null || _b === void 0 ? void 0 : _b.getBoundingClientRect()
             : this.editor.getEditorRef().getBoundingClientRect();
-        if (!editorRect)
+        if (!editorRect || !this.area.start)
             return;
         const blocks = this.editor.getBlocks();
         const firstBlock = getBlockElementById(blocks[0].id);
@@ -14050,7 +14069,7 @@ class SelectorModule {
             let blockIds = [];
             let selectedBlocks = [];
             if (isUpward) {
-                for (let i = (_d = this.area.start.blockIndex) !== null && _d !== void 0 ? _d : blocks.length - 1; i >= 0; i--) {
+                for (let i = (_c = this.area.start.blockIndex) !== null && _c !== void 0 ? _c : blocks.length - 1; i >= 0; i--) {
                     const blockEl = getBlockElementById(blocks[i].id);
                     const rect = blockEl === null || blockEl === void 0 ? void 0 : blockEl.getBoundingClientRect();
                     if (rect && rect.top + rect.height > e.clientY) {
@@ -14062,7 +14081,7 @@ class SelectorModule {
                 }
             }
             else {
-                for (let i = (_e = this.area.start.blockIndex) !== null && _e !== void 0 ? _e : 0; i < blocks.length; i++) {
+                for (let i = (_d = this.area.start.blockIndex) !== null && _d !== void 0 ? _d : 0; i < blocks.length; i++) {
                     const blockEl = getBlockElementById(blocks[i].id);
                     const rect = blockEl === null || blockEl === void 0 ? void 0 : blockEl.getBoundingClientRect();
                     if (rect && rect.top <= e.clientY) {
@@ -16672,7 +16691,20 @@ const Editor = React__namespace.memo(React__namespace.forwardRef((_a, forwardRef
             { name: 'drag-drop', module: DragDropModule },
         ], (_a = settings === null || settings === void 0 ? void 0 : settings.modules) !== null && _a !== void 0 ? _a : {});
         subs.add(eventEmitter.select(EditorEvents.EVENT_BLOCK_RERENDER).subscribe(() => {
-            setBlocks(editor.getBlocks());
+            const renderBlocks = editor.getBlocks();
+            setBlocks(renderBlocks);
+            if (renderBlocks.length > 2000) {
+                editor.getModule('selector').changeAreaMoveDelay(300);
+            }
+            else if (renderBlocks.length > 1000) {
+                editor.getModule('selector').changeAreaMoveDelay(200);
+            }
+            else if (renderBlocks.length > 500) {
+                editor.getModule('selector').changeAreaMoveDelay(100);
+            }
+            else {
+                editor.getModule('selector').changeAreaMoveDelay(50);
+            }
         }));
         subs.add(eventEmitter.select(EditorEvents.EVENT_BLOCK_SELECTED).subscribe((blockIds) => {
             setSelectedIds(blockIds);
@@ -16682,7 +16714,7 @@ const Editor = React__namespace.memo(React__namespace.forwardRef((_a, forwardRef
             editor.removeAllModules();
             subs.unsubscribe();
         };
-    }, []);
+    }, [editor]);
     React__namespace.useEffect(() => {
         const handleMouseDown = (e) => {
             var _a;
@@ -16716,7 +16748,7 @@ const Editor = React__namespace.memo(React__namespace.forwardRef((_a, forwardRef
             document.removeEventListener('mouseup', handleMouseUp);
             document.removeEventListener('click', handleOutsideClick);
         };
-    }, []);
+    }, [editor]);
     React__namespace.useEffect(() => {
         const appendFormats = formats !== null && formats !== void 0 ? formats : {};
         setBlockFormats((prevFormats) => {

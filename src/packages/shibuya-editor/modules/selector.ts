@@ -58,127 +58,12 @@ export class SelectorModule implements Module {
   private areaEl: HTMLDivElement | null = null;
 
   mouseMove = throttle(20, this.handleMouseMove);
-  areaMove = throttle(20, this.handleAreaMove);
+  throttledCalc = throttle(20, this.calc);
 
   constructor({ eventEmitter, editor, options }: SelectorModuleProps) {
     this.editor = editor;
     this.eventEmitter = eventEmitter;
     this.options = options;
-  }
-
-  changeAreaMoveDelay(ms: number = 20) {
-    this.areaMove = throttle(ms, this.handleAreaMove);
-  }
-
-  handleMouseMove(e: MouseEvent) {
-    if (this.areaSelecting && this.area.start) {
-      const container = getHtmlElement(this.editor.getSettings().scrollContainer);
-      const containerScrollTop = container ? container.scrollTop : 0;
-      const scrollEl = document.scrollingElement as HTMLElement;
-      const bodyScrollTop = scrollEl?.scrollTop ?? 0;
-      this.area.end = { top: e.clientY, left: e.clientX, bodyScrollTop, containerScrollTop };
-      const startTop = this.area.start.bodyScrollTop + this.area.start.top;
-      const endTop = bodyScrollTop + this.area.end.top;
-      const startLeft = this.area.start.left;
-      const endLeft = this.area.end.left;
-      let area: { left: number; top: number; width: number; height: number } = {
-        left: 0,
-        top: 0,
-        width: 0,
-        height: 0,
-      };
-
-      if (startTop < endTop) {
-        area.top = startTop;
-        area.height = endTop - startTop;
-      } else {
-        area.top = endTop;
-        area.height = startTop - endTop;
-      }
-      if (startLeft < endLeft) {
-        area.left = startLeft;
-        area.width = endLeft - startLeft;
-      } else {
-        area.left = endLeft;
-        area.width = startLeft - endLeft;
-      }
-      if (this.areaEl) {
-        this.areaEl.style.top = `${area.top}px`;
-        this.areaEl.style.left = `${area.left}px`;
-        this.areaEl.style.height = `${area.height}px`;
-        this.areaEl.style.width = `${area.width}px`;
-      }
-      this.areaMove(e);
-      return;
-    }
-    if (!this.mousePressed) return;
-    const blocks = this.editor.getBlocks();
-    const startIndex = blocks.findIndex((v) => v.id === this.startBlockId);
-    if (startIndex === -1) return;
-    const [blockId] = getBlockId(e.target as HTMLElement);
-    let blockIds: string[] = [];
-    let selectedBlocks: Block[] = [];
-    const blockIndex = blocks.findIndex((v) => v.id === blockId);
-    if (!blockId || blockIndex === -1) {
-      const startEl = getBlockElementById(blocks[startIndex].id);
-      const startTop = startEl?.getBoundingClientRect()?.top ?? 0;
-      const isUpward = startTop > e.clientY;
-      if (isUpward) {
-        for (let i = startIndex; i >= 0; i--) {
-          const blockEl = getBlockElementById(blocks[i].id);
-          const rect = blockEl?.getBoundingClientRect();
-
-          if (rect && rect.top + rect.height > e.clientY) {
-            blockIds.push(blocks[i].id);
-          } else {
-            break;
-          }
-        }
-      } else {
-        for (let i = startIndex; i < blocks.length; i++) {
-          const blockEl = getBlockElementById(blocks[i].id);
-          const rect = blockEl?.getBoundingClientRect();
-          if (rect && rect.top < e.clientY) {
-            blockIds.push(blocks[i].id);
-          } else {
-            break;
-          }
-        }
-      }
-      selectedBlocks = copyObject(blocks.filter((v) => blockIds.includes(v.id)));
-    } else {
-      const endIndex = blocks.findIndex((v) => v.id === blockId);
-      if (startIndex > endIndex) {
-        selectedBlocks = copyObject(blocks.slice(endIndex, startIndex + 1));
-        blockIds = selectedBlocks.map((v) => v.id);
-      } else {
-        selectedBlocks = copyObject(blocks.slice(startIndex, endIndex + 1));
-        blockIds = selectedBlocks.map((v) => v.id);
-      }
-    }
-
-    if (!this.enabled && blockIds.length > 1) {
-      this.enabled = true;
-      this.changed = true;
-      this.editor.blur();
-    }
-
-    if (this.enabled) {
-      this.selectBlocks(selectedBlocks);
-    }
-  }
-
-  selectBlocks(blocks: Block[]) {
-    this.selectedBlocks = blocks;
-    this.sendBlockSelectedEvent(blocks.map((v) => v.id));
-  }
-
-  setStart(id: string) {
-    this.startBlockId = id;
-  }
-
-  sendBlockSelectedEvent(blockIds: string[]) {
-    this.eventEmitter.emit(EditorEvents.EVENT_BLOCK_SELECTED, blockIds);
   }
 
   onInit() {
@@ -269,6 +154,89 @@ export class SelectorModule implements Module {
     this.eventEmitter.info('destroy selector module');
   }
 
+  changeAreaMoveDelay(ms: number = 20) {
+    this.throttledCalc = throttle(ms, this.calc);
+  }
+
+  handleMouseMove(e: MouseEvent) {
+    if (this.areaSelecting && this.area.start) {
+      this.areaMove(e);
+      return;
+    }
+    if (!this.mousePressed) return;
+    this.blockMove(e);
+  }
+
+  blockMove(e: MouseEvent) {
+    const blocks = this.editor.getBlocks();
+    const startIndex = blocks.findIndex((v) => v.id === this.startBlockId);
+    if (startIndex === -1) return;
+    const [blockId] = getBlockId(e.target as HTMLElement);
+    let blockIds: string[] = [];
+    let selectedBlocks: Block[] = [];
+    const blockIndex = blocks.findIndex((v) => v.id === blockId);
+    if (!blockId || blockIndex === -1) {
+      const startEl = getBlockElementById(blocks[startIndex].id);
+      const startTop = startEl?.getBoundingClientRect()?.top ?? 0;
+      const isUpward = startTop > e.clientY;
+      if (isUpward) {
+        for (let i = startIndex; i >= 0; i--) {
+          const blockEl = getBlockElementById(blocks[i].id);
+          const rect = blockEl?.getBoundingClientRect();
+
+          if (rect && rect.top + rect.height > e.clientY) {
+            blockIds.push(blocks[i].id);
+          } else {
+            break;
+          }
+        }
+      } else {
+        for (let i = startIndex; i < blocks.length; i++) {
+          const blockEl = getBlockElementById(blocks[i].id);
+          const rect = blockEl?.getBoundingClientRect();
+          if (rect && rect.top < e.clientY) {
+            blockIds.push(blocks[i].id);
+          } else {
+            break;
+          }
+        }
+      }
+      selectedBlocks = copyObject(blocks.filter((v) => blockIds.includes(v.id)));
+    } else {
+      const endIndex = blocks.findIndex((v) => v.id === blockId);
+      if (startIndex > endIndex) {
+        selectedBlocks = copyObject(blocks.slice(endIndex, startIndex + 1));
+        blockIds = selectedBlocks.map((v) => v.id);
+      } else {
+        selectedBlocks = copyObject(blocks.slice(startIndex, endIndex + 1));
+        blockIds = selectedBlocks.map((v) => v.id);
+      }
+    }
+
+    if (!this.enabled && blockIds.length > 1) {
+      this.enabled = true;
+      this.changed = true;
+      this.editor.blur();
+    }
+
+    if (this.enabled) {
+      this.selectBlocks(selectedBlocks);
+    }
+  }
+
+  selectBlocks(blocks: Block[]) {
+    this.selectedBlocks = blocks;
+    this.sendBlockSelectedEvent(blocks.map((v) => v.id));
+  }
+
+  setStart(id: string) {
+    this.startBlockId = id;
+  }
+
+  sendBlockSelectedEvent(blockIds: string[]) {
+    this.eventEmitter.emit(EditorEvents.EVENT_BLOCK_SELECTED, blockIds);
+  }
+
   mouseDown(e: MouseEvent) {
     if (e.shiftKey && this.startBlockId) {
       const blocks = this.editor.getBlocks();
@@ -351,10 +319,8 @@ export class SelectorModule implements Module {
     }
   }
 
-  handleAreaMove(e: MouseEvent) {
+  areaMove(e: MouseEvent) {
     if (!this.area.start) return;
-
-    let isUpward = false;
     const container = getHtmlElement(this.editor.getSettings().scrollContainer);
     const containerScrollTop = container ? container.scrollTop : 0;
     const scrollEl = document.scrollingElement as HTMLElement;
@@ -387,6 +353,42 @@ export class SelectorModule implements Module {
       area.width = startLeft - endLeft;
     }
 
+    if (this.areaEl) {
+      this.areaEl.style.top = `${area.top}px`;
+      this.areaEl.style.left = `${area.left}px`;
+      this.areaEl.style.height = `${area.height}px`;
+      this.areaEl.style.width = `${area.width}px`;
+    }
+
+    this.throttledCalc(e, {
+      container,
+      containerScrollTop,
+      bodyScrollTop,
+      startTop,
+      endTop,
+      area,
+    });
+  }
+
+  calc(
+    e: MouseEvent,
+    {
+      container,
+      containerScrollTop,
+      bodyScrollTop,
+      startTop,
+      endTop,
+      area,
+    }: {
+      container: HTMLElement | null;
+      containerScrollTop: number;
+      bodyScrollTop: number;
+      startTop: number;
+      endTop: number;
+      area: { left: number; top: number; width: number; height: number };
+    },
+  ) {
+    let isUpward = false;
     if (containerScrollTop + startTop > containerScrollTop + endTop) {
       isUpward = true;
     }
@@ -394,7 +396,7 @@ export class SelectorModule implements Module {
     let editorRect = container
       ? this.editor.getEditorRef().parentElement?.parentElement?.getBoundingClientRect()
       : this.editor.getEditorRef().getBoundingClientRect();
-    if (!editorRect) return;
+    if (!editorRect || !this.area.start) return;
 
     const blocks = this.editor.getBlocks();
     const firstBlock = getBlockElementById(blocks[0].id);

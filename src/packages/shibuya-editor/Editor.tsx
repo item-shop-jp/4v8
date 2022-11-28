@@ -263,7 +263,17 @@ export const Editor = React.memo(
         );
         subs.add(
           eventEmitter.select(EditorEvents.EVENT_BLOCK_RERENDER).subscribe(() => {
-            setBlocks(editor.getBlocks());
+            const renderBlocks = editor.getBlocks();
+            setBlocks(renderBlocks);
+            if (renderBlocks.length > 2000) {
+              editor.getModule('selector').changeAreaMoveDelay(300);
+            } else if (renderBlocks.length > 1000) {
+              editor.getModule('selector').changeAreaMoveDelay(200);
+            } else if (renderBlocks.length > 500) {
+              editor.getModule('selector').changeAreaMoveDelay(100);
+            } else {
+              editor.getModule('selector').changeAreaMoveDelay(50);
+            }
           }),
         );
         subs.add(
@@ -277,7 +287,7 @@ export const Editor = React.memo(
           editor.removeAllModules();
           subs.unsubscribe();
         };
-      }, []);
+      }, [editor]);
 
       React.useEffect(() => {
         const handleMouseDown = (e: MouseEvent) => {
@@ -314,7 +324,7 @@ export const Editor = React.memo(
           document.removeEventListener('mouseup', handleMouseUp);
           document.removeEventListener('click', handleOutsideClick);
         };
-      }, []);
+      }, [editor]);
 
       React.useEffect(() => {
         const appendFormats = formats ?? {};

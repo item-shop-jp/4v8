@@ -13,7 +13,7 @@ const ScrollContainer = styled.div`
   position: relative;
   border: 1px solid #ccc;
   border-radius: 12px;
-  padding: 12px 0;
+  padding: 0 300px;
 `;
 
 const BasicContainer = styled.div`
@@ -95,9 +95,9 @@ export const Container: React.FC = React.memo(() => {
 
   return (
     <>
-      <BasicContainer id="scroll1">
+      {/* <BasicContainer id="scroll1">
         <Editor settings={settings} formats={formats} readOnly={false} ref={editorRef1} />
-      </BasicContainer>
+      </BasicContainer> */}
       <ScrollContainer id="scroll2">
         <StyledEditor
           settings={{ ...settings, scrollContainer: '#scroll2' }}

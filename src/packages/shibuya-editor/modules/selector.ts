@@ -57,8 +57,57 @@ export class SelectorModule implements Module {
   private areaSelecting = false;
   private areaEl: HTMLDivElement | null = null;
 
-  mouseMove = throttle(20, (e: MouseEvent) => {
-    if (this.areaSelecting) {
+  mouseMove = throttle(20, this.handleMouseMove);
+  areaMove = throttle(20, this.handleAreaMove);
+
+  constructor({ eventEmitter, editor, options }: SelectorModuleProps) {
+    this.editor = editor;
+    this.eventEmitter = eventEmitter;
+    this.options = options;
+  }
+
+  changeAreaMoveDelay(ms: number = 20) {
+    this.areaMove = throttle(ms, this.handleAreaMove);
+  }
+
+  handleMouseMove(e: MouseEvent) {
+    if (this.areaSelecting && this.area.start) {
+      const container = getHtmlElement(this.editor.getSettings().scrollContainer);
+      const containerScrollTop = container ? container.scrollTop : 0;
+      const scrollEl = document.scrollingElement as HTMLElement;
+      const bodyScrollTop = scrollEl?.scrollTop ?? 0;
+      this.area.end = { top: e.clientY, left: e.clientX, bodyScrollTop, containerScrollTop };
+      const startTop = this.area.start.bodyScrollTop + this.area.start.top;
+      const endTop = bodyScrollTop + this.area.end.top;
+      const startLeft = this.area.start.left;
+      const endLeft = this.area.end.left;
+      let area: { left: number; top: number; width: number; height: number } = {
+        left: 0,
+        top: 0,
+        width: 0,
+        height: 0,
+      };
+
+      if (startTop < endTop) {
+        area.top = startTop;
+        area.height = endTop - startTop;
+      } else {
+        area.top = endTop;
+        area.height = startTop - endTop;
+      }
+      if (startLeft < endLeft) {
+        area.left = startLeft;
+        area.width = endLeft - startLeft;
+      } else {
+        area.left = endLeft;
+        area.width = startLeft - endLeft;
+      }
+      if (this.areaEl) {
+        this.areaEl.style.top = `${area.top}px`;
+        this.areaEl.style.left = `${area.left}px`;
+        this.areaEl.style.height = `${area.height}px`;
+        this.areaEl.style.width = `${area.width}px`;
+      }
       this.areaMove(e);
       return;
     }
@@ -117,12 +166,6 @@ export class SelectorModule implements Module {
     if (this.enabled) {
       this.selectBlocks(selectedBlocks);
     }
-  });
-
-  constructor({ eventEmitter, editor, options }: SelectorModuleProps) {
-    this.editor = editor;
-    this.eventEmitter = eventEmitter;
-    this.options = options;
   }
 
   selectBlocks(blocks: Block[]) {
@@ -308,7 +351,7 @@ export class SelectorModule implements Module {
     }
   }
 
-  areaMove(e: MouseEvent) {
+  handleAreaMove(e: MouseEvent) {
     if (!this.area.start) return;
 
     let isUpward = false;
@@ -346,13 +389,6 @@ export class SelectorModule implements Module {
 
     if (containerScrollTop + startTop > containerScrollTop + endTop) {
       isUpward = true;
-    }
-
-    if (this.areaEl) {
-      this.areaEl.style.top = `${area.top}px`;
-      this.areaEl.style.left = `${area.left}px`;
-      this.areaEl.style.height = `${area.height}px`;
-      this.areaEl.style.width = `${area.width}px`;
     }
 
     let editorRect = container

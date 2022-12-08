@@ -23,7 +23,7 @@ export const InlineContainer: React.VFC<ContainerProps> = ({
         let Container;
         const inlineFormat = `inline/${content.type.toLocaleLowerCase()}`;
         if (!formats[inlineFormat]) {
-          // defalut block format
+          // default block format
           Container = formats['inline/text'];
         } else {
           Container = formats[inlineFormat];

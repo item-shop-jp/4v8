@@ -76,15 +76,20 @@ export const Container: React.FC = React.memo(() => {
   }, []);
 
   React.useEffect(() => {
-    if (!editorRef1.current) return;
+    if (!editorRef2.current) return;
 
-    editorRef1.current.setBlocks(
+    editorRef2.current.setBlocks(
       JSON.parse(
         '[{"id":"OodywE2HkiW1KeTBPCa96","contents":[{"id":"OYbvu_ZB9QppDCeIOSfbZ","attributes":{"bold": true},"text":"今日はいい天気ですね🤗","type":"TEXT","isEmbed":false}],"attributes":{},"type":"PARAGRAPH"},{"id":"zB28GJ_DWSjPfe_IGov5-","contents":[{"id":"lNkUDGfX2rsgZhzq_lZ3f","text":"﻿","type":"TEXT","attributes":{},"isEmbed":false}],"attributes":{},"type":"PARAGRAPH"}]',
       ),
     );
+    editorRef2.current.setBlocks(
+      JSON.parse(
+        '[{"id":"OodywE2HkiW1KeTBPCa96","contents":[{"id":"OYbvu_ZB9QppDCeIOSfbZ","attributes":{"bold": true},"text":"今日はいい天気ですね!!🤗","type":"TEXT","isEmbed":false}],"attributes":{},"type":"PARAGRAPH"},{"id":"zB28GJ_DWSjPfe_IGov5-","contents":[{"id":"lNkUDGfX2rsgZhzq_lZ3f","text":"﻿","type":"TEXT","attributes":{},"isEmbed":false}],"attributes":{},"type":"PARAGRAPH"}]',
+      ),
+    );
 
-    const eventEmitter = editorRef1.current.getEventEmitter();
+    const eventEmitter = editorRef2.current.getEventEmitter();
     eventEmitter.select(EditorEvents.EVENT_EDITOR_CHANGED).subscribe((payload) => {
       //console.log(payload);
       // payload.forEach((v: any) => {

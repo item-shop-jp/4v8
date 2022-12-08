@@ -13159,11 +13159,13 @@ class KeyBoardModule {
         this.addBinding({
             key: KeyCodes.BACKSPACE,
             prevented: true,
+            overwriteAllEvents: true,
             handler: this._handleBackspace.bind(this),
         });
         this.addBinding({
             key: KeyCodes.DELETE,
             prevented: true,
+            overwriteAllEvents: true,
             handler: this._handleDelete.bind(this),
         });
         this.addBinding({
@@ -13283,29 +13285,31 @@ class KeyBoardModule {
         });
     }
     _trigger(e, props, caretPosition) {
-        const { key, collapsed = false, empty = false, formats = [], metaKey = false, ctrlKey = false, shiftKey = false, shortKey = false, altKey = false, prevented = false, composing = false, handler, } = props;
+        const { key, collapsed = false, empty = false, formats = [], metaKey = false, ctrlKey = false, shiftKey = false, shortKey = false, altKey = false, prevented = false, composing = false, overwriteAllEvents = false, handler, } = props;
         if (!composing && this.composing)
             return false;
         if (!caretPosition)
             return false;
-        if (shortKey && !e[ShortKey$1])
-            return false;
-        if (!shortKey) {
-            if ((metaKey && !e.metaKey) || (!metaKey && e.metaKey))
+        if (!overwriteAllEvents) {
+            if (shortKey && !e[ShortKey$1])
                 return false;
-            if ((ctrlKey && !e.ctrlKey) || (!ctrlKey && e.ctrlKey))
+            if (!shortKey) {
+                if ((metaKey && !e.metaKey) || (!metaKey && e.metaKey))
+                    return false;
+                if ((ctrlKey && !e.ctrlKey) || (!ctrlKey && e.ctrlKey))
+                    return false;
+            }
+            else {
+                if (metaKey && !e.metaKey)
+                    return false;
+                if (ctrlKey && !e.ctrlKey)
+                    return false;
+            }
+            if ((shiftKey && !e.shiftKey) || (!shiftKey && e.shiftKey))
+                return false;
+            if ((altKey && !e.altKey) || (!altKey && e.altKey))
                 return false;
         }
-        else {
-            if (metaKey && !e.metaKey)
-                return false;
-            if (ctrlKey && !e.ctrlKey)
-                return false;
-        }
-        if ((shiftKey && !e.shiftKey) || (!shiftKey && e.shiftKey))
-            return false;
-        if ((altKey && !e.altKey) || (!altKey && e.altKey))
-            return false;
         if (collapsed && !caretPosition.collapsed)
             return false;
         if (empty && caretPosition.length > 0)
@@ -13421,6 +13425,7 @@ class KeyBoardModule {
     }
     _handleBackspace(caretPosition, editor) {
         var _a;
+        console.log('del');
         const block = editor.getBlock(caretPosition.blockId);
         const blocks = editor.getBlocks();
         const blockIndex = blocks.findIndex((v) => v.id === caretPosition.blockId);

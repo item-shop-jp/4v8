@@ -3,6 +3,7 @@ import { EventEmitter } from '../utils/event-emitter';
 import { EditorController } from '../types/editor';
 import { CaretPosition } from '../types/caret';
 import { getBlockElementById } from '../utils/block';
+import { EventSources } from '../constants';
 
 interface Props {
   eventEmitter: EventEmitter;
@@ -45,7 +46,7 @@ export class UploaderModule implements Module {
       if (isImage) {
         const fileReader = new FileReader();
         fileReader.onload = async (event) => {
-          const addedBlock = this.editor.getModule('editor').createBlock({
+          const previewBlock = this.editor.getModule('editor').createBlock({
             prevId: blockId,
             type: 'IMAGE',
             attributes: {
@@ -54,30 +55,36 @@ export class UploaderModule implements Module {
             meta: {
               isUploading: true,
             },
+            source: EventSources.SILENT,
+            focus: false,
           });
-          setTimeout(() => {
-            const el = getBlockElementById(addedBlock.id);
-            el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          }, 20);
+
           const res = await this.options.onUpload({
             original: file,
             base64: (<FileReader>event.target).result as string,
             isImage,
           });
+          this.editor.deleteBlock(previewBlock.id, EventSources.SILENT);
+          this.editor.render();
           if (!res) {
-            // todo: error;
-            this.editor.deleteBlock(addedBlock.id);
-            this.editor.render();
             return;
           }
-          this.editor.updateBlock({
-            ...addedBlock,
-            attributes: { ...(res.attributes ?? {}), thumbnail: res?.thumbnail ?? res.original },
-            meta: {
-              isUploading: false,
-            },
+          setTimeout(() => {
+            const addBlock = this.editor.getModule('editor').createBlock({
+              prevId: blockId,
+              type: 'IMAGE',
+              attributes: {
+                ...(res.attributes ?? {}),
+                thumbnail: res?.thumbnail ?? res.original,
+              },
+              focus: false,
+            });
+
+            setTimeout(() => {
+              const el = getBlockElementById(addBlock.id);
+              el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 20);
           });
-          this.editor.render([addedBlock.id]);
         };
         fileReader.readAsDataURL(file);
       } else {

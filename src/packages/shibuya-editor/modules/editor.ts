@@ -49,6 +49,7 @@ export class EditorModule implements Module {
     attributes = {},
     meta = {},
     source = 'user',
+    focus = true,
   }: {
     prevId?: string;
     type?: BlockType;
@@ -56,6 +57,7 @@ export class EditorModule implements Module {
     attributes?: BlockAttributes;
     meta?: BlockAttributes;
     source?: Source;
+    focus?: boolean;
   } = {}) {
     const caretPosition = this.editor.getCaretPosition();
     const appendBlock = createBlock(type, contents, attributes, meta);
@@ -64,14 +66,17 @@ export class EditorModule implements Module {
     this.editor.numberingList();
     this.editor.getModule('history')?.optimizeOp();
 
-    setTimeout(() => {
-      this.editor.setCaretPosition({
-        blockId: prevBlockId,
-        index: 0,
-      });
-      this.editor.updateCaretRect();
-      this.editor.next();
-    }, 10);
+    if (focus) {
+      setTimeout(() => {
+        this.editor.setCaretPosition({
+          blockId: prevBlockId,
+          index: 0,
+        });
+        this.editor.updateCaretRect();
+        this.editor.next();
+      }, 10);
+    }
+
     this.editor.render([]);
     return appendBlock;
   }

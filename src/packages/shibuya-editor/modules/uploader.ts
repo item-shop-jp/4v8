@@ -90,41 +90,46 @@ export class UploaderModule implements Module {
       } else {
         const fileReader = new FileReader();
         fileReader.onload = async (event) => {
-          const addedBlock = this.editor.getModule('editor').createBlock({
+          const previewBlock = this.editor.getModule('editor').createBlock({
             prevId: blockId,
             type: 'FILE',
             attributes: {
               fileName: file.name,
-              original: (<FileReader>event.target).result,
               size: file.size,
             },
             meta: {
               isUploading: true,
             },
+            source: EventSources.SILENT,
+            focus: false,
           });
-          setTimeout(() => {
-            const el = getBlockElementById(addedBlock.id);
-            el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          }, 20);
           const res = await this.options.onUpload({
             original: file,
             base64: (<FileReader>event.target).result as string,
             isImage,
           });
+          this.editor.deleteBlock(previewBlock.id, EventSources.SILENT);
+          this.editor.render();
           if (!res) {
-            // todo: error;
-            this.editor.deleteBlock(addedBlock.id);
-            this.editor.render();
             return;
           }
-          this.editor.updateBlock({
-            ...addedBlock,
-            attributes: { ...addedBlock.attributes, ...(res.attributes ?? {}) },
-            meta: {
-              isUploading: false,
-            },
+          setTimeout(() => {
+            const addBlock = this.editor.getModule('editor').createBlock({
+              prevId: blockId,
+              type: 'FILE',
+              attributes: {
+                ...(res.attributes ?? {}),
+                fileName: file.name,
+                size: file.size,
+              },
+              focus: false,
+            });
+
+            setTimeout(() => {
+              const el = getBlockElementById(addBlock.id);
+              el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 20);
           });
-          this.editor.render([addedBlock.id]);
         };
         fileReader.readAsDataURL(file);
       }

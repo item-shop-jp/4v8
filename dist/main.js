@@ -12981,7 +12981,7 @@ class EditorModule {
         this.eventEmitter.info('destory editor module');
         this.subs.unsubscribe();
     }
-    createBlock({ prevId = '', type = 'PARAGRAPH', contents = [], attributes = {}, meta = {}, source = 'user', } = {}) {
+    createBlock({ prevId = '', type = 'PARAGRAPH', contents = [], attributes = {}, meta = {}, source = 'user', focus = true, } = {}) {
         var _a;
         const caretPosition = this.editor.getCaretPosition();
         const appendBlock = createBlock(type, contents, attributes, meta);
@@ -12989,14 +12989,16 @@ class EditorModule {
         this.editor.createBlock(appendBlock, prevBlockId, 'append', source);
         this.editor.numberingList();
         (_a = this.editor.getModule('history')) === null || _a === void 0 ? void 0 : _a.optimizeOp();
-        setTimeout(() => {
-            this.editor.setCaretPosition({
-                blockId: prevBlockId,
-                index: 0,
-            });
-            this.editor.updateCaretRect();
-            this.editor.next();
-        }, 10);
+        if (focus) {
+            setTimeout(() => {
+                this.editor.setCaretPosition({
+                    blockId: prevBlockId,
+                    index: 0,
+                });
+                this.editor.updateCaretRect();
+                this.editor.next();
+            }, 10);
+        }
         this.editor.render([]);
         return appendBlock;
     }
@@ -16247,8 +16249,7 @@ class UploaderModule {
             if (isImage) {
                 const fileReader = new FileReader();
                 fileReader.onload = (event) => __awaiter$1(this, void 0, void 0, function* () {
-                    var _a, _b;
-                    const addedBlock = this.editor.getModule('editor').createBlock({
+                    const previewBlock = this.editor.getModule('editor').createBlock({
                         prevId: blockId,
                         type: 'IMAGE',
                         attributes: {
@@ -16257,64 +16258,74 @@ class UploaderModule {
                         meta: {
                             isUploading: true,
                         },
+                        source: EventSources.SILENT,
+                        focus: false,
                     });
-                    setTimeout(() => {
-                        const el = getBlockElementById(addedBlock.id);
-                        el === null || el === void 0 ? void 0 : el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }, 20);
                     const res = yield this.options.onUpload({
                         original: file,
                         base64: event.target.result,
                         isImage,
                     });
+                    this.editor.deleteBlock(previewBlock.id, EventSources.SILENT);
+                    this.editor.render();
                     if (!res) {
-                        // todo: error;
-                        this.editor.deleteBlock(addedBlock.id);
-                        this.editor.render();
                         return;
                     }
-                    this.editor.updateBlock(Object.assign(Object.assign({}, addedBlock), { attributes: Object.assign(Object.assign({}, ((_a = res.attributes) !== null && _a !== void 0 ? _a : {})), { thumbnail: (_b = res === null || res === void 0 ? void 0 : res.thumbnail) !== null && _b !== void 0 ? _b : res.original }), meta: {
-                            isUploading: false,
-                        } }));
-                    this.editor.render([addedBlock.id]);
+                    setTimeout(() => {
+                        var _a, _b;
+                        const addBlock = this.editor.getModule('editor').createBlock({
+                            prevId: blockId,
+                            type: 'IMAGE',
+                            attributes: Object.assign(Object.assign({}, ((_a = res.attributes) !== null && _a !== void 0 ? _a : {})), { thumbnail: (_b = res === null || res === void 0 ? void 0 : res.thumbnail) !== null && _b !== void 0 ? _b : res.original }),
+                            focus: false,
+                        });
+                        setTimeout(() => {
+                            const el = getBlockElementById(addBlock.id);
+                            el === null || el === void 0 ? void 0 : el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }, 20);
+                    });
                 });
                 fileReader.readAsDataURL(file);
             }
             else {
                 const fileReader = new FileReader();
                 fileReader.onload = (event) => __awaiter$1(this, void 0, void 0, function* () {
-                    var _c;
-                    const addedBlock = this.editor.getModule('editor').createBlock({
+                    const previewBlock = this.editor.getModule('editor').createBlock({
                         prevId: blockId,
                         type: 'FILE',
                         attributes: {
                             fileName: file.name,
-                            original: event.target.result,
                             size: file.size,
                         },
                         meta: {
                             isUploading: true,
                         },
+                        source: EventSources.SILENT,
+                        focus: false,
                     });
-                    setTimeout(() => {
-                        const el = getBlockElementById(addedBlock.id);
-                        el === null || el === void 0 ? void 0 : el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }, 20);
                     const res = yield this.options.onUpload({
                         original: file,
                         base64: event.target.result,
                         isImage,
                     });
+                    this.editor.deleteBlock(previewBlock.id, EventSources.SILENT);
+                    this.editor.render();
                     if (!res) {
-                        // todo: error;
-                        this.editor.deleteBlock(addedBlock.id);
-                        this.editor.render();
                         return;
                     }
-                    this.editor.updateBlock(Object.assign(Object.assign({}, addedBlock), { attributes: Object.assign(Object.assign({}, addedBlock.attributes), ((_c = res.attributes) !== null && _c !== void 0 ? _c : {})), meta: {
-                            isUploading: false,
-                        } }));
-                    this.editor.render([addedBlock.id]);
+                    setTimeout(() => {
+                        var _a;
+                        const addBlock = this.editor.getModule('editor').createBlock({
+                            prevId: blockId,
+                            type: 'FILE',
+                            attributes: Object.assign(Object.assign({}, ((_a = res.attributes) !== null && _a !== void 0 ? _a : {})), { fileName: file.name, size: file.size }),
+                            focus: false,
+                        });
+                        setTimeout(() => {
+                            const el = getBlockElementById(addBlock.id);
+                            el === null || el === void 0 ? void 0 : el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }, 20);
+                    });
                 });
                 fileReader.readAsDataURL(file);
             }

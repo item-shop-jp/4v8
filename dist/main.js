@@ -5388,7 +5388,7 @@ const InlineContainer = (_a) => {
             let Container;
             const inlineFormat = `inline/${content.type.toLocaleLowerCase()}`;
             if (!formats[inlineFormat]) {
-                // defalut block format
+                // default block format
                 Container = formats['inline/text'];
             }
             else {
@@ -16247,7 +16247,7 @@ class UploaderModule {
             if (isImage) {
                 const fileReader = new FileReader();
                 fileReader.onload = (event) => __awaiter$1(this, void 0, void 0, function* () {
-                    var _a;
+                    var _a, _b;
                     const addedBlock = this.editor.getModule('editor').createBlock({
                         prevId: blockId,
                         type: 'IMAGE',
@@ -16273,7 +16273,7 @@ class UploaderModule {
                         this.editor.render();
                         return;
                     }
-                    this.editor.updateBlock(Object.assign(Object.assign({}, addedBlock), { attributes: { thumbnail: (_a = res === null || res === void 0 ? void 0 : res.thumbnail) !== null && _a !== void 0 ? _a : res.original }, meta: {
+                    this.editor.updateBlock(Object.assign(Object.assign({}, addedBlock), { attributes: Object.assign(Object.assign({}, ((_a = res.attributes) !== null && _a !== void 0 ? _a : {})), { thumbnail: (_b = res === null || res === void 0 ? void 0 : res.thumbnail) !== null && _b !== void 0 ? _b : res.original }), meta: {
                             isUploading: false,
                         } }));
                     this.editor.render([addedBlock.id]);
@@ -16283,6 +16283,7 @@ class UploaderModule {
             else {
                 const fileReader = new FileReader();
                 fileReader.onload = (event) => __awaiter$1(this, void 0, void 0, function* () {
+                    var _c;
                     const addedBlock = this.editor.getModule('editor').createBlock({
                         prevId: blockId,
                         type: 'FILE',
@@ -16310,9 +16311,7 @@ class UploaderModule {
                         this.editor.render();
                         return;
                     }
-                    this.editor.updateBlock(Object.assign(Object.assign({}, addedBlock), { 
-                        // attributes: { thumbnail: res?.thumbnail ?? res.original },
-                        meta: {
+                    this.editor.updateBlock(Object.assign(Object.assign({}, addedBlock), { attributes: Object.assign(Object.assign({}, addedBlock.attributes), ((_c = res.attributes) !== null && _c !== void 0 ? _c : {})), meta: {
                             isUploading: false,
                         } }));
                     this.editor.render([addedBlock.id]);
@@ -16320,7 +16319,6 @@ class UploaderModule {
                 fileReader.readAsDataURL(file);
             }
         });
-        //const base64images = await this.options.onUpload(files);
     }
 }
 

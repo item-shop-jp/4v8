@@ -13,6 +13,7 @@ interface Props {
       thumbnail?: string;
       fileName?: string;
       size?: number;
+      attributes?: any;
     } | null;
   };
 }
@@ -71,7 +72,7 @@ export class UploaderModule implements Module {
           }
           this.editor.updateBlock({
             ...addedBlock,
-            attributes: { thumbnail: res?.thumbnail ?? res.original },
+            attributes: { ...(res.attributes ?? {}), thumbnail: res?.thumbnail ?? res.original },
             meta: {
               isUploading: false,
             },
@@ -111,7 +112,7 @@ export class UploaderModule implements Module {
           }
           this.editor.updateBlock({
             ...addedBlock,
-            // attributes: { thumbnail: res?.thumbnail ?? res.original },
+            attributes: { ...addedBlock.attributes, ...(res.attributes ?? {}) },
             meta: {
               isUploading: false,
             },
@@ -121,6 +122,5 @@ export class UploaderModule implements Module {
         fileReader.readAsDataURL(file);
       }
     });
-    //const base64images = await this.options.onUpload(files);
   }
 }

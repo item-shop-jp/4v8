@@ -12711,6 +12711,9 @@ function useEditor({ settings, eventEmitter, }) {
         // If the last block is an embedded element
         if (blocks.length > 0 && settings.embeddedBlocks.includes(blocks[blocks.length - 1].type)) {
             blocks = [...blocks, createBlock('PARAGRAPH')];
+            setTimeout(() => {
+                getModule('history').optimizeOp();
+            });
         }
         blocksRef.current = blocks;
     }, []);

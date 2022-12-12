@@ -12682,7 +12682,7 @@ function useEditor({ settings, eventEmitter, }) {
             }
         }, 10);
     }, []);
-    const createBlock$1 = React__namespace.useCallback((appendBlock, prevBlockId, type = 'append', source = EventSources.USER) => {
+    const createBlock = React__namespace.useCallback((appendBlock, prevBlockId, type = 'append', source = EventSources.USER) => {
         const currentIndex = blocksRef.current.findIndex((v) => v.id === prevBlockId);
         const block = copyObject(appendBlock);
         if (block.meta) {
@@ -12708,19 +12708,6 @@ function useEditor({ settings, eventEmitter, }) {
                 : [...blocksRef.current, appendBlock]);
     }, []);
     const updateBlocks = React__namespace.useCallback((blocks) => {
-        // If the last block is an embedded element
-        if (blocks.length > 0 && settings.embeddedBlocks.includes(blocks[blocks.length - 1].type)) {
-            blocks = [...blocks, createBlock('PARAGRAPH')];
-            eventEmitter.emit(EditorEvents.EVENT_EDITOR_HISTORY_PUSH, {
-                payload: {
-                    type: HistoryType.ADD_BLOCK,
-                    blockId: blocks[blocks.length - 1].id,
-                    block: blocks[blocks.length - 1],
-                    prevBlockId: blocks[blocks.length - 2].id,
-                },
-                source: EventSources.USER,
-            });
-        }
         blocksRef.current = blocks;
     }, []);
     const updateBlock = React__namespace.useCallback((targetBlock, source = EventSources.USER) => {
@@ -12865,7 +12852,7 @@ function useEditor({ settings, eventEmitter, }) {
             getBlocks,
             getBlock,
             getBlockLength: getBlockLength$1,
-            createBlock: createBlock$1,
+            createBlock,
             updateBlock,
             updateBlocks,
             deleteBlock,
@@ -12990,14 +12977,16 @@ class EditorModule {
         this.eventEmitter.info('destory editor module');
         this.subs.unsubscribe();
     }
-    createBlock({ prevId = '', type = 'PARAGRAPH', contents = [], attributes = {}, meta = {}, source = 'user', focus = true, } = {}) {
+    createBlock({ prevId = '', type = 'PARAGRAPH', contents = [], attributes = {}, meta = {}, source = 'user', focus = true, historyPush = true, } = {}) {
         var _a;
         const caretPosition = this.editor.getCaretPosition();
         const appendBlock = createBlock(type, contents, attributes, meta);
         const prevBlockId = prevId || (caretPosition === null || caretPosition === void 0 ? void 0 : caretPosition.blockId);
         this.editor.createBlock(appendBlock, prevBlockId, 'append', source);
         this.editor.numberingList();
-        (_a = this.editor.getModule('history')) === null || _a === void 0 ? void 0 : _a.optimizeOp();
+        if (historyPush) {
+            (_a = this.editor.getModule('history')) === null || _a === void 0 ? void 0 : _a.optimizeOp();
+        }
         if (focus) {
             setTimeout(() => {
                 this.editor.setCaretPosition({
@@ -16269,6 +16258,7 @@ class UploaderModule {
                         },
                         source: EventSources.SILENT,
                         focus: false,
+                        historyPush: false,
                     });
                     const res = yield this.options.onUpload({
                         original: file,
@@ -16287,7 +16277,17 @@ class UploaderModule {
                             type: 'IMAGE',
                             attributes: Object.assign(Object.assign({}, ((_a = res.attributes) !== null && _a !== void 0 ? _a : {})), { thumbnail: (_b = res === null || res === void 0 ? void 0 : res.thumbnail) !== null && _b !== void 0 ? _b : res.original }),
                             focus: false,
+                            historyPush: false,
                         });
+                        // If the last block is an embedded element
+                        const blocks = this.editor.getBlocks();
+                        const addIndex = blocks.findIndex((block) => block.id === addBlock.id);
+                        if (blocks.length > 0 && addIndex === blocks.length - 1) {
+                            this.editor.getModule('editor').createBlock({
+                                prevId: addBlock.id,
+                                type: 'PARAGRAPH',
+                            });
+                        }
                         setTimeout(() => {
                             const el = getBlockElementById(addBlock.id);
                             el === null || el === void 0 ? void 0 : el.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -16311,6 +16311,7 @@ class UploaderModule {
                         },
                         source: EventSources.SILENT,
                         focus: false,
+                        historyPush: false,
                     });
                     const res = yield this.options.onUpload({
                         original: file,
@@ -16329,7 +16330,17 @@ class UploaderModule {
                             type: 'FILE',
                             attributes: Object.assign(Object.assign({}, ((_a = res.attributes) !== null && _a !== void 0 ? _a : {})), { fileName: file.name, size: file.size }),
                             focus: false,
+                            historyPush: false,
                         });
+                        // If the last block is an embedded element
+                        const blocks = this.editor.getBlocks();
+                        const addIndex = blocks.findIndex((block) => block.id === addBlock.id);
+                        if (blocks.length > 0 && addIndex === blocks.length - 1) {
+                            this.editor.getModule('editor').createBlock({
+                                prevId: addBlock.id,
+                                type: 'PARAGRAPH',
+                            });
+                        }
                         setTimeout(() => {
                             const el = getBlockElementById(addBlock.id);
                             el === null || el === void 0 ? void 0 : el.scrollIntoView({ behavior: 'smooth', block: 'center' });

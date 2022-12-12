@@ -57,6 +57,7 @@ export class UploaderModule implements Module {
             },
             source: EventSources.SILENT,
             focus: false,
+            historyPush: false,
           });
 
           const res = await this.options.onUpload({
@@ -78,8 +79,17 @@ export class UploaderModule implements Module {
                 thumbnail: res?.thumbnail ?? res.original,
               },
               focus: false,
+              historyPush: false,
             });
-
+            // If the last block is an embedded element
+            const blocks = this.editor.getBlocks();
+            const addIndex = blocks.findIndex((block) => block.id === addBlock.id);
+            if (blocks.length > 0 && addIndex === blocks.length - 1) {
+              this.editor.getModule('editor').createBlock({
+                prevId: addBlock.id,
+                type: 'PARAGRAPH',
+              });
+            }
             setTimeout(() => {
               const el = getBlockElementById(addBlock.id);
               el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -102,6 +112,7 @@ export class UploaderModule implements Module {
             },
             source: EventSources.SILENT,
             focus: false,
+            historyPush: false,
           });
           const res = await this.options.onUpload({
             original: file,
@@ -123,7 +134,17 @@ export class UploaderModule implements Module {
                 size: file.size,
               },
               focus: false,
+              historyPush: false,
             });
+            // If the last block is an embedded element
+            const blocks = this.editor.getBlocks();
+            const addIndex = blocks.findIndex((block) => block.id === addBlock.id);
+            if (blocks.length > 0 && addIndex === blocks.length - 1) {
+              this.editor.getModule('editor').createBlock({
+                prevId: addBlock.id,
+                type: 'PARAGRAPH',
+              });
+            }
 
             setTimeout(() => {
               const el = getBlockElementById(addBlock.id);

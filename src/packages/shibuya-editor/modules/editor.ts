@@ -50,6 +50,7 @@ export class EditorModule implements Module {
     meta = {},
     source = 'user',
     focus = true,
+    historyPush = true,
   }: {
     prevId?: string;
     type?: BlockType;
@@ -58,13 +59,16 @@ export class EditorModule implements Module {
     meta?: BlockAttributes;
     source?: Source;
     focus?: boolean;
+    historyPush?: boolean;
   } = {}) {
     const caretPosition = this.editor.getCaretPosition();
     const appendBlock = createBlock(type, contents, attributes, meta);
     const prevBlockId = prevId || caretPosition?.blockId;
     this.editor.createBlock(appendBlock, prevBlockId, 'append', source);
     this.editor.numberingList();
-    this.editor.getModule('history')?.optimizeOp();
+    if (historyPush) {
+      this.editor.getModule('history')?.optimizeOp();
+    }
 
     if (focus) {
       setTimeout(() => {

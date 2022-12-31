@@ -4,7 +4,12 @@ import { Formats } from '../../types/format';
 import { EditorController } from '../../types/editor';
 import { useBlockRenderer } from '../../hooks/use-block-renderer';
 import { InlineContainer } from '../inlines/Container';
+import { createInline } from '../../utils/inline';
 import { Block } from '../../types/block';
+import Prism from 'prismjs';
+import 'prismjs/themes/prism-okaidia.css';
+import 'prismjs/components/prism-javascript';
+import 'prismjs/components/prism-typescript';
 
 interface BlockProps {
   blockId: string;
@@ -47,8 +52,26 @@ export const BlockContainer: React.FC<BlockProps> = React.memo(
     const block = useBlockRenderer({ blockId, editor });
 
     const memoContents = React.useMemo(() => {
+      const { embeddedBlocks } = editor.getSettings();
+      if (embeddedBlocks.includes(block?.type ?? '')) {
+        return [];
+      }
+      if (block?.type === 'CODEBLOCK') {
+        const tokens = Prism.tokenize(
+          `<code className="language-typescript">{contents}</code>`,
+          Prism.languages.typescript,
+        );
+
+        const codeContents = tokens.map((v, i) => {
+          if (typeof v === 'string') {
+            return createInline('TEXT', v);
+          }
+          return createInline('TEXT', v.content as string);
+        }, []);
+        return InlineContainer({ contents: codeContents, formats, editor, scrollContainer });
+      }
       return InlineContainer({ contents: block?.contents ?? [], formats, editor, scrollContainer });
-    }, [block?.contents, formats]);
+    }, [block?.contents, block?.type, formats, editor]);
 
     const blockFormat = `block/${block?.type.toLocaleLowerCase()}`;
     const Container: React.FC<any> = formats[blockFormat] ?? formats['block/paragraph'];

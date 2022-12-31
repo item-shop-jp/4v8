@@ -32,7 +32,7 @@ export const GlobalToolbar = React.memo(({ editor, ...props }: GlobalToolbarProp
   const handleHeader1 = React.useCallback(
     (event: React.MouseEvent) => {
       event.preventDefault();
-      editor.getModule('toolbar').formatBlock('HEADER1');
+      editor.getModule('toolbar').formatBlock('CODEBLOCK');
     },
     [formats],
   );

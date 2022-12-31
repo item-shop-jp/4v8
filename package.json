@@ -75,7 +75,9 @@
     ]
   },
   "dependencies": {
+    "@types/prismjs": "^1.26.0",
     "json0-ot-diff": "1.1.2",
+    "prismjs": "^1.29.0",
     "styled-components": "5.3.5"
   }
 }

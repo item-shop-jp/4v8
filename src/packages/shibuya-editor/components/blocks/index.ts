@@ -6,5 +6,6 @@ export * from './OrderedList';
 export * from './BulletList';
 export * from './Blockquote';
 export * from './Paragraph';
+export * from './CodeBlock';
 export * from './embeds/Image';
 export * from './embeds/File';

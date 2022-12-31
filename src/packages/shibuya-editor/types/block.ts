@@ -5,6 +5,7 @@ export type BlockType =
   | 'ORDEREDLIST'
   | 'BULLETLIST'
   | 'BLOCKQUOTE'
+  | 'CODEBLOCK'
   | 'HEADER1'
   | 'HEADER2'
   | 'HEADER3'

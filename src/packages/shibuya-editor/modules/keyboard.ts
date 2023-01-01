@@ -434,7 +434,6 @@ export class KeyBoardModule implements Module {
   }
 
   private _handleBackspace(caretPosition: CaretPosition, editor: EditorController) {
-    console.log('del');
     const block = editor.getBlock(caretPosition.blockId);
     const blocks = editor.getBlocks();
     const blockIndex = blocks.findIndex((v) => v.id === caretPosition.blockId);

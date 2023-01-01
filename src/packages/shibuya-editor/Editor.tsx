@@ -14,7 +14,7 @@ import {
   Image,
   File,
 } from './components/blocks';
-import { InlineText } from './components/inlines';
+import { InlineText, CodeToken } from './components/inlines';
 import { Bold, Strike, Underline, InlineCode, Italic, Color, Link } from './components/styles';
 import { GlobalToolbar, BubbleToolbar } from './components/toolbar';
 import { useEditor } from './hooks/use-editor';
@@ -106,6 +106,7 @@ export const Editor = React.memo(
         'block/image': Image,
         'block/file': File,
         'inline/text': InlineText,
+        'inline/code-token': CodeToken,
         'inline/style/bold': Bold,
         'inline/style/underline': Underline,
         'inline/style/strike': Strike,

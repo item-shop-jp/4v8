@@ -58,15 +58,20 @@ export const BlockContainer: React.FC<BlockProps> = React.memo(
       }
       if (block?.type === 'CODEBLOCK') {
         const tokens = Prism.tokenize(
-          `<code className="language-typescript">{contents}</code>`,
+          `const memoInnerHTML = React.useMemo(() => {
+  const text = inline.text.replaceAll('\\n', '<br>');
+  return {
+    __html: text,
+  };
+}, [inline]);`,
           Prism.languages.typescript,
         );
 
         const codeContents = tokens.map((v, i) => {
           if (typeof v === 'string') {
-            return createInline('TEXT', v);
+            return createInline('CODE-TOKEN', v, { tokenType: 'string' });
           }
-          return createInline('TEXT', v.content as string);
+          return createInline('CODE-TOKEN', v.content as string, { tokenType: v.type as string });
         }, []);
         return InlineContainer({ contents: codeContents, formats, editor, scrollContainer });
       }

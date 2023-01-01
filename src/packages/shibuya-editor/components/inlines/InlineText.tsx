@@ -18,11 +18,6 @@ interface InlineContentProps {
   formats: Formats;
 }
 
-interface PopupProps {
-  top: number;
-  left: number;
-}
-
 const Text = styled.span<InlineContentProps>`
   &::selection {
     background: rgba(46, 170, 220, 0.2);

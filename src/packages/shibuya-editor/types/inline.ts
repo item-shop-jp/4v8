@@ -1,4 +1,4 @@
-export type InlineType = 'TEXT';
+export type InlineType = 'TEXT' | 'CODE-TOKEN';
 
 export interface Inline {
   id: string;

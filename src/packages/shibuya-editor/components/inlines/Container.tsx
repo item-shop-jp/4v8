@@ -33,6 +33,7 @@ export const InlineContainer: React.VFC<ContainerProps> = ({
             key={content.id}
             formats={formats}
             editor={editor}
+            attributes={content.attributes}
             data-inline-id={content.id}
             data-format={inlineFormat}
             data-attributes={JSON.stringify(content.attributes)}

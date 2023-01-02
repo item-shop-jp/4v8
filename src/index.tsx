@@ -1,4 +1,5 @@
 import React from 'react';
+import { Subscription } from 'rxjs';
 import { createRoot } from 'react-dom/client';
 import styled, { css } from 'styled-components';
 import { EditorEvents, LogLevels } from './packages/shibuya-editor/constants';
@@ -77,12 +78,8 @@ export const Container: React.FC = React.memo(() => {
 
   React.useEffect(() => {
     if (!editorRef2.current) return;
+    const subs: Subscription = new Subscription();
 
-    editorRef2.current.setBlocks(
-      JSON.parse(
-        '[{"id":"OodywE2HkiW1KeTBPCa96","contents":[{"id":"OYbvu_ZB9QppDCeIOSfbZ","attributes":{"bold": true},"text":"今日はいい天気ですね🤗","type":"TEXT","isEmbed":false}],"attributes":{},"type":"PARAGRAPH"},{"id":"zB28GJ_DWSjPfe_IGov5-","contents":[{"id":"lNkUDGfX2rsgZhzq_lZ3f","text":"﻿","type":"TEXT","attributes":{},"isEmbed":false}],"attributes":{},"type":"PARAGRAPH"}]',
-      ),
-    );
     editorRef2.current.setBlocks(
       JSON.parse(
         '[{"id":"OodywE2HkiW1KeTBPCa96","contents":[{"id":"OYbvu_ZB9QppDCeIOSfbZ","attributes":{"bold": true},"text":"今日はいい天気ですね!!🤗","type":"TEXT","isEmbed":false}],"attributes":{},"type":"PARAGRAPH"},{"id":"zB28GJ_DWSjPfe_IGov5-","contents":[{"id":"lNkUDGfX2rsgZhzq_lZ3f","text":"﻿","type":"TEXT","attributes":{},"isEmbed":false}],"attributes":{},"type":"PARAGRAPH"}]',
@@ -90,12 +87,17 @@ export const Container: React.FC = React.memo(() => {
     );
 
     const eventEmitter = editorRef2.current.getEventEmitter();
-    eventEmitter.select(EditorEvents.EVENT_EDITOR_CHANGED).subscribe((payload) => {
-      //console.log(payload);
-      // payload.forEach((v: any) => {
-      //   console.log(JSON.stringify(editorRef1.current?.getBlock(v.blockId)));
-      // });
-    });
+    subs.add(
+      eventEmitter.select(EditorEvents.EVENT_EDITOR_CHANGED).subscribe((payload) => {
+        console.log(payload);
+        // payload.forEach((v: any) => {
+        //   console.log(JSON.stringify(editorRef1.current?.getBlock(v.blockId)));
+        // });
+      }),
+    );
+    return () => {
+      subs.unsubscribe();
+    };
   }, []);
 
   return (

@@ -147,7 +147,6 @@ export const BubbleToolbar = React.memo(
           if (
             !block ||
             disableDecorationFormats.includes(block.type) ||
-            !caret ||
             !editor.hasFocus() ||
             blockLength < 1
           ) {

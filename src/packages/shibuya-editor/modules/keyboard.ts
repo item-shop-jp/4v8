@@ -4,8 +4,9 @@ import { Module } from '../types/module';
 import { EventEmitter } from '../utils/event-emitter';
 import { KeyCodes } from '../constants';
 import { EditorController } from '../types/editor';
-import { deleteInlineContents, getBlockId } from '../utils/block';
+import { deleteInlineContents, getBlockId, insertTextInlineContents } from '../utils/block';
 import { CaretPosition } from '../types/caret';
+import { BlockType } from '../types';
 
 const ShortKey = /Mac/i.test(navigator.platform) ? 'metaKey' : 'ctrlKey';
 
@@ -26,6 +27,8 @@ interface KeyBindingProps {
   altKey?: boolean;
   prevented?: boolean;
   composing?: boolean;
+  only?: BlockType[];
+  except?: BlockType[];
   overwriteAllEvents?: boolean;
   handler: (range: CaretPosition, editor: EditorController, event: React.KeyboardEvent) => void;
 }
@@ -53,24 +56,31 @@ export class KeyBoardModule implements Module {
       key: KeyCodes.ENTER,
       composing: true,
       prevented: true,
+      except: ['CODE-BLOCK'],
       handler: this._handleEnter.bind(this),
     });
     this.addBinding({
       key: KeyCodes.NUMPAD_ENTER,
       composing: true,
       prevented: true,
+      except: ['CODE-BLOCK'],
       handler: this._handleEnter.bind(this),
     });
-    // this.addBinding({
-    //   key: KeyCodes.ENTER,
-    //   shiftKey: true,
-    //   handler: this._handleShiftEnter.bind(this),
-    // });
-    // this.addBinding({
-    //   key: KeyCodes.NUMPAD_ENTER,
-    //   shiftKey: true,
-    //   handler: this._handleShiftEnter.bind(this),
-    // });
+    // code-block enter
+    this.addBinding({
+      key: KeyCodes.ENTER,
+      composing: true,
+      prevented: true,
+      only: ['CODE-BLOCK'],
+      handler: this._handleCodeBlockEnter.bind(this),
+    });
+    this.addBinding({
+      key: KeyCodes.NUMPAD_ENTER,
+      composing: true,
+      prevented: true,
+      only: ['CODE-BLOCK'],
+      handler: this._handleCodeBlockEnter.bind(this),
+    });
 
     // handle key operation
     this.addBinding({
@@ -281,9 +291,10 @@ export class KeyBoardModule implements Module {
       prevented = false,
       composing = false,
       overwriteAllEvents = false,
+      only = [],
+      except = [],
       handler,
     } = props;
-
     if (!composing && this.composing) return false;
     if (!caretPosition) return false;
 
@@ -302,6 +313,14 @@ export class KeyBoardModule implements Module {
     }
     if (collapsed && !caretPosition.collapsed) return false;
     if (empty && caretPosition.length > 0) return false;
+
+    const block = this.editor.getBlock(caretPosition.blockId);
+    if (block && except.includes(block.type)) {
+      return false;
+    }
+    if (block && only.length > 0 && !only.includes(block.type)) {
+      return false;
+    }
 
     if (key !== e.code) return false;
 
@@ -357,6 +376,29 @@ export class KeyBoardModule implements Module {
     } else {
       editor.getModule('editor').splitBlock(caret.blockId, caret.index, caret.length);
     }
+  }
+
+  private _handleCodeBlockEnter(caretPosition: CaretPosition, editor: EditorController) {
+    if (this.composing) {
+      return;
+    }
+    const caret = editor.getCaretPosition();
+    if (!caret) return;
+    const block = editor.getBlock(caret.blockId);
+    if (!block) return;
+    const insertedContents = insertTextInlineContents(block.contents, '\n', caret.index);
+    editor.updateBlock({
+      ...block,
+      contents: insertedContents,
+    });
+    editor.render([block.id]);
+    setTimeout(() => {
+      this.editor.setCaretPosition({
+        blockId: block.id,
+        index: caret.index + 1,
+      });
+      this.editor.updateCaretRect();
+    }, 10);
   }
 
   private _handleKeyLeft(
@@ -573,6 +615,11 @@ export class KeyBoardModule implements Module {
   ) {
     const caret = editor.getCaretPosition();
     if (!caret) return;
+    const block = editor.getBlock(caret.blockId);
+    const { disableDecorationFormats } = editor.getSettings();
+    if (!block || disableDecorationFormats.includes(block.type)) {
+      return;
+    }
     const formats = editor.getFormats(caret.blockId, caret.index, caret.length);
     editor.getModule('toolbar').formatInline({ bold: !formats?.bold });
   }
@@ -584,6 +631,11 @@ export class KeyBoardModule implements Module {
   ) {
     const caret = editor.getCaretPosition();
     if (!caret) return;
+    const block = editor.getBlock(caret.blockId);
+    const { disableDecorationFormats } = editor.getSettings();
+    if (!block || disableDecorationFormats.includes(block.type)) {
+      return;
+    }
     const formats = editor.getFormats(caret.blockId, caret.index, caret.length);
     editor.getModule('toolbar').formatInline({ italic: !formats?.italic });
   }
@@ -595,6 +647,11 @@ export class KeyBoardModule implements Module {
   ) {
     const caret = editor.getCaretPosition();
     if (!caret) return;
+    const block = editor.getBlock(caret.blockId);
+    const { disableDecorationFormats } = editor.getSettings();
+    if (!block || disableDecorationFormats.includes(block.type)) {
+      return;
+    }
     const formats = editor.getFormats(caret.blockId, caret.index, caret.length);
     editor.getModule('toolbar').formatInline({ underline: !formats?.underline });
   }

@@ -61,7 +61,7 @@ export const BubbleToolbar = React.memo(
     const [formats, setFormats] = React.useState<InlineAttributes>({});
     const [position, setPosition] = React.useState<ToolbarPosition>();
     const [blockType, setBlockType] = React.useState<BlockType>();
-    const [collapsed, setCollapsed] = React.useState<boolean>(true);
+    const [isDisplay, setDisplay] = React.useState<boolean>(false);
     const [currentCaretPosition, setCurrentCaretPosition] = React.useState<CaretPosition | null>();
     const containerRef = React.useRef<HTMLDivElement>(null);
 
@@ -140,10 +140,19 @@ export const BubbleToolbar = React.memo(
       subs.add(
         eventEmitter.select(EditorEvents.EVENT_SELECTION_CHANGE).subscribe((v) => {
           const caret = editor.getCaretPosition();
+          if (!caret) return;
+          const block = editor.getBlock(caret.blockId);
           const blockLength = editor.getBlockLength(caret?.blockId ?? '') ?? 0;
-          if (!caret || !editor.hasFocus() || blockLength < 1) {
+          const { disableDecorationFormats } = editor.getSettings();
+          if (
+            !block ||
+            disableDecorationFormats.includes(block.type) ||
+            !caret ||
+            !editor.hasFocus() ||
+            blockLength < 1
+          ) {
             setPosition(undefined);
-            setCollapsed(true);
+            setDisplay(false);
             return;
           }
           const container = getHtmlElement(scrollContainer);
@@ -159,7 +168,7 @@ export const BubbleToolbar = React.memo(
             setPosition({ top, left });
           }
 
-          setCollapsed(caret.collapsed);
+          setDisplay(!caret.collapsed);
           setFormats(editor.getFormats(caret.blockId, caret.index, caret.length));
           setBlockType(editor.getBlock(caret.blockId)?.type);
         }),
@@ -181,7 +190,7 @@ export const BubbleToolbar = React.memo(
         <Container
           top={position?.top ?? 0}
           left={position?.left ?? 0}
-          isDisplay={!collapsed}
+          isDisplay={isDisplay}
           ref={containerRef}
           onMouseDown={handleMouseDown}
           {...props}

@@ -23,6 +23,10 @@ const P = styled.p`
 
 export const Paragraph = React.memo(
   ({ blockId, formats, editor, contents, ...props }: ParagraphProps) => {
-    return <P {...props}>{contents}</P>;
+    return (
+      <P spellCheck={false} {...props}>
+        {contents}
+      </P>
+    );
   },
 );

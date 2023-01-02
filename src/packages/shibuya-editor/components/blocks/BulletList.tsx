@@ -81,6 +81,7 @@ export const BulletList = React.memo(
       <ListItem
         ref={headerRef}
         style={memoStyle}
+        spellCheck={false}
         placeholder={showPlaceholder ? placeholder : ''}
         {...props}
       >

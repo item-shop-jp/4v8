@@ -156,7 +156,7 @@ export class EditorModule implements Module {
       contents: first.length < 1 ? [createInline('TEXT')] : first,
     };
     let blockType: BlockType = 'PARAGRAPH';
-    if (['ORDEREDLIST', 'BULLETLIST'].includes(blocks[currentIndex].type)) {
+    if (['ORDERED-LIST', 'BULLET-LIST'].includes(blocks[currentIndex].type)) {
       blockType = blocks[currentIndex].type;
     }
 

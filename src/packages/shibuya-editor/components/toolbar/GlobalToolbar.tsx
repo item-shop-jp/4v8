@@ -32,7 +32,7 @@ export const GlobalToolbar = React.memo(({ editor, ...props }: GlobalToolbarProp
   const handleHeader1 = React.useCallback(
     (event: React.MouseEvent) => {
       event.preventDefault();
-      editor.getModule('toolbar').formatBlock('CODEBLOCK');
+      editor.getModule('toolbar').formatBlock('CODE-BLOCK');
     },
     [formats],
   );
@@ -48,7 +48,7 @@ export const GlobalToolbar = React.memo(({ editor, ...props }: GlobalToolbarProp
   const handleOrderedList = React.useCallback(
     (event: React.MouseEvent) => {
       event.preventDefault();
-      editor.getModule('toolbar').formatBlock('ORDEREDLIST');
+      editor.getModule('toolbar').formatBlock('ORDERED-LIST');
     },
     [formats],
   );
@@ -56,7 +56,7 @@ export const GlobalToolbar = React.memo(({ editor, ...props }: GlobalToolbarProp
   const handleBulletList = React.useCallback(
     (event: React.MouseEvent) => {
       event.preventDefault();
-      editor.getModule('toolbar').formatBlock('BULLETLIST');
+      editor.getModule('toolbar').formatBlock('BULLET-LIST');
     },
     [formats],
   );
@@ -78,15 +78,6 @@ export const GlobalToolbar = React.memo(({ editor, ...props }: GlobalToolbarProp
           setDisplay(true);
           setFormats(editor.getFormats(caret.blockId, caret.index, caret.length));
         }),
-    );
-    subs.add(
-      eventEmitter.select(EditorEvents.EVENT_BLOCK_SELECTED).subscribe((blockIds: string[]) => {
-        if (blockIds.length < 1) {
-          setDisplay(false);
-          return;
-        }
-        setDisplay(true);
-      }),
     );
     return () => {
       subs.unsubscribe();

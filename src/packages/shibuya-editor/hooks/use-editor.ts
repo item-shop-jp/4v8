@@ -755,7 +755,7 @@ export function useEditor({
     updateBlocks(
       blocksRef.current.map((v, i) => {
         const indent = v.attributes?.indent ?? 0;
-        if (v.type === 'ORDEREDLIST') {
+        if (v.type === 'ORDERED-LIST') {
           if (!listNumbers[indent]) {
             listNumbers[indent] = 0;
           }
@@ -773,7 +773,7 @@ export function useEditor({
             meta: { ...v.meta, listNumber: listNumbers[indent] },
           };
         }
-        if (v.type === 'BULLETLIST' && lastIndent < indent) {
+        if (v.type === 'BULLET-LIST' && lastIndent < indent) {
           return {
             ...v,
             meta: { ...v.meta, listNumber: 0 },

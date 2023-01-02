@@ -23,6 +23,7 @@ export interface Settings {
   modules?: ModuleOptions;
   collaborationLevel: 'block' | 'inline';
   indentatableFormats: BlockType[];
+  disableDecorationFormats: BlockType[]; // 装飾無効
   scrollContainer?: HTMLElement | string;
 }
 

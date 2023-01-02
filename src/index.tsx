@@ -55,8 +55,8 @@ const settings = {
   scrollMarginTop: 50,
   allowFormats: [],
   indentatableFormats: [
-    'ORDEREDLIST',
-    'BULLETLIST',
+    'ORDERED-LIST',
+    'BULLET-LIST',
     'PARAGRAPH',
     'BLOCKQUOTE',
     'HEADER1',

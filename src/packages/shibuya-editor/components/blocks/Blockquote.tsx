@@ -20,5 +20,9 @@ const Container = styled.blockquote`
 `;
 
 export const Blockquote = React.memo(({ blockId, contents, editor, ...props }: BlockquoteProps) => {
-  return <Container {...props}>{contents}</Container>;
+  return (
+    <Container spellCheck={false} {...props}>
+      {contents}
+    </Container>
+  );
 });

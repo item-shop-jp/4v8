@@ -2,10 +2,10 @@ import { Inline } from './inline';
 
 export type BlockType =
   | 'PARAGRAPH'
-  | 'ORDEREDLIST'
-  | 'BULLETLIST'
+  | 'ORDERED-LIST'
+  | 'BULLET-LIST'
   | 'BLOCKQUOTE'
-  | 'CODEBLOCK'
+  | 'CODE-BLOCK'
   | 'HEADER1'
   | 'HEADER2'
   | 'HEADER3'

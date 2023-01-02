@@ -217,11 +217,11 @@ export class MarkdownShortcutModule implements Module {
   }
 
   private _handleOrderedList(caret: CaretPosition, match: RegExpMatchArray) {
-    this.formatBlock(caret.blockId, 'ORDEREDLIST', 0, stringLength(match[0]));
+    this.formatBlock(caret.blockId, 'ORDERED-LIST', 0, stringLength(match[0]));
   }
 
   private _handleBulletList(caret: CaretPosition, match: RegExpMatchArray) {
-    this.formatBlock(caret.blockId, 'BULLETLIST', 0, stringLength(match[0]));
+    this.formatBlock(caret.blockId, 'BULLET-LIST', 0, stringLength(match[0]));
   }
 
   private _handleImage(caret: CaretPosition, match: RegExpMatchArray) {

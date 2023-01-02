@@ -56,7 +56,7 @@ export const BlockContainer: React.FC<BlockProps> = React.memo(
       if (embeddedBlocks.includes(block?.type ?? '')) {
         return [];
       }
-      if (block?.type === 'CODEBLOCK') {
+      if (block?.type === 'CODE-BLOCK') {
         const tokens = Prism.tokenize(
           `const memoInnerHTML = React.useMemo(() => {
   const text = inline.text.replaceAll('\\n', '<br>');

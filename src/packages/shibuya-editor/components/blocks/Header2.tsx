@@ -42,7 +42,12 @@ export const Header2 = React.memo(
     }, []);
 
     return (
-      <Header ref={headerRef} placeholder={showPlaceholder ? placeholder : ''} {...props}>
+      <Header
+        ref={headerRef}
+        spellCheck={false}
+        placeholder={showPlaceholder ? placeholder : ''}
+        {...props}
+      >
         {contents}
       </Header>
     );

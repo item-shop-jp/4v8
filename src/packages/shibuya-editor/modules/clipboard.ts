@@ -140,7 +140,8 @@ export class ClipboardModule implements Module {
     const clipboardText = event.clipboardData.getData('text/plain');
     const linkRegExp = new RegExp(`^https?://[a-zA-Z0-9-_.!'()*;/?:@&=+$,%#]+$`, 'i');
     const linkMatch = clipboardText.match(linkRegExp);
-    // if it was url
+
+    // url link
     if (prevBlock && caretPosition && linkMatch) {
       if (caretPosition.length > 0) {
         this.editor.formatText(prevBlock.id, caretPosition.index, caretPosition.length, {
@@ -183,7 +184,7 @@ export class ClipboardModule implements Module {
         contents = deleteInlineContents(contents, caretPosition.index, caretPosition.length);
       }
       const [first, last] = splitInlineContents(contents, caretPosition.index);
-      const appendContent = createInline('TEXT', clipboardText);
+      const appendContent = createInline('TEXT', clipboardText.replaceAll('\r\n', '\n'));
 
       this.editor.updateBlock({
         ...prevBlock,

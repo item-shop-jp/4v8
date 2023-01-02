@@ -4,7 +4,12 @@ import { Module } from '../types/module';
 import { EventEmitter } from '../utils/event-emitter';
 import { KeyCodes } from '../constants';
 import { EditorController } from '../types/editor';
-import { deleteInlineContents, getBlockId, insertTextInlineContents } from '../utils/block';
+import {
+  deleteInlineContents,
+  getBlockId,
+  insertTextInlineContents,
+  createBlock as utilCreateBlock,
+} from '../utils/block';
 import { CaretPosition } from '../types/caret';
 import { BlockType } from '../types';
 
@@ -386,16 +391,57 @@ export class KeyBoardModule implements Module {
     if (!caret) return;
     const block = editor.getBlock(caret.blockId);
     if (!block) return;
-    const insertedContents = insertTextInlineContents(block.contents, '\n', caret.index);
+    const length = editor.getBlockLength(caret.blockId) ?? 0;
+
+    if (length === 0) {
+      editor.updateBlock({
+        ...block,
+        type: 'PARAGRAPH',
+      });
+      this.editor.numberingList();
+      this.editor.getModule('history')?.optimizeOp();
+      editor.render([block.id]);
+      setTimeout(() => {
+        this.editor.setCaretPosition({
+          blockId: block.id,
+          index: 0,
+        });
+        this.editor.updateCaretRect();
+      }, 10);
+      return;
+    }
+    const blockText = block.contents.map((v) => v.text).join('');
+    if (caret.collapsed && length - 1 <= caret.index && blockText.slice(-2) === '\n\n') {
+      const deletedContents = deleteInlineContents(block.contents, length - 1, 1);
+      editor.updateBlock({
+        ...block,
+        contents: deletedContents,
+      });
+      const appendBlock = utilCreateBlock('PARAGRAPH');
+      editor.createBlock(appendBlock, block.id, 'append');
+      editor.render([block.id]);
+      setTimeout(() => {
+        this.editor.setCaretPosition({
+          blockId: appendBlock.id,
+          index: 0,
+        });
+        this.editor.updateCaretRect();
+      }, 10);
+      return;
+    }
+
+    const lineBrake = caret.index === length ? '\n\n' : '\n';
+    const insertedContents = insertTextInlineContents(block.contents, lineBrake, caret.index);
     editor.updateBlock({
       ...block,
       contents: insertedContents,
     });
+    editor.blur();
     editor.render([block.id]);
     setTimeout(() => {
       this.editor.setCaretPosition({
         blockId: block.id,
-        index: caret.index + 1,
+        index: caret.index + lineBrake.length,
       });
       this.editor.updateCaretRect();
     }, 10);

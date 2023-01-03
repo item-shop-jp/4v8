@@ -150,6 +150,7 @@ export class KeyBoardModule implements Module {
       key: KeyCodes.TAB,
       composing: true,
       prevented: true,
+      except: ['CODE-BLOCK'],
       handler: this._handleIndent.bind(this),
     });
 
@@ -157,14 +158,25 @@ export class KeyBoardModule implements Module {
       key: KeyCodes.TAB,
       shiftKey: true,
       prevented: true,
+      except: ['CODE-BLOCK'],
       handler: this._handleOutdent.bind(this),
     });
 
-    // if ([KeyCodes.DEL].includes(e.code)) {
-    //   e.preventDefault();
-    //   e.stopPropagation();
-    //   return;
-    // }
+    this.addBinding({
+      key: KeyCodes.TAB,
+      composing: true,
+      prevented: true,
+      only: ['CODE-BLOCK'],
+      handler: this._handleIndent.bind(this),
+    });
+
+    this.addBinding({
+      key: KeyCodes.TAB,
+      shiftKey: true,
+      prevented: true,
+      only: ['CODE-BLOCK'],
+      handler: this._handleOutdent.bind(this),
+    });
 
     this.addBinding({
       key: KeyCodes.Z,
@@ -432,7 +444,7 @@ export class KeyBoardModule implements Module {
     }
 
     let lineBrake = '\n';
-    if (!blockText.match(/\n$/)) {
+    if (caret.index >= length - 1 && !blockText.match(/\n$/)) {
       lineBrake = '\n\n';
     }
     const insertedContents = insertTextInlineContents(block.contents, lineBrake, caret.index);

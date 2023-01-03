@@ -7,7 +7,6 @@ import { InlineContainer } from '../inlines/Container';
 import { createInline } from '../../utils/inline';
 import { Block } from '../../types/block';
 import Prism from 'prismjs';
-import 'prismjs/themes/prism-okaidia.css';
 import 'prismjs/components/prism-javascript';
 import 'prismjs/components/prism-typescript';
 

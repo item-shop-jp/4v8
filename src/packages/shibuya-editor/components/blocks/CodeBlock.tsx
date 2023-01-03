@@ -33,7 +33,7 @@ const Container = styled.div`
 export const CodeBlock = React.memo(
   ({ blockId, editor, contents, formats, ...props }: CodeBlockProps) => {
     return (
-      <Container id="test" spellCheck={false} {...props}>
+      <Container spellCheck={false} {...props}>
         {contents}
       </Container>
     );

@@ -412,6 +412,7 @@ export class KeyBoardModule implements Module {
     }
     const blockText = block.contents.map((v) => v.text).join('');
     if (caret.collapsed && length - 1 <= caret.index && blockText.slice(-2) === '\n\n') {
+      editor.blur();
       const deletedContents = deleteInlineContents(block.contents, length - 1, 1);
       editor.updateBlock({
         ...block,
@@ -430,7 +431,10 @@ export class KeyBoardModule implements Module {
       return;
     }
 
-    const lineBrake = caret.index === length ? '\n\n' : '\n';
+    let lineBrake = '\n';
+    if (!blockText.match(/\n$/)) {
+      lineBrake = '\n\n';
+    }
     const insertedContents = insertTextInlineContents(block.contents, lineBrake, caret.index);
     editor.updateBlock({
       ...block,

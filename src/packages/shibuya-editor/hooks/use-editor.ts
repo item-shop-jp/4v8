@@ -6,7 +6,7 @@ import * as json0 from 'ot-json0';
 import DiffMatchPatch from 'diff-match-patch';
 import { EventEmitter } from '../utils/event-emitter';
 import * as blockUtils from '../utils/block';
-import { getInlineId } from '../utils/inline';
+import { createInline, getInlineId } from '../utils/inline';
 import { caretRangeFromPoint, getRectByRange } from '../utils/range';
 import { getHtmlElement } from '../utils/dom';
 import { CaretPosition } from '../types/caret';
@@ -538,10 +538,15 @@ export function useEditor({
 
       setTimeout(() => {
         if (!blockId || !block || !blockElement || composing) return;
-        const { contents, affected, affectedLength } =
-          blockUtils.convertHTMLtoInlines(blockElement);
+        let { contents, affected, affectedLength } = blockUtils.convertHTMLtoInlines(blockElement);
         updateCaretPositionRef();
         if (isEqual(block.contents, contents)) return;
+        // code-block対応(1つにまとめる)
+        if (block.type === 'CODE-BLOCK') {
+          const codeText = contents.map((v) => v.text).join('');
+          contents = [createInline('TEXT', codeText)];
+          affected = true;
+        }
         updateBlock({ ...block, contents });
         if (affected || forceUpdate) {
           render([blockId]);

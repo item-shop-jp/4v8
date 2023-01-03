@@ -89,10 +89,10 @@ export const Container: React.FC = React.memo(() => {
     const eventEmitter = editorRef2.current.getEventEmitter();
     subs.add(
       eventEmitter.select(EditorEvents.EVENT_EDITOR_CHANGED).subscribe((payload) => {
-        console.log(payload);
-        // payload.forEach((v: any) => {
-        //   console.log(JSON.stringify(editorRef1.current?.getBlock(v.blockId)));
-        // });
+        payload.forEach((v: any) => {
+          const block = editorRef2.current?.getBlock(v.blockId);
+          console.log(JSON.stringify(block?.contents));
+        });
       }),
     );
     return () => {

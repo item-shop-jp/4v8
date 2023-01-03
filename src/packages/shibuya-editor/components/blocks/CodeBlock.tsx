@@ -2,6 +2,8 @@ import * as React from 'react';
 import styled from 'styled-components';
 import { EditorController } from '../../types/editor';
 import { Formats } from '../../types/format';
+import 'prismjs/components/prism-javascript';
+import 'prismjs/components/prism-typescript';
 
 export interface CodeBlockProps {
   blockId: string;

@@ -645,7 +645,6 @@ export function useEditor({
         }
       });
       const contents = blockUtils.optimizeInlineContents(block.contents);
-
       blocksRef.current = [
         ...blocksRef.current.slice(0, currentIndex),
         {

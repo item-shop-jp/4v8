@@ -4,11 +4,7 @@ import { Formats } from '../../types/format';
 import { EditorController } from '../../types/editor';
 import { useBlockRenderer } from '../../hooks/use-block-renderer';
 import { InlineContainer } from '../inlines/Container';
-import { createInline } from '../../utils/inline';
-import { Block } from '../../types/block';
-import Prism from 'prismjs';
-import 'prismjs/components/prism-javascript';
-import 'prismjs/components/prism-typescript';
+import { textToPrismaToken } from '../../utils/prisma';
 
 interface BlockProps {
   blockId: string;
@@ -57,15 +53,12 @@ export const BlockContainer: React.FC<BlockProps> = React.memo(
       }
       if (block?.type === 'CODE-BLOCK') {
         const text = block.contents.map((content) => content.text).join('');
-        const tokens = Prism.tokenize(text, Prism.languages.typescript);
-
-        const codeContents = tokens.map((v, i) => {
-          if (typeof v === 'string') {
-            return createInline('CODE-TOKEN', v, { tokenType: 'string' });
-          }
-          return createInline('CODE-TOKEN', v.content as string, { tokenType: v.type as string });
-        }, []);
-        return InlineContainer({ contents: codeContents, formats, editor, scrollContainer });
+        return InlineContainer({
+          contents: textToPrismaToken(text),
+          formats,
+          editor,
+          scrollContainer,
+        });
       }
       return InlineContainer({ contents: block?.contents ?? [], formats, editor, scrollContainer });
     }, [block?.contents, block?.type, formats, editor]);

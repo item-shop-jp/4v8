@@ -4,7 +4,7 @@ import { Formats } from '../../types/format';
 import { EditorController } from '../../types/editor';
 import { useBlockRenderer } from '../../hooks/use-block-renderer';
 import { InlineContainer } from '../inlines/Container';
-import { textToPrismaToken } from '../../utils/prisma';
+import { textToPrismaToken } from '../../utils/code-block';
 
 interface BlockProps {
   blockId: string;

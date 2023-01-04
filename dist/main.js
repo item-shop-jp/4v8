@@ -15553,14 +15553,14 @@ class KeyBoardModule {
             composing: true,
             prevented: true,
             only: ['CODE-BLOCK'],
-            handler: this._handleIndent.bind(this),
+            handler: this._handleCodeBlockIndent.bind(this),
         });
         this.addBinding({
             key: KeyCodes.TAB,
             shiftKey: true,
             prevented: true,
             only: ['CODE-BLOCK'],
-            handler: this._handleOutdent.bind(this),
+            handler: this._handleCodeBlockOutdent.bind(this),
         });
         this.addBinding({
             key: KeyCodes.Z,
@@ -15742,65 +15742,6 @@ class KeyBoardModule {
         else {
             editor.getModule('editor').splitBlock(caret.blockId, caret.index, caret.length);
         }
-    }
-    _handleCodeBlockEnter(caretPosition, editor) {
-        var _a, _b;
-        if (this.composing) {
-            return;
-        }
-        const caret = editor.getCaretPosition();
-        if (!caret)
-            return;
-        const block = editor.getBlock(caret.blockId);
-        if (!block)
-            return;
-        const length = (_a = editor.getBlockLength(caret.blockId)) !== null && _a !== void 0 ? _a : 0;
-        if (length === 0) {
-            editor.updateBlock(Object.assign(Object.assign({}, block), { type: 'PARAGRAPH' }));
-            this.editor.numberingList();
-            (_b = this.editor.getModule('history')) === null || _b === void 0 ? void 0 : _b.optimizeOp();
-            editor.render([block.id]);
-            setTimeout(() => {
-                this.editor.setCaretPosition({
-                    blockId: block.id,
-                    index: 0,
-                });
-                this.editor.updateCaretRect();
-            }, 10);
-            return;
-        }
-        const blockText = block.contents.map((v) => v.text).join('');
-        if (caret.collapsed && length - 1 <= caret.index && blockText.slice(-2) === '\n\n') {
-            editor.blur();
-            const deletedContents = deleteInlineContents(block.contents, length - 1, 1);
-            editor.updateBlock(Object.assign(Object.assign({}, block), { contents: deletedContents }));
-            const appendBlock = createBlock('PARAGRAPH');
-            editor.createBlock(appendBlock, block.id, 'append');
-            editor.render([block.id]);
-            setTimeout(() => {
-                this.editor.setCaretPosition({
-                    blockId: appendBlock.id,
-                    index: 0,
-                });
-                this.editor.updateCaretRect();
-            }, 10);
-            return;
-        }
-        let lineBrake = '\n';
-        if (caret.index >= length - 1 && !blockText.match(/\n$/)) {
-            lineBrake = '\n\n';
-        }
-        const insertedContents = insertTextInlineContents(block.contents, lineBrake, caret.index);
-        editor.updateBlock(Object.assign(Object.assign({}, block), { contents: insertedContents }));
-        editor.blur();
-        editor.render([block.id]);
-        setTimeout(() => {
-            this.editor.setCaretPosition({
-                blockId: block.id,
-                index: caret.index + lineBrake.length,
-            });
-            this.editor.updateCaretRect();
-        }, 10);
     }
     _handleKeyLeft(caretPosition, editor, event) {
         var _a;
@@ -16080,6 +16021,178 @@ class KeyBoardModule {
             editor.getModule('selector').setStart(caretPosition.blockId);
             return;
         }
+    }
+    _handleCodeBlockEnter(caretPosition, editor) {
+        var _a, _b;
+        if (this.composing) {
+            return;
+        }
+        const caret = editor.getCaretPosition();
+        if (!caret)
+            return;
+        const block = editor.getBlock(caret.blockId);
+        if (!block)
+            return;
+        const length = (_a = editor.getBlockLength(caret.blockId)) !== null && _a !== void 0 ? _a : 0;
+        if (length === 0) {
+            editor.updateBlock(Object.assign(Object.assign({}, block), { type: 'PARAGRAPH' }));
+            this.editor.numberingList();
+            (_b = this.editor.getModule('history')) === null || _b === void 0 ? void 0 : _b.optimizeOp();
+            editor.render([block.id]);
+            setTimeout(() => {
+                this.editor.setCaretPosition({
+                    blockId: block.id,
+                    index: 0,
+                });
+                this.editor.updateCaretRect();
+            }, 10);
+            return;
+        }
+        const blockText = block.contents.map((v) => v.text).join('');
+        if (caret.collapsed && length - 1 <= caret.index && blockText.slice(-2) === '\n\n') {
+            editor.blur();
+            const deletedContents = deleteInlineContents(block.contents, length - 1, 1);
+            editor.updateBlock(Object.assign(Object.assign({}, block), { contents: deletedContents }));
+            const appendBlock = createBlock('PARAGRAPH');
+            editor.createBlock(appendBlock, block.id, 'append');
+            editor.render([block.id]);
+            setTimeout(() => {
+                this.editor.setCaretPosition({
+                    blockId: appendBlock.id,
+                    index: 0,
+                });
+                this.editor.updateCaretRect();
+            }, 10);
+            return;
+        }
+        let lineBrake = '\n';
+        if (caret.index >= length - 1 && !blockText.match(/\n$/)) {
+            lineBrake = '\n\n';
+        }
+        const insertedContents = insertTextInlineContents(block.contents, lineBrake, caret.index);
+        editor.updateBlock(Object.assign(Object.assign({}, block), { contents: insertedContents }));
+        editor.blur();
+        editor.render([block.id]);
+        setTimeout(() => {
+            this.editor.setCaretPosition({
+                blockId: block.id,
+                index: caret.index + lineBrake.length,
+            });
+            this.editor.updateCaretRect();
+        }, 10);
+    }
+    _handleCodeBlockIndent(caretPosition, editor, event) {
+        const caret = editor.getCaretPosition();
+        if (!caret)
+            return;
+        const block = editor.getBlock(caret.blockId);
+        if (!block)
+            return;
+        let lines = block.contents
+            .map((v) => v.text)
+            .join('')
+            .split('\n');
+        let processedIndex = 0;
+        let text = '';
+        let affectedLine = 0;
+        lines.forEach((line, i) => {
+            const lineLength = stringLength(line);
+            if ((processedIndex <= caret.index && caret.index <= processedIndex + lineLength) ||
+                (processedIndex > caret.index && caret.index + caret.length > processedIndex) ||
+                (processedIndex <= caret.index + caret.length &&
+                    caret.index + caret.length < processedIndex + lineLength)) {
+                if (caret.length > 0 && processedIndex === caret.index + caret.length) {
+                    text = `${text}${line}`;
+                }
+                else {
+                    text = `${text}  ${line}`;
+                    affectedLine++;
+                }
+            }
+            else {
+                text = `${text}${line}`;
+            }
+            if (i < line.length - 1) {
+                text = `${text}\n`;
+            }
+            processedIndex += lineLength + 1;
+        });
+        editor.updateBlock(Object.assign(Object.assign({}, block), { contents: [createInline('TEXT', text)] }));
+        editor.blur();
+        setTimeout(() => {
+            this.editor.setCaretPosition({
+                blockId: block.id,
+                index: caret.index + 2,
+                length: caret.length + (affectedLine > 1 ? (affectedLine - 1) * 2 : 0),
+            });
+            this.editor.updateCaretRect();
+        }, 10);
+        editor.render([block.id]);
+    }
+    _handleCodeBlockOutdent(caretPosition, editor, event) {
+        const caret = editor.getCaretPosition();
+        if (!caret)
+            return;
+        const block = editor.getBlock(caret.blockId);
+        if (!block)
+            return;
+        let lines = block.contents
+            .map((v) => v.text)
+            .join('')
+            .split('\n');
+        let processedIndex = 0;
+        let text = '';
+        let affectedLine = 0;
+        let affectedIndex = 2;
+        let isLineHead = false;
+        lines.forEach((line, i) => {
+            const lineLength = stringLength(line);
+            if ((processedIndex <= caret.index && caret.index <= processedIndex + lineLength) ||
+                (processedIndex > caret.index && caret.index + caret.length > processedIndex) ||
+                (processedIndex <= caret.index + caret.length &&
+                    caret.index + caret.length < processedIndex + lineLength)) {
+                if (caret.length > 0 && processedIndex === caret.index + caret.length) {
+                    text = `${text}${line}`;
+                }
+                else {
+                    const outdentedLine = line.replace(/^\s{1,2}/, '');
+                    text = `${text}${outdentedLine}`;
+                    const lineDiff = line.length - outdentedLine.length;
+                    // indexの開始ポイントがoutdentと被っていなかったら影響を受けていない判定にする
+                    if (lineDiff > 0) {
+                        if (!(processedIndex <= caret.index &&
+                            caret.index <= processedIndex + lineLength &&
+                            lineDiff <= caret.index - processedIndex)) {
+                            affectedLine++;
+                        }
+                        if (lineDiff < 2) {
+                            affectedIndex = lineDiff;
+                        }
+                    }
+                    if (processedIndex === caret.index) {
+                        isLineHead = true;
+                    }
+                }
+            }
+            else {
+                text = `${text}${line}`;
+            }
+            if (i < line.length - 1) {
+                text = `${text}\n`;
+            }
+            processedIndex += lineLength + 1;
+        });
+        editor.updateBlock(Object.assign(Object.assign({}, block), { contents: [createInline('TEXT', text)] }));
+        editor.blur();
+        setTimeout(() => {
+            this.editor.setCaretPosition({
+                blockId: block.id,
+                index: isLineHead ? caret.index : caret.index - affectedIndex,
+                length: caret.length + affectedLine * -2,
+            });
+            this.editor.updateCaretRect();
+        }, 10);
+        editor.render([block.id]);
     }
 }
 

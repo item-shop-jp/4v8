@@ -9,9 +9,13 @@ import {
   getBlockId,
   insertTextInlineContents,
   createBlock as utilCreateBlock,
+  splitInlineContents,
+  getInlineContents,
 } from '../utils/block';
 import { CaretPosition } from '../types/caret';
 import { BlockType } from '../types';
+import { createInline } from '../utils/inline';
+import stringLength from 'string-length';
 
 const ShortKey = /Mac/i.test(navigator.platform) ? 'metaKey' : 'ctrlKey';
 
@@ -167,7 +171,7 @@ export class KeyBoardModule implements Module {
       composing: true,
       prevented: true,
       only: ['CODE-BLOCK'],
-      handler: this._handleIndent.bind(this),
+      handler: this._handleCodeBlockIndent.bind(this),
     });
 
     this.addBinding({
@@ -175,7 +179,7 @@ export class KeyBoardModule implements Module {
       shiftKey: true,
       prevented: true,
       only: ['CODE-BLOCK'],
-      handler: this._handleOutdent.bind(this),
+      handler: this._handleCodeBlockOutdent.bind(this),
     });
 
     this.addBinding({
@@ -393,74 +397,6 @@ export class KeyBoardModule implements Module {
     } else {
       editor.getModule('editor').splitBlock(caret.blockId, caret.index, caret.length);
     }
-  }
-
-  private _handleCodeBlockEnter(caretPosition: CaretPosition, editor: EditorController) {
-    if (this.composing) {
-      return;
-    }
-    const caret = editor.getCaretPosition();
-    if (!caret) return;
-    const block = editor.getBlock(caret.blockId);
-    if (!block) return;
-    const length = editor.getBlockLength(caret.blockId) ?? 0;
-
-    if (length === 0) {
-      editor.updateBlock({
-        ...block,
-        type: 'PARAGRAPH',
-      });
-      this.editor.numberingList();
-      this.editor.getModule('history')?.optimizeOp();
-      editor.render([block.id]);
-      setTimeout(() => {
-        this.editor.setCaretPosition({
-          blockId: block.id,
-          index: 0,
-        });
-        this.editor.updateCaretRect();
-      }, 10);
-      return;
-    }
-    const blockText = block.contents.map((v) => v.text).join('');
-    if (caret.collapsed && length - 1 <= caret.index && blockText.slice(-2) === '\n\n') {
-      editor.blur();
-      const deletedContents = deleteInlineContents(block.contents, length - 1, 1);
-      editor.updateBlock({
-        ...block,
-        contents: deletedContents,
-      });
-      const appendBlock = utilCreateBlock('PARAGRAPH');
-      editor.createBlock(appendBlock, block.id, 'append');
-      editor.render([block.id]);
-      setTimeout(() => {
-        this.editor.setCaretPosition({
-          blockId: appendBlock.id,
-          index: 0,
-        });
-        this.editor.updateCaretRect();
-      }, 10);
-      return;
-    }
-
-    let lineBrake = '\n';
-    if (caret.index >= length - 1 && !blockText.match(/\n$/)) {
-      lineBrake = '\n\n';
-    }
-    const insertedContents = insertTextInlineContents(block.contents, lineBrake, caret.index);
-    editor.updateBlock({
-      ...block,
-      contents: insertedContents,
-    });
-    editor.blur();
-    editor.render([block.id]);
-    setTimeout(() => {
-      this.editor.setCaretPosition({
-        blockId: block.id,
-        index: caret.index + lineBrake.length,
-      });
-      this.editor.updateCaretRect();
-    }, 10);
   }
 
   private _handleKeyLeft(
@@ -824,5 +760,203 @@ export class KeyBoardModule implements Module {
       editor.getModule('selector').setStart(caretPosition.blockId);
       return;
     }
+  }
+
+  private _handleCodeBlockEnter(caretPosition: CaretPosition, editor: EditorController) {
+    if (this.composing) {
+      return;
+    }
+    const caret = editor.getCaretPosition();
+    if (!caret) return;
+    const block = editor.getBlock(caret.blockId);
+    if (!block) return;
+    const length = editor.getBlockLength(caret.blockId) ?? 0;
+
+    if (length === 0) {
+      editor.updateBlock({
+        ...block,
+        type: 'PARAGRAPH',
+      });
+      this.editor.numberingList();
+      this.editor.getModule('history')?.optimizeOp();
+      editor.render([block.id]);
+      setTimeout(() => {
+        this.editor.setCaretPosition({
+          blockId: block.id,
+          index: 0,
+        });
+        this.editor.updateCaretRect();
+      }, 10);
+      return;
+    }
+    const blockText = block.contents.map((v) => v.text).join('');
+    if (caret.collapsed && length - 1 <= caret.index && blockText.slice(-2) === '\n\n') {
+      editor.blur();
+      const deletedContents = deleteInlineContents(block.contents, length - 1, 1);
+      editor.updateBlock({
+        ...block,
+        contents: deletedContents,
+      });
+      const appendBlock = utilCreateBlock('PARAGRAPH');
+      editor.createBlock(appendBlock, block.id, 'append');
+      editor.render([block.id]);
+      setTimeout(() => {
+        this.editor.setCaretPosition({
+          blockId: appendBlock.id,
+          index: 0,
+        });
+        this.editor.updateCaretRect();
+      }, 10);
+      return;
+    }
+
+    let lineBrake = '\n';
+    if (caret.index >= length - 1 && !blockText.match(/\n$/)) {
+      lineBrake = '\n\n';
+    }
+    const insertedContents = insertTextInlineContents(block.contents, lineBrake, caret.index);
+    editor.updateBlock({
+      ...block,
+      contents: insertedContents,
+    });
+    editor.blur();
+    editor.render([block.id]);
+    setTimeout(() => {
+      this.editor.setCaretPosition({
+        blockId: block.id,
+        index: caret.index + lineBrake.length,
+      });
+      this.editor.updateCaretRect();
+    }, 10);
+  }
+
+  private _handleCodeBlockIndent(
+    caretPosition: CaretPosition,
+    editor: EditorController,
+    event: React.KeyboardEvent,
+  ) {
+    const caret = editor.getCaretPosition();
+    if (!caret) return;
+    const block = editor.getBlock(caret.blockId);
+    if (!block) return;
+    let lines = block.contents
+      .map((v) => v.text)
+      .join('')
+      .split('\n');
+    let processedIndex = 0;
+    let text = '';
+    let affectedLine = 0;
+    lines.forEach((line, i) => {
+      const lineLength = stringLength(line);
+      if (
+        (processedIndex <= caret.index && caret.index <= processedIndex + lineLength) ||
+        (processedIndex > caret.index && caret.index + caret.length > processedIndex) ||
+        (processedIndex <= caret.index + caret.length &&
+          caret.index + caret.length < processedIndex + lineLength)
+      ) {
+        if (caret.length > 0 && processedIndex === caret.index + caret.length) {
+          text = `${text}${line}`;
+        } else {
+          text = `${text}  ${line}`;
+          affectedLine++;
+        }
+      } else {
+        text = `${text}${line}`;
+      }
+      if (i < line.length - 1) {
+        text = `${text}\n`;
+      }
+      processedIndex += lineLength + 1;
+    });
+    editor.updateBlock({
+      ...block,
+      contents: [createInline('TEXT', text)],
+    });
+    editor.blur();
+    setTimeout(() => {
+      this.editor.setCaretPosition({
+        blockId: block.id,
+        index: caret.index + 2,
+        length: caret.length + (affectedLine > 1 ? (affectedLine - 1) * 2 : 0),
+      });
+      this.editor.updateCaretRect();
+    }, 10);
+    editor.render([block.id]);
+  }
+
+  private _handleCodeBlockOutdent(
+    caretPosition: CaretPosition,
+    editor: EditorController,
+    event: React.KeyboardEvent,
+  ) {
+    const caret = editor.getCaretPosition();
+    if (!caret) return;
+    const block = editor.getBlock(caret.blockId);
+    if (!block) return;
+    let lines = block.contents
+      .map((v) => v.text)
+      .join('')
+      .split('\n');
+    let processedIndex = 0;
+    let text = '';
+    let affectedLine = 0;
+    let affectedIndex = 2;
+    let isLineHead = false;
+    lines.forEach((line, i) => {
+      const lineLength = stringLength(line);
+      if (
+        (processedIndex <= caret.index && caret.index <= processedIndex + lineLength) ||
+        (processedIndex > caret.index && caret.index + caret.length > processedIndex) ||
+        (processedIndex <= caret.index + caret.length &&
+          caret.index + caret.length < processedIndex + lineLength)
+      ) {
+        if (caret.length > 0 && processedIndex === caret.index + caret.length) {
+          text = `${text}${line}`;
+        } else {
+          const outdentedLine = line.replace(/^\s{1,2}/, '');
+          text = `${text}${outdentedLine}`;
+          const lineDiff = line.length - outdentedLine.length;
+          // indexの開始ポイントがoutdentと被っていなかったら影響を受けていない判定にする
+
+          if (lineDiff > 0) {
+            if (
+              !(
+                processedIndex <= caret.index &&
+                caret.index <= processedIndex + lineLength &&
+                lineDiff <= caret.index - processedIndex
+              )
+            ) {
+              affectedLine++;
+            }
+            if (lineDiff < 2) {
+              affectedIndex = lineDiff;
+            }
+          }
+          if (processedIndex === caret.index) {
+            isLineHead = true;
+          }
+        }
+      } else {
+        text = `${text}${line}`;
+      }
+      if (i < line.length - 1) {
+        text = `${text}\n`;
+      }
+      processedIndex += lineLength + 1;
+    });
+    editor.updateBlock({
+      ...block,
+      contents: [createInline('TEXT', text)],
+    });
+    editor.blur();
+    setTimeout(() => {
+      this.editor.setCaretPosition({
+        blockId: block.id,
+        index: isLineHead ? caret.index : caret.index - affectedIndex,
+        length: caret.length + affectedLine * -2,
+      });
+      this.editor.updateCaretRect();
+    }, 10);
+    editor.render([block.id]);
   }
 }

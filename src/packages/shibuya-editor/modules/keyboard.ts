@@ -792,7 +792,7 @@ export class KeyBoardModule implements Module {
     const blockText = block.contents.map((v) => v.text).join('');
     if (caret.collapsed && length - 1 <= caret.index && blockText.slice(-2) === '\n\n') {
       editor.blur();
-      const deletedContents = deleteInlineContents(block.contents, length - 1, 1);
+      const deletedContents = deleteInlineContents(block.contents, length - 2, 2);
       editor.updateBlock({
         ...block,
         contents: deletedContents,

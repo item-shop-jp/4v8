@@ -549,7 +549,8 @@ export function useEditor({
         // code-block対応(1つにまとめる)
         if (block.type === 'CODE-BLOCK') {
           const codeText = contents.map((v) => v.text).join('');
-          contents = [createInline('TEXT', codeText)];
+          // 最後の文字が改行なら無視
+          contents = [createInline('TEXT', codeText.replace(/\n$/, ''))];
           affected = true;
         }
         updateBlock({ ...block, contents });

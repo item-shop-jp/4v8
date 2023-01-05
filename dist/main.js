@@ -15006,7 +15006,8 @@ function useEditor({ settings, eventEmitter, }) {
             // code-block対応(1つにまとめる)
             if (block.type === 'CODE-BLOCK') {
                 const codeText = contents.map((v) => v.text).join('');
-                contents = [createInline('TEXT', codeText)];
+                // 最後の文字が改行なら無視
+                contents = [createInline('TEXT', codeText.replace(/\n$/, ''))];
                 affected = true;
             }
             updateBlock(Object.assign(Object.assign({}, block), { contents }));
@@ -16057,7 +16058,7 @@ class KeyBoardModule {
         const blockText = block.contents.map((v) => v.text).join('');
         if (caret.collapsed && length - 1 <= caret.index && blockText.slice(-2) === '\n\n') {
             editor.blur();
-            const deletedContents = deleteInlineContents(block.contents, length - 1, 1);
+            const deletedContents = deleteInlineContents(block.contents, length - 2, 2);
             editor.updateBlock(Object.assign(Object.assign({}, block), { contents: deletedContents }));
             const appendBlock = createBlock('PARAGRAPH');
             editor.createBlock(appendBlock, block.id, 'append');

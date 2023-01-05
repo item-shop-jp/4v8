@@ -16112,7 +16112,7 @@ class KeyBoardModule {
             else {
                 text = `${text}${line}`;
             }
-            if (i < line.length - 1) {
+            if (i < lines.length - 1) {
                 text = `${text}\n`;
             }
             processedIndex += lineLength + 1;
@@ -16177,7 +16177,7 @@ class KeyBoardModule {
             else {
                 text = `${text}${line}`;
             }
-            if (i < line.length - 1) {
+            if (i < lines.length - 1) {
                 text = `${text}\n`;
             }
             processedIndex += lineLength + 1;

@@ -432,17 +432,22 @@ export function useEditor({
     const caretRect = getRectByRange(nativeRange);
     if (!caretRect) return null;
     const blockRect = blockElement.getBoundingClientRect();
-
     if (!start || !end) return null;
-
+    const paddingTopText = getComputedStyle(blockElement).paddingTop;
+    const paddingTop = paddingTopText.match(/^[0-9]+px$/) ? parseInt(paddingTopText) : 0;
+    const scrollbarHeight = blockRect.height - blockElement.clientHeight;
     const range: CaretPosition = {
       blockId,
       blockFormat: blockElement?.dataset.format ?? '',
       index: start.index,
       length: end.index - start.index,
       collapsed: nativeRange.collapsed,
-      isTop: caretRect.y - blockRect.y < 10,
-      isBottom: blockRect.y + blockRect.height - (caretRect.y + caretRect.height) < 10,
+      isTop: caretRect.y - (blockRect.y + paddingTop) < 10,
+      isBottom:
+        blockRect.y +
+          blockRect.height -
+          (caretRect.y + caretRect.height + paddingTop + scrollbarHeight) <
+        10,
       rect: caretRect,
     };
 

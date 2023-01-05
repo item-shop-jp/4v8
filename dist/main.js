@@ -14927,14 +14927,20 @@ function useEditor({ settings, eventEmitter, }) {
         const blockRect = blockElement.getBoundingClientRect();
         if (!start || !end)
             return null;
+        const paddingTopText = getComputedStyle(blockElement).paddingTop;
+        const paddingTop = paddingTopText.match(/^[0-9]+px$/) ? parseInt(paddingTopText) : 0;
+        const scrollbarHeight = blockRect.height - blockElement.clientHeight;
         const range = {
             blockId,
             blockFormat: (_a = blockElement === null || blockElement === void 0 ? void 0 : blockElement.dataset.format) !== null && _a !== void 0 ? _a : '',
             index: start.index,
             length: end.index - start.index,
             collapsed: nativeRange.collapsed,
-            isTop: caretRect.y - blockRect.y < 10,
-            isBottom: blockRect.y + blockRect.height - (caretRect.y + caretRect.height) < 10,
+            isTop: caretRect.y - (blockRect.y + paddingTop) < 10,
+            isBottom: blockRect.y +
+                blockRect.height -
+                (caretRect.y + caretRect.height + paddingTop + scrollbarHeight) <
+                10,
             rect: caretRect,
         };
         return range;

@@ -67,6 +67,7 @@ export const InlineText = ({
       __html: twemoji.parse(text, {
         folder: 'svg',
         ext: '.svg',
+        base: 'https://cdn.jsdelivr.net/gh/twitter/twemoji@latest/assets/',
       }),
     };
   }, [inline]);

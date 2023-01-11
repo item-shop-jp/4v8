@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { throttle } from 'throttle-debounce';
+import { throttle, debounce } from 'throttle-debounce';
 import { Module } from '../types/module';
 import { EventEmitter } from '../utils/event-emitter';
 import { KeyCodes } from '../constants';
@@ -49,6 +49,9 @@ export class KeyBoardModule implements Module {
   private bindings: KeyBindingProps[];
   private sync = throttle(200, (blockId?: string, blockElement?: HTMLElement) => {
     this.editor.sync(blockId, blockElement, false);
+  });
+  private syncCodeBlock = debounce(300, (blockId?: string, blockElement?: HTMLElement) => {
+    this.editor.sync(blockId, blockElement, true);
   });
   constructor({ eventEmitter, editor }: Props) {
     this.eventEmitter = eventEmitter;
@@ -152,7 +155,6 @@ export class KeyBoardModule implements Module {
 
     this.addBinding({
       key: KeyCodes.TAB,
-      composing: true,
       prevented: true,
       except: ['CODE-BLOCK'],
       handler: this._handleIndent.bind(this),
@@ -168,7 +170,6 @@ export class KeyBoardModule implements Module {
 
     this.addBinding({
       key: KeyCodes.TAB,
-      composing: true,
       prevented: true,
       only: ['CODE-BLOCK'],
       handler: this._handleCodeBlockIndent.bind(this),
@@ -252,6 +253,12 @@ export class KeyBoardModule implements Module {
       const nativeRange = this.editor.getNativeRange();
       const [blockId, blockElement] = getBlockId(nativeRange?.startContainer as HTMLElement);
       if (this.composing || !blockId || !blockElement) {
+        return;
+      }
+      const block = this.editor.getBlock(blockId);
+      if (!block) return;
+      if (block.type === 'CODE-BLOCK') {
+        this.syncCodeBlock(blockId, blockElement);
         return;
       }
       this.sync(blockId, blockElement);
@@ -768,6 +775,13 @@ export class KeyBoardModule implements Module {
     }
     const caret = editor.getCaretPosition();
     if (!caret) return;
+    const nativeRange = this.editor.getNativeRange();
+    const [blockId, blockElement] = getBlockId(nativeRange?.startContainer as HTMLElement);
+    if (!blockId || !blockElement) {
+      return;
+    }
+    this.syncCodeBlock.cancel({ upcomingOnly: true });
+    this.editor.sync(blockId, blockElement, true);
     const block = editor.getBlock(caret.blockId);
     if (!block) return;
     const length = editor.getBlockLength(caret.blockId) ?? 0;
@@ -811,10 +825,17 @@ export class KeyBoardModule implements Module {
     }
 
     let lineBrake = '\n';
-    if (caret.index >= length - 1 && !blockText.match(/\n$/)) {
+
+    if (caret.index >= length && !blockText.match(/\n$/)) {
+      console.log(caret.index, length);
       lineBrake = '\n\n';
     }
     const insertedContents = insertTextInlineContents(block.contents, lineBrake, caret.index);
+    console.log(
+      JSON.stringify(lineBrake),
+      JSON.stringify(block.contents.map((v) => v.text).join('')),
+      JSON.stringify(insertedContents.map((v) => v.text).join('')),
+    );
     editor.updateBlock({
       ...block,
       contents: insertedContents,

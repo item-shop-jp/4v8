@@ -260,11 +260,10 @@ export function insertTextInlineContents(
   let processedIndex = 0;
   for (let i = 0; i < contents.length; i++) {
     const inlineLength = contents[i].isEmbed ? 1 : stringLength(contents[i].text);
-    if (index >= processedIndex && index <= processedIndex + inlineLength) {
+    if (index > processedIndex && index <= processedIndex + inlineLength) {
       const insertIndex = index - processedIndex;
       const insertOp = otText.insert(insertIndex, text);
       const insertedText = otText.type.apply(contents[i].text, insertOp);
-
       if (stringLength(insertedText) > 0) {
         destContents.push({ ...contents[i], text: insertedText });
       }

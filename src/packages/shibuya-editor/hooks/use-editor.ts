@@ -541,59 +541,52 @@ export function useEditor({
       const block = blocksRef.current.find((v) => v.id === blockId);
       const composing = getModule('keyboard').composing;
 
-      setTimeout(() => {
-        if (!blockId || !block || !blockElement || composing) return;
-        let { contents, affected, affectedLength } = blockUtils.convertHTMLtoInlines(blockElement);
-        updateCaretPositionRef();
-        if (isEqual(block.contents, contents)) return;
-        // code-block対応(1つにまとめる)
-        if (block.type === 'CODE-BLOCK') {
-          const codeText = contents.map((v) => v.text).join('');
-          // 最後の文字が改行なら無視
-          contents = [createInline('TEXT', codeText.replace(/\n$/, ''))];
-          affected = true;
+      if (!blockId || !block || !blockElement || composing) return;
+      let { contents, affected, affectedLength } = blockUtils.convertHTMLtoInlines(blockElement);
+      updateCaretPositionRef();
+      if (isEqual(block.contents, contents)) return;
+      const blockText = contents.map((v) => v.text).join('');
+      // code-block対応(差分を1つにまとめる)
+      if (block.type === 'CODE-BLOCK') {
+        contents = [createInline('TEXT', blockText)];
+      }
+      updateBlock({ ...block, contents });
+      if (affected || forceUpdate) {
+        render([blockId]);
+        let newCaretPosition = lastCaretPositionRef.current;
+        if (!newCaretPosition) {
+          if (!lastCaretRectRef.current) return;
+          const range = caretRangeFromPoint(lastCaretRectRef.current.x, lastCaretRectRef.current.y);
+          const selection = document.getSelection();
+          if (!selection || !range) return;
+          selection.setBaseAndExtent(
+            range.startContainer,
+            range.startOffset,
+            range.startContainer,
+            range.startOffset,
+          );
+          const nativeRange = getNativeRange();
+          if (!nativeRange) return;
+          newCaretPosition = normalizeRange(nativeRange);
         }
-        updateBlock({ ...block, contents });
-        if (affected || forceUpdate) {
-          render([blockId]);
-          let newCaretPosition = lastCaretPositionRef.current;
-          if (!newCaretPosition) {
-            if (!lastCaretRectRef.current) return;
-            const range = caretRangeFromPoint(
-              lastCaretRectRef.current.x,
-              lastCaretRectRef.current.y,
-            );
-            const selection = document.getSelection();
-            if (!selection || !range) return;
-            selection.setBaseAndExtent(
-              range.startContainer,
-              range.startOffset,
-              range.startContainer,
-              range.startOffset,
-            );
-            const nativeRange = getNativeRange();
-            if (!nativeRange) return;
-            newCaretPosition = normalizeRange(nativeRange);
-          }
-          const blockLength = blockUtils.getBlockLength(blockElement) ?? 0;
-          let caretIndex = newCaretPosition?.index ?? 0;
-          caretIndex += affectedLength;
-          if (blockLength < caretIndex) {
-            caretIndex = blockLength;
-          }
-          blur();
+        const blockLength = blockUtils.getBlockLength(blockElement) ?? 0;
+        let caretIndex = newCaretPosition?.index ?? 0;
+        caretIndex += affectedLength;
+        if (blockLength < caretIndex) {
+          caretIndex = blockLength;
+        }
+        blur();
 
-          setTimeout(() => {
-            setCaretPosition({
-              ...newCaretPosition,
-              index: caretIndex >= 0 ? caretIndex : 0,
-            });
-            updateCaretRect();
-          }, 10);
-        } else {
+        setTimeout(() => {
+          setCaretPosition({
+            ...newCaretPosition,
+            index: caretIndex >= 0 ? caretIndex : 0,
+          });
           updateCaretRect();
-        }
-      }, 10);
+        }, 10);
+      } else {
+        updateCaretRect();
+      }
     },
     [],
   );

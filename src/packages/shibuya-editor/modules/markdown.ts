@@ -98,6 +98,13 @@ export class MarkdownShortcutModule implements Module {
     });
 
     this.addShortcut({
+      name: 'code-block',
+      type: 'inline',
+      pattern: /^```$/,
+      handler: this._handleCodeBlock.bind(this),
+    });
+
+    this.addShortcut({
       name: 'code',
       type: 'inline',
       pattern: /(.*)((?:`){1})(.+?)((?:`){1})/,
@@ -222,6 +229,10 @@ export class MarkdownShortcutModule implements Module {
 
   private _handleBulletList(caret: CaretPosition, match: RegExpMatchArray) {
     this.formatBlock(caret.blockId, 'BULLET-LIST', 0, stringLength(match[0]));
+  }
+
+  private _handleCodeBlock(caret: CaretPosition, match: RegExpMatchArray) {
+    this.formatBlock(caret.blockId, 'CODE-BLOCK', 0, stringLength(match[0]));
   }
 
   private _handleImage(caret: CaretPosition, match: RegExpMatchArray) {

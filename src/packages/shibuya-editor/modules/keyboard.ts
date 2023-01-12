@@ -150,6 +150,7 @@ export class KeyBoardModule implements Module {
 
     this.addBinding({
       key: KeyCodes.SPACE,
+      except: ['CODE-BLOCK'],
       handler: this._handleSpace.bind(this),
     });
 
@@ -532,9 +533,8 @@ export class KeyBoardModule implements Module {
       caretIndex = caretPosition.index - 1;
 
       deletedContents = deleteInlineContents(block.contents, caretIndex, 1);
-      deletedContents[deletedContents.length - 1].text = deletedContents[
-        deletedContents.length - 1
-      ].text.replace(/\n+$/i, '');
+      deletedContents[deletedContents.length - 1].text =
+        deletedContents[deletedContents.length - 1].text;
     } else {
       if (!block || caretPosition.length < 1) return;
       caretIndex = caretPosition.index;

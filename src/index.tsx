@@ -29,7 +29,7 @@ const StyledEditor = styled(Editor)`
 
 const StyledParagraph = styled(Paragraph)``;
 
-const StyledUnderline = css`
+const StyledUnderline = () => css`
   border-bottom: green 0.05em solid;
 `;
 
@@ -72,7 +72,7 @@ export const Container: React.FC = React.memo(() => {
   const formats = React.useMemo(() => {
     return {
       'block/paragraph': StyledParagraph,
-      'style/underline': StyledUnderline,
+      'inline/style/underline': StyledUnderline,
     };
   }, []);
 

@@ -7439,7 +7439,7 @@ const Overlay = He.div `
   background-color: rgba(46, 170, 220, 0.2);
 `;
 const BlockContainer = React__namespace.memo((_a) => {
-    var _b, _c, _d;
+    var _b, _c, _d, _e;
     var { blockId, editor, selected, readOnly = false, scrollContainer, formats } = _a, props = __rest(_a, ["blockId", "editor", "selected", "readOnly", "scrollContainer", "formats"]);
     const block = useBlockRenderer({ blockId, editor });
     const memoContents = React__namespace.useMemo(() => {
@@ -7461,7 +7461,7 @@ const BlockContainer = React__namespace.memo((_a) => {
     }, [block === null || block === void 0 ? void 0 : block.contents, block === null || block === void 0 ? void 0 : block.type, formats, editor]);
     const blockFormat = `block/${block === null || block === void 0 ? void 0 : block.type.toLocaleLowerCase()}`;
     const Container = (_b = formats[blockFormat]) !== null && _b !== void 0 ? _b : formats['block/paragraph'];
-    return (jsxRuntime.exports.jsxs(Outer, Object.assign({ "data-id": blockId, style: { '--indent': `${(_d = (_c = block === null || block === void 0 ? void 0 : block.attributes) === null || _c === void 0 ? void 0 : _c.indent) !== null && _d !== void 0 ? _d : 0}` } }, { children: [jsxRuntime.exports.jsx(Container, Object.assign({ suppressContentEditableWarning: true, className: 'notranslate', contentEditable: !readOnly, blockId: blockId, "data-block-id": blockId, "data-attributes": JSON.stringify(block === null || block === void 0 ? void 0 : block.attributes), "data-metas": JSON.stringify(block === null || block === void 0 ? void 0 : block.meta), "data-format": blockFormat, formats: formats, attributes: block === null || block === void 0 ? void 0 : block.attributes, meta: block === null || block === void 0 ? void 0 : block.meta, contents: memoContents, editor: editor, selected: selected }, props)), selected && jsxRuntime.exports.jsx(Overlay, {})] })));
+    return (jsxRuntime.exports.jsxs(Outer, Object.assign({ "data-id": blockId, style: { '--indent': `${(_d = (_c = block === null || block === void 0 ? void 0 : block.attributes) === null || _c === void 0 ? void 0 : _c.indent) !== null && _d !== void 0 ? _d : 0}` } }, { children: [jsxRuntime.exports.jsx(Container, Object.assign({ suppressContentEditableWarning: true, className: 'notranslate', contentEditable: !readOnly, blockId: blockId, "data-block-id": blockId, "data-attributes": JSON.stringify(block === null || block === void 0 ? void 0 : block.attributes), "data-metas": JSON.stringify(block === null || block === void 0 ? void 0 : block.meta), "data-format": blockFormat, formats: formats, attributes: block === null || block === void 0 ? void 0 : block.attributes, meta: (_e = block === null || block === void 0 ? void 0 : block.meta) !== null && _e !== void 0 ? _e : {}, contents: memoContents, editor: editor, selected: selected }, props)), selected && jsxRuntime.exports.jsx(Overlay, {})] })));
 });
 
 function useMutationObserver(ref, callback, options = {

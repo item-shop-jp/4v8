@@ -8589,7 +8589,7 @@ const Image$1 = React__namespace.memo((_a) => {
             left: e.clientX,
             width: width !== null && width !== void 0 ? width : (rect.width < 100 ? 100 : rect.width),
         });
-    }, []);
+    }, [width]);
     React__namespace.useEffect(() => {
         setImageWidth(width !== null && width !== void 0 ? width : 'auto');
     }, [width]);

@@ -109,7 +109,7 @@ export const Image = React.memo(
           width: width ?? (rect.width < 100 ? 100 : rect.width),
         });
       },
-      [],
+      [width],
     );
 
     React.useEffect(() => {

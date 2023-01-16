@@ -35,6 +35,7 @@ import { getBlockElementById } from './utils/block';
 import { EditorEvents } from './constants';
 import { LinkPopup } from './components/popups';
 import { Formats, Block, Settings, EditorController } from './types';
+import { Collaborators } from './components/Collaborators';
 
 interface Props {
   readOnly?: boolean;
@@ -51,6 +52,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   cursor: text;
+  position: relative;
 
   deepl-inline-translate {
     display: none;
@@ -400,6 +402,7 @@ export const Editor = React.memo(
           <MarginBottom onClick={handleContainerClick} />
           <MemoGlobalToolbar editor={memoEditor} />
           <MemoBubbleToolbar editor={memoEditor} scrollContainer={settings.scrollContainer} />
+          <Collaborators editor={memoEditor} />
           <MemoLinkPopup editor={memoEditor} scrollContainer={settings.scrollContainer} />
           <Selector
             contentEditable={true}

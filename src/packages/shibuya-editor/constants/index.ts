@@ -49,6 +49,8 @@ export const EditorEvents = {
   EVENT_BLOCK_RERENDER: 'block-rerender',
   EVENT_BLOCK_RERENDER_FORCE: 'block-rerender-force',
   EVENT_BLOCK_SELECTED: 'block-selected', // Selector Mode (Block)
+  EVENT_COLLABORATOR_UPDATE_POSITION: 'collaborator-update-position', // 共同編集用
+  EVENT_COLLABORATOR_REMOVE_ALL: 'collaborator-remove-all', // 共同編集用
   EVENT_SELECTION_CHANGE: 'selection-change',
   EVENT_LINK_CLICK: 'button-clicked',
   EVENT_LOG_INFO: 'log-info',

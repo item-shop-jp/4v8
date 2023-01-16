@@ -1,12 +1,10 @@
 import * as React from 'react';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
-import isEqual from 'lodash.isequal';
 import { v4 as uuidv4 } from 'uuid';
 import { EditorController } from '../types/editor';
 import { Block } from '../types/block';
 import { EditorEvents } from '../constants';
-import { copyObject } from '../utils/object';
 
 interface Props {
   blockId: string;

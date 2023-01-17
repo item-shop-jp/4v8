@@ -8,3 +8,4 @@ export * from './clipboard';
 export * from './markdown';
 export * from './uploader';
 export * from './drag-drop';
+export * from './collaborator';

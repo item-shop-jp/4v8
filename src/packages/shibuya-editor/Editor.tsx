@@ -30,6 +30,7 @@ import {
   MarkdownShortcutModule,
   UploaderModule,
   DragDropModule,
+  CollaboratorModule,
 } from './modules';
 import { getBlockElementById } from './utils/block';
 import { EditorEvents } from './constants';
@@ -264,6 +265,7 @@ export const Editor = React.memo(
             { name: 'markdown-shortcut', module: MarkdownShortcutModule },
             { name: 'uploader', module: UploaderModule },
             { name: 'drag-drop', module: DragDropModule },
+            { name: 'collaborator', module: CollaboratorModule },
           ],
           settings?.modules ?? {},
         );

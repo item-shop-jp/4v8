@@ -62,6 +62,11 @@ export const Collaborators = React.memo(({ editor }: CollaboratorProps) => {
         });
       }),
     );
+    subs.add(
+      eventEmitter.select(EditorEvents.EVENT_COLLABORATOR_REMOVE_ALL).subscribe(() => {
+        setCollaborators([]);
+      }),
+    );
     return () => {
       subs.unsubscribe();
     };

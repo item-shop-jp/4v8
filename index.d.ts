@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {
+  CollaboratorModule,
   DragDropModule,
   EditorModule,
   HistoryModule,
@@ -9,9 +10,9 @@ import {
   SelectorModuleProps,
   ToolbarModule,
   UploaderModule,
+  KeyBoardModule,
 } from './src/packages/shibuya-editor/modules';
 import { FlattenSimpleInterpolation } from 'styled-components';
-import { KeyBoardModule } from './src/packages/shibuya-editor/modules/keyboard';
 
 interface EditorProps {
   readOnly?: boolean;
@@ -40,6 +41,15 @@ export interface BlockProps {
   attributes: BlockAttributes;
   meta?: BlockAttributes;
   editor: EditorController;
+  scrollContainer?: HTMLElement | string;
+}
+
+export interface InlineProps {
+  inline: Inline;
+  formats?: Formats;
+  attributes: BlockAttributes;
+  editor: EditorController;
+  scrollContainer?: HTMLElement | string;
 }
 
 export interface LinkPopupProps {
@@ -54,7 +64,12 @@ export interface Formats {
   'block/header1': React.FC<BlockProps>;
   'block/header2': React.FC<BlockProps>;
   'block/header3': React.FC<BlockProps>;
-  'inline/text': React.FC<BlockProps>;
+  'block/blockquote': React.FC<BlockProps>;
+  'block/code-block': React.FC<BlockProps>;
+  'block/ordered-list': React.FC<BlockProps>;
+  'block/bullet-list': React.FC<BlockProps>;
+  'inline/text': React.FC<InlineProps>;
+  'inline/code-token': React.FC<InlineProps>;
   'inline/style/bold': () => FlattenSimpleInterpolation;
   'inline/style/underline': () => FlattenSimpleInterpolation;
   'inline/style/strike': () => FlattenSimpleInterpolation;
@@ -128,6 +143,7 @@ export const Header3: React.MemoExoticComponent<(props: BlockProps) => JSX.Eleme
 export const OrderedList: React.MemoExoticComponent<(props: BlockProps) => JSX.Element>;
 export const BulletList: React.MemoExoticComponent<(props: BlockProps) => JSX.Element>;
 export const Blockquote: React.MemoExoticComponent<(props: BlockProps) => JSX.Element>;
+export const CodeBlock: React.MemoExoticComponent<(props: BlockProps) => JSX.Element>;
 
 export interface Settings {
   scrollMarginBottom?: number;
@@ -136,7 +152,7 @@ export interface Settings {
   embeddedBlocks?: BlockType[];
   modules?: ModuleOptions;
   collaborationLevel?: 'block' | 'inline';
-  indentatableFormats?: BlockType[];
+  indentableFormats?: BlockType[];
   scrollContainer?: HTMLElement | string;
 }
 
@@ -274,6 +290,7 @@ export interface EditorController {
   getModule(name: 'markdown-shortcut'): MarkdownShortcutModule;
   getModule(name: 'uploader'): UploaderModule;
   getModule(name: 'drag-drop'): DragDropModule;
+  getModule(name: 'collaborator'): CollaboratorModule;
   getModule<T = any>(name: string): T | null;
   removeAllModules(): void;
   getEventEmitter(): EventEmitter;

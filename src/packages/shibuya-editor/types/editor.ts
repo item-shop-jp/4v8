@@ -12,6 +12,7 @@ import {
   LoggerModule,
   MarkdownShortcutModule,
   DragDropModule,
+  CollaboratorModule,
 } from '../modules';
 import { UploaderModule } from '../modules/uploader';
 
@@ -22,7 +23,7 @@ export interface Settings {
   embeddedBlocks: BlockType[];
   modules?: ModuleOptions;
   collaborationLevel: 'block' | 'inline';
-  indentatableFormats: BlockType[];
+  indentableFormats: BlockType[];
   disableDecorationFormats: BlockType[]; // 装飾無効
   scrollContainer?: HTMLElement | string;
 }
@@ -100,6 +101,7 @@ export interface EditorController {
   getModule(name: 'markdown-shortcut'): MarkdownShortcutModule;
   getModule(name: 'uploader'): UploaderModule;
   getModule(name: 'drag-drop'): DragDropModule;
+  getModule(name: 'collaborator'): CollaboratorModule;
   getModule<T = any>(name: string): T | null;
   removeAllModules(): void;
   getEventEmitter(): EventEmitter;

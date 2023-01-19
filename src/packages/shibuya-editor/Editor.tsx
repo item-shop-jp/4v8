@@ -88,7 +88,7 @@ export const Editor = React.memo(
           allowFormats: settings.allowFormats ?? [],
           embeddedBlocks: settings.embeddedBlocks ?? ['IMAGE', 'FILE'],
           collaborationLevel: settings.collaborationLevel ?? 'block',
-          indentatableFormats: settings.indentatableFormats ?? ['ORDERED-LIST', 'BULLET-LIST'],
+          indentableFormats: settings.indentableFormats ?? ['ORDERED-LIST', 'BULLET-LIST'],
           disableDecorationFormats: settings.disableDecorationFormats ?? ['CODE-BLOCK'],
           scrollContainer: settings.scrollContainer,
         },

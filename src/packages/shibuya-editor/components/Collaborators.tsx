@@ -77,11 +77,15 @@ export const Collaborators = React.memo(({ editor }: CollaboratorProps) => {
       if (!v.blockId) return v;
       const blockEl = getBlockElementById(v.blockId);
       const containerEl = getHtmlElement(editor.getSettings().scrollContainer);
+      const options = editor.getModule('collaborator').getOptions();
       if (!blockEl) return v;
       const containerScrollTop = containerEl ? containerEl.scrollTop : 0;
       const containerRect = containerEl?.getBoundingClientRect();
       const rect = blockEl.getBoundingClientRect();
-      return { ...v, top: containerScrollTop + rect.top - (containerRect?.top ?? 0) - 18 };
+      return {
+        ...v,
+        top: containerScrollTop + rect.top - (containerRect?.top ?? 0) - (options.marginTop ?? 0),
+      };
     });
   }, [collaborators]);
 

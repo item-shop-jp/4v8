@@ -675,12 +675,12 @@ export class SelectorModule implements Module {
   private _handleIndent(editor: EditorController, event: React.KeyboardEvent) {
     event.preventDefault();
     const blocks = editor.getBlocks();
-    const { indentatableFormats } = editor.getSettings();
+    const { indentableFormats } = editor.getSettings();
     const affectedIds = [];
     for (let i = 0; i < this.selectedBlocks.length; i++) {
       const blockIndex = blocks.findIndex((v) => v.id === this.selectedBlocks[i].id);
       if (blockIndex === -1) return;
-      if (!blocks[blockIndex] || !indentatableFormats.includes(blocks[blockIndex].type)) return;
+      if (!blocks[blockIndex] || !indentableFormats.includes(blocks[blockIndex].type)) return;
       if (blocks[blockIndex].attributes.indent > 6) return;
       editor.updateBlock({
         ...blocks[blockIndex],
@@ -699,12 +699,12 @@ export class SelectorModule implements Module {
   private _handleOutdent(editor: EditorController, event: React.KeyboardEvent) {
     event.preventDefault();
     const blocks = editor.getBlocks();
-    const { indentatableFormats } = editor.getSettings();
+    const { indentableFormats } = editor.getSettings();
     const affectedIds = [];
     for (let i = 0; i < this.selectedBlocks.length; i++) {
       const blockIndex = blocks.findIndex((v) => v.id === this.selectedBlocks[i].id);
       if (blockIndex === -1) return;
-      if (!blocks[blockIndex] || !indentatableFormats.includes(blocks[blockIndex].type)) return;
+      if (!blocks[blockIndex] || !indentableFormats.includes(blocks[blockIndex].type)) return;
       if ((blocks[blockIndex].attributes.indent ?? 0) < 1) return;
       const indent = blocks[blockIndex].attributes.indent - 1;
       editor.updateBlock({

@@ -15998,8 +15998,8 @@ class KeyBoardModule {
         if (!caret)
             return;
         const block = editor.getBlock(caret.blockId);
-        const { indentatableFormats } = editor.getSettings();
-        if (!block || !indentatableFormats.includes(block.type))
+        const { indentableFormats } = editor.getSettings();
+        if (!block || !indentableFormats.includes(block.type))
             return;
         if (block.attributes.indent > 6)
             return;
@@ -16018,8 +16018,8 @@ class KeyBoardModule {
         if (!caret)
             return;
         const block = editor.getBlock(caret.blockId);
-        const { indentatableFormats } = editor.getSettings();
-        if (!block || !indentatableFormats.includes(block.type))
+        const { indentableFormats } = editor.getSettings();
+        if (!block || !indentableFormats.includes(block.type))
             return;
         if (((_a = block.attributes.indent) !== null && _a !== void 0 ? _a : 0) < 1)
             return;
@@ -16941,13 +16941,13 @@ class SelectorModule {
         var _a;
         event.preventDefault();
         const blocks = editor.getBlocks();
-        const { indentatableFormats } = editor.getSettings();
+        const { indentableFormats } = editor.getSettings();
         const affectedIds = [];
         for (let i = 0; i < this.selectedBlocks.length; i++) {
             const blockIndex = blocks.findIndex((v) => v.id === this.selectedBlocks[i].id);
             if (blockIndex === -1)
                 return;
-            if (!blocks[blockIndex] || !indentatableFormats.includes(blocks[blockIndex].type))
+            if (!blocks[blockIndex] || !indentableFormats.includes(blocks[blockIndex].type))
                 return;
             if (blocks[blockIndex].attributes.indent > 6)
                 return;
@@ -16962,13 +16962,13 @@ class SelectorModule {
         var _a;
         event.preventDefault();
         const blocks = editor.getBlocks();
-        const { indentatableFormats } = editor.getSettings();
+        const { indentableFormats } = editor.getSettings();
         const affectedIds = [];
         for (let i = 0; i < this.selectedBlocks.length; i++) {
             const blockIndex = blocks.findIndex((v) => v.id === this.selectedBlocks[i].id);
             if (blockIndex === -1)
                 return;
-            if (!blocks[blockIndex] || !indentatableFormats.includes(blocks[blockIndex].type))
+            if (!blocks[blockIndex] || !indentableFormats.includes(blocks[blockIndex].type))
                 return;
             if (((_a = blocks[blockIndex].attributes.indent) !== null && _a !== void 0 ? _a : 0) < 1)
                 return;
@@ -19007,15 +19007,19 @@ class DragDropModule {
 }
 
 class CollaboratorModule {
-    constructor({ eventEmitter, editor }) {
+    constructor({ eventEmitter, editor, options }) {
         this.editor = editor;
         this.eventEmitter = eventEmitter;
+        this.options = Object.assign({}, options);
     }
     onInit() {
         this.eventEmitter.info('init collaborator module');
     }
     onDestroy() {
         this.eventEmitter.info('destroy collaborator module');
+    }
+    getOptions() {
+        return this.options;
     }
     updatePosition(user) {
         this.eventEmitter.emit(EditorEvents.EVENT_COLLABORATOR_UPDATE_POSITION, user);
@@ -19264,17 +19268,18 @@ const Collaborators = React__namespace.memo(({ editor }) => {
     }, []);
     const memoCollaborators = React__namespace.useMemo(() => {
         return collaborators.map((v) => {
-            var _a;
+            var _a, _b;
             if (!v.blockId)
                 return v;
             const blockEl = getBlockElementById(v.blockId);
             const containerEl = getHtmlElement(editor.getSettings().scrollContainer);
+            const options = editor.getModule('collaborator').getOptions();
             if (!blockEl)
                 return v;
             const containerScrollTop = containerEl ? containerEl.scrollTop : 0;
             const containerRect = containerEl === null || containerEl === void 0 ? void 0 : containerEl.getBoundingClientRect();
             const rect = blockEl.getBoundingClientRect();
-            return Object.assign(Object.assign({}, v), { top: containerScrollTop + rect.top - ((_a = containerRect === null || containerRect === void 0 ? void 0 : containerRect.top) !== null && _a !== void 0 ? _a : 0) - 18 });
+            return Object.assign(Object.assign({}, v), { top: containerScrollTop + rect.top - ((_a = containerRect === null || containerRect === void 0 ? void 0 : containerRect.top) !== null && _a !== void 0 ? _a : 0) - ((_b = options.marginTop) !== null && _b !== void 0 ? _b : 0) });
         });
     }, [collaborators]);
     return (jsxRuntime.exports.jsx(jsxRuntime.exports.Fragment, { children: memoCollaborators.map((collaborator) => {
@@ -19326,7 +19331,7 @@ const Editor = React__namespace.memo(React__namespace.forwardRef((_a, forwardRef
             allowFormats: (_d = settings.allowFormats) !== null && _d !== void 0 ? _d : [],
             embeddedBlocks: (_e = settings.embeddedBlocks) !== null && _e !== void 0 ? _e : ['IMAGE', 'FILE'],
             collaborationLevel: (_f = settings.collaborationLevel) !== null && _f !== void 0 ? _f : 'block',
-            indentatableFormats: (_g = settings.indentatableFormats) !== null && _g !== void 0 ? _g : ['ORDERED-LIST', 'BULLET-LIST'],
+            indentableFormats: (_g = settings.indentableFormats) !== null && _g !== void 0 ? _g : ['ORDERED-LIST', 'BULLET-LIST'],
             disableDecorationFormats: (_h = settings.disableDecorationFormats) !== null && _h !== void 0 ? _h : ['CODE-BLOCK'],
             scrollContainer: settings.scrollContainer,
         },

@@ -14,15 +14,20 @@ export interface User {
 interface Props {
   eventEmitter: EventEmitter;
   editor: EditorController;
+  options: {
+    marginTop: number; // スクロールコンテナ内のmargin設定用
+  };
 }
 
 export class CollaboratorModule implements Module {
   private eventEmitter;
   private editor;
+  private options: Props['options'];
 
-  constructor({ eventEmitter, editor }: Props) {
+  constructor({ eventEmitter, editor, options }: Props) {
     this.editor = editor;
     this.eventEmitter = eventEmitter;
+    this.options = { ...options };
   }
 
   onInit() {
@@ -31,6 +36,10 @@ export class CollaboratorModule implements Module {
 
   onDestroy() {
     this.eventEmitter.info('destroy collaborator module');
+  }
+
+  getOptions() {
+    return this.options;
   }
 
   updatePosition(user: User) {

@@ -42,6 +42,9 @@ const settings = {
       maxStack: 50,
       delay: 1000,
     },
+    collaborator: {
+      marginTop: 0,
+    },
     uploader: {
       onUpload: async ({ base64 }: { original: File; base64: string | null; isImage: boolean }) => {
         return new Promise((resolve) => {
@@ -55,7 +58,7 @@ const settings = {
   scrollMarginBottom: 150,
   scrollMarginTop: 50,
   allowFormats: [],
-  indentatableFormats: [
+  indentableFormats: [
     'ORDERED-LIST',
     'BULLET-LIST',
     'PARAGRAPH',

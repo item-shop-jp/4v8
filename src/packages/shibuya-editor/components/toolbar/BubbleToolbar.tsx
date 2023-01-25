@@ -255,7 +255,7 @@ export const BubbleToolbar = React.memo(
           <Button href="#" onClick={handleBold} active={!!formats?.bold}>
             <FormatBold size="20" />
           </Button>
-          <Button href="#" onClick={handleItalic} active={!!formats?.underline}>
+          <Button href="#" onClick={handleItalic} active={!!formats?.italic}>
             <FormatItalic size="20" />
           </Button>
           <Button href="#" onClick={handleUnderline} active={!!formats?.underline}>

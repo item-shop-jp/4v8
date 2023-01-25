@@ -180,13 +180,17 @@ export const BubbleToolbar = React.memo(
     const handleColor = React.useCallback(
       (event: React.MouseEvent) => {
         event.preventDefault();
-        if (formats?.color) {
-          editor.getModule('toolbar').formatInline({ color: false });
-        } else {
-          editor.getModule('toolbar').formatInline({ color: 'red' });
-        }
+        const eventEmitter = editor.getEventEmitter();
+        eventEmitter.emit(EditorEvents.EVENT_PALETTE_CLICK, {
+          caretPosition: currentCaretPosition,
+        });
+        // if (formats?.color) {
+        //   editor.getModule('toolbar').formatInline({ color: false });
+        // } else {
+        //   editor.getModule('toolbar').formatInline({ color: 'red' });
+        // }
       },
-      [formats],
+      [formats, currentCaretPosition],
     );
 
     const handleMouseDown = (e: React.MouseEvent) => {
@@ -271,7 +275,7 @@ export const BubbleToolbar = React.memo(
           <Button href="#" onClick={handleInlineCode} active={!!formats?.code}>
             <FormatCode size="20" />
           </Button>
-          <Button href="#" onClick={handleColor} active={!!formats?.color}>
+          <Button id="toolbar-palette" href="#" onClick={handleColor} active={!!formats?.color}>
             <FormatColor size="20" />
           </Button>
           <Button id="toolbar-link" href="#" onClick={handleLink} active={!!formats?.link}>

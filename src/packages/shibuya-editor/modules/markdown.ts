@@ -99,9 +99,23 @@ export class MarkdownShortcutModule implements Module {
 
     this.addShortcut({
       name: 'code-block',
-      type: 'inline',
+      type: 'block',
       pattern: /^```$/,
       handler: this._handleCodeBlock.bind(this),
+    });
+
+    this.addShortcut({
+      name: 'check-list',
+      type: 'block',
+      pattern: /^\[\s?\]$/,
+      handler: this._handleCheckList.bind(this),
+    });
+
+    this.addShortcut({
+      name: 'checked-list',
+      type: 'block',
+      pattern: /^\[x\]$/,
+      handler: this._handleCheckedList.bind(this),
     });
 
     this.addShortcut({
@@ -233,6 +247,14 @@ export class MarkdownShortcutModule implements Module {
 
   private _handleCodeBlock(caret: CaretPosition, match: RegExpMatchArray) {
     this.formatBlock(caret.blockId, 'CODE-BLOCK', 0, stringLength(match[0]));
+  }
+
+  private _handleCheckList(caret: CaretPosition, match: RegExpMatchArray) {
+    this.formatBlock(caret.blockId, 'CHECK-LIST', 0, stringLength(match[0]), { checked: false });
+  }
+
+  private _handleCheckedList(caret: CaretPosition, match: RegExpMatchArray) {
+    this.formatBlock(caret.blockId, 'CHECK-LIST', 0, stringLength(match[0]), { checked: true });
   }
 
   private _handleImage(caret: CaretPosition, match: RegExpMatchArray) {

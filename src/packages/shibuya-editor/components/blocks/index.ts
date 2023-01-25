@@ -4,6 +4,7 @@ export * from './Header2';
 export * from './Header3';
 export * from './OrderedList';
 export * from './BulletList';
+export * from './CheckList';
 export * from './Blockquote';
 export * from './Paragraph';
 export * from './CodeBlock';

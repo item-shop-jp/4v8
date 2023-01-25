@@ -9,6 +9,20 @@ import { BlockType } from '../../types/block';
 import { getHtmlElement } from '../../utils/dom';
 import { LinkPopup } from '../popups';
 import { CaretPosition } from '../../types/caret';
+import {
+  FormatBold,
+  FormatBulletList,
+  FormatCode,
+  FormatColor,
+  FormatHeader1,
+  FormatHeader2,
+  FormatHeader3,
+  FormatItalic,
+  FormatLink,
+  FormatNumberList,
+  FormatStrike,
+  FormatUnderLine,
+} from '../icons';
 
 export interface BubbleToolbarProps {
   editor: EditorController;
@@ -31,29 +45,34 @@ interface ButtonProps {
 }
 
 const Container = styled.div<ContainerProps>`
+  height: 34px;
+  display: flex;
+  align-items: center;
   position: absolute;
   top: ${({ top }) => `${top}px`};
   left: ${({ left }) => `${left}px`};
   display: ${({ isDisplay }) => (isDisplay ? 'auto' : 'none')};
   transform: translateY(-100%);
-  background-color: #fff;
-  border-radius: 8px;
+  background-color: #18181b;
   border: 1px solid #ccc;
-  padding: 4px;
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
   z-index: 1;
 `;
 
 const Button = styled.a<ButtonProps>`
-  display: inline-block;
-  padding: 2px 8px;
-  text-decoration: none;
-  border-radius: 8px;
-  margin: 0 4px;
-  ${({ active }) => active && 'background-color: #e3def3'};
+  display: flex;
+  padding: 7px;
+  ${({ active }) => active && 'background: rgba(255, 255, 255, 0.15)'};
   &:hover {
-    background-color: #e3def3;
+    background-color: rgba(255, 255, 255, 0.4);
   }
+`;
+
+const Divider = styled.div`
+  width: 1px;
+  height: 100%;
+  background: #fff;
+  opacity: 0.2;
 `;
 
 export const BubbleToolbar = React.memo(
@@ -69,6 +88,14 @@ export const BubbleToolbar = React.memo(
       (event: React.MouseEvent) => {
         event.preventDefault();
         editor.getModule('toolbar').formatInline({ bold: !formats?.bold });
+      },
+      [formats],
+    );
+
+    const handleItalic = React.useCallback(
+      (event: React.MouseEvent) => {
+        event.preventDefault();
+        editor.getModule('toolbar').formatInline({ italic: !formats?.italic });
       },
       [formats],
     );
@@ -116,6 +143,36 @@ export const BubbleToolbar = React.memo(
       },
       [formats],
     );
+    const handleHeader2 = React.useCallback(
+      (event: React.MouseEvent) => {
+        event.preventDefault();
+        editor.getModule('toolbar').formatBlock('HEADER2');
+      },
+      [formats],
+    );
+    const handleHeader3 = React.useCallback(
+      (event: React.MouseEvent) => {
+        event.preventDefault();
+        editor.getModule('toolbar').formatBlock('HEADER3');
+      },
+      [formats],
+    );
+
+    const handleOrderedList = React.useCallback(
+      (event: React.MouseEvent) => {
+        event.preventDefault();
+        editor.getModule('toolbar').formatBlock('ORDERED-LIST');
+      },
+      [formats],
+    );
+
+    const handleBulletList = React.useCallback(
+      (event: React.MouseEvent) => {
+        event.preventDefault();
+        editor.getModule('toolbar').formatBlock('BULLET-LIST');
+      },
+      [formats],
+    );
 
     const handleColor = React.useCallback(
       (event: React.MouseEvent) => {
@@ -157,12 +214,12 @@ export const BubbleToolbar = React.memo(
           const container = getHtmlElement(scrollContainer);
           if (container) {
             const containerRect = container.getBoundingClientRect();
-            const top = (container?.scrollTop ?? 0) + caret.rect.top - containerRect.top;
+            const top = (container?.scrollTop ?? 0) + caret.rect.top - containerRect.top - 4;
             const left = caret.rect.left - containerRect.left;
             setPosition({ top, left });
           } else {
             const scrollEl = document.scrollingElement as HTMLElement;
-            const top = scrollEl.scrollTop + caret.rect.top;
+            const top = scrollEl.scrollTop + caret.rect.top - 4;
             const left = caret.rect.left;
             setPosition({ top, left });
           }
@@ -194,26 +251,43 @@ export const BubbleToolbar = React.memo(
           onMouseDown={handleMouseDown}
           {...props}
         >
-          <Button href="#" onClick={handleHeader1} active={blockType === 'HEADER1'}>
-            H1
-          </Button>
+          {/* <Button href="#" onClick={handleHeader1} active={blockType === 'HEADER1'}></Button> */}
           <Button href="#" onClick={handleBold} active={!!formats?.bold}>
-            B
+            <FormatBold size="20" />
+          </Button>
+          <Button href="#" onClick={handleItalic} active={!!formats?.underline}>
+            <FormatItalic size="20" />
           </Button>
           <Button href="#" onClick={handleUnderline} active={!!formats?.underline}>
-            U
+            <FormatUnderLine size="20" />
           </Button>
           <Button href="#" onClick={handleStrike} active={!!formats?.strike}>
-            S
+            <FormatStrike size="20" />
           </Button>
           <Button href="#" onClick={handleInlineCode} active={!!formats?.code}>
-            code
+            <FormatCode size="20" />
           </Button>
           <Button href="#" onClick={handleColor} active={!!formats?.color}>
-            color
+            <FormatColor size="20" />
           </Button>
           <Button href="#" onClick={handleLink} active={!!formats?.link}>
-            L
+            <FormatLink size="20" />
+          </Button>
+          <Divider />
+          <Button href="#" onClick={handleHeader1} active={blockType === 'HEADER1'}>
+            <FormatHeader1 size="20" />
+          </Button>
+          <Button href="#" onClick={handleHeader2} active={blockType === 'HEADER2'}>
+            <FormatHeader2 size="20" />
+          </Button>
+          <Button href="#" onClick={handleHeader3} active={blockType === 'HEADER3'}>
+            <FormatHeader3 size="20" />
+          </Button>
+          <Button href="#" onClick={handleBulletList} active={blockType === 'BULLET-LIST'}>
+            <FormatBulletList size="20" />
+          </Button>
+          <Button href="#" onClick={handleOrderedList} active={blockType === 'ORDERED-LIST'}>
+            <FormatNumberList size="20" />
           </Button>
         </Container>
       </>,

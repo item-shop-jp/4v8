@@ -400,7 +400,7 @@ export class KeyBoardModule implements Module {
 
       editor.getModule('editor').createBlock({
         type: blockType,
-        attributes: block.attributes,
+        attributes: { ...block.attributes, checked: false },
       });
     } else {
       editor.getModule('editor').splitBlock(caret.blockId, caret.index, caret.length);

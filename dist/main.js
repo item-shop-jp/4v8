@@ -7618,7 +7618,7 @@ function decimalToAlphabet(num) {
     return dest;
 }
 
-const ListItem$1 = He.div `
+const ListItem$2 = He.div `
   font-size: 1rem;
   outline: 0;
   margin: 0;
@@ -7679,10 +7679,10 @@ const OrderedList = React__namespace.memo((_a) => {
     React__namespace.useEffect(() => {
         handleChangeElement();
     }, []);
-    return (jsxRuntime.exports.jsx(ListItem$1, Object.assign({ ref: headerRef, style: memoStyle, spellCheck: false, placeholder: showPlaceholder ? placeholder : '' }, props, { children: contents })));
+    return (jsxRuntime.exports.jsx(ListItem$2, Object.assign({ ref: headerRef, style: memoStyle, spellCheck: false, placeholder: showPlaceholder ? placeholder : '' }, props, { children: contents })));
 });
 
-const ListItem = He.div `
+const ListItem$1 = He.div `
   font-size: 1rem;
   outline: 0;
   margin: 0;
@@ -7740,7 +7740,72 @@ const BulletList = React__namespace.memo((_a) => {
         }
         return { '--content': `'${content}'` };
     }, [attributes === null || attributes === void 0 ? void 0 : attributes.indent]);
-    return (jsxRuntime.exports.jsx(ListItem, Object.assign({ ref: headerRef, style: memoStyle, spellCheck: false, placeholder: showPlaceholder ? placeholder : '' }, props, { children: contents })));
+    return (jsxRuntime.exports.jsx(ListItem$1, Object.assign({ ref: headerRef, style: memoStyle, spellCheck: false, placeholder: showPlaceholder ? placeholder : '' }, props, { children: contents })));
+});
+
+const CheckSquare = React__namespace.memo(({ size = 24, fill = '#616160', checked = false }) => {
+    return (jsxRuntime.exports.jsx("svg", Object.assign({ xmlns: "http://www.w3.org/2000/svg", width: size, height: size, fill: fill, viewBox: "0 0 24 24" }, { children: checked ? (jsxRuntime.exports.jsx("path", { d: "M7 5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H7zm4 10.414-2.707-2.707 1.414-1.414L11 12.586l3.793-3.793 1.414 1.414L11 15.414z" })) : (jsxRuntime.exports.jsx("path", { d: "M7 5c-1.103 0-2 .897-2 2v10c0 1.103.897 2 2 2h10c1.103 0 2-.897 2-2V7c0-1.103-.897-2-2-2H7zm0 12V7h10l.002 10H7z" })) })));
+});
+
+const ListItem = He.div `
+  font-size: 1rem;
+  outline: 0;
+  margin: 0;
+  padding: 2px 12px 2px;
+  padding-left: calc(40px + 1.5em * var(--indent));
+  box-sizing: border-box;
+  position: relative;
+  ${({ placeholder }) => {
+    return (placeholder &&
+        Ce `
+        ::after {
+          opacity: 0.3;
+          content: attr(placeholder);
+        }
+      `);
+}}
+`;
+const CheckBoxOuter = He.div `
+  position: absolute;
+  left: 4px;
+  top: -3px;
+  width: 32px;
+  height: 32px;
+  border-radius: 15%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  user-select: none;
+`;
+const CheckList = React__namespace.memo((_a) => {
+    var _b;
+    var { blockId, contents, placeholder = 'Check List', attributes, editor } = _a, props = __rest(_a, ["blockId", "contents", "placeholder", "attributes", "editor"]);
+    const headerRef = React__namespace.useRef(null);
+    const [showPlaceholder, setShowPlaceholder] = React__namespace.useState(false);
+    const handleChangeElement = React__namespace.useCallback(() => {
+        if (!headerRef.current)
+            return;
+        const innerText = headerRef.current.innerText.replaceAll(/\uFEFF/gi, '');
+        setShowPlaceholder(innerText.length < 1);
+    }, []);
+    useMutationObserver(headerRef, handleChangeElement);
+    React__namespace.useEffect(() => {
+        handleChangeElement();
+    }, []);
+    const handleClickCheckBox = React__namespace.useCallback((e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const currentBlock = editor.getBlock(blockId);
+        if (!currentBlock)
+            return;
+        editor.updateBlock(Object.assign(Object.assign({}, currentBlock), { attributes: Object.assign(Object.assign({}, currentBlock.attributes), { checked: !attributes.checked }) }));
+        editor.render([blockId]);
+    }, [blockId, attributes]);
+    const checked = (_b = attributes === null || attributes === void 0 ? void 0 : attributes.checked) !== null && _b !== void 0 ? _b : false;
+    return (jsxRuntime.exports.jsxs(ListItem, Object.assign({ ref: headerRef, spellCheck: false, placeholder: showPlaceholder ? placeholder : '', style: {
+            textDecoration: checked ? 'line-through' : 'none',
+        } }, props, { children: [jsxRuntime.exports.jsx(CheckBoxOuter, Object.assign({ onClick: handleClickCheckBox }, { children: jsxRuntime.exports.jsx(CheckSquare, { size: 32, checked: checked }) })), contents] })));
 });
 
 const Container$7 = He.blockquote `
@@ -15783,7 +15848,7 @@ class KeyBoardModule {
             }
             editor.getModule('editor').createBlock({
                 type: blockType,
-                attributes: block.attributes,
+                attributes: Object.assign(Object.assign({}, block.attributes), { checked: false }),
             });
         }
         else {
@@ -18677,9 +18742,21 @@ class MarkdownShortcutModule {
         });
         this.addShortcut({
             name: 'code-block',
-            type: 'inline',
+            type: 'block',
             pattern: /^```$/,
             handler: this._handleCodeBlock.bind(this),
+        });
+        this.addShortcut({
+            name: 'check-list',
+            type: 'block',
+            pattern: /^\[\s?\]$/,
+            handler: this._handleCheckList.bind(this),
+        });
+        this.addShortcut({
+            name: 'checked-list',
+            type: 'block',
+            pattern: /^\[x\]$/,
+            handler: this._handleCheckedList.bind(this),
         });
         this.addShortcut({
             name: 'code',
@@ -18768,6 +18845,12 @@ class MarkdownShortcutModule {
     }
     _handleCodeBlock(caret, match) {
         this.formatBlock(caret.blockId, 'CODE-BLOCK', 0, stringLength(match[0]));
+    }
+    _handleCheckList(caret, match) {
+        this.formatBlock(caret.blockId, 'CHECK-LIST', 0, stringLength(match[0]), { checked: false });
+    }
+    _handleCheckedList(caret, match) {
+        this.formatBlock(caret.blockId, 'CHECK-LIST', 0, stringLength(match[0]), { checked: true });
     }
     _handleImage(caret, match) {
         var _a, _b;
@@ -19345,6 +19428,7 @@ const Editor = React__namespace.memo(React__namespace.forwardRef((_a, forwardRef
         'block/paragraph': Paragraph,
         'block/ordered-list': OrderedList,
         'block/bullet-list': BulletList,
+        'block/check-list': CheckList,
         'block/header1': Header1,
         'block/header2': Header2,
         'block/header3': Header3,
@@ -19558,6 +19642,7 @@ exports.Blockquote = Blockquote;
 exports.Bold = Bold;
 exports.BubbleToolbar = BubbleToolbar;
 exports.BulletList = BulletList;
+exports.CheckList = CheckList;
 exports.ClipboardModule = ClipboardModule;
 exports.CodeBlock = CodeBlock;
 exports.CodeToken = CodeToken;

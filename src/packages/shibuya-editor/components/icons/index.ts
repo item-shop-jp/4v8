@@ -10,3 +10,4 @@ export * from './formatHeader2';
 export * from './formatHeader3';
 export * from './formatBulletList';
 export * from './formatNumberList';
+export * from './CheckSquare';

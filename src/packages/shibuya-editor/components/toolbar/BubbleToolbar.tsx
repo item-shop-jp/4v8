@@ -62,6 +62,8 @@ const Container = styled.div<ContainerProps>`
 const Button = styled.a<ButtonProps>`
   display: flex;
   padding: 7px;
+  width: 20px;
+  height: 20px;
   ${({ active }) => active && 'background: rgba(255, 255, 255, 0.15)'};
   &:hover {
     background-color: rgba(255, 255, 255, 0.4);
@@ -122,6 +124,7 @@ export const BubbleToolbar = React.memo(
         const eventEmitter = editor.getEventEmitter();
         eventEmitter.emit(EditorEvents.EVENT_LINK_CLICK, {
           mode: 'openEnterLink',
+          link: formats?.link,
           caretPosition: currentCaretPosition,
         });
       },
@@ -244,6 +247,7 @@ export const BubbleToolbar = React.memo(
     return ReactDOM.createPortal(
       <>
         <Container
+          id="bubble-toolbar"
           top={position?.top ?? 0}
           left={position?.left ?? 0}
           isDisplay={isDisplay}
@@ -270,7 +274,7 @@ export const BubbleToolbar = React.memo(
           <Button href="#" onClick={handleColor} active={!!formats?.color}>
             <FormatColor size="20" />
           </Button>
-          <Button href="#" onClick={handleLink} active={!!formats?.link}>
+          <Button id="toolbar-link" href="#" onClick={handleLink} active={!!formats?.link}>
             <FormatLink size="20" />
           </Button>
           <Divider />

@@ -28,64 +28,23 @@ interface Props {
   onLinkSave?: (link: string, event: React.MouseEvent) => void;
 }
 
-const EnterLinkContainer = styled.div`
+const EnterLinkContainer = styled.input`
   position: absolute;
-  background-color: #fff;
+  background-color: #18181b;
   border: 1px solid #ccc;
-  border-radius: 8px;
   box-shadow: 0px 0px 5px #ddd;
-  color: #444;
+  color: #a1a1aa;
   padding: 5px 12px;
   white-space: nowrap;
   display: flex;
-`;
-
-const PreviewContainer = styled.div`
-  position: absolute;
-  min-width: 300px;
-  background-color: #fff;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  box-shadow: 0px 0px 5px #ddd;
-  color: #444;
-  padding: 8px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
-
-const Info = styled.div`
-  margin-right: 8px;
-`;
-
-const Link = styled.a`
-  padding: 0 8px;
-  max-width: 200px;
-  overflow-x: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-`;
-
-const LinkInput = styled.input``;
-
-const ButtonContainer = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  button:first-child {
-    margin-right: 8px;
-  }
-`;
-
-const Button = styled.button``;
-
-const SingleButton = styled(Button)`
-  margin-left: 16px;
+  width: 176px;
+  height: 24px;
+  font-size: 14px;
 `;
 
 export const LinkPopup = React.memo(
   ({ editor, scrollContainer, onFocus, onBlur, onLinkSave, ...props }: Props) => {
     const [formats, setFormats] = React.useState<InlineAttributes>({});
-    const [inline, setInline] = React.useState<Inline>();
     const [linkUrl, setLinkUrl] = React.useState('');
     const [popupMode, setPopupMode] = React.useState();
     const [popupOpen, setPopupOpen] = React.useState(false);
@@ -100,90 +59,18 @@ export const LinkPopup = React.memo(
       [linkUrl],
     );
 
-    const handleSave = React.useCallback(
-      (event: React.MouseEvent) => {
-        event.preventDefault();
-        // attributeにlinkがないときは新規追加する
-        if (!inline) {
-          editor.getModule('toolbar').formatInline({ link: linkUrl }, currentCaretPosition);
-          setPopupOpen(false);
-          setLinkUrl('');
-          setTimeout(() => {
-            editor.focus();
-          }, 10);
-          return;
-        }
-        // それ以外はlinkを更新する
-        if (!currentCaretPosition) return;
-        const block = editor.getBlock(currentCaretPosition.blockId);
-        if (!block) return;
-        const inlineIndex = block.contents.findIndex((v) => v.id === inline.id);
-        if (inlineIndex === -1) return;
-        editor.updateBlock({
-          ...block,
-          contents: copyObject([
-            ...block.contents.slice(0, inlineIndex),
-            {
-              ...block.contents[inlineIndex],
-              attributes: {
-                ...block.contents[inlineIndex].attributes,
-                link: linkUrl,
-              },
-            },
-            ...block.contents.slice(inlineIndex + 1),
-          ]),
-        });
-        editor.render([block.id]);
-        setPopupOpen(false);
-        setLinkUrl('');
-        setTimeout(() => {
-          editor.focus();
-        }, 10);
-      },
-      [linkUrl, inline, currentCaretPosition],
-    );
+    const handleSave = React.useCallback(() => {
+      editor.getModule('toolbar').formatInline({ link: linkUrl }, currentCaretPosition);
+      setPopupOpen(false);
+      setTimeout(() => {
+        editor.focus();
+      }, 10);
+    }, [linkUrl, currentCaretPosition]);
 
     const handleClose = React.useCallback(() => {
       setPopupOpen(false);
       setLinkUrl('');
     }, []);
-
-    const handleEdit = React.useCallback(() => {
-      const eventEmitter = editor.getEventEmitter();
-      eventEmitter.emit(EditorEvents.EVENT_LINK_CLICK, {
-        mode: 'openEnterLink',
-        inline,
-        caretPosition: currentCaretPosition,
-      });
-    }, [inline, currentCaretPosition]);
-
-    const handleRemove = React.useCallback(() => {
-      if (!currentCaretPosition || !inline) return;
-      const block = editor.getBlock(currentCaretPosition.blockId);
-      if (!block) return;
-      const inlineIndex = block.contents.findIndex((v) => v.id === inline.id);
-      if (inlineIndex === -1) return;
-      editor.updateBlock({
-        ...block,
-        contents: copyObject([
-          ...block.contents.slice(0, inlineIndex),
-          {
-            ...block.contents[inlineIndex],
-            attributes: {
-              ...block.contents[inlineIndex].attributes,
-              link: false,
-            },
-          },
-          ...block.contents.slice(inlineIndex + 1),
-        ]),
-      });
-      editor.render([block.id]);
-      setPopupOpen(false);
-      setLinkUrl('');
-      setTimeout(() => {
-        editor.focus();
-      }, 10);
-    }, [inline]);
 
     React.useEffect(() => {
       const subs = new Subscription();
@@ -197,14 +84,34 @@ export const LinkPopup = React.memo(
           }
           setPopupOpen(true);
           const container = getHtmlElement(scrollContainer);
+          const bubbleToolbarRect = document
+            .getElementById('bubble-toolbar')
+            ?.getBoundingClientRect();
+          const linkRect = document.getElementById('toolbar-link')?.getBoundingClientRect();
+
           if (container) {
             const containerRect = container.getBoundingClientRect();
-            const top = (container?.scrollTop ?? 0) + caret.rect.top - containerRect.top;
-            const left = caret.rect.left - containerRect.left;
-            setPopupPosition({ top, left });
+            const top = (container?.scrollTop ?? 0) + caret.rect.top - containerRect.top + 4;
+            if (linkRect && bubbleToolbarRect) {
+              const left =
+                caret.rect.left -
+                containerRect.left +
+                (linkRect.left - bubbleToolbarRect.left) -
+                (200 - linkRect.width) / 2; // 200はInputの幅
+
+              setPopupPosition({
+                top,
+                left,
+              });
+            } else {
+              setPopupPosition({
+                top,
+                left: caret.rect.left - containerRect.left,
+              });
+            }
           } else {
             const scrollEl = document.scrollingElement as HTMLElement;
-            const top = scrollEl.scrollTop + caret.rect.top;
+            const top = scrollEl.scrollTop + caret.rect.top + 4;
             const left = caret.rect.left;
             setPopupPosition({ top, left });
           }
@@ -215,9 +122,10 @@ export const LinkPopup = React.memo(
           if (v.mode) {
             setPopupMode(v.mode);
           }
-          if (v.inline) {
-            setInline(v.inline);
-            setLinkUrl(v.inline?.attributes['link']);
+          if (v.link) {
+            setLinkUrl(v.link);
+          } else {
+            setLinkUrl('');
           }
         }),
       );
@@ -243,34 +151,17 @@ export const LinkPopup = React.memo(
       popupOpen && (
         <div ref={modalRef}>
           {popupMode === 'openEnterLink' && (
-            <EnterLinkContainer
-              style={{ top: popupPosition?.top ?? 0, left: popupPosition?.left ?? 0 }}
-              {...props}
-            >
-              <Info>Enter link:</Info>
-              <LinkInput
+            <>
+              <EnterLinkContainer
+                style={{ top: popupPosition?.top ?? 0, left: popupPosition?.left ?? 0 }}
+                {...props}
                 value={linkUrl}
+                placeholder="リンク先を入力してください"
                 onFocus={onFocus}
-                onBlur={onBlur}
+                onBlur={handleSave}
                 onChange={handleChange}
               />
-              <SingleButton onClick={handleSave}>save</SingleButton>
-            </EnterLinkContainer>
-          )}
-          {popupMode === 'openPreview' && (
-            <PreviewContainer
-              style={{ top: popupPosition?.top ?? 0, left: popupPosition?.left ?? 0 }}
-              {...props}
-            >
-              <div>Visit URL:</div>
-              <Link target="_blank" rel="noopener noreferrer" href={inline?.attributes['link']}>
-                {inline?.attributes['link']}
-              </Link>
-              <ButtonContainer>
-                <Button onClick={handleEdit}>edit</Button>
-                <Button onClick={handleRemove}>remove</Button>
-              </ButtonContainer>
-            </PreviewContainer>
+            </>
           )}
         </div>
       ),

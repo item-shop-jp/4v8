@@ -72,15 +72,9 @@ export const InlineText = ({
     };
   }, [inline]);
 
-  const handleClickLink = () => {
-    const caretPosition = editor.getCaretPosition();
-    const eventEmitter = editor.getEventEmitter();
-    eventEmitter.emit(EditorEvents.EVENT_LINK_CLICK, {
-      mode: 'openPreview',
-      inline,
-      caretPosition,
-    });
-  };
+  const handleClickLink = React.useCallback(() => {
+    window.open(inline.attributes['link'], '_blank', 'noreferrer');
+  }, [inline]);
 
   return (
     <>

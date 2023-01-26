@@ -3,6 +3,7 @@ import { FlattenSimpleInterpolation } from 'styled-components';
 import { Header1Props, ParagraphProps } from '../components/blocks';
 import { InlineTextProps } from '../components/inlines';
 import { LinkPopupProps } from '../components/popups/linkPopup';
+import { PalettePopupProps } from '../components/popups/palettePopup';
 import { BubbleToolbarProps, GlobalToolbarProps } from '../components/toolbar';
 
 export interface Formats {
@@ -19,5 +20,6 @@ export interface Formats {
   'inline/style/color': (color: string) => FlattenSimpleInterpolation;
   'inline/style/link': (url?: string) => FlattenSimpleInterpolation;
   'popup/link': React.FC<LinkPopupProps>;
+  'popup/palette': React.FC<PalettePopupProps>;
   [key: string]: any;
 }

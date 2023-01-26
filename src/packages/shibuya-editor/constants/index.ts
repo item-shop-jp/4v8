@@ -53,6 +53,7 @@ export const EditorEvents = {
   EVENT_COLLABORATOR_REMOVE_ALL: 'collaborator-remove-all', // 共同編集用
   EVENT_SELECTION_CHANGE: 'selection-change',
   EVENT_LINK_CLICK: 'button-clicked',
+  EVENT_PALETTE_CLICK: 'palette-clicked',
   EVENT_LOG_INFO: 'log-info',
   EVENT_LOG_WARNING: 'log-warning',
   EVENT_LOG_ERROR: 'log-error',

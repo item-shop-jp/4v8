@@ -38,6 +38,7 @@ import { EditorEvents } from './constants';
 import { LinkPopup } from './components/popups';
 import { Formats, Block, Settings, EditorController } from './types';
 import { Collaborators } from './components/Collaborators';
+import { PalettePopup } from './components/popups/palettePopup';
 
 interface Props {
   readOnly?: boolean;
@@ -121,6 +122,7 @@ export const Editor = React.memo(
         'inline/style/link': Link,
         'inline/style/color': Color,
         'popup/link': LinkPopup,
+        'popup/palette': PalettePopup,
       });
       const [blocks, setBlocks] = React.useState<Block[]>([]);
       const [selectedIds, setSelectedIds] = React.useState<string[]>([]);
@@ -369,6 +371,10 @@ export const Editor = React.memo(
         return blockFormats['popup/link'];
       }, [blockFormats]);
 
+      const MemoPalettePopup = React.useMemo(() => {
+        return blockFormats['popup/palette'];
+      }, [blockFormats]);
+
       React.useImperativeHandle(forwardRef, () => editor, [editor]);
 
       const BlockItem = blockFormats['block/container'];
@@ -408,6 +414,7 @@ export const Editor = React.memo(
           <MemoBubbleToolbar editor={memoEditor} scrollContainer={settings.scrollContainer} />
           <Collaborators editor={memoEditor} />
           <MemoLinkPopup editor={memoEditor} scrollContainer={settings.scrollContainer} />
+          <MemoPalettePopup editor={memoEditor} scrollContainer={settings.scrollContainer} />
           <Selector
             contentEditable={true}
             className="clipboard"

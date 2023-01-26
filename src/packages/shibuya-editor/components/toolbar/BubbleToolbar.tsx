@@ -54,7 +54,6 @@ const Container = styled.div<ContainerProps>`
   display: ${({ isDisplay }) => (isDisplay ? 'auto' : 'none')};
   transform: translateY(-100%);
   background-color: #18181b;
-  border: 1px solid #ccc;
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
   z-index: 1;
 `;
@@ -62,8 +61,6 @@ const Container = styled.div<ContainerProps>`
 const Button = styled.a<ButtonProps>`
   display: flex;
   padding: 7px;
-  width: 20px;
-  height: 20px;
   ${({ active }) => active && 'background: rgba(255, 255, 255, 0.15)'};
   &:hover {
     background-color: rgba(255, 255, 255, 0.4);

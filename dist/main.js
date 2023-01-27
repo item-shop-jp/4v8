@@ -9297,8 +9297,11 @@ const BubbleToolbar = React__namespace.memo((_a) => {
         subs.add(eventEmitter.select(EditorEvents.EVENT_SELECTION_CHANGE).subscribe((v) => {
             var _a, _b, _c, _d;
             const caret = editor.getCaretPosition();
-            if (!caret)
+            if (!caret) {
+                setPosition(undefined);
+                setDisplay(false);
                 return;
+            }
             const block = editor.getBlock(caret.blockId);
             const blockLength = (_b = editor.getBlockLength((_a = caret === null || caret === void 0 ? void 0 : caret.blockId) !== null && _a !== void 0 ? _a : '')) !== null && _b !== void 0 ? _b : 0;
             const { disableDecorationFormats } = editor.getSettings();

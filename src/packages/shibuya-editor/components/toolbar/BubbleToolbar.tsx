@@ -201,7 +201,11 @@ export const BubbleToolbar = React.memo(
       subs.add(
         eventEmitter.select(EditorEvents.EVENT_SELECTION_CHANGE).subscribe((v) => {
           const caret = editor.getCaretPosition();
-          if (!caret) return;
+          if (!caret) {
+            setPosition(undefined);
+            setDisplay(false);
+            return;
+          }
           const block = editor.getBlock(caret.blockId);
           const blockLength = editor.getBlockLength(caret?.blockId ?? '') ?? 0;
           const { disableDecorationFormats } = editor.getSettings();

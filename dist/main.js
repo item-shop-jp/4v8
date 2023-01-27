@@ -18663,6 +18663,76 @@ class ClipboardModule {
         const clipboardText = event.clipboardData.getData('text/plain');
         const linkRegExp = new RegExp(`^https?://[a-zA-Z0-9-_.!'()*;/?:@&=+$,%#]+$`, 'i');
         const linkMatch = clipboardText.match(linkRegExp);
+        const clipboardTextBlocks = clipboardText.replaceAll(/(\r|\r\n)/g, '\n').split('\n');
+        // 複数行のコピペ対応
+        if (prevBlock && clipboardTextBlocks.length > 1) {
+            let prevBlockId = prevBlock.id;
+            const affectedIds = clipboardTextBlocks
+                .filter((inlineText) => {
+                // 改行のみの行は消す
+                return inlineText !== '';
+            })
+                .map((inlineText, i) => {
+                let blockType = 'PARAGRAPH';
+                let attributes = {};
+                const patternHeader = /^#{1,6}\s/;
+                const matchHeader = inlineText.match(patternHeader);
+                if (matchHeader) {
+                    const headerLength = stringLength(matchHeader[0]);
+                    inlineText = inlineText.replace(patternHeader, '');
+                    blockType = `HEADER${headerLength - 1}`;
+                }
+                const patternNumberList = /^[0-9]+.\s/;
+                const matchNumberList = inlineText.match(patternNumberList);
+                if (matchNumberList) {
+                    inlineText = inlineText.replace(patternNumberList, '');
+                    blockType = `ORDERED-LIST`;
+                }
+                const patternBulletList = /^(\*|-|\+)\s/;
+                const matchBulletList = inlineText.match(patternBulletList);
+                if (matchBulletList) {
+                    inlineText = inlineText.replace(patternBulletList, '');
+                    blockType = `BULLET-LIST`;
+                }
+                const patternCheckListt = /^\[\s?\]\s/;
+                const matchCheckList = inlineText.match(patternCheckListt);
+                if (matchCheckList) {
+                    inlineText = inlineText.replace(patternCheckListt, '');
+                    blockType = `CHECK-LIST`;
+                    attributes = { checked: false };
+                }
+                const patternCheckedList = /^\[x\]\s/;
+                const matchCheckedList = inlineText.match(patternCheckedList);
+                if (matchCheckedList) {
+                    inlineText = inlineText.replace(patternCheckedList, '');
+                    blockType = `CHECK-LIST`;
+                    attributes = { checked: true };
+                }
+                const patternBlockQuote = /^>\s/;
+                const matchBlockQuote = inlineText.match(patternBlockQuote);
+                if (matchBlockQuote) {
+                    inlineText = inlineText.replace(patternBlockQuote, '');
+                    blockType = `BLOCKQUOTE`;
+                }
+                const inlines = [createInline('TEXT', inlineText)];
+                const appendBlock = createBlock(blockType, inlines, attributes);
+                this.editor.createBlock(appendBlock, prevBlockId);
+                prevBlockId = appendBlock.id;
+                return appendBlock.id;
+            });
+            this.editor.numberingList();
+            this.editor.render(affectedIds);
+            setTimeout(() => {
+                var _a;
+                const textIndex = (_a = this.editor.getBlockLength(prevBlockId)) !== null && _a !== void 0 ? _a : 0;
+                this.editor.setCaretPosition({
+                    blockId: prevBlockId,
+                    index: textIndex,
+                });
+                this.editor.updateCaretRect();
+            }, 10);
+            return;
+        }
         // url link
         if (prevBlock && caretPosition && linkMatch) {
             if (caretPosition.length > 0) {

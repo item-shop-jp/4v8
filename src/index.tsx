@@ -25,6 +25,7 @@ const BasicContainer = styled.div`
 
 const StyledEditor = styled(Editor)`
   border: none;
+  padding-top: 50px;
 `;
 
 const StyledParagraph = styled(Paragraph)``;

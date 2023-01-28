@@ -54,7 +54,7 @@ export const BlockContainer: React.FC<BlockProps> = React.memo(
       if (block?.type === 'CODE-BLOCK') {
         const text = block.contents.map((content) => content.text).join('');
         return InlineContainer({
-          contents: textToPrismaToken(text),
+          contents: textToPrismaToken(text, block.attributes?.language ?? 'typescript'),
           formats,
           editor,
           scrollContainer,

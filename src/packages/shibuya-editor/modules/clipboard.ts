@@ -144,7 +144,7 @@ export class ClipboardModule implements Module {
     const clipboardTextBlocks = clipboardText.replaceAll(/(\r|\r\n)/g, '\n').split('\n');
 
     // 複数行のコピペ対応
-    if (prevBlock && clipboardTextBlocks.length > 1) {
+    if (prevBlock && clipboardTextBlocks.length > 1 && prevBlock.type !== 'CODE-BLOCK') {
       let prevBlockId = prevBlock.id;
       const affectedIds = clipboardTextBlocks
         .filter((inlineText) => {

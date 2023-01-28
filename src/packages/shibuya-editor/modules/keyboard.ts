@@ -827,15 +827,9 @@ export class KeyBoardModule implements Module {
     let lineBrake = '\n';
 
     if (caret.index >= length && !blockText.match(/\n$/)) {
-      console.log(caret.index, length);
       lineBrake = '\n\n';
     }
     const insertedContents = insertTextInlineContents(block.contents, lineBrake, caret.index);
-    console.log(
-      JSON.stringify(lineBrake),
-      JSON.stringify(block.contents.map((v) => v.text).join('')),
-      JSON.stringify(insertedContents.map((v) => v.text).join('')),
-    );
     editor.updateBlock({
       ...block,
       contents: insertedContents,

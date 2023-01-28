@@ -79,3 +79,19 @@ export const LogLevels = {
   WARNING: 2,
   INFO: 3,
 };
+
+export const CodeBlockLanguages = [
+  'go',
+  'graphql',
+  'java',
+  'javascript',
+  'json',
+  'php',
+  'ruby',
+  'rust',
+  'scss',
+  'sql',
+  'swift',
+  'typescript',
+  'yaml',
+];

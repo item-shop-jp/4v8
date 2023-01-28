@@ -2,8 +2,8 @@ import Prism from 'prismjs';
 import { Inline } from '../types';
 import { createInline } from './inline';
 
-export function textToPrismaToken(text: string) {
-  const tokens = Prism.tokenize(text, Prism.languages.typescript);
+export function textToPrismaToken(text: string, language: string = 'typescript') {
+  const tokens = Prism.tokenize(text, Prism.languages[language]);
   const dest: Inline[] = [];
   parseTokens(tokens, dest);
   return dest;

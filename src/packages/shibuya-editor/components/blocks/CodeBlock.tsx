@@ -26,18 +26,20 @@ export interface CodeBlockProps {
   attributes: BlockAttributes;
 }
 
-const Wrapper = styled.div``;
-
-const Container = styled.div`
+const Wrapper = styled.div`
+  padding: 32px 0;
   background: #272822;
   outline: 0;
-  padding: 1em;
-  margin: 0.5em 0;
   overflow: auto;
   border-radius: 0.3em;
+  margin: 0.5em 0;
+`;
+
+const Container = styled.div`
+  outline: 0;
   color: #f8f8f2;
   text-shadow: 0 1px rgba(0, 0, 0, 0.3);
-  font-size: 1em;
+  font-size: 14px;
   text-align: left;
   white-space: pre;
   word-spacing: normal;
@@ -46,7 +48,7 @@ const Container = styled.div`
   line-height: 1.5;
   tab-size: 2;
   hyphens: none;
-  padding-left: calc(12px + 1.5em * var(--indent));
+  padding-left: calc(20px + 1.5em * var(--indent));
 `;
 
 const LanguageSelectButton = styled.div<{ opacity: number }>`

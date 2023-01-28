@@ -176,8 +176,7 @@ export function useEditor({
       if (nextBlock.contentEditable === 'false') {
         return next({ blockId: nextBlock.dataset.blockId });
       }
-      let nextRect =
-        nextBlock.parentElement?.getBoundingClientRect() ?? nextBlock.getBoundingClientRect();
+      let nextRect = nextBlock.getBoundingClientRect();
       const container = getHtmlElement(settings.scrollContainer);
       const scrollHeight = container?.clientHeight ?? window.innerHeight;
 

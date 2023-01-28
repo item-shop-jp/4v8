@@ -9,8 +9,6 @@ import {
   getBlockId,
   insertTextInlineContents,
   createBlock as utilCreateBlock,
-  splitInlineContents,
-  getInlineContents,
 } from '../utils/block';
 import { CaretPosition } from '../types/caret';
 import { BlockType } from '../types';

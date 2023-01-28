@@ -78,6 +78,7 @@ const LanguageSelector = styled.div`
   box-shadow: 10px 10px 10px 10px rgba(255, 255, 255, 0.3);
   background: #2b2c25;
   border-radius: 8px;
+  z-index: 1;
   div.button {
     padding: 4px 8px;
     border-radius: 4px;

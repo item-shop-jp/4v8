@@ -3,7 +3,7 @@ import { throttle } from 'throttle-debounce';
 import { Module } from '../types/module';
 import { EventEmitter } from '../utils/event-emitter';
 import { EditorController } from '../types/editor';
-import { getBlockId, getBlockElementById } from '../utils/block';
+import { getBlockId, getBlockElementById, getBlockOuterElementById } from '../utils/block';
 import { KeyCodes, EditorEvents } from '../constants';
 import { Block } from '../types/block';
 import { copyObject } from '../utils/object';
@@ -287,7 +287,7 @@ export class SelectorModule implements Module {
     const blocks = this.editor.getBlocks();
     let startBlockIndex;
     for (let i = 0; i < blocks.length; i++) {
-      const blockEl = getBlockElementById(blocks[i].id);
+      const blockEl = getBlockOuterElementById(blocks[i].id);
       const rect = blockEl?.getBoundingClientRect();
       if (rect && rect.top < e.clientY && rect.top + rect.height > e.clientY) {
         startBlockIndex = i;
@@ -307,6 +307,7 @@ export class SelectorModule implements Module {
       containerScrollTop,
       blockIndex: startBlockIndex ?? null,
     };
+
     this.area.end = null;
     this.areaSelecting = true;
     if (!document.getElementById('shibuya-area-selector')) {
@@ -399,7 +400,7 @@ export class SelectorModule implements Module {
     if (!editorRect || !this.area.start) return;
 
     const blocks = this.editor.getBlocks();
-    const firstBlock = getBlockElementById(blocks[0].id);
+    const firstBlock = getBlockOuterElementById(blocks[0].id);
     if (!firstBlock) return;
     const firstBlockRect = firstBlock.getBoundingClientRect();
     if (firstBlockRect.y > editorRect.y) {
@@ -423,7 +424,7 @@ export class SelectorModule implements Module {
 
       if (isUpward) {
         for (let i = this.area.start.blockIndex ?? blocks.length - 1; i >= 0; i--) {
-          const blockEl = getBlockElementById(blocks[i].id);
+          const blockEl = getBlockOuterElementById(blocks[i].id);
           const rect = blockEl?.getBoundingClientRect();
           if (rect && rect.top + rect.height > e.clientY) {
             blockIds.push(blocks[i].id);
@@ -433,7 +434,7 @@ export class SelectorModule implements Module {
         }
       } else {
         for (let i = this.area.start.blockIndex ?? 0; i < blocks.length; i++) {
-          const blockEl = getBlockElementById(blocks[i].id);
+          const blockEl = getBlockOuterElementById(blocks[i].id);
           const rect = blockEl?.getBoundingClientRect();
 
           if (rect && rect.top <= e.clientY) {

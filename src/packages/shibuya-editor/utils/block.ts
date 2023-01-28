@@ -37,6 +37,24 @@ export function getBlockElementById(blockId: string): HTMLElement | null {
   return element;
 }
 
+export function getOuter(node: HTMLElement): HTMLElement | null {
+  if (node.classList.contains('shibuya-block-outer')) {
+    return node;
+  }
+  if (!node.parentElement) {
+    return null;
+  }
+  return getOuter(node.parentElement);
+}
+
+export function getBlockOuterElementById(blockId: string): HTMLElement | null {
+  const element = document.querySelector<HTMLElement>('[data-block-id="' + blockId + '"]');
+  if (!element) return null;
+  const outerEl = getOuter(element);
+  if (!outerEl) return null;
+  return outerEl;
+}
+
 export function getBlockLength(block: string | HTMLElement): number | null {
   const element = block instanceof HTMLElement ? block : getBlockElementById(block);
   if (!element) return null;

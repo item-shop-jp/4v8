@@ -69,6 +69,7 @@ export const BlockContainer: React.FC<BlockProps> = React.memo(
     return (
       <Outer
         data-id={blockId}
+        className={'shibuya-block-outer'}
         style={{ '--indent': `${block?.attributes?.indent ?? 0}` } as React.CSSProperties}
       >
         <Container

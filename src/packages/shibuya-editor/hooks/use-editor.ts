@@ -104,7 +104,8 @@ export function useEditor({
         (container ? containerOffsetTop : containerOffsetTop + settings.scrollMarginTop)
       ) {
         if (container) {
-          container.scrollTop = currentIndex - 1 < 1 ? 0 : prevBlock.parentElement?.offsetTop ?? 0;
+          const outerEl = blockUtils.getOuter(prevBlock);
+          container.scrollTop = currentIndex - 1 < 1 ? 0 : outerEl?.offsetTop ?? 0;
         } else {
           if (document.scrollingElement) {
             let editorScrollTop =
@@ -171,6 +172,7 @@ export function useEditor({
       }
 
       const nextBlock = blockUtils.getBlockElementById(blocksRef.current[currentIndex + 1].id);
+
       if (!nextBlock) return false;
       // for embedded elements
       if (nextBlock.contentEditable === 'false') {
@@ -186,17 +188,16 @@ export function useEditor({
           nextRect.top + nextRect.height >=
           containerRect.top + containerRect.height - settings.scrollMarginBottom
         ) {
+          const outerEl = blockUtils.getOuter(nextBlock);
           const scrollTop =
-            (nextBlock.parentElement?.offsetTop ?? 0) -
-            container.clientHeight +
-            settings.scrollMarginBottom;
+            (outerEl?.offsetTop ?? 0) - container.clientHeight + settings.scrollMarginBottom;
           if (container.scrollHeight > scrollTop + container.clientHeight) {
             container.scrollTop = scrollTop;
           } else {
             container.scrollTop = container.scrollHeight - container.clientHeight;
           }
-          nextRect =
-            nextBlock.parentElement?.getBoundingClientRect() ?? nextBlock.getBoundingClientRect();
+
+          nextRect = nextBlock.getBoundingClientRect();
         }
       } else if (nextRect.top + nextRect.height >= scrollHeight - settings.scrollMarginBottom) {
         if (document.scrollingElement) {

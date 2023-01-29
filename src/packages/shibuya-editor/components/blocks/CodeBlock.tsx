@@ -32,7 +32,6 @@ const Wrapper = styled.div`
   outline: 0;
   overflow: auto;
   border-radius: 0.3em;
-  margin: 0.5em 0;
 `;
 
 const Container = styled.div`

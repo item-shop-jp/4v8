@@ -17,7 +17,8 @@ export interface Header2Props {
 const Header = styled.h2`
   font-size: 20px;
   outline: 0;
-  padding: 2px 12px;
+  margin: 0;
+  padding: 8px 12px;
   box-sizing: border-box;
   padding-left: calc(12px + 1.5em * var(--indent));
   ::after {

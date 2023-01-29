@@ -95,7 +95,7 @@ export const Container: React.FC = React.memo(() => {
       eventEmitter.select(EditorEvents.EVENT_EDITOR_CHANGED).subscribe((payload) => {
         payload.forEach((v: any) => {
           const block = editorRef2.current?.getBlock(v.blockId);
-          console.log(JSON.stringify(block?.contents));
+          // console.log(JSON.stringify(block?.contents));
         });
       }),
     );

@@ -17,7 +17,8 @@ export interface Header1Props {
 const Header = styled.h1`
   font-size: 24px;
   outline: 0;
-  padding: 2px 12px;
+  margin: 0;
+  padding: 12px;
   box-sizing: border-box;
   padding-left: calc(12px + 1.5em * var(--indent));
   ::after {

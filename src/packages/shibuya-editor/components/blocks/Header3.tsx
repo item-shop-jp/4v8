@@ -17,7 +17,8 @@ export interface Header3Props {
 const Header = styled.h3`
   font-size: 16px;
   outline: 0;
-  padding: 2px 12px;
+  margin: 0;
+  padding: 4px 12px;
   box-sizing: border-box;
   padding-left: calc(12px + 1.5em * var(--indent));
   ::after {

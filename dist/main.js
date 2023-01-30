@@ -16763,7 +16763,7 @@ function useEditor({ settings, eventEmitter, }) {
             updateCaretRect();
         }
     }, []);
-    const createBlock$1 = React__namespace.useCallback((appendBlock, prevBlockId, type = 'append', source = EventSources.USER) => {
+    const createBlock = React__namespace.useCallback((appendBlock, prevBlockId, type = 'append', source = EventSources.USER) => {
         const currentIndex = blocksRef.current.findIndex((v) => v.id === prevBlockId);
         const block = copyObject(appendBlock);
         if (block.meta) {
@@ -16933,7 +16933,7 @@ function useEditor({ settings, eventEmitter, }) {
             getBlocks,
             getBlock,
             getBlockLength: getBlockLength$1,
-            createBlock: createBlock$1,
+            createBlock,
             updateBlock,
             updateBlocks,
             deleteBlock,
@@ -16959,28 +16959,25 @@ function useEditor({ settings, eventEmitter, }) {
         };
     }, []);
     //real-time collaborative test
-    React__namespace.useEffect(() => {
-        const interval = setInterval(() => {
-            const block = getBlock(blocksRef.current[0].id);
-            if (!block)
-                return;
-            // const contents = [
-            //   ...block.contents.slice(0, block.contents.length - 1),
-            //   {
-            //     ...block.contents[block.contents.length - 1],
-            //     text: 'あ' + block.contents[block.contents.length - 1].text,
-            //   },
-            // ];
-            // console.log(JSON.stringify(contents));
-            // updateBlock({ ...block, contents }, EventSources.COLLABORATOR);
-            const appendedBlock = createBlock('PARAGRAPH', [createInline('TEXT', 'hoge')]);
-            createBlock$1(appendedBlock, block.id, 'append', EventSources.COLLABORATOR);
-            render([appendedBlock.id]);
-        }, 4000);
-        return () => {
-            clearInterval(interval);
-        };
-    }, []);
+    // React.useEffect(() => {
+    //   const interval = setInterval(() => {
+    //     const block = getBlock(blocksRef.current[0].id);
+    //     if (!block) return;
+    //     const contents = [
+    //       ...block.contents.slice(0, block.contents.length - 1),
+    //       {
+    //         ...block.contents[block.contents.length - 1],
+    //         text: 'あ' + block.contents[block.contents.length - 1].text,
+    //       },
+    //     ];
+    //     console.log(JSON.stringify(contents));
+    //     updateBlock({ ...block, contents }, EventSources.COLLABORATOR);
+    //     render([block.id]);
+    //   }, 4000);
+    //   return () => {
+    //     clearInterval(interval);
+    //   };
+    // }, []);
     React__namespace.useEffect(() => {
         const debouncedSelectionChange = debounce(200, (e) => {
             if (!editorRef.current)

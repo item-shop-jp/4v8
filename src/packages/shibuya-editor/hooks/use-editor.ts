@@ -846,28 +846,26 @@ export function useEditor({
   }, []);
 
   //real-time collaborative test
-  React.useEffect(() => {
-    const interval = setInterval(() => {
-      const block = getBlock(blocksRef.current[0].id);
-      if (!block) return;
-      // const contents = [
-      //   ...block.contents.slice(0, block.contents.length - 1),
-      //   {
-      //     ...block.contents[block.contents.length - 1],
-      //     text: 'あ' + block.contents[block.contents.length - 1].text,
-      //   },
-      // ];
-      // console.log(JSON.stringify(contents));
-      // updateBlock({ ...block, contents }, EventSources.COLLABORATOR);
-      const appendedBlock = blockUtils.createBlock('PARAGRAPH', [createInline('TEXT', 'hoge')]);
-      createBlock(appendedBlock, block.id, 'append', EventSources.COLLABORATOR);
-      render([appendedBlock.id]);
-    }, 4000);
+  // React.useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     const block = getBlock(blocksRef.current[0].id);
+  //     if (!block) return;
+  //     const contents = [
+  //       ...block.contents.slice(0, block.contents.length - 1),
+  //       {
+  //         ...block.contents[block.contents.length - 1],
+  //         text: 'あ' + block.contents[block.contents.length - 1].text,
+  //       },
+  //     ];
+  //     console.log(JSON.stringify(contents));
+  //     updateBlock({ ...block, contents }, EventSources.COLLABORATOR);
+  //     render([block.id]);
+  //   }, 4000);
 
-    return () => {
-      clearInterval(interval);
-    };
-  }, []);
+  //   return () => {
+  //     clearInterval(interval);
+  //   };
+  // }, []);
 
   React.useEffect(() => {
     const debouncedSelectionChange = debounce(200, (e: Event) => {

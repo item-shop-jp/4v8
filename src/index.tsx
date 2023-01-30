@@ -56,7 +56,7 @@ const settings = {
       },
     },
   },
-  scrollMarginBottom: 150,
+  scrollMarginBottom: 450,
   scrollMarginTop: 50,
   allowFormats: [],
   indentableFormats: [
@@ -110,6 +110,7 @@ export const Container: React.FC = React.memo(() => {
         <Editor settings={settings} formats={formats} readOnly={false} ref={editorRef1} />
       </BasicContainer> */}
       <ScrollContainer id="scroll2">
+        <div style={{ height: '300px' }}></div>
         <StyledEditor
           settings={{ ...settings, scrollContainer: '#scroll2' }}
           formats={formats}

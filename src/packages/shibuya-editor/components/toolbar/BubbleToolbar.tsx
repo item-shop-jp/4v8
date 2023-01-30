@@ -30,8 +30,6 @@ export interface BubbleToolbarProps {
 }
 
 interface ContainerProps {
-  top: number;
-  left: number;
   isDisplay: boolean;
 }
 
@@ -49,9 +47,7 @@ const Container = styled.div<ContainerProps>`
   display: flex;
   align-items: center;
   position: absolute;
-  top: ${({ top }) => `${top}px`};
-  left: ${({ left }) => `${left}px`};
-  display: ${({ isDisplay }) => (isDisplay ? 'auto' : 'none')};
+  opacity: ${({ isDisplay }) => (isDisplay ? '1' : '0')};
   transform: translateY(-100%);
   background-color: #18181b;
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
@@ -198,6 +194,24 @@ export const BubbleToolbar = React.memo(
     React.useEffect(() => {
       const subs = new Subscription();
       const eventEmitter = editor.getEventEmitter();
+
+      const updatePosition = () => {
+        const caret = editor.getCaretPosition();
+        if (!caret) return;
+        const container = getHtmlElement(scrollContainer);
+        if (container) {
+          const containerRect = container.getBoundingClientRect();
+          const top = (container?.scrollTop ?? 0) + caret.rect.top - containerRect.top - 4;
+          const left = caret.rect.left - containerRect.left;
+          setPosition({ top, left });
+        } else {
+          const scrollEl = document.scrollingElement as HTMLElement;
+          const top = scrollEl.scrollTop + caret.rect.top - 4;
+          const left = caret.rect.left;
+          setPosition({ top, left });
+        }
+      };
+
       subs.add(
         eventEmitter.select(EditorEvents.EVENT_SELECTION_CHANGE).subscribe((v) => {
           const caret = editor.getCaretPosition();
@@ -219,22 +233,22 @@ export const BubbleToolbar = React.memo(
             setDisplay(false);
             return;
           }
-          const container = getHtmlElement(scrollContainer);
-          if (container) {
-            const containerRect = container.getBoundingClientRect();
-            const top = (container?.scrollTop ?? 0) + caret.rect.top - containerRect.top - 4;
-            const left = caret.rect.left - containerRect.left;
-            setPosition({ top, left });
-          } else {
-            const scrollEl = document.scrollingElement as HTMLElement;
-            const top = scrollEl.scrollTop + caret.rect.top - 4;
-            const left = caret.rect.left;
-            setPosition({ top, left });
-          }
+
+          updatePosition();
 
           setDisplay(!caret.collapsed);
           setFormats(editor.getFormats(caret.blockId, caret.index, caret.length));
           setBlockType(editor.getBlock(caret.blockId)?.type);
+        }),
+      );
+
+      subs.add(
+        eventEmitter.select<string[]>(EditorEvents.EVENT_BLOCK_RERENDER).subscribe(() => {
+          setDisplay(false);
+          setTimeout(() => {
+            updatePosition();
+            setDisplay(true);
+          });
         }),
       );
       return () => {
@@ -253,8 +267,10 @@ export const BubbleToolbar = React.memo(
       <>
         <Container
           id="bubble-toolbar"
-          top={position?.top ?? 0}
-          left={position?.left ?? 0}
+          style={{
+            top: position?.top ?? 0,
+            left: position?.left ?? 0,
+          }}
           isDisplay={isDisplay}
           ref={containerRef}
           onMouseDown={handleMouseDown}

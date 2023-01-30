@@ -99,25 +99,31 @@ export function useEditor({
       const container = getHtmlElement(settings.scrollContainer);
       const containerOffsetTop = container ? container.getBoundingClientRect().top : 0;
 
-      if (
-        prevRect.top <=
-        (container ? containerOffsetTop : containerOffsetTop + settings.scrollMarginTop)
-      ) {
-        if (container) {
+      if (container) {
+        if (prevRect.top <= containerOffsetTop + settings.scrollMarginTop) {
           const outerEl = blockUtils.getOuter(prevBlock);
-          container.scrollTop = currentIndex - 1 < 1 ? 0 : outerEl?.offsetTop ?? 0;
-        } else {
-          if (document.scrollingElement) {
-            let editorScrollTop =
-              document.scrollingElement.scrollTop + prevRect.top - settings.scrollMarginTop;
-            if (currentIndex - 1 < 1) {
-              editorScrollTop -= 30;
-            }
-            document.scrollingElement.scrollTop = editorScrollTop;
+          const offsetTop =
+            (editorRef.current?.parentElement?.offsetTop ?? 0) -
+            containerOffsetTop +
+            (outerEl?.offsetTop ?? 0);
+
+          if (currentIndex - 1 < 1) {
+            container.scrollTop = settings.scrollMarginTop;
+          } else {
+            container.scrollTop = offsetTop - settings.scrollMarginTop + 30;
           }
         }
-        prevRect = prevBlock.getBoundingClientRect();
+      } else {
+        if (document.scrollingElement && prevRect.top <= containerOffsetTop) {
+          let editorScrollTop =
+            document.scrollingElement.scrollTop + prevRect.top - settings.scrollMarginTop;
+          if (currentIndex - 1 < 1) {
+            editorScrollTop -= 30;
+          }
+          document.scrollingElement.scrollTop = editorScrollTop;
+        }
       }
+      prevRect = prevBlock.getBoundingClientRect();
 
       if (typeof index === 'number' && index >= 0) {
         setTimeout(() => {
@@ -839,27 +845,29 @@ export function useEditor({
     };
   }, []);
 
-  // real-time collaborative test
-  // React.useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     const block = getBlock(blocksRef.current[0].id);
-  //     if (!block) return;
-  //     const contents = [
-  //       ...block.contents.slice(0, block.contents.length - 1),
-  //       {
-  //         ...block.contents[block.contents.length - 1],
-  //         text: 'あ' + block.contents[block.contents.length - 1].text,
-  //       },
-  //     ];
-  //     console.log(JSON.stringify(contents));
-  //     updateBlock({ ...block, contents }, EventSources.COLLABORATOR);
-  //     render([block.id]);
-  //   }, 4000);
+  //real-time collaborative test
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      const block = getBlock(blocksRef.current[0].id);
+      if (!block) return;
+      // const contents = [
+      //   ...block.contents.slice(0, block.contents.length - 1),
+      //   {
+      //     ...block.contents[block.contents.length - 1],
+      //     text: 'あ' + block.contents[block.contents.length - 1].text,
+      //   },
+      // ];
+      // console.log(JSON.stringify(contents));
+      // updateBlock({ ...block, contents }, EventSources.COLLABORATOR);
+      const appendedBlock = blockUtils.createBlock('PARAGRAPH', [createInline('TEXT', 'hoge')]);
+      createBlock(appendedBlock, block.id, 'append', EventSources.COLLABORATOR);
+      render([appendedBlock.id]);
+    }, 4000);
 
-  //   return () => {
-  //     clearInterval(interval);
-  //   };
-  // }, []);
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
 
   React.useEffect(() => {
     const debouncedSelectionChange = debounce(200, (e: Event) => {

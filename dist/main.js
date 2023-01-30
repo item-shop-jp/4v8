@@ -7479,7 +7479,7 @@ const BlockContainer = React__namespace.memo((_a) => {
     }, [block === null || block === void 0 ? void 0 : block.contents, block === null || block === void 0 ? void 0 : block.type, formats, editor]);
     const blockFormat = `block/${block === null || block === void 0 ? void 0 : block.type.toLocaleLowerCase()}`;
     const Container = (_b = formats[blockFormat]) !== null && _b !== void 0 ? _b : formats['block/paragraph'];
-    return (jsxRuntime.exports.jsxs(Outer, Object.assign({ "data-id": blockId, style: { '--indent': `${(_d = (_c = block === null || block === void 0 ? void 0 : block.attributes) === null || _c === void 0 ? void 0 : _c.indent) !== null && _d !== void 0 ? _d : 0}` } }, { children: [jsxRuntime.exports.jsx(Container, Object.assign({ suppressContentEditableWarning: true, className: 'notranslate', contentEditable: !readOnly, blockId: blockId, "data-block-id": blockId, "data-attributes": JSON.stringify(block === null || block === void 0 ? void 0 : block.attributes), "data-metas": JSON.stringify(block === null || block === void 0 ? void 0 : block.meta), "data-format": blockFormat, formats: formats, attributes: block === null || block === void 0 ? void 0 : block.attributes, meta: (_e = block === null || block === void 0 ? void 0 : block.meta) !== null && _e !== void 0 ? _e : {}, contents: memoContents, editor: editor, selected: selected }, props)), selected && jsxRuntime.exports.jsx(Overlay, {})] })));
+    return (jsxRuntime.exports.jsxs(Outer, Object.assign({ "data-id": blockId, className: 'shibuya-block-outer', style: { '--indent': `${(_d = (_c = block === null || block === void 0 ? void 0 : block.attributes) === null || _c === void 0 ? void 0 : _c.indent) !== null && _d !== void 0 ? _d : 0}` } }, { children: [jsxRuntime.exports.jsx(Container, Object.assign({ suppressContentEditableWarning: true, className: 'notranslate', contentEditable: !readOnly, blockId: blockId, "data-block-id": blockId, "data-attributes": JSON.stringify(block === null || block === void 0 ? void 0 : block.attributes), "data-metas": JSON.stringify(block === null || block === void 0 ? void 0 : block.meta), "data-format": blockFormat, formats: formats, attributes: block === null || block === void 0 ? void 0 : block.attributes, meta: (_e = block === null || block === void 0 ? void 0 : block.meta) !== null && _e !== void 0 ? _e : {}, contents: memoContents, editor: editor, selected: selected }, props)), selected && jsxRuntime.exports.jsx(Overlay, {})] })));
 });
 
 function useMutationObserver(ref, callback, options = {
@@ -7500,7 +7500,8 @@ function useMutationObserver(ref, callback, options = {
 const Header$2 = He.h1 `
   font-size: 24px;
   outline: 0;
-  padding: 2px 12px;
+  margin: 0;
+  padding: 12px;
   box-sizing: border-box;
   padding-left: calc(12px + 1.5em * var(--indent));
   ::after {
@@ -7528,7 +7529,8 @@ const Header1 = React__namespace.memo((_a) => {
 const Header$1 = He.h2 `
   font-size: 20px;
   outline: 0;
-  padding: 2px 12px;
+  margin: 0;
+  padding: 8px 12px;
   box-sizing: border-box;
   padding-left: calc(12px + 1.5em * var(--indent));
   ::after {
@@ -7556,7 +7558,8 @@ const Header2 = React__namespace.memo((_a) => {
 const Header = He.h3 `
   font-size: 16px;
   outline: 0;
-  padding: 2px 12px;
+  margin: 0;
+  padding: 4px 12px;
   box-sizing: border-box;
   padding-left: calc(12px + 1.5em * var(--indent));
   ::after {
@@ -7914,7 +7917,7 @@ const P = He.p `
   font-size: 1rem;
   outline: 0;
   margin: 0;
-  padding: 2px 12px;
+  padding: 4px 12px;
   box-sizing: border-box;
   padding-left: calc(12px + 1.5em * var(--indent));
 `;
@@ -9561,17 +9564,18 @@ Prism.languages.swift['string-literal'].forEach(function (rule) {
 
 }(Prism));
 
-const Wrapper = He.div ``;
-const Container$8 = He.div `
+const Wrapper = He.div `
+  padding: 32px 0;
   background: #272822;
   outline: 0;
-  padding: 1em;
-  margin: 0.5em 0;
   overflow: auto;
   border-radius: 0.3em;
+`;
+const Container$8 = He.div `
+  outline: 0;
   color: #f8f8f2;
   text-shadow: 0 1px rgba(0, 0, 0, 0.3);
-  font-size: 1em;
+  font-size: 14px;
   text-align: left;
   white-space: pre;
   word-spacing: normal;
@@ -9580,7 +9584,7 @@ const Container$8 = He.div `
   line-height: 1.5;
   tab-size: 2;
   hyphens: none;
-  padding-left: calc(12px + 1.5em * var(--indent));
+  padding-left: calc(20px + 1.5em * var(--indent));
 `;
 const LanguageSelectButton = He.div `
   position: absolute;
@@ -9609,6 +9613,7 @@ const LanguageSelector = He.div `
   box-shadow: 10px 10px 10px 10px rgba(255, 255, 255, 0.3);
   background: #2b2c25;
   border-radius: 8px;
+  z-index: 1;
   div.button {
     padding: 4px 8px;
     border-radius: 4px;
@@ -10132,7 +10137,8 @@ var __assign = (undefined && undefined.__assign) || function () {
 const Container$7 = He.div `
   outline: none;
   display: flex;
-  margin: 4px 0;
+  margin: 0;
+  padding: 12px 0;
   justify-content: center;
   img {
     max-width: 100%;
@@ -10676,9 +10682,7 @@ const Container$4 = He.div `
   display: flex;
   align-items: center;
   position: absolute;
-  top: ${({ top }) => `${top}px`};
-  left: ${({ left }) => `${left}px`};
-  display: ${({ isDisplay }) => (isDisplay ? 'auto' : 'none')};
+  opacity: ${({ isDisplay }) => (isDisplay ? '1' : '0')};
   transform: translateY(-100%);
   background-color: #18181b;
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
@@ -10775,8 +10779,27 @@ const BubbleToolbar = React__namespace.memo((_a) => {
     React__namespace.useEffect(() => {
         const subs = new Subscription();
         const eventEmitter = editor.getEventEmitter();
+        const updatePosition = () => {
+            var _a;
+            const caret = editor.getCaretPosition();
+            if (!caret)
+                return;
+            const container = getHtmlElement(scrollContainer);
+            if (container) {
+                const containerRect = container.getBoundingClientRect();
+                const top = ((_a = container === null || container === void 0 ? void 0 : container.scrollTop) !== null && _a !== void 0 ? _a : 0) + caret.rect.top - containerRect.top - 4;
+                const left = caret.rect.left - containerRect.left;
+                setPosition({ top, left });
+            }
+            else {
+                const scrollEl = document.scrollingElement;
+                const top = scrollEl.scrollTop + caret.rect.top - 4;
+                const left = caret.rect.left;
+                setPosition({ top, left });
+            }
+        };
         subs.add(eventEmitter.select(EditorEvents.EVENT_SELECTION_CHANGE).subscribe((v) => {
-            var _a, _b, _c, _d;
+            var _a, _b, _c;
             const caret = editor.getCaretPosition();
             if (!caret) {
                 setPosition(undefined);
@@ -10794,22 +10817,17 @@ const BubbleToolbar = React__namespace.memo((_a) => {
                 setDisplay(false);
                 return;
             }
-            const container = getHtmlElement(scrollContainer);
-            if (container) {
-                const containerRect = container.getBoundingClientRect();
-                const top = ((_c = container === null || container === void 0 ? void 0 : container.scrollTop) !== null && _c !== void 0 ? _c : 0) + caret.rect.top - containerRect.top - 4;
-                const left = caret.rect.left - containerRect.left;
-                setPosition({ top, left });
-            }
-            else {
-                const scrollEl = document.scrollingElement;
-                const top = scrollEl.scrollTop + caret.rect.top - 4;
-                const left = caret.rect.left;
-                setPosition({ top, left });
-            }
+            updatePosition();
             setDisplay(!caret.collapsed);
             setFormats(editor.getFormats(caret.blockId, caret.index, caret.length));
-            setBlockType((_d = editor.getBlock(caret.blockId)) === null || _d === void 0 ? void 0 : _d.type);
+            setBlockType((_c = editor.getBlock(caret.blockId)) === null || _c === void 0 ? void 0 : _c.type);
+        }));
+        subs.add(eventEmitter.select(EditorEvents.EVENT_BLOCK_RERENDER).subscribe(() => {
+            setDisplay(false);
+            setTimeout(() => {
+                updatePosition();
+                setDisplay(true);
+            });
         }));
         return () => {
             subs.unsubscribe();
@@ -10822,7 +10840,10 @@ const BubbleToolbar = React__namespace.memo((_a) => {
             editor.getModule('toolbar').setBubbleToolbarRef(containerRef.current);
         });
     }, [editor]);
-    return ReactDOM__default["default"].createPortal(jsxRuntime.exports.jsx(jsxRuntime.exports.Fragment, { children: jsxRuntime.exports.jsxs(Container$4, Object.assign({ id: "bubble-toolbar", top: (_b = position === null || position === void 0 ? void 0 : position.top) !== null && _b !== void 0 ? _b : 0, left: (_c = position === null || position === void 0 ? void 0 : position.left) !== null && _c !== void 0 ? _c : 0, isDisplay: isDisplay, ref: containerRef, onMouseDown: handleMouseDown }, props, { children: [jsxRuntime.exports.jsx(Button, Object.assign({ href: "#", onClick: handleBold, active: !!(formats === null || formats === void 0 ? void 0 : formats.bold) }, { children: jsxRuntime.exports.jsx(FormatBold, { size: "20" }) })), jsxRuntime.exports.jsx(Button, Object.assign({ href: "#", onClick: handleItalic, active: !!(formats === null || formats === void 0 ? void 0 : formats.italic) }, { children: jsxRuntime.exports.jsx(FormatItalic, { size: "20" }) })), jsxRuntime.exports.jsx(Button, Object.assign({ href: "#", onClick: handleUnderline, active: !!(formats === null || formats === void 0 ? void 0 : formats.underline) }, { children: jsxRuntime.exports.jsx(FormatUnderLine, { size: "20" }) })), jsxRuntime.exports.jsx(Button, Object.assign({ href: "#", onClick: handleStrike, active: !!(formats === null || formats === void 0 ? void 0 : formats.strike) }, { children: jsxRuntime.exports.jsx(FormatStrike, { size: "20" }) })), jsxRuntime.exports.jsx(Button, Object.assign({ href: "#", onClick: handleInlineCode, active: !!(formats === null || formats === void 0 ? void 0 : formats.code) }, { children: jsxRuntime.exports.jsx(FormatCode, { size: "20" }) })), jsxRuntime.exports.jsx(Button, Object.assign({ id: "toolbar-palette", href: "#", onClick: handleColor, active: !!(formats === null || formats === void 0 ? void 0 : formats.color) }, { children: jsxRuntime.exports.jsx(FormatColor, { size: "20" }) })), jsxRuntime.exports.jsx(Button, Object.assign({ id: "toolbar-link", href: "#", onClick: handleLink, active: !!(formats === null || formats === void 0 ? void 0 : formats.link) }, { children: jsxRuntime.exports.jsx(FormatLink, { size: "20" }) })), jsxRuntime.exports.jsx(Divider, {}), jsxRuntime.exports.jsx(Button, Object.assign({ href: "#", onClick: handleHeader1, active: blockType === 'HEADER1' }, { children: jsxRuntime.exports.jsx(FormatHeader1, { size: "20" }) })), jsxRuntime.exports.jsx(Button, Object.assign({ href: "#", onClick: handleHeader2, active: blockType === 'HEADER2' }, { children: jsxRuntime.exports.jsx(FormatHeader2, { size: "20" }) })), jsxRuntime.exports.jsx(Button, Object.assign({ href: "#", onClick: handleHeader3, active: blockType === 'HEADER3' }, { children: jsxRuntime.exports.jsx(FormatHeader3, { size: "20" }) })), jsxRuntime.exports.jsx(Button, Object.assign({ href: "#", onClick: handleBulletList, active: blockType === 'BULLET-LIST' }, { children: jsxRuntime.exports.jsx(FormatBulletList, { size: "20" }) })), jsxRuntime.exports.jsx(Button, Object.assign({ href: "#", onClick: handleOrderedList, active: blockType === 'ORDERED-LIST' }, { children: jsxRuntime.exports.jsx(FormatNumberList, { size: "20" }) }))] })) }), (_d = getHtmlElement(scrollContainer)) !== null && _d !== void 0 ? _d : document.body);
+    return ReactDOM__default["default"].createPortal(jsxRuntime.exports.jsx(jsxRuntime.exports.Fragment, { children: jsxRuntime.exports.jsxs(Container$4, Object.assign({ id: "bubble-toolbar", style: {
+                top: (_b = position === null || position === void 0 ? void 0 : position.top) !== null && _b !== void 0 ? _b : 0,
+                left: (_c = position === null || position === void 0 ? void 0 : position.left) !== null && _c !== void 0 ? _c : 0,
+            }, isDisplay: isDisplay, ref: containerRef, onMouseDown: handleMouseDown }, props, { children: [jsxRuntime.exports.jsx(Button, Object.assign({ href: "#", onClick: handleBold, active: !!(formats === null || formats === void 0 ? void 0 : formats.bold) }, { children: jsxRuntime.exports.jsx(FormatBold, { size: "20" }) })), jsxRuntime.exports.jsx(Button, Object.assign({ href: "#", onClick: handleItalic, active: !!(formats === null || formats === void 0 ? void 0 : formats.italic) }, { children: jsxRuntime.exports.jsx(FormatItalic, { size: "20" }) })), jsxRuntime.exports.jsx(Button, Object.assign({ href: "#", onClick: handleUnderline, active: !!(formats === null || formats === void 0 ? void 0 : formats.underline) }, { children: jsxRuntime.exports.jsx(FormatUnderLine, { size: "20" }) })), jsxRuntime.exports.jsx(Button, Object.assign({ href: "#", onClick: handleStrike, active: !!(formats === null || formats === void 0 ? void 0 : formats.strike) }, { children: jsxRuntime.exports.jsx(FormatStrike, { size: "20" }) })), jsxRuntime.exports.jsx(Button, Object.assign({ href: "#", onClick: handleInlineCode, active: !!(formats === null || formats === void 0 ? void 0 : formats.code) }, { children: jsxRuntime.exports.jsx(FormatCode, { size: "20" }) })), jsxRuntime.exports.jsx(Button, Object.assign({ id: "toolbar-palette", href: "#", onClick: handleColor, active: !!(formats === null || formats === void 0 ? void 0 : formats.color) }, { children: jsxRuntime.exports.jsx(FormatColor, { size: "20" }) })), jsxRuntime.exports.jsx(Button, Object.assign({ id: "toolbar-link", href: "#", onClick: handleLink, active: !!(formats === null || formats === void 0 ? void 0 : formats.link) }, { children: jsxRuntime.exports.jsx(FormatLink, { size: "20" }) })), jsxRuntime.exports.jsx(Divider, {}), jsxRuntime.exports.jsx(Button, Object.assign({ href: "#", onClick: handleHeader1, active: blockType === 'HEADER1' }, { children: jsxRuntime.exports.jsx(FormatHeader1, { size: "20" }) })), jsxRuntime.exports.jsx(Button, Object.assign({ href: "#", onClick: handleHeader2, active: blockType === 'HEADER2' }, { children: jsxRuntime.exports.jsx(FormatHeader2, { size: "20" }) })), jsxRuntime.exports.jsx(Button, Object.assign({ href: "#", onClick: handleHeader3, active: blockType === 'HEADER3' }, { children: jsxRuntime.exports.jsx(FormatHeader3, { size: "20" }) })), jsxRuntime.exports.jsx(Button, Object.assign({ href: "#", onClick: handleBulletList, active: blockType === 'BULLET-LIST' }, { children: jsxRuntime.exports.jsx(FormatBulletList, { size: "20" }) })), jsxRuntime.exports.jsx(Button, Object.assign({ href: "#", onClick: handleOrderedList, active: blockType === 'ORDERED-LIST' }, { children: jsxRuntime.exports.jsx(FormatNumberList, { size: "20" }) }))] })) }), (_d = getHtmlElement(scrollContainer)) !== null && _d !== void 0 ? _d : document.body);
 });
 
 var lodash_isequal = {exports: {}};
@@ -15804,6 +15825,24 @@ function getBlockElementById(blockId) {
         return null;
     return element;
 }
+function getOuter(node) {
+    if (node.classList.contains('shibuya-block-outer')) {
+        return node;
+    }
+    if (!node.parentElement) {
+        return null;
+    }
+    return getOuter(node.parentElement);
+}
+function getBlockOuterElementById(blockId) {
+    const element = document.querySelector('[data-block-id="' + blockId + '"]');
+    if (!element)
+        return null;
+    const outerEl = getOuter(element);
+    if (!outerEl)
+        return null;
+    return outerEl;
+}
 function getBlockLength(block) {
     var _a;
     const element = block instanceof HTMLElement ? block : getBlockElementById(block);
@@ -16302,7 +16341,7 @@ function useEditor({ settings, eventEmitter, }) {
         return editorRef.current.contains(selection.focusNode);
     }, []);
     const prev = React__namespace.useCallback(({ index, margin = 10, blockId } = {}) => {
-        var _a, _b;
+        var _a, _b, _c, _d;
         const position = lastCaretPositionRef.current;
         const currentIndex = blocksRef.current.findIndex((v) => v.id === (blockId !== null && blockId !== void 0 ? blockId : position === null || position === void 0 ? void 0 : position.blockId));
         if (currentIndex < 1 || !blocksRef.current[currentIndex - 1])
@@ -16325,22 +16364,30 @@ function useEditor({ settings, eventEmitter, }) {
         let prevRect = prevBlock.getBoundingClientRect();
         const container = getHtmlElement(settings.scrollContainer);
         const containerOffsetTop = container ? container.getBoundingClientRect().top : 0;
-        if (prevRect.top <=
-            (container ? containerOffsetTop : containerOffsetTop + settings.scrollMarginTop)) {
-            if (container) {
-                container.scrollTop = currentIndex - 1 < 1 ? 0 : (_b = (_a = prevBlock.parentElement) === null || _a === void 0 ? void 0 : _a.offsetTop) !== null && _b !== void 0 ? _b : 0;
-            }
-            else {
-                if (document.scrollingElement) {
-                    let editorScrollTop = document.scrollingElement.scrollTop + prevRect.top - settings.scrollMarginTop;
-                    if (currentIndex - 1 < 1) {
-                        editorScrollTop -= 30;
-                    }
-                    document.scrollingElement.scrollTop = editorScrollTop;
+        if (container) {
+            if (prevRect.top <= containerOffsetTop + settings.scrollMarginTop) {
+                const outerEl = getOuter(prevBlock);
+                const offsetTop = ((_c = (_b = (_a = editorRef.current) === null || _a === void 0 ? void 0 : _a.parentElement) === null || _b === void 0 ? void 0 : _b.offsetTop) !== null && _c !== void 0 ? _c : 0) -
+                    containerOffsetTop +
+                    ((_d = outerEl === null || outerEl === void 0 ? void 0 : outerEl.offsetTop) !== null && _d !== void 0 ? _d : 0);
+                if (currentIndex - 1 < 1) {
+                    container.scrollTop = settings.scrollMarginTop;
+                }
+                else {
+                    container.scrollTop = offsetTop - settings.scrollMarginTop + 30;
                 }
             }
-            prevRect = prevBlock.getBoundingClientRect();
         }
+        else {
+            if (document.scrollingElement && prevRect.top <= containerOffsetTop) {
+                let editorScrollTop = document.scrollingElement.scrollTop + prevRect.top - settings.scrollMarginTop;
+                if (currentIndex - 1 < 1) {
+                    editorScrollTop -= 30;
+                }
+                document.scrollingElement.scrollTop = editorScrollTop;
+            }
+        }
+        prevRect = prevBlock.getBoundingClientRect();
         if (typeof index === 'number' && index >= 0) {
             setTimeout(() => {
                 setCaretPosition({
@@ -16365,7 +16412,7 @@ function useEditor({ settings, eventEmitter, }) {
         return true;
     }, []);
     const next = React__namespace.useCallback(({ index = 0, margin = 10, blockId } = {}) => {
-        var _a, _b, _c, _d, _e, _f, _g, _h;
+        var _a, _b, _c;
         const position = lastCaretPositionRef.current;
         const currentIndex = blocksRef.current.findIndex((v) => v.id === (blockId !== null && blockId !== void 0 ? blockId : position === null || position === void 0 ? void 0 : position.blockId));
         if (currentIndex === -1 || !blocksRef.current[currentIndex + 1])
@@ -16386,24 +16433,22 @@ function useEditor({ settings, eventEmitter, }) {
         if (nextBlock.contentEditable === 'false') {
             return next({ blockId: nextBlock.dataset.blockId });
         }
-        let nextRect = (_b = (_a = nextBlock.parentElement) === null || _a === void 0 ? void 0 : _a.getBoundingClientRect()) !== null && _b !== void 0 ? _b : nextBlock.getBoundingClientRect();
+        let nextRect = nextBlock.getBoundingClientRect();
         const container = getHtmlElement(settings.scrollContainer);
-        const scrollHeight = (_c = container === null || container === void 0 ? void 0 : container.clientHeight) !== null && _c !== void 0 ? _c : window.innerHeight;
+        const scrollHeight = (_a = container === null || container === void 0 ? void 0 : container.clientHeight) !== null && _a !== void 0 ? _a : window.innerHeight;
         if (container) {
-            const containerRect = (_d = container.getBoundingClientRect()) !== null && _d !== void 0 ? _d : 0;
+            const containerRect = (_b = container.getBoundingClientRect()) !== null && _b !== void 0 ? _b : 0;
             if (nextRect.top + nextRect.height >=
                 containerRect.top + containerRect.height - settings.scrollMarginBottom) {
-                const scrollTop = ((_f = (_e = nextBlock.parentElement) === null || _e === void 0 ? void 0 : _e.offsetTop) !== null && _f !== void 0 ? _f : 0) -
-                    container.clientHeight +
-                    settings.scrollMarginBottom;
+                const outerEl = getOuter(nextBlock);
+                const scrollTop = ((_c = outerEl === null || outerEl === void 0 ? void 0 : outerEl.offsetTop) !== null && _c !== void 0 ? _c : 0) - container.clientHeight + settings.scrollMarginBottom;
                 if (container.scrollHeight > scrollTop + container.clientHeight) {
                     container.scrollTop = scrollTop;
                 }
                 else {
                     container.scrollTop = container.scrollHeight - container.clientHeight;
                 }
-                nextRect =
-                    (_h = (_g = nextBlock.parentElement) === null || _g === void 0 ? void 0 : _g.getBoundingClientRect()) !== null && _h !== void 0 ? _h : nextBlock.getBoundingClientRect();
+                nextRect = nextBlock.getBoundingClientRect();
             }
         }
         else if (nextRect.top + nextRect.height >= scrollHeight - settings.scrollMarginBottom) {
@@ -16718,7 +16763,7 @@ function useEditor({ settings, eventEmitter, }) {
             updateCaretRect();
         }
     }, []);
-    const createBlock = React__namespace.useCallback((appendBlock, prevBlockId, type = 'append', source = EventSources.USER) => {
+    const createBlock$1 = React__namespace.useCallback((appendBlock, prevBlockId, type = 'append', source = EventSources.USER) => {
         const currentIndex = blocksRef.current.findIndex((v) => v.id === prevBlockId);
         const block = copyObject(appendBlock);
         if (block.meta) {
@@ -16888,7 +16933,7 @@ function useEditor({ settings, eventEmitter, }) {
             getBlocks,
             getBlock,
             getBlockLength: getBlockLength$1,
-            createBlock,
+            createBlock: createBlock$1,
             updateBlock,
             updateBlocks,
             deleteBlock,
@@ -16913,26 +16958,29 @@ function useEditor({ settings, eventEmitter, }) {
             getEditorRef,
         };
     }, []);
-    // real-time collaborative test
-    // React.useEffect(() => {
-    //   const interval = setInterval(() => {
-    //     const block = getBlock(blocksRef.current[0].id);
-    //     if (!block) return;
-    //     const contents = [
-    //       ...block.contents.slice(0, block.contents.length - 1),
-    //       {
-    //         ...block.contents[block.contents.length - 1],
-    //         text: 'あ' + block.contents[block.contents.length - 1].text,
-    //       },
-    //     ];
-    //     console.log(JSON.stringify(contents));
-    //     updateBlock({ ...block, contents }, EventSources.COLLABORATOR);
-    //     render([block.id]);
-    //   }, 4000);
-    //   return () => {
-    //     clearInterval(interval);
-    //   };
-    // }, []);
+    //real-time collaborative test
+    React__namespace.useEffect(() => {
+        const interval = setInterval(() => {
+            const block = getBlock(blocksRef.current[0].id);
+            if (!block)
+                return;
+            // const contents = [
+            //   ...block.contents.slice(0, block.contents.length - 1),
+            //   {
+            //     ...block.contents[block.contents.length - 1],
+            //     text: 'あ' + block.contents[block.contents.length - 1].text,
+            //   },
+            // ];
+            // console.log(JSON.stringify(contents));
+            // updateBlock({ ...block, contents }, EventSources.COLLABORATOR);
+            const appendedBlock = createBlock('PARAGRAPH', [createInline('TEXT', 'hoge')]);
+            createBlock$1(appendedBlock, block.id, 'append', EventSources.COLLABORATOR);
+            render([appendedBlock.id]);
+        }, 4000);
+        return () => {
+            clearInterval(interval);
+        };
+    }, []);
     React__namespace.useEffect(() => {
         const debouncedSelectionChange = debounce(200, (e) => {
             if (!editorRef.current)
@@ -18226,7 +18274,7 @@ class SelectorModule {
         const blocks = this.editor.getBlocks();
         let startBlockIndex;
         for (let i = 0; i < blocks.length; i++) {
-            const blockEl = getBlockElementById(blocks[i].id);
+            const blockEl = getBlockOuterElementById(blocks[i].id);
             const rect = blockEl === null || blockEl === void 0 ? void 0 : blockEl.getBoundingClientRect();
             if (rect && rect.top < e.clientY && rect.top + rect.height > e.clientY) {
                 startBlockIndex = i;
@@ -18317,7 +18365,7 @@ class SelectorModule {
         if (!editorRect || !this.area.start)
             return;
         const blocks = this.editor.getBlocks();
-        const firstBlock = getBlockElementById(blocks[0].id);
+        const firstBlock = getBlockOuterElementById(blocks[0].id);
         if (!firstBlock)
             return;
         const firstBlockRect = firstBlock.getBoundingClientRect();
@@ -18339,7 +18387,7 @@ class SelectorModule {
             let selectedBlocks = [];
             if (isUpward) {
                 for (let i = (_c = this.area.start.blockIndex) !== null && _c !== void 0 ? _c : blocks.length - 1; i >= 0; i--) {
-                    const blockEl = getBlockElementById(blocks[i].id);
+                    const blockEl = getBlockOuterElementById(blocks[i].id);
                     const rect = blockEl === null || blockEl === void 0 ? void 0 : blockEl.getBoundingClientRect();
                     if (rect && rect.top + rect.height > e.clientY) {
                         blockIds.push(blocks[i].id);
@@ -18351,7 +18399,7 @@ class SelectorModule {
             }
             else {
                 for (let i = (_d = this.area.start.blockIndex) !== null && _d !== void 0 ? _d : 0; i < blocks.length; i++) {
-                    const blockEl = getBlockElementById(blocks[i].id);
+                    const blockEl = getBlockOuterElementById(blocks[i].id);
                     const rect = blockEl === null || blockEl === void 0 ? void 0 : blockEl.getBoundingClientRect();
                     if (rect && rect.top <= e.clientY) {
                         if (container && area.top >= rect.top + rect.height + bodyScrollTop) {

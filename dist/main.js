@@ -10779,11 +10779,8 @@ const BubbleToolbar = React__namespace.memo((_a) => {
     React__namespace.useEffect(() => {
         const subs = new Subscription();
         const eventEmitter = editor.getEventEmitter();
-        const updatePosition = () => {
+        const updatePosition = (caret) => {
             var _a;
-            const caret = editor.getCaretPosition();
-            if (!caret)
-                return;
             const container = getHtmlElement(scrollContainer);
             if (container) {
                 const containerRect = container.getBoundingClientRect();
@@ -10817,7 +10814,7 @@ const BubbleToolbar = React__namespace.memo((_a) => {
                 setDisplay(false);
                 return;
             }
-            updatePosition();
+            updatePosition(caret);
             setDisplay(!caret.collapsed);
             setFormats(editor.getFormats(caret.blockId, caret.index, caret.length));
             setBlockType((_c = editor.getBlock(caret.blockId)) === null || _c === void 0 ? void 0 : _c.type);
@@ -10825,8 +10822,11 @@ const BubbleToolbar = React__namespace.memo((_a) => {
         subs.add(eventEmitter.select(EditorEvents.EVENT_BLOCK_RERENDER).subscribe(() => {
             setDisplay(false);
             setTimeout(() => {
-                updatePosition();
-                setDisplay(true);
+                const caret = editor.getCaretPosition();
+                if (!caret)
+                    return;
+                updatePosition(caret);
+                setDisplay(!caret.collapsed);
             });
         }));
         return () => {
@@ -16412,7 +16412,7 @@ function useEditor({ settings, eventEmitter, }) {
         return true;
     }, []);
     const next = React__namespace.useCallback(({ index = 0, margin = 10, blockId } = {}) => {
-        var _a, _b, _c;
+        var _a, _b, _c, _d, _e, _f;
         const position = lastCaretPositionRef.current;
         const currentIndex = blocksRef.current.findIndex((v) => v.id === (blockId !== null && blockId !== void 0 ? blockId : position === null || position === void 0 ? void 0 : position.blockId));
         if (currentIndex === -1 || !blocksRef.current[currentIndex + 1])
@@ -16441,7 +16441,10 @@ function useEditor({ settings, eventEmitter, }) {
             if (nextRect.top + nextRect.height >=
                 containerRect.top + containerRect.height - settings.scrollMarginBottom) {
                 const outerEl = getOuter(nextBlock);
-                const scrollTop = ((_c = outerEl === null || outerEl === void 0 ? void 0 : outerEl.offsetTop) !== null && _c !== void 0 ? _c : 0) - container.clientHeight + settings.scrollMarginBottom;
+                const scrollTop = ((_e = (_d = (_c = editorRef.current) === null || _c === void 0 ? void 0 : _c.parentElement) === null || _d === void 0 ? void 0 : _d.offsetTop) !== null && _e !== void 0 ? _e : 0) +
+                    ((_f = outerEl === null || outerEl === void 0 ? void 0 : outerEl.offsetTop) !== null && _f !== void 0 ? _f : 0) -
+                    container.clientHeight +
+                    settings.scrollMarginBottom;
                 if (container.scrollHeight > scrollTop + container.clientHeight) {
                     container.scrollTop = scrollTop;
                 }

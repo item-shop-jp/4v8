@@ -195,9 +195,7 @@ export const BubbleToolbar = React.memo(
       const subs = new Subscription();
       const eventEmitter = editor.getEventEmitter();
 
-      const updatePosition = () => {
-        const caret = editor.getCaretPosition();
-        if (!caret) return;
+      const updatePosition = (caret: CaretPosition) => {
         const container = getHtmlElement(scrollContainer);
         if (container) {
           const containerRect = container.getBoundingClientRect();
@@ -234,7 +232,7 @@ export const BubbleToolbar = React.memo(
             return;
           }
 
-          updatePosition();
+          updatePosition(caret);
 
           setDisplay(!caret.collapsed);
           setFormats(editor.getFormats(caret.blockId, caret.index, caret.length));
@@ -246,8 +244,10 @@ export const BubbleToolbar = React.memo(
         eventEmitter.select<string[]>(EditorEvents.EVENT_BLOCK_RERENDER).subscribe(() => {
           setDisplay(false);
           setTimeout(() => {
-            updatePosition();
-            setDisplay(true);
+            const caret = editor.getCaretPosition();
+            if (!caret) return;
+            updatePosition(caret);
+            setDisplay(!caret.collapsed);
           });
         }),
       );

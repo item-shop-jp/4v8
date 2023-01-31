@@ -196,7 +196,10 @@ export function useEditor({
         ) {
           const outerEl = blockUtils.getOuter(nextBlock);
           const scrollTop =
-            (outerEl?.offsetTop ?? 0) - container.clientHeight + settings.scrollMarginBottom;
+            (editorRef.current?.parentElement?.offsetTop ?? 0) +
+            (outerEl?.offsetTop ?? 0) -
+            container.clientHeight +
+            settings.scrollMarginBottom;
           if (container.scrollHeight > scrollTop + container.clientHeight) {
             container.scrollTop = scrollTop;
           } else {

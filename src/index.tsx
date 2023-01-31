@@ -56,7 +56,7 @@ const settings = {
       },
     },
   },
-  scrollMarginBottom: 450,
+  scrollMarginBottom: 150,
   scrollMarginTop: 50,
   allowFormats: [],
   indentableFormats: [

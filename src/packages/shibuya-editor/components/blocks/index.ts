@@ -8,5 +8,6 @@ export * from './CheckList';
 export * from './Blockquote';
 export * from './Paragraph';
 export * from './CodeBlock';
+export * from './Decision';
 export * from './embeds/Image';
 export * from './embeds/File';

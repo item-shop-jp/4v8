@@ -29,10 +29,18 @@ export const GlobalToolbar = React.memo(({ editor, ...props }: GlobalToolbarProp
   const [formats, setFormats] = React.useState<InlineAttributes>({});
   const [isDisplay, setDisplay] = React.useState(false);
 
-  const handleHeader1 = React.useCallback(
+  const handleCodeBlock = React.useCallback(
     (event: React.MouseEvent) => {
       event.preventDefault();
       editor.getModule('toolbar').formatBlock('CODE-BLOCK');
+    },
+    [formats],
+  );
+
+  const handleDecision = React.useCallback(
+    (event: React.MouseEvent) => {
+      event.preventDefault();
+      editor.getModule('toolbar').formatBlock('DECISION');
     },
     [formats],
   );
@@ -88,8 +96,11 @@ export const GlobalToolbar = React.memo(({ editor, ...props }: GlobalToolbarProp
     <>
       {isDisplay && (
         <Container {...props}>
-          <Button href="#" onClick={handleHeader1}>
-            H1
+          <Button href="#" onClick={handleDecision}>
+            決定事項
+          </Button>
+          <Button href="#" onClick={handleCodeBlock}>
+            CodeBlock
           </Button>
           <Button href="#" onClick={handleBlockquote}>
             引用

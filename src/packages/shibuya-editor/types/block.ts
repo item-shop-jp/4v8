@@ -6,6 +6,7 @@ export type BlockType =
   | 'BULLET-LIST'
   | 'BLOCKQUOTE'
   | 'CODE-BLOCK'
+  | 'DECISION'
   | 'HEADER1'
   | 'HEADER2'
   | 'HEADER3'

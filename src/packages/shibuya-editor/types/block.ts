@@ -7,6 +7,7 @@ export type BlockType =
   | 'BLOCKQUOTE'
   | 'CODE-BLOCK'
   | 'DECISION'
+  | 'TASK'
   | 'HEADER1'
   | 'HEADER2'
   | 'HEADER3'

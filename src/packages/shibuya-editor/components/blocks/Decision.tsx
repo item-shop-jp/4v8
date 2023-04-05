@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled, { css } from 'styled-components';
 import { EditorController } from '../../types/editor';
-import { CheckSquare } from '../icons';
+import { Decision as DecisionIcon } from '../icons';
 import { Formats } from '../../types/format';
 import { BlockAttributes } from '../../types/block';
 import { useMutationObserver } from '../../hooks/use-mutation-observer';
@@ -29,20 +29,24 @@ const Container = styled.div`
   }
 `;
 
-const Icon = styled.div`
+const IconOuter = styled.div`
   position: absolute;
-  font-family: Arial;
-  font-size: 1.2em;
-  line-height: 1;
-  top: 3px;
-  left: 6px;
+  left: 4px;
+  top: -3px;
+  width: 32px;
+  height: 32px;
+  border-radius: 15%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
 `;
 
 export const Decision = React.memo(
   ({
     blockId,
     contents,
-    placeholder = 'Decision',
+    placeholder = '決定事項',
     attributes,
     editor,
     ...props
@@ -67,7 +71,9 @@ export const Decision = React.memo(
         placeholder={showPlaceholder ? placeholder : ''}
         {...props}
       >
-        <Icon>😲</Icon>
+        <IconOuter>
+          <DecisionIcon size="20px" />
+        </IconOuter>
         {contents}
       </Container>
     );

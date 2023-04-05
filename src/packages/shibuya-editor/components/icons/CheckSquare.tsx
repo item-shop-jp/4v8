@@ -1,27 +1,33 @@
 import * as React from 'react';
+import { Icon, IconProps, baseIconProps, Path } from './icon';
 
-export interface IconProps {
-  size?: number;
-  fill?: string;
+export interface CheckSquareProps extends IconProps {
   checked?: boolean;
 }
 
-export const CheckSquare: React.FC<IconProps> = React.memo(
-  ({ size = 24, fill = '#616160', checked = false }) => {
+export const CheckSquare: React.FC<CheckSquareProps> = React.memo(
+  ({ size = baseIconProps.size, fill = baseIconProps.fill, checked = false, ...props }) => {
     return (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
+      <Icon
         width={size}
         height={size}
         fill={fill}
-        viewBox="0 0 24 24"
+        viewBox="0 0 20 20"
+        xmlns="http://www.w3.org/2000/svg"
+        {...props}
       >
         {checked ? (
-          <path d="M7 5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H7zm4 10.414-2.707-2.707 1.414-1.414L11 12.586l3.793-3.793 1.414 1.414L11 15.414z"></path>
+          <path
+            d="M16 0H2C0.9 0 0 0.9 0 2V16C0 17.1 0.9 18 2 18H16C17.1 18 18 17.1 18 16V2C18 0.9 17.1 0 16 0ZM16 16H2V2H16V16ZM14.99 6L13.58 4.58L6.99 11.17L4.41 8.6L2.99 10.01L6.99 14L14.99 6Z"
+            fill="#18181B"
+          />
         ) : (
-          <path d="M7 5c-1.103 0-2 .897-2 2v10c0 1.103.897 2 2 2h10c1.103 0 2-.897 2-2V7c0-1.103-.897-2-2-2H7zm0 12V7h10l.002 10H7z"></path>
+          <path
+            d="M16 2V16H2V2H16ZM16 0H2C0.9 0 0 0.9 0 2V16C0 17.1 0.9 18 2 18H16C17.1 18 18 17.1 18 16V2C18 0.9 17.1 0 16 0Z"
+            fill="#18181B"
+          />
         )}
-      </svg>
+      </Icon>
     );
   },
 );

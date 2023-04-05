@@ -9,5 +9,6 @@ export * from './Blockquote';
 export * from './Paragraph';
 export * from './CodeBlock';
 export * from './Decision';
+export * from './Task';
 export * from './embeds/Image';
 export * from './embeds/File';

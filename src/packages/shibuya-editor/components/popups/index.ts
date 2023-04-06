@@ -1,1 +1,2 @@
-export * from './linkPopup';
+export * from './LinkPopup';
+export * from './PalettePopup';

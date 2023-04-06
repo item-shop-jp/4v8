@@ -40,7 +40,7 @@ import { EditorEvents } from './constants';
 import { LinkPopup } from './components/popups';
 import { Formats, Block, Settings, EditorController } from './types';
 import { Collaborators } from './components/Collaborators';
-import { PalettePopup } from './components/popups/palettePopup';
+import { PalettePopup } from './components/popups/PalettePopup';
 
 interface Props {
   readOnly?: boolean;

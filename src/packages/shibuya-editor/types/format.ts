@@ -2,8 +2,8 @@ import * as React from 'react';
 import { FlattenSimpleInterpolation } from 'styled-components';
 import { Header1Props, ParagraphProps } from '../components/blocks';
 import { InlineTextProps } from '../components/inlines';
-import { LinkPopupProps } from '../components/popups/linkPopup';
-import { PalettePopupProps } from '../components/popups/palettePopup';
+import { LinkPopupProps } from '../components/popups/LinkPopup';
+import { PalettePopupProps } from '../components/popups/PalettePopup';
 import { BubbleToolbarProps, GlobalToolbarProps } from '../components/toolbar';
 
 export interface Formats {

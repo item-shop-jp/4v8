@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { Icon, IconProps, baseIconProps, Path } from './icon';
+import { Icon, IconProps, baseIconProps, Path } from '../Icon';
 
-export const FormatCode: React.FC<IconProps> = React.memo(
+export const FormatItalic: React.FC<IconProps> = React.memo(
   ({ size = baseIconProps.size, fill = baseIconProps.fill, ...props }) => (
     <Icon
       width={size}
@@ -12,7 +12,7 @@ export const FormatCode: React.FC<IconProps> = React.memo(
       {...props}
     >
       <Path
-        d="M7.83329 13.8333L3.99996 10L7.83329 6.16667L6.66663 5L1.66663 10L6.66663 15L7.83329 13.8333ZM12.1666 13.8333L16 10L12.1666 6.16667L13.3333 5L18.3333 10L13.3333 15L12.1666 13.8333Z"
+        d="M8.33333 3.33337V5.83337H10.175L7.325 12.5H5V15H11.6667V12.5H9.825L12.675 5.83337H15V3.33337H8.33333Z"
         fill={fill}
       />
     </Icon>

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Icon, IconProps, baseIconProps, Path } from './icon';
+import { Icon, IconProps, baseIconProps, Path } from './Icon';
 
 export interface CheckSquareProps extends IconProps {
   checked?: boolean;

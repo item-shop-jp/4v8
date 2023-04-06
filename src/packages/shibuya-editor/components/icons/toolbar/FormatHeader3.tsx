@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Icon, IconProps, baseIconProps, Path } from './icon';
+import { Icon, IconProps, baseIconProps, Path } from '../Icon';
 
 export const FormatHeader3: React.FC<IconProps> = React.memo(
   ({ size = baseIconProps.size, fill = baseIconProps.fill, ...props }) => (

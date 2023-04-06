@@ -114,7 +114,7 @@ export const Task = React.memo(
           {...props}
         >
           <CheckBoxOuter onClick={handleClickCheckBox}>
-            <CheckSquare size="24px" checked={checked} />
+            <CheckSquare size="20px" checked={checked} />
           </CheckBoxOuter>
           {contents}
         </Container>

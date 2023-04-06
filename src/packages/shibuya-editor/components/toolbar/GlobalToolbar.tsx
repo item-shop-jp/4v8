@@ -45,6 +45,14 @@ export const GlobalToolbar = React.memo(({ editor, ...props }: GlobalToolbarProp
     [formats],
   );
 
+  const handleTask = React.useCallback(
+    (event: React.MouseEvent) => {
+      event.preventDefault();
+      editor.getModule('toolbar').formatBlock('TASK');
+    },
+    [formats],
+  );
+
   const handleBlockquote = React.useCallback(
     (event: React.MouseEvent) => {
       event.preventDefault();
@@ -96,6 +104,9 @@ export const GlobalToolbar = React.memo(({ editor, ...props }: GlobalToolbarProp
     <>
       {isDisplay && (
         <Container {...props}>
+          <Button href="#" onClick={handleTask}>
+            タスク
+          </Button>
           <Button href="#" onClick={handleDecision}>
             決定事項
           </Button>

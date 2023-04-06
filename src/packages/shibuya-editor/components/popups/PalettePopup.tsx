@@ -44,7 +44,7 @@ export const PalettePopup = React.memo(({ editor, scrollContainer }: PalettePopu
   const [popupOpen, setPopupOpen] = React.useState(false);
   const [formats, setFormats] = React.useState<InlineAttributes>({});
   const [currentCaretPosition, setCurrentCaretPosition] = React.useState<CaretPosition | null>();
-  const [popupPosition, setPopupPosition] = React.useState<PopupPosition>();
+  const [position, setPosition] = React.useState<PopupPosition>();
   const modalRef = React.useRef<HTMLDivElement>(null);
 
   const handleClose = React.useCallback(() => {
@@ -93,12 +93,12 @@ export const PalettePopup = React.memo(({ editor, scrollContainer }: PalettePopu
               (paletteToolbarRect.left - bubbleToolbarRect.left) -
               (104 - paletteToolbarRect.width) / 2; // ContainerはInputの幅
 
-            setPopupPosition({
+            setPosition({
               top,
               left,
             });
           } else {
-            setPopupPosition({
+            setPosition({
               top,
               left: caret.rect.left - containerRect.left,
             });
@@ -107,7 +107,7 @@ export const PalettePopup = React.memo(({ editor, scrollContainer }: PalettePopu
           const scrollEl = document.scrollingElement as HTMLElement;
           const top = scrollEl.scrollTop + caret.rect.top + 4;
           const left = caret.rect.left;
-          setPopupPosition({ top, left });
+          setPosition({ top, left });
         }
         setFormats(editor.getFormats(caret.blockId, caret.index, caret.length));
         setCurrentCaretPosition(v.caretPosition ? v.caretPosition : caret);
@@ -133,17 +133,16 @@ export const PalettePopup = React.memo(({ editor, scrollContainer }: PalettePopu
 
   return ReactDOM.createPortal(
     popupOpen && (
-      <div ref={modalRef}>
-        <Container
-          id="palette-popup"
-          style={{ top: popupPosition?.top ?? 0, left: popupPosition?.left ?? 0 }}
-        >
-          <Color color="#EF4444" onClick={handleFormatColor('#EF4444')} />
-          <Color color="#55B938" onClick={handleFormatColor('#55B938')} />
-          <Color color="#EAC645" onClick={handleFormatColor('#EAC645')} />
-          <Color color="#5296D5" onClick={handleFormatColor('#5296D5')} />
-        </Container>
-      </div>
+      <Container
+        ref={modalRef}
+        id="palette-popup"
+        style={{ top: position?.top ?? 0, left: position?.left ?? 0 }}
+      >
+        <Color color="#EF4444" onClick={handleFormatColor('#EF4444')} />
+        <Color color="#55B938" onClick={handleFormatColor('#55B938')} />
+        <Color color="#EAC645" onClick={handleFormatColor('#EAC645')} />
+        <Color color="#5296D5" onClick={handleFormatColor('#5296D5')} />
+      </Container>
     ),
     getHtmlElement(scrollContainer) ?? document.body,
   );

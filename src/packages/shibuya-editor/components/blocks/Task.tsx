@@ -1,13 +1,12 @@
 import * as React from 'react';
 import styled, { css } from 'styled-components';
-import { DayPicker } from 'react-day-picker';
-import { ja } from 'date-fns/locale';
-import 'react-day-picker/dist/style.css';
 import { EditorController } from '../../types/editor';
 import { CheckSquare, Schedule, Assignment } from '../icons';
 import { Formats } from '../../types/format';
+import { DatePicker } from '../popups';
 import { BlockAttributes } from '../../types/block';
 import { useMutationObserver } from '../../hooks/use-mutation-observer';
+import { getHtmlElement } from '../../utils/dom';
 
 export interface TaskProps {
   blockId: string;
@@ -16,6 +15,7 @@ export interface TaskProps {
   placeholder?: string;
   attributes: BlockAttributes;
   editor: EditorController;
+  scrollContainer?: HTMLElement | string;
 }
 
 const Wrapper = styled.div`
@@ -37,18 +37,6 @@ const IconButton = styled.div`
   align-items: center;
 `;
 
-const DatePickerWrapper = styled.div`
-  position: absolute;
-  top: 24px;
-  right: 0;
-  width: 312px;
-  height: 352px;
-  transform: scale(0.7);
-  transform-origin: top right;
-  border-radius: 8px;
-  box-shadow: 0px 0px 5px #ddd;
-`;
-
 const Container = styled.div<Pick<TaskProps, 'placeholder'>>`
   font-size: 1rem;
   outline: 0;
@@ -57,6 +45,7 @@ const Container = styled.div<Pick<TaskProps, 'placeholder'>>`
   padding-left: calc(40px + 1.5em * var(--indent));
   box-sizing: border-box;
   position: relative;
+  width: 100%;
   ${({ placeholder }) => {
     return (
       placeholder &&
@@ -84,8 +73,16 @@ const CheckBoxOuter = styled.div`
 `;
 
 export const Task = React.memo(
-  ({ blockId, contents, placeholder = 'Task', attributes, editor, ...props }: TaskProps) => {
-    const headerRef = React.useRef(null);
+  ({
+    blockId,
+    contents,
+    placeholder = 'Task',
+    attributes,
+    editor,
+    scrollContainer,
+    ...props
+  }: TaskProps) => {
+    const headerRef = React.useRef<HTMLDivElement>(null);
     const [showPlaceholder, setShowPlaceholder] = React.useState(false);
     const [isHover, setHover] = React.useState(false);
     const [showDatePicker, setShowDatePicker] = React.useState(false);
@@ -98,6 +95,10 @@ export const Task = React.memo(
 
     const handleClickDatePicker = React.useCallback(() => {
       setShowDatePicker(!showDatePicker);
+    }, [showDatePicker]);
+
+    const handleCloseDatePicker = React.useCallback(() => {
+      setTimeout(() => setShowDatePicker(false));
     }, [showDatePicker]);
 
     React.useEffect(() => {
@@ -122,60 +123,81 @@ export const Task = React.memo(
       [blockId, attributes],
     );
 
-    const handleMouseOver = React.useCallback((e: React.MouseEvent) => {
-      setHover(true);
-    }, []);
+    const handleMouseOver = React.useCallback(
+      (e: React.MouseEvent) => {
+        if (isHover) return;
+        setHover(true);
+      },
+      [isHover],
+    );
 
-    const handleMouseOut = React.useCallback((e: React.MouseEvent) => {
-      setHover(false);
-    }, []);
-
-    const handleSelectDate = React.useCallback((day: Date | undefined) => {
-      console.log(day);
-      setShowDatePicker(false);
-    }, []);
+    const handleMouseOut = React.useCallback(
+      (e: React.MouseEvent) => {
+        if (!isHover) return;
+        setHover(false);
+      },
+      [isHover],
+    );
 
     const checked = attributes?.checked ?? false;
 
+    const datePickerPosition = { top: 0, left: 0 };
+    if (scrollContainer) {
+      const container = getHtmlElement(scrollContainer);
+      const containerRect = container?.getBoundingClientRect();
+      const blockRect = headerRef.current?.getBoundingClientRect();
+      datePickerPosition.top =
+        (container?.scrollTop ?? 0) - (containerRect?.top ?? 0) + (blockRect?.top ?? 0) - 60;
+      datePickerPosition.left = (blockRect?.left ?? 0) + (blockRect?.width ?? 0) - 400;
+    } else {
+      const scrollEl = document.scrollingElement as HTMLElement;
+      const blockRect = headerRef.current?.getBoundingClientRect();
+      datePickerPosition.top = (scrollEl?.scrollTop ?? 0) + (blockRect?.top ?? 0) - 60;
+      datePickerPosition.left = (blockRect?.left ?? 0) + (blockRect?.width ?? 0) - 400;
+    }
+
     return (
-      <Wrapper
-        onMouseOver={handleMouseOver}
-        onMouseOut={handleMouseOut}
-        style={isHover ? { backgroundColor: '#f7f9fa' } : {}}
-      >
-        <Container
-          ref={headerRef}
-          spellCheck={false}
-          placeholder={showPlaceholder ? placeholder : ''}
-          style={{
-            textDecoration: checked ? 'line-through' : 'none',
-          }}
-          {...props}
+      <>
+        <Wrapper
+          onMouseOver={handleMouseOver}
+          onMouseOut={handleMouseOut}
+          style={isHover ? { backgroundColor: '#f7f9fa' } : {}}
         >
-          <CheckBoxOuter onClick={handleClickCheckBox}>
-            <CheckSquare size="20px" checked={checked} />
-          </CheckBoxOuter>
-          {contents}
-        </Container>
-        <Buttons>
-          <IconButton onClick={handleClickDatePicker}>
-            <Assignment size="20px" fill="#A1A1AA" />
-          </IconButton>
-          <IconButton onClick={handleClickDatePicker}>
-            <Schedule size="20px" fill="#A1A1AA" />
-          </IconButton>
-        </Buttons>
+          <Container
+            ref={headerRef}
+            spellCheck={false}
+            placeholder={showPlaceholder ? placeholder : ''}
+            style={{
+              textDecoration: checked ? 'line-through' : 'none',
+            }}
+            {...props}
+          >
+            <CheckBoxOuter onClick={handleClickCheckBox}>
+              <CheckSquare size="20px" checked={checked} />
+            </CheckBoxOuter>
+            {contents}
+          </Container>
+          <Buttons>
+            <IconButton onClick={handleClickDatePicker}>
+              <Assignment size="20px" fill="#A1A1AA" />
+            </IconButton>
+            <IconButton onClick={handleClickDatePicker}>
+              <Schedule size="20px" fill="#A1A1AA" />
+            </IconButton>
+          </Buttons>
+        </Wrapper>
         {showDatePicker && (
-          <DatePickerWrapper>
-            <DayPicker
-              mode="single"
-              locale={ja}
-              selected={new Date()}
-              onSelect={handleSelectDate}
-            />
-          </DatePickerWrapper>
+          <DatePicker
+            editor={editor}
+            scrollContainer={scrollContainer}
+            top={datePickerPosition.top}
+            left={datePickerPosition.left}
+            selected={new Date()}
+            onSelect={handleCloseDatePicker}
+            onClose={handleCloseDatePicker}
+          />
         )}
-      </Wrapper>
+      </>
     );
   },
 );

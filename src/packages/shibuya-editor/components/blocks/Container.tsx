@@ -91,6 +91,7 @@ export const BlockContainer: React.FC<BlockProps> = React.memo(
           meta={block?.meta ?? {}}
           contents={memoContents}
           editor={editor}
+          scrollContainer={scrollContainer}
           selected={selected}
           {...props}
         />

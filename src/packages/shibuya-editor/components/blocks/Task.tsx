@@ -39,8 +39,14 @@ const IconButton = styled.div`
 
 const DatePickerWrapper = styled.div`
   position: absolute;
-  top: 0;
+  top: 24px;
   right: 0;
+  width: 312px;
+  height: 352px;
+  transform: scale(0.7);
+  transform-origin: top right;
+  border-radius: 8px;
+  box-shadow: 0px 0px 5px #ddd;
 `;
 
 const Container = styled.div<Pick<TaskProps, 'placeholder'>>`
@@ -82,7 +88,7 @@ export const Task = React.memo(
     const headerRef = React.useRef(null);
     const [showPlaceholder, setShowPlaceholder] = React.useState(false);
     const [isHover, setHover] = React.useState(false);
-    const [displayDatePicker, setDisplayDatePicker] = React.useState(false);
+    const [showDatePicker, setShowDatePicker] = React.useState(false);
     const handleChangeElement = React.useCallback(() => {
       if (!headerRef.current) return;
       const innerText = (headerRef.current as HTMLElement).innerText.replaceAll(/\uFEFF/gi, '');
@@ -91,8 +97,8 @@ export const Task = React.memo(
     useMutationObserver(headerRef, handleChangeElement);
 
     const handleClickDatePicker = React.useCallback(() => {
-      setDisplayDatePicker(!displayDatePicker);
-    }, [displayDatePicker]);
+      setShowDatePicker(!showDatePicker);
+    }, [showDatePicker]);
 
     React.useEffect(() => {
       handleChangeElement();
@@ -122,6 +128,11 @@ export const Task = React.memo(
 
     const handleMouseOut = React.useCallback((e: React.MouseEvent) => {
       setHover(false);
+    }, []);
+
+    const handleSelectDate = React.useCallback((day: Date | undefined) => {
+      console.log(day);
+      setShowDatePicker(false);
     }, []);
 
     const checked = attributes?.checked ?? false;
@@ -154,9 +165,14 @@ export const Task = React.memo(
             <Schedule size="20px" fill="#A1A1AA" />
           </IconButton>
         </Buttons>
-        {displayDatePicker && (
+        {showDatePicker && (
           <DatePickerWrapper>
-            <DayPicker mode="single" locale={ja} selected={new Date()} onSelect={() => {}} />
+            <DayPicker
+              mode="single"
+              locale={ja}
+              selected={new Date()}
+              onSelect={handleSelectDate}
+            />
           </DatePickerWrapper>
         )}
       </Wrapper>

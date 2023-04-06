@@ -13,3 +13,4 @@ export * from './toolbar/FormatNumberList';
 export * from './CheckSquare';
 export * from './Decision';
 export * from './Schedule';
+export * from './Assignment';

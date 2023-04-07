@@ -26,6 +26,7 @@ const Wrapper = styled.div`
 const Buttons = styled.div`
   flex-shrink: 0;
   width: 60px;
+  height: 32px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -123,21 +124,13 @@ export const Task = React.memo(
       [blockId, attributes],
     );
 
-    const handleMouseOver = React.useCallback(
-      (e: React.MouseEvent) => {
-        if (isHover) return;
-        setHover(true);
-      },
-      [isHover],
-    );
+    const handleMouseOver = React.useCallback((e: React.MouseEvent) => {
+      setHover(true);
+    }, []);
 
-    const handleMouseOut = React.useCallback(
-      (e: React.MouseEvent) => {
-        if (!isHover) return;
-        setHover(false);
-      },
-      [isHover],
-    );
+    const handleMouseOut = React.useCallback((e: React.MouseEvent) => {
+      setHover(false);
+    }, []);
 
     const checked = attributes?.checked ?? false;
 

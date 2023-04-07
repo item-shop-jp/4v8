@@ -44,10 +44,9 @@ interface ButtonProps {
 
 const Container = styled.div<ContainerProps>`
   height: 34px;
-  display: flex;
   align-items: center;
   position: absolute;
-  opacity: ${({ isDisplay }) => (isDisplay ? '1' : '0')};
+  display: ${({ isDisplay }) => (isDisplay ? 'flex' : 'none')};
   transform: translateY(-100%);
   background-color: #18181b;
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);

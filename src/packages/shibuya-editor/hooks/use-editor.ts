@@ -142,6 +142,20 @@ export function useEditor({
       );
       const selection = document.getSelection();
       if (!selection || !range) return false;
+
+      // rangeがブロック外に飛んでいる場合は要素の最後に飛ばす
+      const [rangeBlockId] = blockUtils.getBlockId(range.commonAncestorContainer as HTMLElement);
+      if (!rangeBlockId) {
+        const nextBlockLength = getBlockLength(blocksRef.current[currentIndex - 1].id) ?? 0;
+        setCaretPosition({
+          blockId: blocksRef.current[currentIndex - 1].id,
+          index: nextBlockLength,
+          nextElementDirection: 'up',
+        });
+        updateCaretRect();
+        return true;
+      }
+
       selection.setBaseAndExtent(
         range.startContainer,
         range.startOffset,
@@ -220,6 +234,18 @@ export function useEditor({
       const range = caretRangeFromPoint(lastCaretRectRef.current.x, nextRect.y + margin);
       const selection = document.getSelection();
       if (!selection || !range) return false;
+
+      // rangeがブロック外に飛んでいる場合は要素の最初に飛ばす
+      const [rangeBlockId] = blockUtils.getBlockId(range.commonAncestorContainer as HTMLElement);
+      if (!rangeBlockId) {
+        setCaretPosition({
+          blockId: blocksRef.current[currentIndex + 1].id,
+          index: 0,
+        });
+        updateCaretRect();
+        return true;
+      }
+
       selection.setBaseAndExtent(
         range.startContainer,
         range.startOffset,

@@ -66,7 +66,13 @@ export const DatePicker = React.memo(
 
     return ReactDOM.createPortal(
       <DatePickerWrapper ref={modalRef} style={{ top, left }}>
-        <DayPicker mode="single" locale={ja} selected={new Date()} onSelect={handleSelectDate} />
+        <DayPicker
+          mode="single"
+          required={true}
+          locale={ja}
+          selected={new Date()}
+          onSelect={handleSelectDate}
+        />
       </DatePickerWrapper>,
       getHtmlElement(scrollContainer) ?? document.body,
     );

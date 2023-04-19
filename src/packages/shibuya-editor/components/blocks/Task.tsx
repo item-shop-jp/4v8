@@ -7,6 +7,7 @@ import { DatePicker } from '../popups';
 import { BlockAttributes } from '../../types/block';
 import { useMutationObserver } from '../../hooks/use-mutation-observer';
 import { getHtmlElement } from '../../utils/dom';
+import { formatDate } from '../../utils/date';
 
 export interface TaskProps {
   blockId: string;
@@ -25,7 +26,6 @@ const Wrapper = styled.div`
 
 const Buttons = styled.div`
   flex-shrink: 0;
-  width: 60px;
   height: 32px;
   display: flex;
   justify-content: center;
@@ -36,6 +36,8 @@ const IconButton = styled.div`
   margin: 4px;
   display: flex;
   align-items: center;
+  font-size: 12px;
+  color: #a1a1aa;
 `;
 
 const Container = styled.div<Pick<TaskProps, 'placeholder'>>`
@@ -101,6 +103,24 @@ export const Task = React.memo(
     const handleCloseDatePicker = React.useCallback(() => {
       setTimeout(() => setShowDatePicker(false));
     }, [showDatePicker]);
+
+    const handleSelectDatePicker = React.useCallback(
+      (date: Date | undefined) => {
+        const currentBlock = editor.getBlock(blockId);
+        if (currentBlock) {
+          editor.updateBlock({
+            ...currentBlock,
+            attributes: {
+              ...currentBlock.attributes,
+              deadline: date ? date.toString() : null,
+            },
+          });
+          editor.render([blockId]);
+        }
+        setTimeout(() => setShowDatePicker(false));
+      },
+      [showDatePicker],
+    );
 
     React.useEffect(() => {
       handleChangeElement();
@@ -175,7 +195,11 @@ export const Task = React.memo(
               <Assignment size="20px" fill="#A1A1AA" />
             </IconButton>
             <IconButton onClick={handleClickDatePicker}>
-              <Schedule size="20px" fill="#A1A1AA" />
+              {attributes?.deadline ? (
+                formatDate(new Date(attributes.deadline))
+              ) : (
+                <Schedule size="20px" fill="#A1A1AA" />
+              )}
             </IconButton>
           </Buttons>
         </Wrapper>
@@ -186,7 +210,7 @@ export const Task = React.memo(
             top={datePickerPosition.top}
             left={datePickerPosition.left}
             selected={new Date()}
-            onSelect={handleCloseDatePicker}
+            onSelect={handleSelectDatePicker}
             onClose={handleCloseDatePicker}
           />
         )}

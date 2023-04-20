@@ -26,7 +26,6 @@ const Wrapper = styled.div`
 
 const Buttons = styled.div`
   flex-shrink: 0;
-  height: 32px;
   display: flex;
   justify-content: center;
   align-items: center;

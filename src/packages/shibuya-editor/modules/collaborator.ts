@@ -3,10 +3,13 @@ import { EventEmitter } from '../utils/event-emitter';
 import { EditorController } from '../types/editor';
 import { EditorEvents } from '../constants';
 
-export interface User {
+export interface Member {
   id: string;
   name: string;
   imageUrl?: string;
+}
+
+export interface CollaboratingMember extends Member {
   blockId: string | null;
   onClick?: (el: HTMLElement) => void;
 }
@@ -23,6 +26,7 @@ export class CollaboratorModule implements Module {
   private eventEmitter;
   private editor;
   private options: Props['options'];
+  private members: Member[] = [];
 
   constructor({ eventEmitter, editor, options }: Props) {
     this.editor = editor;
@@ -42,11 +46,19 @@ export class CollaboratorModule implements Module {
     return this.options;
   }
 
-  updatePosition(user: User) {
-    this.eventEmitter.emit(EditorEvents.EVENT_COLLABORATOR_UPDATE_POSITION, user);
+  updatePosition(member: CollaboratingMember) {
+    this.eventEmitter.emit(EditorEvents.EVENT_COLLABORATOR_UPDATE_POSITION, member);
   }
 
   removeAll() {
     this.eventEmitter.emit(EditorEvents.EVENT_COLLABORATOR_REMOVE_ALL);
+  }
+
+  setMembers(members: Member[]) {
+    this.members = members;
+  }
+
+  getMembers(): Member[] {
+    return this.members;
   }
 }

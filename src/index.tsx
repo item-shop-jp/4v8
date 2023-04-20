@@ -90,6 +90,16 @@ export const Container: React.FC = React.memo(() => {
       ),
     );
 
+    editorRef2.current.getModule('collaborator').setMembers([
+      {
+        id: 'aaa1',
+        name: '田中 健太郎',
+        imageUrl:
+          'https://lh3.googleusercontent.com/a-/AAuE7mDqNcnkUNpr7-X6WOAp4QaSI399ToQaP38tSD5x=s100',
+      },
+      { id: 'aaa2', name: '笹川裕也' },
+    ]);
+
     const eventEmitter = editorRef2.current.getEventEmitter();
     subs.add(
       eventEmitter.select(EditorEvents.EVENT_EDITOR_CHANGED).subscribe((payload) => {

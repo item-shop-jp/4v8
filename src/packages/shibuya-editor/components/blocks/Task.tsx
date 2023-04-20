@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 import { EditorController } from '../../types/editor';
 import { CheckSquare, Schedule, Assignment } from '../icons';
 import { Formats } from '../../types/format';
-import { DatePicker } from '../popups';
+import { DatePicker, AssigneePicker } from '../popups';
 import { BlockAttributes } from '../../types/block';
 import { useMutationObserver } from '../../hooks/use-mutation-observer';
 import { getHtmlElement } from '../../utils/dom';
@@ -88,6 +88,7 @@ export const Task = React.memo(
     const [showPlaceholder, setShowPlaceholder] = React.useState(false);
     const [isHover, setHover] = React.useState(false);
     const [showDatePicker, setShowDatePicker] = React.useState(false);
+    const [showAssigneePicker, setShowAssigneePicker] = React.useState(false);
     const handleChangeElement = React.useCallback(() => {
       if (!headerRef.current) return;
       const innerText = (headerRef.current as HTMLElement).innerText.replaceAll(/\uFEFF/gi, '');
@@ -122,6 +123,15 @@ export const Task = React.memo(
       },
       [showDatePicker],
     );
+
+    const handleClickAssigneePicker = React.useCallback(() => {
+      setShowAssigneePicker(!showAssigneePicker);
+    }, [showAssigneePicker]);
+
+    const handleCloseAssigneePicker = React.useCallback(() => {
+      setTimeout(() => setShowAssigneePicker(false));
+      setHover(false);
+    }, [showAssigneePicker]);
 
     React.useEffect(() => {
       handleChangeElement();
@@ -202,7 +212,7 @@ export const Task = React.memo(
           </Container>
           <Buttons>
             <IconButton
-              onClick={handleClickDatePicker}
+              onClick={handleClickAssigneePicker}
               style={{ visibility: isHover ? 'visible' : 'hidden' }}
             >
               <Assignment size="20px" fill="#A1A1AA" />
@@ -231,6 +241,15 @@ export const Task = React.memo(
             selected={attributes?.deadline ? new Date(attributes.deadline) : undefined}
             onSelect={handleSelectDatePicker}
             onClose={handleCloseDatePicker}
+          />
+        )}
+        {showAssigneePicker && (
+          <AssigneePicker
+            editor={editor}
+            scrollContainer={scrollContainer}
+            top={datePickerPosition.top}
+            left={datePickerPosition.left}
+            onClose={handleCloseAssigneePicker}
           />
         )}
       </>

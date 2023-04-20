@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Subscription } from 'rxjs';
 import { EditorEvents } from '../constants';
 import { EditorController } from '../types/editor';
-import { User } from '../modules/collaborator';
+import { CollaboratingMember } from '../modules/collaborator';
 import { getBlockElementById } from '../utils/block';
 import { getHtmlElement } from '../utils/dom';
 
@@ -43,7 +43,9 @@ const Text = styled.div`
 `;
 
 export const Collaborators = React.memo(({ editor }: CollaboratorProps) => {
-  const [collaborators, setCollaborators] = React.useState<(User & { top?: number })[]>([]);
+  const [collaborators, setCollaborators] = React.useState<
+    (CollaboratingMember & { top?: number })[]
+  >([]);
   React.useEffect(() => {
     const subs = new Subscription();
     const eventEmitter = editor.getEventEmitter();

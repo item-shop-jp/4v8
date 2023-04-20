@@ -37,7 +37,7 @@ const IconButton = styled.div`
   display: flex;
   align-items: center;
   font-size: 12px;
-  color: #a1a1aa;
+  color: #a1a1aa; ;
 `;
 
 const Container = styled.div<Pick<TaskProps, 'placeholder'>>`
@@ -102,6 +102,7 @@ export const Task = React.memo(
 
     const handleCloseDatePicker = React.useCallback(() => {
       setTimeout(() => setShowDatePicker(false));
+      setHover(false);
     }, [showDatePicker]);
 
     const handleSelectDatePicker = React.useCallback(
@@ -117,6 +118,7 @@ export const Task = React.memo(
           });
           editor.render([blockId]);
         }
+        setHover(false);
         setTimeout(() => setShowDatePicker(false));
       },
       [showDatePicker],
@@ -144,29 +146,38 @@ export const Task = React.memo(
       [blockId, attributes],
     );
 
-    const handleMouseOver = React.useCallback((e: React.MouseEvent) => {
-      setHover(true);
-    }, []);
+    const handleMouseOver = React.useCallback(
+      (e: React.MouseEvent) => {
+        setHover(true);
+      },
+      [showDatePicker],
+    );
 
-    const handleMouseOut = React.useCallback((e: React.MouseEvent) => {
-      setHover(false);
-    }, []);
+    const handleMouseOut = React.useCallback(
+      (e: React.MouseEvent) => {
+        if (showDatePicker) return;
+        setHover(false);
+      },
+      [showDatePicker],
+    );
 
     const checked = attributes?.checked ?? false;
 
     const datePickerPosition = { top: 0, left: 0 };
+    const editorRef = editor.getEditorRef();
+    const editorRect = editorRef?.getBoundingClientRect();
     if (scrollContainer) {
       const container = getHtmlElement(scrollContainer);
       const containerRect = container?.getBoundingClientRect();
       const blockRect = headerRef.current?.getBoundingClientRect();
       datePickerPosition.top =
         (container?.scrollTop ?? 0) - (containerRect?.top ?? 0) + (blockRect?.top ?? 0) - 60;
-      datePickerPosition.left = (blockRect?.left ?? 0) + (blockRect?.width ?? 0) - 400;
+      datePickerPosition.left = (editorRect?.left ?? 0) + (editorRect?.width ?? 0) - 400;
     } else {
       const scrollEl = document.scrollingElement as HTMLElement;
       const blockRect = headerRef.current?.getBoundingClientRect();
       datePickerPosition.top = (scrollEl?.scrollTop ?? 0) + (blockRect?.top ?? 0) - 60;
-      datePickerPosition.left = (blockRect?.left ?? 0) + (blockRect?.width ?? 0) - 400;
+      datePickerPosition.left = (editorRect?.left ?? 0) + (editorRect?.width ?? 0) - 400;
     }
 
     return (
@@ -191,16 +202,25 @@ export const Task = React.memo(
             {contents}
           </Container>
           <Buttons>
-            <IconButton onClick={handleClickDatePicker}>
+            <IconButton
+              onClick={handleClickDatePicker}
+              style={{ visibility: isHover ? 'visible' : 'hidden' }}
+            >
               <Assignment size="20px" fill="#A1A1AA" />
             </IconButton>
-            <IconButton onClick={handleClickDatePicker}>
-              {attributes?.deadline ? (
-                formatDate(new Date(attributes.deadline))
-              ) : (
+
+            {attributes?.deadline ? (
+              <IconButton onClick={handleClickDatePicker}>
+                {formatDate(new Date(attributes.deadline))}
+              </IconButton>
+            ) : (
+              <IconButton
+                onClick={handleClickDatePicker}
+                style={{ visibility: isHover ? 'visible' : 'hidden' }}
+              >
                 <Schedule size="20px" fill="#A1A1AA" />
-              )}
-            </IconButton>
+              </IconButton>
+            )}
           </Buttons>
         </Wrapper>
         {showDatePicker && (
@@ -209,7 +229,7 @@ export const Task = React.memo(
             scrollContainer={scrollContainer}
             top={datePickerPosition.top}
             left={datePickerPosition.left}
-            selected={new Date()}
+            selected={attributes?.deadline ? new Date(attributes.deadline) : undefined}
             onSelect={handleSelectDatePicker}
             onClose={handleCloseDatePicker}
           />

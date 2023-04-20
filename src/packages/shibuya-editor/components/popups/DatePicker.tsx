@@ -22,12 +22,23 @@ const DatePickerWrapper = styled.div`
   top: 24px;
   right: 0;
   width: 312px;
-  height: 352px;
   transform: scale(0.7);
   transform-origin: top right;
   border-radius: 8px;
   box-shadow: 0px 0px 5px #ddd;
   background-color: #fff;
+`;
+
+const Header = styled.div`
+  display: flex;
+  justify-content: end;
+  padding: 4px 8px;
+  border-bottom: 1px solid #eee;
+`;
+const ResetButton = styled.a`
+  cursor: pointer;
+  color: #a1a1aa;
+  margin-right: 8px;
 `;
 
 export const DatePicker = React.memo(
@@ -51,6 +62,11 @@ export const DatePicker = React.memo(
       [onSelect],
     );
 
+    const handleReset = React.useCallback(() => {
+      if (typeof onSelect !== 'function') return;
+      onSelect(undefined);
+    }, [onSelect]);
+
     React.useEffect(() => {
       if (typeof onClose !== 'function') return;
       const handleClose = (e: MouseEvent) => {
@@ -66,11 +82,16 @@ export const DatePicker = React.memo(
 
     return ReactDOM.createPortal(
       <DatePickerWrapper ref={modalRef} style={{ top, left }}>
+        {selected && (
+          <Header>
+            <ResetButton onClick={handleReset}>締め切り日をリセット</ResetButton>
+          </Header>
+        )}
         <DayPicker
           mode="single"
           required={true}
           locale={ja}
-          selected={new Date()}
+          selected={selected}
           onSelect={handleSelectDate}
         />
       </DatePickerWrapper>,

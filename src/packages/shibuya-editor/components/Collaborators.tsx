@@ -99,11 +99,7 @@ export const Collaborators = React.memo(({ editor }: CollaboratorProps) => {
             style={{ top: `${collaborator?.top ?? 0}px` }}
           >
             {collaborator?.imageUrl ? (
-              <img
-                draggable="false"
-                src={collaborator?.imageUrl}
-                //src="https://lh3.googleusercontent.com/a-/AAuE7mDqNcnkUNpr7-X6WOAp4QaSI399ToQaP38tSD5x=s100"
-              />
+              <img draggable="false" src={collaborator?.imageUrl} />
             ) : (
               <Text>{collaborator.name.slice(0, 1)}</Text>
             )}

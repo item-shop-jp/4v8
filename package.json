@@ -22,7 +22,7 @@
     "@types/prismjs": "^1.26.0",
     "@types/react": "18.0.15",
     "@types/react-dom": "18.0.6",
-    "@types/styled-components": "5.1.25",
+    "@types/styled-components": "5.1.26",
     "@types/throttle-debounce": "5.0.0",
     "@types/twemoji": "13.1.1",
     "@types/uuid": "^8.3.4",
@@ -80,6 +80,6 @@
   },
   "dependencies": {
     "json0-ot-diff": "1.1.2",
-    "styled-components": "5.3.5"
+    "styled-components": "5.3.10"
   }
 }

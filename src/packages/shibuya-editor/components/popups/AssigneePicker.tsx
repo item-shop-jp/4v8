@@ -39,6 +39,7 @@ export const AssigneePicker = React.memo(
     ...props
   }: Props) => {
     const modalRef = React.useRef<HTMLDivElement>(null);
+    const [searchValue, setSearchValue] = React.useState('');
     const members = editor.getModule('collaborator').getMembers();
 
     React.useEffect(() => {
@@ -54,9 +55,40 @@ export const AssigneePicker = React.memo(
       };
     }, [onClose]);
 
+    const handleChangeSearchValue = React.useCallback(
+      (event: React.ChangeEvent<HTMLInputElement>) => {
+        event.preventDefault();
+        event.stopPropagation();
+        setSearchValue(event.target.value);
+      },
+      [],
+    );
+
+    const handleKeyDown = React.useCallback((event: React.KeyboardEvent<HTMLInputElement>) => {
+      event.stopPropagation();
+    }, []);
+
+    const memoMembers = React.useMemo(() => {
+      if (!searchValue) {
+        return members;
+      }
+      return members.filter((v) => {
+        return v.name.indexOf(searchValue.toLowerCase()) !== -1;
+      });
+    }, [members, searchValue]);
+
     return ReactDOM.createPortal(
       <Wrapper ref={modalRef} style={{ top, left }}>
-        {members.map((member) => {
+        <div>
+          <input
+            type="text"
+            placeholder="名前を検索"
+            value={searchValue}
+            onKeyDown={handleKeyDown}
+            onChange={handleChangeSearchValue}
+          />
+        </div>
+        {memoMembers.map((member) => {
           return (
             <div key={member.id}>
               {member.id}: {member.name}

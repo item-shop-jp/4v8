@@ -8,6 +8,7 @@ import { BlockAttributes } from '../../types/block';
 import { useMutationObserver } from '../../hooks/use-mutation-observer';
 import { getHtmlElement } from '../../utils/dom';
 import { formatDate } from '../../utils/date';
+import { Member } from '../../modules';
 
 export interface TaskProps {
   blockId: string;
@@ -36,7 +37,7 @@ const IconButton = styled.div`
   display: flex;
   align-items: center;
   font-size: 12px;
-  color: #a1a1aa; ;
+  color: #a1a1aa;
 `;
 
 const Container = styled.div<Pick<TaskProps, 'placeholder'>>`
@@ -132,6 +133,25 @@ export const Task = React.memo(
       setTimeout(() => setShowAssigneePicker(false));
       setHover(false);
     }, [showAssigneePicker]);
+
+    const handleSelectAssigneePicker = React.useCallback(
+      (member?: Member) => {
+        const currentBlock = editor.getBlock(blockId);
+        if (currentBlock) {
+          editor.updateBlock({
+            ...currentBlock,
+            attributes: {
+              ...currentBlock.attributes,
+              assignee: member ?? null,
+            },
+          });
+          editor.render([blockId]);
+        }
+        setHover(false);
+        setTimeout(() => setShowAssigneePicker(false));
+      },
+      [showDatePicker],
+    );
 
     React.useEffect(() => {
       handleChangeElement();
@@ -249,6 +269,7 @@ export const Task = React.memo(
             scrollContainer={scrollContainer}
             top={datePickerPosition.top}
             left={datePickerPosition.left}
+            onSelect={handleSelectAssigneePicker}
             onClose={handleCloseAssigneePicker}
           />
         )}

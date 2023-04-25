@@ -75,6 +75,33 @@ const CheckBoxOuter = styled.div`
   user-select: none;
 `;
 
+const MemberIcon = styled.div`
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  border-radius: 100%;
+  box-shadow: 0px 1px 5px 0px;
+  overflow: hidden;
+  transition: top 0.3s ease-in-out;
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+`;
+
+const Text = styled.div`
+  font-size: 14px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
 export const Task = React.memo(
   ({
     blockId,
@@ -231,13 +258,24 @@ export const Task = React.memo(
             {contents}
           </Container>
           <Buttons>
-            <IconButton
-              onClick={handleClickAssigneePicker}
-              style={{ visibility: isHover ? 'visible' : 'hidden' }}
-            >
-              <Assignment size="20px" fill="#A1A1AA" />
-            </IconButton>
-
+            {attributes?.assignee ? (
+              <IconButton onClick={handleClickAssigneePicker}>
+                <MemberIcon>
+                  {attributes?.assignee?.imageUrl ? (
+                    <img draggable="false" src={attributes?.assignee?.imageUrl} />
+                  ) : (
+                    <Text>{attributes?.assignee?.name.slice(0, 1)}</Text>
+                  )}
+                </MemberIcon>
+              </IconButton>
+            ) : (
+              <IconButton
+                onClick={handleClickAssigneePicker}
+                style={{ visibility: isHover ? 'visible' : 'hidden' }}
+              >
+                <Assignment size="20px" fill="#A1A1AA" />
+              </IconButton>
+            )}
             {attributes?.deadline ? (
               <IconButton onClick={handleClickDatePicker}>
                 {formatDate(new Date(attributes.deadline))}

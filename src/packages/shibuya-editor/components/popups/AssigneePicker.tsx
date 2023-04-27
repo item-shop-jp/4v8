@@ -10,7 +10,7 @@ interface Props {
   scrollContainer?: HTMLElement | string;
   top?: number;
   left?: number;
-  selected?: Date;
+  selectedMembers: Member[];
   onSelect?: (member: Member) => void;
   onClose?: () => void;
 }
@@ -48,6 +48,7 @@ const MemberIcon = styled.div`
   user-select: none;
   border-radius: 100%;
   box-shadow: 0px 1px 5px 0px;
+  background-color: #fff;
   cursor: auto;
   overflow: hidden;
   transition: top 0.3s ease-in-out;
@@ -71,7 +72,7 @@ export const AssigneePicker = React.memo(
   ({
     editor,
     scrollContainer,
-    selected,
+    selectedMembers,
     onSelect,
     onClose,
     top = 0,
@@ -124,10 +125,13 @@ export const AssigneePicker = React.memo(
       }
       return members
         .filter((v) => {
+          if (selectedMembers.some((m) => m.id === v.id)) {
+            return false;
+          }
           return v.name.indexOf(searchValue.toLowerCase()) !== -1;
         })
         .slice(0, 10);
-    }, [members, searchValue]);
+    }, [members, searchValue, selectedMembers]);
 
     return ReactDOM.createPortal(
       <Wrapper ref={modalRef} style={{ top, left }}>

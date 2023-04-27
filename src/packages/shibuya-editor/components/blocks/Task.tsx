@@ -38,6 +38,7 @@ const IconButton = styled.div`
   align-items: center;
   font-size: 12px;
   color: #a1a1aa;
+  flex-direction: row-reverse;
 `;
 
 const Container = styled.div<Pick<TaskProps, 'placeholder'>>`
@@ -84,6 +85,7 @@ const MemberIcon = styled.div`
   user-select: none;
   border-radius: 100%;
   box-shadow: 0px 1px 5px 0px;
+  background-color: #fff;
   overflow: hidden;
   transition: top 0.3s ease-in-out;
   img {
@@ -116,6 +118,7 @@ export const Task = React.memo(
     const [showPlaceholder, setShowPlaceholder] = React.useState(false);
     const [isHover, setHover] = React.useState(false);
     const [showDatePicker, setShowDatePicker] = React.useState(false);
+    const [selectedMembers, setSelectedMembers] = React.useState<Member[]>([]);
     const [showAssigneePicker, setShowAssigneePicker] = React.useState(false);
     const handleChangeElement = React.useCallback(() => {
       if (!headerRef.current) return;
@@ -164,20 +167,23 @@ export const Task = React.memo(
     const handleSelectAssigneePicker = React.useCallback(
       (member?: Member) => {
         const currentBlock = editor.getBlock(blockId);
+        const updateMembers =
+          member && !selectedMembers.some((v) => v.id == member.id)
+            ? [...selectedMembers, member]
+            : selectedMembers;
         if (currentBlock) {
           editor.updateBlock({
             ...currentBlock,
             attributes: {
               ...currentBlock.attributes,
-              assignee: member ?? null,
+              assignees: updateMembers,
             },
           });
           editor.render([blockId]);
         }
-        setHover(false);
-        setTimeout(() => setShowAssigneePicker(false));
+        setSelectedMembers(updateMembers);
       },
-      [showDatePicker],
+      [showDatePicker, selectedMembers],
     );
 
     React.useEffect(() => {
@@ -258,15 +264,19 @@ export const Task = React.memo(
             {contents}
           </Container>
           <Buttons>
-            {attributes?.assignee ? (
+            {attributes?.assignees ? (
               <IconButton onClick={handleClickAssigneePicker}>
-                <MemberIcon>
-                  {attributes?.assignee?.imageUrl ? (
-                    <img draggable="false" src={attributes?.assignee?.imageUrl} />
-                  ) : (
-                    <Text>{attributes?.assignee?.name.slice(0, 1)}</Text>
-                  )}
-                </MemberIcon>
+                {attributes.assignees.map((assignee: Member, i: number) => {
+                  return (
+                    <MemberIcon key={assignee.id} style={{ marginRight: `${-8 * i}px` }}>
+                      {assignee.imageUrl ? (
+                        <img draggable="false" src={assignee.imageUrl} />
+                      ) : (
+                        <Text>{assignee.name.slice(0, 1)}</Text>
+                      )}
+                    </MemberIcon>
+                  );
+                })}
               </IconButton>
             ) : (
               <IconButton
@@ -307,6 +317,7 @@ export const Task = React.memo(
             scrollContainer={scrollContainer}
             top={datePickerPosition.top}
             left={datePickerPosition.left}
+            selectedMembers={selectedMembers}
             onSelect={handleSelectAssigneePicker}
             onClose={handleCloseAssigneePicker}
           />

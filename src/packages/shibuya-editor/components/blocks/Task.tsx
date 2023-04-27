@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 import { EditorController } from '../../types/editor';
 import { CheckSquare, Schedule, Assignment } from '../icons';
 import { Formats } from '../../types/format';
-import { DatePicker, AssigneePicker } from '../popups';
+import { DatePicker, AssigneePicker, Tooltip } from '../popups';
 import { BlockAttributes } from '../../types/block';
 import { useMutationObserver } from '../../hooks/use-mutation-observer';
 import { getHtmlElement } from '../../utils/dom';
@@ -265,38 +265,70 @@ export const Task = React.memo(
           </Container>
           <Buttons>
             {attributes?.assignees ? (
-              <IconButton onClick={handleClickAssigneePicker}>
-                {attributes.assignees.map((assignee: Member, i: number) => {
-                  return (
-                    <MemberIcon key={assignee.id} style={{ marginRight: `${-8 * i}px` }}>
-                      {assignee.imageUrl ? (
-                        <img draggable="false" src={assignee.imageUrl} />
-                      ) : (
-                        <Text>{assignee.name.slice(0, 1)}</Text>
-                      )}
-                    </MemberIcon>
-                  );
-                })}
-              </IconButton>
-            ) : (
-              <IconButton
-                onClick={handleClickAssigneePicker}
-                style={{ visibility: isHover ? 'visible' : 'hidden' }}
+              <Tooltip
+                targetElement={
+                  <IconButton onClick={handleClickAssigneePicker}>
+                    {attributes.assignees.map((assignee: Member, i: number) => {
+                      return (
+                        <MemberIcon key={assignee.id} style={{ marginRight: `${-8 * i}px` }}>
+                          {assignee.imageUrl ? (
+                            <img draggable="false" src={assignee.imageUrl} />
+                          ) : (
+                            <Text>{assignee.name.slice(0, 1)}</Text>
+                          )}
+                        </MemberIcon>
+                      );
+                    })}
+                  </IconButton>
+                }
+                maxWidth={200}
+                position={'bottom'}
               >
-                <Assignment size="20px" fill="#A1A1AA" />
-              </IconButton>
+                {attributes.assignees.map((v: Member) => v.name).join(',')}
+              </Tooltip>
+            ) : (
+              <Tooltip
+                targetElement={
+                  <IconButton
+                    onClick={handleClickAssigneePicker}
+                    style={{ visibility: isHover ? 'visible' : 'hidden' }}
+                  >
+                    <Assignment size="20px" fill="#A1A1AA" />
+                  </IconButton>
+                }
+                maxWidth={200}
+                position={'bottom'}
+              >
+                担当者を割り当てる
+              </Tooltip>
             )}
             {attributes?.deadline ? (
-              <IconButton onClick={handleClickDatePicker}>
-                {formatDate(new Date(attributes.deadline))}
-              </IconButton>
-            ) : (
-              <IconButton
-                onClick={handleClickDatePicker}
-                style={{ visibility: isHover ? 'visible' : 'hidden' }}
+              <Tooltip
+                targetElement={
+                  <IconButton onClick={handleClickDatePicker}>
+                    {formatDate(new Date(attributes.deadline))}
+                  </IconButton>
+                }
+                maxWidth={200}
+                position={'bottom'}
               >
-                <Schedule size="20px" fill="#A1A1AA" />
-              </IconButton>
+                締め切りを変更する
+              </Tooltip>
+            ) : (
+              <Tooltip
+                targetElement={
+                  <IconButton
+                    onClick={handleClickDatePicker}
+                    style={{ visibility: isHover ? 'visible' : 'hidden' }}
+                  >
+                    <Schedule size="20px" fill="#A1A1AA" />
+                  </IconButton>
+                }
+                maxWidth={200}
+                position={'bottom'}
+              >
+                締め切りを設定する
+              </Tooltip>
             )}
           </Buttons>
         </Wrapper>

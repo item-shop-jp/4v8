@@ -309,7 +309,6 @@ export const Task = React.memo(
                     {formatDate(new Date(attributes.deadline))}
                   </IconButton>
                 }
-                maxWidth={200}
                 position={'bottom'}
               >
                 締め切りを変更する
@@ -324,7 +323,6 @@ export const Task = React.memo(
                     <Schedule size="20px" fill="#A1A1AA" />
                   </IconButton>
                 }
-                maxWidth={200}
                 position={'bottom'}
               >
                 締め切りを設定する
@@ -348,7 +346,7 @@ export const Task = React.memo(
             editor={editor}
             scrollContainer={scrollContainer}
             top={datePickerPosition.top}
-            left={datePickerPosition.left}
+            left={datePickerPosition.left - 50}
             selectedMembers={selectedMembers}
             onSelect={handleSelectAssigneePicker}
             onClose={handleCloseAssigneePicker}

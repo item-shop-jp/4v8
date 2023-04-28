@@ -91,6 +91,7 @@ export const DatePicker = React.memo(
           mode="single"
           required={true}
           locale={ja}
+          defaultMonth={selected}
           selected={selected}
           onSelect={handleSelectDate}
         />

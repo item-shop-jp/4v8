@@ -1,5 +1,5 @@
 import * as React from 'react';
-import styled, { css, keyframes } from 'styled-components';
+import styled from 'styled-components';
 import { Formats } from '../../types/format';
 import { EditorController } from '../../types/editor';
 import { useBlockRenderer } from '../../hooks/use-block-renderer';
@@ -17,15 +17,6 @@ interface BlockProps {
   onCompositionEnd: (e: React.CompositionEvent) => void;
   onBeforeInput: (e: React.FormEvent) => void;
 }
-
-const FadeIn = keyframes`
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-`;
 
 const Outer = styled.div`
   position: relative;

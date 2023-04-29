@@ -19,23 +19,44 @@ const Wrapper = styled.div`
   position: absolute;
   top: 24px;
   right: 0;
-  width: 312px;
-  height: 352px;
+  width: 256px;
+  max-height: 360px;
   transform: scale(0.7);
   transform-origin: top right;
   border-radius: 8px;
+  overflow: hidden;
   box-shadow: 0px 0px 5px #ddd;
-  background-color: #fff;
+  background-color: #18181b;
+`;
+
+const Search = styled.div`
+  width: 100%;
+  height: 44px;
+  box-sizing: border-box;
+  border-bottom: 1px solid #a1a1aa;
+  input {
+    width: 100%;
+    height: 100%;
+    padding-left: 8px;
+    box-sizing: border-box;
+    background-color: #18181b;
+    color: #fff;
+    border: none;
+    outline: none;
+  }
 `;
 
 const MemberInfo = styled.div`
   display: flex;
   align-items: center;
-  padding: 8px;
+  flex-direction: row;
+  padding: 8px 16px;
+  height: 40px;
   font-size: 16px;
+  color: #fff;
   cursor: pointer;
   &:hover {
-    background-color: #f7f9fa;
+    background-color: #2c2c31;
   }
 `;
 
@@ -47,11 +68,10 @@ const MemberIcon = styled.div`
   justify-content: center;
   user-select: none;
   border-radius: 100%;
-  box-shadow: 0px 1px 5px 0px;
   background-color: #fff;
+  margin-right: 8px;
   cursor: auto;
   overflow: hidden;
-  transition: top 0.3s ease-in-out;
   img {
     width: 100%;
     height: 100%;
@@ -60,12 +80,14 @@ const MemberIcon = styled.div`
 `;
 
 const Text = styled.div`
-  font-size: 22px;
+  font-size: 16px;
   width: 100%;
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
+  background-color: #f7f7f7;
+  color: #000;
 `;
 
 export const AssigneePicker = React.memo(
@@ -87,6 +109,7 @@ export const AssigneePicker = React.memo(
       (event: React.ChangeEvent<HTMLInputElement>) => {
         event.preventDefault();
         event.stopPropagation();
+        console.log(event.target.value);
         setSearchValue(event.target.value);
       },
       [],
@@ -102,6 +125,7 @@ export const AssigneePicker = React.memo(
         event.stopPropagation();
         if (typeof onSelect !== 'function') return;
         onSelect(member);
+        setSearchValue('');
       },
       [onSelect],
     );
@@ -119,34 +143,41 @@ export const AssigneePicker = React.memo(
       };
     }, [onClose]);
 
-    const memoMembers = React.useMemo(() => {
-      if (!searchValue) {
-        return members.slice(0, 10);
-      }
-      return members
-        .filter((v) => {
-          if (selectedMembers.some((m) => m.id === v.id)) {
-            return false;
-          }
+    const memoMembers: (Member & { selected?: boolean })[] = React.useMemo(() => {
+      let filteredMembers = members;
+      if (searchValue !== '') {
+        filteredMembers = filteredMembers.filter((v) => {
           return v.name.indexOf(searchValue.toLowerCase()) !== -1;
-        })
-        .slice(0, 10);
+        });
+        return filteredMembers.slice(0, 10).map((v) => {
+          return { ...v, selected: selectedMembers.some((m) => m.id === v.id) };
+        });
+      }
+      filteredMembers = filteredMembers.filter((v) => !selectedMembers.some((m) => m.id === v.id));
+
+      return [...selectedMembers, ...filteredMembers].slice(0, 10).map((v) => {
+        return { ...v, selected: selectedMembers.some((m) => m.id === v.id) };
+      });
     }, [members, searchValue, selectedMembers]);
 
     return ReactDOM.createPortal(
       <Wrapper ref={modalRef} style={{ top, left }}>
-        <div>
+        <Search>
           <input
             type="text"
-            placeholder="名前を検索"
+            placeholder="ユーザーを絞り込む"
             value={searchValue}
             onKeyDown={handleKeyDown}
             onChange={handleChangeSearchValue}
           />
-        </div>
+        </Search>
         {memoMembers.map((member) => {
           return (
-            <MemberInfo key={member.id} onClick={handleSelectMember(member)}>
+            <MemberInfo
+              key={member.id}
+              onClick={handleSelectMember(member)}
+              style={{ backgroundColor: member.selected ? '#2c2c31' : '#18181b' }}
+            >
               <MemberIcon>
                 {member?.imageUrl ? (
                   <img draggable="false" src={member?.imageUrl} />

@@ -30,7 +30,7 @@ const Container = styled.div`
 const XFadeIn = keyframes`
   0% {
     opacity: 0.7;
-    transform: translateX(-50%) scale(0.7);
+    transform: translateX(-50%) scale(0.5);
   }
   100% {
     opacity: 1;
@@ -56,7 +56,7 @@ const XFadeOut = keyframes`
 const YFadeIn = keyframes`
   0% {
     opacity: 0.7;
-    transform: translateY(-50%) scale(0.7);
+    transform: translateY(-50%) scale(0.5);
   }
   100% {
     opacity: 1;
@@ -101,7 +101,7 @@ const TooltipContainer = styled.div<TooltipProps>`
       case 'top':
         return css`
           bottom: ${containerRect.height + 8}px;
-          transform: translateX(-50%);
+          transform: ${isDisplay ? `translateX(-50%) scale(1)` : `translateX(-50%) scale(0.5)`};
           animation: ${isDisplay ? XFadeIn : XFadeOut} 0.25s;
           left: 50%;
           padding: 10px;
@@ -111,7 +111,7 @@ const TooltipContainer = styled.div<TooltipProps>`
           left: ${containerRect.width + 16}px;
           top: 50%;
           animation: ${isDisplay ? YFadeIn : YFadeOut} 0.25s;
-          transform: translateY(-50%) scale(1);
+          transform: ${isDisplay ? `translateY(-50%) scale(1)` : `translateY(-50%) scale(0.5)`};
           &:before {
             border: solid transparent;
             content: '';
@@ -132,7 +132,7 @@ const TooltipContainer = styled.div<TooltipProps>`
       case 'bottom':
         return css`
           top: ${containerRect.height + 16}px;
-          transform: ${isDisplay ? `translateX(-50%) scale(1)` : `translateX(-50%) scale(0.7)`};
+          transform: ${isDisplay ? `translateX(-50%) scale(1)` : `translateX(-50%) scale(0.5)`};
           left: 50%;
           animation: ${isDisplay ? XFadeIn : XFadeOut} 0.25s;
         `;

@@ -14,3 +14,4 @@ export * from './CheckSquare';
 export * from './Decision';
 export * from './Schedule';
 export * from './Assignment';
+export * from './Close';

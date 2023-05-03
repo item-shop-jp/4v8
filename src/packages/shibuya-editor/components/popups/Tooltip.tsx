@@ -153,17 +153,17 @@ export const Tooltip: React.FC<Props> = ({
   ...props
 }) => {
   const [isDisplay, setDisplay] = React.useState(false);
-  const [isHidden, setIsHidden] = React.useState(false);
+  const [_isDisplay, _setDisplay] = React.useState(false);
   const [displayTimer, setDisplayTimer] = React.useState<number>(); // Tooltipの消滅時のアニメーション用
   const [containerRect, setContainerRect] = React.useState<DOMRect>();
   const containerRef = React.useRef<HTMLDivElement>(null);
 
   const handleMouseOver = React.useCallback(() => {
-    setIsHidden(true);
+    _setDisplay(true);
   }, []);
 
   const handleMouseOut = React.useCallback(() => {
-    setIsHidden(false);
+    _setDisplay(false);
   }, []);
 
   React.useEffect(() => {
@@ -175,12 +175,12 @@ export const Tooltip: React.FC<Props> = ({
     if (displayTimer) {
       clearTimeout(displayTimer);
     }
-    if (!isHidden) {
-      setDisplayTimer(window.setTimeout(() => setDisplay(isHidden), 300));
+    if (!_isDisplay) {
+      setDisplayTimer(window.setTimeout(() => setDisplay(false), 300));
     } else {
-      setDisplay(isHidden);
+      setDisplay(true);
     }
-  }, [isHidden]);
+  }, [_isDisplay]);
 
   return (
     <Container
@@ -198,7 +198,7 @@ export const Tooltip: React.FC<Props> = ({
           border={border}
           fontWeight={fontWeight}
           fontSize={fontSize}
-          isDisplay={isHidden}
+          isDisplay={_isDisplay}
         >
           {children}
         </TooltipContainer>

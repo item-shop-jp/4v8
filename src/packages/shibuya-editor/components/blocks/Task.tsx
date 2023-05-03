@@ -132,7 +132,7 @@ export const Task = React.memo(
     }, [showDatePicker]);
 
     const handleCloseDatePicker = React.useCallback(() => {
-      setTimeout(() => setShowDatePicker(false));
+      setShowDatePicker(false);
       setHover(false);
     }, [showDatePicker]);
 
@@ -150,7 +150,7 @@ export const Task = React.memo(
           editor.render([blockId]);
         }
         setHover(false);
-        setTimeout(() => setShowDatePicker(false));
+        setShowDatePicker(false);
       },
       [showDatePicker],
     );
@@ -160,7 +160,7 @@ export const Task = React.memo(
     }, [showAssigneePicker]);
 
     const handleCloseAssigneePicker = React.useCallback(() => {
-      setTimeout(() => setShowAssigneePicker(false));
+      setShowAssigneePicker(false);
       setHover(false);
     }, [showAssigneePicker]);
 
@@ -171,6 +171,25 @@ export const Task = React.memo(
           member && !selectedMembers.some((v) => v.id == member.id)
             ? [...selectedMembers, member]
             : selectedMembers;
+        if (currentBlock) {
+          editor.updateBlock({
+            ...currentBlock,
+            attributes: {
+              ...currentBlock.attributes,
+              assignees: updateMembers,
+            },
+          });
+          editor.render([blockId]);
+        }
+        setSelectedMembers(updateMembers);
+      },
+      [showDatePicker, selectedMembers],
+    );
+
+    const handleRemoveAssigneePicker = React.useCallback(
+      (member?: Member) => {
+        const currentBlock = editor.getBlock(blockId);
+        const updateMembers = selectedMembers.filter((v) => v.id !== member?.id);
         if (currentBlock) {
           editor.updateBlock({
             ...currentBlock,
@@ -225,21 +244,22 @@ export const Task = React.memo(
 
     const checked = attributes?.checked ?? false;
 
-    const datePickerPosition = { top: 0, left: 0 };
+    const modalPosition = { top: 0, left: 0 };
     const editorRef = editor.getEditorRef();
     const editorRect = editorRef?.getBoundingClientRect();
     if (scrollContainer) {
       const container = getHtmlElement(scrollContainer);
       const containerRect = container?.getBoundingClientRect();
       const blockRect = headerRef.current?.getBoundingClientRect();
-      datePickerPosition.top =
+      modalPosition.top =
         (container?.scrollTop ?? 0) - (containerRect?.top ?? 0) + (blockRect?.top ?? 0) - 60;
-      datePickerPosition.left = (editorRect?.left ?? 0) + (editorRect?.width ?? 0) - 400;
+      modalPosition.left =
+        (editorRect?.left ?? 0) - (containerRect?.left ?? 0) + (editorRect?.width ?? 0) - 400;
     } else {
       const scrollEl = document.scrollingElement as HTMLElement;
       const blockRect = headerRef.current?.getBoundingClientRect();
-      datePickerPosition.top = (scrollEl?.scrollTop ?? 0) + (blockRect?.top ?? 0) - 60;
-      datePickerPosition.left = (editorRect?.left ?? 0) + (editorRect?.width ?? 0) - 400;
+      modalPosition.top = (scrollEl?.scrollTop ?? 0) + (blockRect?.top ?? 0) - 60;
+      modalPosition.left = (editorRect?.left ?? 0) + (editorRect?.width ?? 0) - 400;
     }
 
     return (
@@ -334,8 +354,8 @@ export const Task = React.memo(
           <DatePicker
             editor={editor}
             scrollContainer={scrollContainer}
-            top={datePickerPosition.top}
-            left={datePickerPosition.left}
+            top={modalPosition.top}
+            left={modalPosition.left}
             selected={attributes?.deadline ? new Date(attributes.deadline) : undefined}
             onSelect={handleSelectDatePicker}
             onClose={handleCloseDatePicker}
@@ -345,10 +365,11 @@ export const Task = React.memo(
           <AssigneePicker
             editor={editor}
             scrollContainer={scrollContainer}
-            top={datePickerPosition.top}
-            left={datePickerPosition.left - 50}
+            top={modalPosition.top}
+            left={modalPosition.left + 70}
             selectedMembers={selectedMembers}
             onSelect={handleSelectAssigneePicker}
+            onRemove={handleRemoveAssigneePicker}
             onClose={handleCloseAssigneePicker}
           />
         )}

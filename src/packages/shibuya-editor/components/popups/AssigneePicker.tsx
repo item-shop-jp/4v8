@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { EditorController } from '../../types/editor';
 import { getHtmlElement } from '../../utils/dom';
 import { Member } from '../../modules';
+import { Close } from '../../components/icons';
 
 interface Props {
   editor: EditorController;
@@ -12,6 +13,7 @@ interface Props {
   left?: number;
   selectedMembers: Member[];
   onSelect?: (member: Member) => void;
+  onRemove?: (member: Member) => void;
   onClose?: () => void;
 }
 
@@ -22,7 +24,6 @@ const Wrapper = styled.div`
   width: 256px;
   max-height: 360px;
   transform: scale(0.7);
-  transform-origin: top right;
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0px 0px 5px #ddd;
@@ -43,10 +44,11 @@ const Search = styled.div`
     color: #fff;
     border: none;
     outline: none;
+    font-size: 16px;
   }
 `;
 
-const MemberInfo = styled.div`
+const MemberInfo = styled.div<{ selected: boolean }>`
   display: flex;
   align-items: center;
   flex-direction: row;
@@ -54,7 +56,8 @@ const MemberInfo = styled.div`
   height: 40px;
   font-size: 16px;
   color: #fff;
-  cursor: pointer;
+  cursor: ${({ selected }) => (selected ? 'auto' : 'pointer')};
+  background-color: ${({ selected }) => (selected ? '#2c2c31' : '#18181b')};
   &:hover {
     background-color: #2c2c31;
   }
@@ -70,7 +73,6 @@ const MemberIcon = styled.div`
   border-radius: 100%;
   background-color: #fff;
   margin-right: 8px;
-  cursor: auto;
   overflow: hidden;
   img {
     width: 100%;
@@ -90,6 +92,20 @@ const Text = styled.div`
   color: #000;
 `;
 
+const RemoveButton = styled.a`
+  width: 20px;
+  height: 20px;
+  background: #ffffff;
+  padding: 4px;
+  border-radius: 40px;
+  position: absolute;
+  right: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+`;
+
 export const AssigneePicker = React.memo(
   ({
     editor,
@@ -97,6 +113,7 @@ export const AssigneePicker = React.memo(
     selectedMembers,
     onSelect,
     onClose,
+    onRemove,
     top = 0,
     left = 0,
     ...props
@@ -128,6 +145,16 @@ export const AssigneePicker = React.memo(
         setSearchValue('');
       },
       [onSelect],
+    );
+
+    const handleRemove = React.useCallback(
+      (member: Member) => (event: React.MouseEvent<HTMLAnchorElement>) => {
+        event.preventDefault();
+        event.stopPropagation();
+        if (typeof onRemove !== 'function') return;
+        onRemove(member);
+      },
+      [onRemove],
     );
 
     React.useEffect(() => {
@@ -176,7 +203,7 @@ export const AssigneePicker = React.memo(
             <MemberInfo
               key={member.id}
               onClick={handleSelectMember(member)}
-              style={{ backgroundColor: member.selected ? '#2c2c31' : '#18181b' }}
+              selected={member.selected ?? false}
             >
               <MemberIcon>
                 {member?.imageUrl ? (
@@ -186,6 +213,11 @@ export const AssigneePicker = React.memo(
                 )}
               </MemberIcon>
               <div style={{ marginLeft: '8px' }}>{member.name}</div>
+              {member.selected && (
+                <RemoveButton href="#" onClick={handleRemove(member)}>
+                  <Close />
+                </RemoveButton>
+              )}
             </MemberInfo>
           );
         })}

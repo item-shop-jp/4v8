@@ -22,22 +22,26 @@ const Wrapper = styled.div`
   top: 24px;
   right: 0;
   width: 256px;
-  max-height: 360px;
+  max-height: 320px;
   transform: scale(0.7);
+  transform-origin: top right;
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0px 0px 5px #ddd;
   background-color: #18181b;
+  display: flex;
+  flex-direction: column;
 `;
 
 const Search = styled.div`
   width: 100%;
   height: 44px;
   box-sizing: border-box;
+  flex-grow: 1;
   border-bottom: 1px solid #a1a1aa;
   input {
     width: 100%;
-    height: 100%;
+    height: 44px;
     padding-left: 8px;
     box-sizing: border-box;
     background-color: #18181b;
@@ -48,6 +52,14 @@ const Search = styled.div`
   }
 `;
 
+const Members = styled.div`
+  width: 100%;
+  height: 100%;
+  flex-grow: 0;
+  overflow-x: hidden;
+  overflow-y: scroll;
+`;
+
 const MemberInfo = styled.div<{ selected: boolean }>`
   display: flex;
   align-items: center;
@@ -56,6 +68,7 @@ const MemberInfo = styled.div<{ selected: boolean }>`
   height: 40px;
   font-size: 16px;
   color: #fff;
+  position: relative;
   cursor: ${({ selected }) => (selected ? 'auto' : 'pointer')};
   background-color: ${({ selected }) => (selected ? '#2c2c31' : '#18181b')};
   &:hover {
@@ -126,7 +139,6 @@ export const AssigneePicker = React.memo(
       (event: React.ChangeEvent<HTMLInputElement>) => {
         event.preventDefault();
         event.stopPropagation();
-        console.log(event.target.value);
         setSearchValue(event.target.value);
       },
       [],
@@ -198,29 +210,31 @@ export const AssigneePicker = React.memo(
             onChange={handleChangeSearchValue}
           />
         </Search>
-        {memoMembers.map((member) => {
-          return (
-            <MemberInfo
-              key={member.id}
-              onClick={handleSelectMember(member)}
-              selected={member.selected ?? false}
-            >
-              <MemberIcon>
-                {member?.imageUrl ? (
-                  <img draggable="false" src={member?.imageUrl} />
-                ) : (
-                  <Text>{member.name.slice(0, 1)}</Text>
+        <Members>
+          {memoMembers.map((member) => {
+            return (
+              <MemberInfo
+                key={member.id}
+                onClick={handleSelectMember(member)}
+                selected={member.selected ?? false}
+              >
+                <MemberIcon>
+                  {member?.imageUrl ? (
+                    <img draggable="false" src={member?.imageUrl} />
+                  ) : (
+                    <Text>{member.name.slice(0, 1)}</Text>
+                  )}
+                </MemberIcon>
+                <div style={{ marginLeft: '8px' }}>{member.name}</div>
+                {member.selected && (
+                  <RemoveButton href="#" onClick={handleRemove(member)}>
+                    <Close />
+                  </RemoveButton>
                 )}
-              </MemberIcon>
-              <div style={{ marginLeft: '8px' }}>{member.name}</div>
-              {member.selected && (
-                <RemoveButton href="#" onClick={handleRemove(member)}>
-                  <Close />
-                </RemoveButton>
-              )}
-            </MemberInfo>
-          );
-        })}
+              </MemberInfo>
+            );
+          })}
+        </Members>
       </Wrapper>,
       getHtmlElement(scrollContainer) ?? document.body,
     );

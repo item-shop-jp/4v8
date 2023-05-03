@@ -79,9 +79,7 @@ const CheckBoxOuter = styled.div`
 const MemberIcon = styled.div`
   width: 20px;
   height: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  position: absolute;
   user-select: none;
   border-radius: 100%;
   box-shadow: 0px 1px 5px 0px;
@@ -96,7 +94,7 @@ const MemberIcon = styled.div`
 `;
 
 const Text = styled.div`
-  font-size: 14px;
+  font-size: 12px;
   width: 100%;
   height: 100%;
   display: flex;
@@ -284,13 +282,13 @@ export const Task = React.memo(
             {contents}
           </Container>
           <Buttons>
-            {attributes?.assignees ? (
+            {(attributes?.assignees ?? []).length > 0 ? (
               <Tooltip
                 targetElement={
                   <IconButton onClick={handleClickAssigneePicker}>
-                    {attributes.assignees.map((assignee: Member, i: number) => {
+                    {attributes.assignees.slice(0, 2).map((assignee: Member, i: number) => {
                       return (
-                        <MemberIcon key={assignee.id} style={{ marginRight: `${-8 * i}px` }}>
+                        <MemberIcon key={assignee.id} style={{ right: `${12 * i}px` }}>
                           {assignee.imageUrl ? (
                             <img draggable="false" src={assignee.imageUrl} />
                           ) : (
@@ -299,6 +297,11 @@ export const Task = React.memo(
                         </MemberIcon>
                       );
                     })}
+                    {attributes.assignees.length > 2 && (
+                      <MemberIcon style={{ right: `${12 * 2}px` }}>
+                        <Text>+{attributes.assignees.length - 2}</Text>
+                      </MemberIcon>
+                    )}
                   </IconButton>
                 }
                 maxWidth={200}

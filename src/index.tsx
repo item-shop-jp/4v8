@@ -84,11 +84,13 @@ export const Container: React.FC = React.memo(() => {
     if (!editorRef2.current) return;
     const subs: Subscription = new Subscription();
 
-    editorRef2.current.setBlocks(
-      JSON.parse(
-        '[{"id":"OodywE2HkiW1KeTBPCa96","contents":[{"id":"OYbvu_ZB9QppDCeIOSfbZ","attributes":{"bold": true},"text":"今日はいい天気ですね!!🤗","type":"TEXT","isEmbed":false}],"attributes":{},"type":"PARAGRAPH"},{"id":"zB28GJ_DWSjPfe_IGov5-","contents":[{"id":"lNkUDGfX2rsgZhzq_lZ3f","text":"﻿","type":"TEXT","attributes":{},"isEmbed":false}],"attributes":{},"type":"PARAGRAPH"}]',
-      ),
-    );
+    setTimeout(() => {
+      editorRef2.current?.setBlocks(
+        JSON.parse(
+          '[{"id":"OodywE2HkiW1KeTBPCa96","contents":[{"id":"OYbvu_ZB9QppDCeIOSfbZ","attributes":{"bold": true},"text":"今日はいい天気ですね!!🤗","type":"TEXT","isEmbed":false}],"attributes":{},"type":"PARAGRAPH"}]',
+        ),
+      );
+    }, 20);
 
     editorRef2.current.getModule('collaborator').setMembers([
       {

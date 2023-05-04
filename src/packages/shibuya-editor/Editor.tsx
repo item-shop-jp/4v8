@@ -316,17 +316,22 @@ export const Editor = React.memo(
             } else {
               editor.getModule('selector').changeAreaMoveDelay(50);
             }
+          }),
+        );
+        subs.add(
+          eventEmitter.select(EditorEvents.EVENT_EDITOR_HISTORY_PUSH).subscribe(() => {
             setTimeout(() => {
+              const changedBlocks = editor.getBlocks();
               if (
-                renderBlocks.length <= 1 &&
-                renderBlocks[0].type === 'PARAGRAPH' &&
-                (getBlockLength(renderBlocks[0].id) ?? 0) < 1
+                changedBlocks.length <= 1 &&
+                changedBlocks[0].type === 'PARAGRAPH' &&
+                (getBlockLength(changedBlocks[0].id) ?? 0) < 1
               ) {
                 setShowPlaceholder(true);
               } else {
                 setShowPlaceholder(false);
               }
-            });
+            }, 10);
           }),
         );
         subs.add(
@@ -394,7 +399,7 @@ export const Editor = React.memo(
             selected: selectedIds.includes(v.id),
           };
         });
-      }, [blocks.length, selectedIds]);
+      }, [blocks, selectedIds]);
 
       const memoEditor = React.useMemo(() => {
         return editor;

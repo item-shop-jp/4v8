@@ -31606,17 +31606,20 @@ const Editor = React__namespace.memo(React__namespace.forwardRef((_a, forwardRef
             else {
                 editor.getModule('selector').changeAreaMoveDelay(50);
             }
+        }));
+        subs.add(eventEmitter.select(EditorEvents.EVENT_EDITOR_HISTORY_PUSH).subscribe(() => {
             setTimeout(() => {
                 var _a;
-                if (renderBlocks.length <= 1 &&
-                    renderBlocks[0].type === 'PARAGRAPH' &&
-                    ((_a = getBlockLength(renderBlocks[0].id)) !== null && _a !== void 0 ? _a : 0) < 1) {
+                const changedBlocks = editor.getBlocks();
+                if (changedBlocks.length <= 1 &&
+                    changedBlocks[0].type === 'PARAGRAPH' &&
+                    ((_a = getBlockLength(changedBlocks[0].id)) !== null && _a !== void 0 ? _a : 0) < 1) {
                     setShowPlaceholder(true);
                 }
                 else {
                     setShowPlaceholder(false);
                 }
-            });
+            }, 10);
         }));
         subs.add(eventEmitter.select(EditorEvents.EVENT_BLOCK_SELECTED).subscribe((blockIds) => {
             setSelectedIds(blockIds);
@@ -31675,7 +31678,7 @@ const Editor = React__namespace.memo(React__namespace.forwardRef((_a, forwardRef
                 selected: selectedIds.includes(v.id),
             };
         });
-    }, [blocks.length, selectedIds]);
+    }, [blocks, selectedIds]);
     const memoEditor = React__namespace.useMemo(() => {
         return editor;
     }, []);

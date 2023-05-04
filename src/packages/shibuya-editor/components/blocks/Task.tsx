@@ -100,6 +100,7 @@ const Text = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  color: #000;
 `;
 
 export const Task = React.memo(

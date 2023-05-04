@@ -16,6 +16,7 @@ import { FlattenSimpleInterpolation } from 'styled-components';
 
 interface EditorProps {
   readOnly?: boolean;
+  placeholder?: string;
   formats?: { [key: string]: any };
   settings?: Partial<Settings>;
 }

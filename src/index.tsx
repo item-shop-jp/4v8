@@ -136,6 +136,7 @@ export const Container: React.FC = React.memo(() => {
           settings={{ ...settings, scrollContainer: '#scroll2' }}
           formats={formats}
           readOnly={false}
+          placeholder="ご自由にお書きください"
           ref={editorRef2}
         />
       </ScrollContainer>

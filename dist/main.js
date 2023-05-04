@@ -31411,7 +31411,6 @@ const Container = He.div `
   flex-direction: column;
   cursor: text;
   position: relative;
-
   deepl-inline-translate {
     display: none;
   }
@@ -31419,6 +31418,20 @@ const Container = He.div `
 const Inner = He.div `
   flex-shrink: 0;
   flex-grow: 0;
+  position: relative;
+  ${({ placeholder }) => {
+    return (placeholder &&
+        Ce `
+        ::after {
+          position: absolute;
+          top: 4px;
+          left: 12px;
+          pointer-events: none;
+          opacity: 0.3;
+          content: attr(placeholder);
+        }
+      `);
+}}
 `;
 const MarginBottom = He.div `
   flex-shrink: 0;
@@ -31434,7 +31447,7 @@ const Selector = He.div `
 `;
 const Editor = React__namespace.memo(React__namespace.forwardRef((_a, forwardRef) => {
     var _b, _c, _d, _e, _f, _g, _h;
-    var { readOnly = false, formats, settings = {} } = _a, props = __rest$1(_a, ["readOnly", "formats", "settings"]);
+    var { readOnly = false, placeholder = 'ご自由にお書きください', formats, settings = {} } = _a, props = __rest$1(_a, ["readOnly", "placeholder", "formats", "settings"]);
     const [eventEmitter, eventTool] = useEventEmitter();
     const [editorRef, editor] = useEditor({
         settings: {
@@ -31482,6 +31495,7 @@ const Editor = React__namespace.memo(React__namespace.forwardRef((_a, forwardRef
     });
     const [blocks, setBlocks] = React__namespace.useState([]);
     const [selectedIds, setSelectedIds] = React__namespace.useState([]);
+    const [showPlaceholder, setShowPlaceholder] = React__namespace.useState(false);
     const handleKeyDown = React__namespace.useCallback((event) => {
         const keyboard = editor.getModule('keyboard');
         if (keyboard && keyboard instanceof KeyBoardModule) {
@@ -31592,6 +31606,17 @@ const Editor = React__namespace.memo(React__namespace.forwardRef((_a, forwardRef
             else {
                 editor.getModule('selector').changeAreaMoveDelay(50);
             }
+            setTimeout(() => {
+                var _a;
+                if (renderBlocks.length <= 1 &&
+                    renderBlocks[0].type === 'PARAGRAPH' &&
+                    ((_a = getBlockLength(renderBlocks[0].id)) !== null && _a !== void 0 ? _a : 0) < 1) {
+                    setShowPlaceholder(true);
+                }
+                else {
+                    setShowPlaceholder(false);
+                }
+            });
         }));
         subs.add(eventEmitter.select(EditorEvents.EVENT_BLOCK_SELECTED).subscribe((blockIds) => {
             setSelectedIds(blockIds);
@@ -31668,7 +31693,7 @@ const Editor = React__namespace.memo(React__namespace.forwardRef((_a, forwardRef
     }, [blockFormats]);
     React__namespace.useImperativeHandle(forwardRef, () => editor, [editor]);
     const BlockItem = blockFormats['block/container'];
-    return (jsxRuntime.exports.jsxs(Container, Object.assign({ ref: containerRef }, props, { children: [jsxRuntime.exports.jsx(Inner, Object.assign({ ref: editorRef, onClick: handleClick, onKeyDown: handleKeyDown, onPaste: handlePaste, onCopy: handleCopy, onCut: handleCut, onDrop: handleDrop, onDrag: handleDrag, onDragOver: handleDragOver }, { children: memoBlocks.map((block, index) => {
+    return (jsxRuntime.exports.jsxs(Container, Object.assign({ ref: containerRef }, props, { children: [jsxRuntime.exports.jsx(Inner, Object.assign({ ref: editorRef, onClick: handleClick, onKeyDown: handleKeyDown, onPaste: handlePaste, onCopy: handleCopy, onCut: handleCut, onDrop: handleDrop, onDrag: handleDrag, onDragOver: handleDragOver, placeholder: showPlaceholder ? placeholder : '' }, { children: memoBlocks.map((block, index) => {
                     return (jsxRuntime.exports.jsx(BlockItem, { formats: blockFormats, editor: memoEditor, blockId: block.id, readOnly: readOnly, selected: block.selected, scrollContainer: settings.scrollContainer, onBeforeInput: handleInput, onCompositionStart: handleCompositionStart, onCompositionEnd: handleCompositionEnd }, block.id));
                 }) })), jsxRuntime.exports.jsx(MarginBottom, { onClick: handleContainerClick }), jsxRuntime.exports.jsx(MemoGlobalToolbar, { editor: memoEditor }), jsxRuntime.exports.jsx(MemoBubbleToolbar, { editor: memoEditor, scrollContainer: settings.scrollContainer }), jsxRuntime.exports.jsx(Collaborators, { editor: memoEditor }), jsxRuntime.exports.jsx(MemoLinkPopup, { editor: memoEditor, scrollContainer: settings.scrollContainer }), jsxRuntime.exports.jsx(MemoPalettePopup, { editor: memoEditor, scrollContainer: settings.scrollContainer }), jsxRuntime.exports.jsx(Selector, { contentEditable: true, className: "clipboard", onKeyDown: handleSelectorKeyDown, onBeforeInput: handleSelectorInput, onCopy: handleCopy, onCut: handleCut })] })));
 }));

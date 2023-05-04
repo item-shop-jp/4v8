@@ -1,5 +1,5 @@
 import * as React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { Subscription } from 'rxjs';
 import {
   BlockContainer,
@@ -35,7 +35,7 @@ import {
   DragDropModule,
   CollaboratorModule,
 } from './modules';
-import { getBlockElementById } from './utils/block';
+import { getBlockElementById, getBlockLength } from './utils/block';
 import { EditorEvents } from './constants';
 import { LinkPopup } from './components/popups';
 import { Formats, Block, Settings, EditorController } from './types';
@@ -44,6 +44,7 @@ import { PalettePopup } from './components/popups/PalettePopup';
 
 interface Props {
   readOnly?: boolean;
+  placeholder?: string;
   formats?: { [key: string]: any };
   settings?: Partial<Settings>;
 }
@@ -58,14 +59,29 @@ const Container = styled.div`
   flex-direction: column;
   cursor: text;
   position: relative;
-
   deepl-inline-translate {
     display: none;
   }
 `;
-const Inner = styled.div`
+const Inner = styled.div<{ placeholder: string }>`
   flex-shrink: 0;
   flex-grow: 0;
+  position: relative;
+  ${({ placeholder }) => {
+    return (
+      placeholder &&
+      css`
+        ::after {
+          position: absolute;
+          top: 4px;
+          left: 12px;
+          pointer-events: none;
+          opacity: 0.3;
+          content: attr(placeholder);
+        }
+      `
+    );
+  }}
 `;
 const MarginBottom = styled.div`
   flex-shrink: 0;
@@ -82,7 +98,16 @@ const Selector = styled.div`
 
 export const Editor = React.memo(
   React.forwardRef<EditorController, Props>(
-    ({ readOnly = false, formats, settings = {}, ...props }: Props, forwardRef) => {
+    (
+      {
+        readOnly = false,
+        placeholder = 'ご自由にお書きください',
+        formats,
+        settings = {},
+        ...props
+      }: Props,
+      forwardRef,
+    ) => {
       const [eventEmitter, eventTool] = useEventEmitter();
       const [editorRef, editor] = useEditor({
         settings: {
@@ -130,6 +155,7 @@ export const Editor = React.memo(
       });
       const [blocks, setBlocks] = React.useState<Block[]>([]);
       const [selectedIds, setSelectedIds] = React.useState<string[]>([]);
+      const [showPlaceholder, setShowPlaceholder] = React.useState(false);
 
       const handleKeyDown = React.useCallback(
         (event: React.KeyboardEvent) => {
@@ -290,6 +316,17 @@ export const Editor = React.memo(
             } else {
               editor.getModule('selector').changeAreaMoveDelay(50);
             }
+            setTimeout(() => {
+              if (
+                renderBlocks.length <= 1 &&
+                renderBlocks[0].type === 'PARAGRAPH' &&
+                (getBlockLength(renderBlocks[0].id) ?? 0) < 1
+              ) {
+                setShowPlaceholder(true);
+              } else {
+                setShowPlaceholder(false);
+              }
+            });
           }),
         );
         subs.add(
@@ -382,7 +419,6 @@ export const Editor = React.memo(
       React.useImperativeHandle(forwardRef, () => editor, [editor]);
 
       const BlockItem = blockFormats['block/container'];
-
       return (
         <Container ref={containerRef} {...props}>
           <Inner
@@ -395,6 +431,7 @@ export const Editor = React.memo(
             onDrop={handleDrop}
             onDrag={handleDrag}
             onDragOver={handleDragOver}
+            placeholder={showPlaceholder ? placeholder : ''}
           >
             {memoBlocks.map((block, index) => {
               return (

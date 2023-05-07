@@ -17,6 +17,7 @@ import {
   FormatTask,
 } from '../icons';
 import { BlockType } from '../../types';
+import { Tooltip } from '../popups';
 
 export interface GlobalToolbarProps {
   editor: EditorController;
@@ -59,87 +60,99 @@ const Divider = styled.div`
 export const GlobalToolbar = React.memo(({ editor, ...props }: GlobalToolbarProps) => {
   const [formats, setFormats] = React.useState<InlineAttributes>({});
   const [blockType, setBlockType] = React.useState<BlockType>();
-
   const [isDisplay, setDisplay] = React.useState(false);
+
+  const formatBlock = React.useCallback(
+    (type: BlockType) => {
+      editor.getModule('toolbar').setUpdating(true);
+      editor.getModule('toolbar').formatBlock(blockType !== type ? type : 'PARAGRAPH');
+      setTimeout(() => {
+        editor.getModule('toolbar').setUpdating(false);
+      }, 100);
+    },
+    [formats, blockType],
+  );
 
   const handleHeader1 = React.useCallback(
     (event: React.MouseEvent) => {
       event.preventDefault();
-      editor.getModule('toolbar').formatBlock('HEADER1');
+      formatBlock('HEADER1');
     },
-    [formats],
+    [formats, blockType],
   );
   const handleHeader2 = React.useCallback(
     (event: React.MouseEvent) => {
       event.preventDefault();
-      editor.getModule('toolbar').formatBlock('HEADER2');
+      formatBlock('HEADER2');
     },
-    [formats],
+    [formats, blockType],
   );
   const handleHeader3 = React.useCallback(
     (event: React.MouseEvent) => {
       event.preventDefault();
-      editor.getModule('toolbar').formatBlock('HEADER3');
+      formatBlock('HEADER3');
     },
-    [formats],
+    [formats, blockType],
   );
 
   const handleCodeBlock = React.useCallback(
     (event: React.MouseEvent) => {
       event.preventDefault();
-      editor.getModule('toolbar').formatBlock('CODE-BLOCK');
+      formatBlock('CODE-BLOCK');
     },
-    [formats],
+    [formats, blockType],
   );
 
   const handleDecision = React.useCallback(
     (event: React.MouseEvent) => {
       event.preventDefault();
-      editor.getModule('toolbar').formatBlock('DECISION');
+      formatBlock('DECISION');
     },
-    [formats],
+    [formats, blockType],
   );
 
   const handleTask = React.useCallback(
     (event: React.MouseEvent) => {
       event.preventDefault();
-      editor.getModule('toolbar').formatBlock('TASK');
+      formatBlock('TASK');
     },
-    [formats],
+    [formats, blockType],
   );
 
   const handleBlockquote = React.useCallback(
     (event: React.MouseEvent) => {
       event.preventDefault();
-      editor.getModule('toolbar').formatBlock('BLOCKQUOTE');
+      formatBlock('BLOCKQUOTE');
     },
-    [formats],
+    [formats, blockType],
   );
 
   const handleOrderedList = React.useCallback(
     (event: React.MouseEvent) => {
       event.preventDefault();
-      editor.getModule('toolbar').formatBlock('ORDERED-LIST');
+      formatBlock('ORDERED-LIST');
     },
-    [formats],
+    [formats, blockType],
   );
 
   const handleBulletList = React.useCallback(
     (event: React.MouseEvent) => {
       event.preventDefault();
-      editor.getModule('toolbar').formatBlock('BULLET-LIST');
+      formatBlock('BULLET-LIST');
     },
-    [formats],
+    [formats, blockType],
   );
 
   React.useEffect(() => {
     const subs = new Subscription();
     const eventEmitter = editor.getEventEmitter();
+
     subs.add(
       eventEmitter
         .select(EditorEvents.EVENT_SELECTION_CHANGE)
         .pipe(combineLatestWith(eventEmitter.select(EditorEvents.EVENT_BLOCK_SELECTED)))
         .subscribe((v) => {
+          if (editor.getModule('toolbar').getUpdating()) return;
           const caret = editor.getCaretPosition();
           if (!caret || !editor.hasFocus()) {
             if (editor.getModule('selector').getSelectedBlocks().length > 0) return;
@@ -160,36 +173,112 @@ export const GlobalToolbar = React.memo(({ editor, ...props }: GlobalToolbarProp
     <>
       {isDisplay && (
         <Container {...props}>
-          <Button href="#" onClick={handleHeader1} active={blockType === 'HEADER1'}>
-            <FormatHeader1 size="20" />
-          </Button>
-          <Button href="#" onClick={handleHeader2} active={blockType === 'HEADER2'}>
-            <FormatHeader2 size="20" />
-          </Button>
-          <Button href="#" onClick={handleHeader3} active={blockType === 'HEADER3'}>
-            <FormatHeader3 size="20" />
-          </Button>
+          <Tooltip
+            targetElement={
+              <Button href="#" onClick={handleHeader1} active={blockType === 'HEADER1'}>
+                <FormatHeader1 size="20" />
+              </Button>
+            }
+            maxWidth={200}
+            position={'top'}
+          >
+            見出し(大)に切り替える
+          </Tooltip>
+          <Tooltip
+            targetElement={
+              <Button href="#" onClick={handleHeader2} active={blockType === 'HEADER2'}>
+                <FormatHeader2 size="20" />
+              </Button>
+            }
+            maxWidth={200}
+            position={'top'}
+          >
+            見出し(中)に切り替える
+          </Tooltip>
+          <Tooltip
+            targetElement={
+              <Button href="#" onClick={handleHeader3} active={blockType === 'HEADER3'}>
+                <FormatHeader3 size="20" />
+              </Button>
+            }
+            maxWidth={200}
+            position={'top'}
+          >
+            見出し(小)に切り替える
+          </Tooltip>
+
           <Divider />
-          <Button href="#" active={blockType === 'CODE-BLOCK'} onClick={handleCodeBlock}>
-            <FormatCodeBlock size="20" />
-          </Button>
-          <Button href="#" active={blockType === 'BLOCKQUOTE'} onClick={handleBlockquote}>
-            <FormatBlockQuote size="20" />
-          </Button>
+          <Tooltip
+            targetElement={
+              <Button href="#" active={blockType === 'CODE-BLOCK'} onClick={handleCodeBlock}>
+                <FormatCodeBlock size="20" />
+              </Button>
+            }
+            maxWidth={200}
+            position={'top'}
+          >
+            コードブロックに切り替える
+          </Tooltip>
+          <Tooltip
+            targetElement={
+              <Button href="#" active={blockType === 'BLOCKQUOTE'} onClick={handleBlockquote}>
+                <FormatBlockQuote size="20" />
+              </Button>
+            }
+            maxWidth={200}
+            position={'top'}
+          >
+            引用ブロックに切り替える
+          </Tooltip>
+
           <Divider />
-          <Button href="#" active={blockType === 'ORDERED-LIST'} onClick={handleOrderedList}>
-            <FormatNumberList size="20" />
-          </Button>
-          <Button href="#" active={blockType === 'BULLET-LIST'} onClick={handleBulletList}>
-            <FormatBulletList size="20" />
-          </Button>
+          <Tooltip
+            targetElement={
+              <Button href="#" active={blockType === 'BULLET-LIST'} onClick={handleBulletList}>
+                <FormatBulletList size="20" />
+              </Button>
+            }
+            maxWidth={200}
+            position={'top'}
+          >
+            箇条書きに切り替える
+          </Tooltip>
+          <Tooltip
+            targetElement={
+              <Button href="#" active={blockType === 'ORDERED-LIST'} onClick={handleOrderedList}>
+                <FormatNumberList size="20" />
+              </Button>
+            }
+            maxWidth={200}
+            position={'top'}
+          >
+            番号付きリストに切り替える
+          </Tooltip>
+
           <Divider />
-          <Button href="#" active={blockType === 'TASK'} onClick={handleTask}>
-            <FormatTask size="20" />
-          </Button>
-          <Button href="#" active={blockType === 'DECISION'} onClick={handleDecision}>
-            <FormatDecision size="20" />
-          </Button>
+
+          <Tooltip
+            targetElement={
+              <Button href="#" active={blockType === 'TASK'} onClick={handleTask}>
+                <FormatTask size="20" />
+              </Button>
+            }
+            maxWidth={200}
+            position={'top'}
+          >
+            タスクに切り替える
+          </Tooltip>
+          <Tooltip
+            targetElement={
+              <Button href="#" active={blockType === 'DECISION'} onClick={handleDecision}>
+                <FormatDecision size="20" />
+              </Button>
+            }
+            maxWidth={200}
+            position={'top'}
+          >
+            決定事項に切り替える
+          </Tooltip>
         </Container>
       )}
     </>,

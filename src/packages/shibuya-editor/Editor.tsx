@@ -282,7 +282,7 @@ export const Editor = React.memo(
             index: editor.getBlockLength(lastBlock.id) ?? 0,
           });
         },
-        [blocks.length],
+        [blocks],
       );
 
       React.useEffect(() => {

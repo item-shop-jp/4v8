@@ -77,22 +77,14 @@ export const PalettePopup = React.memo(({ editor, scrollContainer }: PalettePopu
         }
         setPopupOpen(true);
         const container = getHtmlElement(scrollContainer);
-        const bubbleToolbarRect = document
-          .getElementById('bubble-toolbar')
-          ?.getBoundingClientRect();
         const paletteToolbarRect = document
           .getElementById('toolbar-palette')
           ?.getBoundingClientRect();
         if (container) {
           const containerRect = container.getBoundingClientRect();
           const top = (container?.scrollTop ?? 0) + caret.rect.top - containerRect.top + 4;
-          if (paletteToolbarRect && bubbleToolbarRect) {
-            const left =
-              caret.rect.left -
-              containerRect.left +
-              (paletteToolbarRect.left - bubbleToolbarRect.left) -
-              (104 - paletteToolbarRect.width) / 2; // ContainerはInputの幅
-
+          if (paletteToolbarRect) {
+            const left = paletteToolbarRect.left - containerRect.left;
             setPosition({
               top,
               left,

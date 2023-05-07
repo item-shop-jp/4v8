@@ -42,6 +42,8 @@ interface ButtonProps {
   active: boolean;
 }
 
+const TOOLBAR_CHILD_WIDTH = 34;
+
 const Container = styled.div<ContainerProps>`
   height: 34px;
   align-items: center;
@@ -76,6 +78,7 @@ export const BubbleToolbar = React.memo(
     const [blockType, setBlockType] = React.useState<BlockType>();
     const [isDisplay, setDisplay] = React.useState<boolean>(false);
     const [currentCaretPosition, setCurrentCaretPosition] = React.useState<CaretPosition | null>();
+    const [toolbarWidth, setToolbarWidth] = React.useState(0);
     const containerRef = React.useRef<HTMLDivElement>(null);
 
     const handleBold = React.useCallback(
@@ -176,11 +179,6 @@ export const BubbleToolbar = React.memo(
         eventEmitter.emit(EditorEvents.EVENT_PALETTE_CLICK, {
           caretPosition: currentCaretPosition,
         });
-        // if (formats?.color) {
-        //   editor.getModule('toolbar').formatInline({ color: false });
-        // } else {
-        //   editor.getModule('toolbar').formatInline({ color: 'red' });
-        // }
       },
       [formats, currentCaretPosition],
     );
@@ -198,13 +196,13 @@ export const BubbleToolbar = React.memo(
         const container = getHtmlElement(scrollContainer);
         if (container) {
           const containerRect = container.getBoundingClientRect();
-          const top = (container?.scrollTop ?? 0) + caret.rect.top - containerRect.top - 4;
-          const left = caret.rect.left - containerRect.left;
+          const top = (container?.scrollTop ?? 0) + caret.rect.top - containerRect.top - 4; // ブロックとツールバーの隙間をあける
+          const left = caret.rect.left - containerRect.left - toolbarWidth / 2;
           setPosition({ top, left });
         } else {
           const scrollEl = document.scrollingElement as HTMLElement;
           const top = scrollEl.scrollTop + caret.rect.top - 4;
-          const left = caret.rect.left;
+          const left = caret.rect.left - toolbarWidth / 2;
           setPosition({ top, left });
         }
       };
@@ -230,9 +228,7 @@ export const BubbleToolbar = React.memo(
             setDisplay(false);
             return;
           }
-
           updatePosition(caret);
-
           setDisplay(!caret.collapsed);
           setFormats(editor.getFormats(caret.blockId, caret.index, caret.length));
           setBlockType(editor.getBlock(caret.blockId)?.type);
@@ -253,12 +249,13 @@ export const BubbleToolbar = React.memo(
       return () => {
         subs.unsubscribe();
       };
-    }, [editor, scrollContainer]);
+    }, [editor, scrollContainer, toolbarWidth]);
 
     React.useEffect(() => {
       setTimeout(() => {
         if (!containerRef.current) return;
         editor.getModule('toolbar').setBubbleToolbarRef(containerRef.current);
+        setToolbarWidth((containerRef.current.children.length - 1) * TOOLBAR_CHILD_WIDTH);
       });
     }, [editor]);
 

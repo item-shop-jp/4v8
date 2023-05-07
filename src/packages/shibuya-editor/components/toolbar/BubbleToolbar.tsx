@@ -75,7 +75,6 @@ export const BubbleToolbar = React.memo(
   ({ editor, scrollContainer, ...props }: BubbleToolbarProps) => {
     const [formats, setFormats] = React.useState<InlineAttributes>({});
     const [position, setPosition] = React.useState<ToolbarPosition>();
-    const [blockType, setBlockType] = React.useState<BlockType>();
     const [isDisplay, setDisplay] = React.useState<boolean>(false);
     const [currentCaretPosition, setCurrentCaretPosition] = React.useState<CaretPosition | null>();
     const [toolbarWidth, setToolbarWidth] = React.useState(0);
@@ -193,7 +192,6 @@ export const BubbleToolbar = React.memo(
           updatePosition(caret);
           setDisplay(!caret.collapsed);
           setFormats(editor.getFormats(caret.blockId, caret.index, caret.length));
-          setBlockType(editor.getBlock(caret.blockId)?.type);
         }),
       );
 

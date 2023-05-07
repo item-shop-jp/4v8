@@ -5,9 +5,25 @@ import { Subscription, pipe, combineLatestWith } from 'rxjs';
 import { EditorEvents } from '../../constants';
 import { EditorController } from '../../types/editor';
 import { InlineAttributes } from '../../types/inline';
+import {
+  FormatBlockQuote,
+  FormatBulletList,
+  FormatCodeBlock,
+  FormatDecision,
+  FormatHeader1,
+  FormatHeader2,
+  FormatHeader3,
+  FormatNumberList,
+  FormatTask,
+} from '../icons';
+import { BlockType } from '../../types';
 
 export interface GlobalToolbarProps {
   editor: EditorController;
+}
+
+interface ButtonProps {
+  active: boolean;
 }
 
 const Container = styled.div`
@@ -15,19 +31,58 @@ const Container = styled.div`
   bottom: 12px;
   left: 50%;
   transform: translate(-50%, -50%);
-  padding: 8px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  position: absolute;
+  background-color: #18181b;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  z-index: 1;
 `;
 
-const Button = styled.a`
-  margin: 8px;
-  border: 1px solid #666;
-  border-radius: 4px;
-  padding: 4px;
+const Button = styled.a<ButtonProps>`
+  display: flex;
+  padding: 7px;
+  ${({ active }) => active && 'background: rgba(255, 255, 255, 0.15)'};
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.4);
+  }
+`;
+
+const Divider = styled.div`
+  width: 1px;
+  height: 100%;
+  background: #fff;
+  opacity: 0.2;
 `;
 
 export const GlobalToolbar = React.memo(({ editor, ...props }: GlobalToolbarProps) => {
   const [formats, setFormats] = React.useState<InlineAttributes>({});
+  const [blockType, setBlockType] = React.useState<BlockType>();
+
   const [isDisplay, setDisplay] = React.useState(false);
+
+  const handleHeader1 = React.useCallback(
+    (event: React.MouseEvent) => {
+      event.preventDefault();
+      editor.getModule('toolbar').formatBlock('HEADER1');
+    },
+    [formats],
+  );
+  const handleHeader2 = React.useCallback(
+    (event: React.MouseEvent) => {
+      event.preventDefault();
+      editor.getModule('toolbar').formatBlock('HEADER2');
+    },
+    [formats],
+  );
+  const handleHeader3 = React.useCallback(
+    (event: React.MouseEvent) => {
+      event.preventDefault();
+      editor.getModule('toolbar').formatBlock('HEADER3');
+    },
+    [formats],
+  );
 
   const handleCodeBlock = React.useCallback(
     (event: React.MouseEvent) => {
@@ -93,6 +148,7 @@ export const GlobalToolbar = React.memo(({ editor, ...props }: GlobalToolbarProp
           }
           setDisplay(true);
           setFormats(editor.getFormats(caret.blockId, caret.index, caret.length));
+          setBlockType(editor.getBlock(caret.blockId)?.type);
         }),
     );
     return () => {
@@ -104,23 +160,35 @@ export const GlobalToolbar = React.memo(({ editor, ...props }: GlobalToolbarProp
     <>
       {isDisplay && (
         <Container {...props}>
-          <Button href="#" onClick={handleTask}>
-            タスク
+          <Button href="#" onClick={handleHeader1} active={blockType === 'HEADER1'}>
+            <FormatHeader1 size="20" />
           </Button>
-          <Button href="#" onClick={handleDecision}>
-            決定事項
+          <Button href="#" onClick={handleHeader2} active={blockType === 'HEADER2'}>
+            <FormatHeader2 size="20" />
           </Button>
-          <Button href="#" onClick={handleCodeBlock}>
-            CodeBlock
+          <Button href="#" onClick={handleHeader3} active={blockType === 'HEADER3'}>
+            <FormatHeader3 size="20" />
           </Button>
-          <Button href="#" onClick={handleBlockquote}>
-            引用
+          <Divider />
+          <Button href="#" active={blockType === 'CODE-BLOCK'} onClick={handleCodeBlock}>
+            <FormatCodeBlock size="20" />
           </Button>
-          <Button href="#" onClick={handleOrderedList}>
-            番号リスト
+          <Button href="#" active={blockType === 'BLOCKQUOTE'} onClick={handleBlockquote}>
+            <FormatBlockQuote size="20" />
           </Button>
-          <Button href="#" onClick={handleBulletList}>
-            リスト
+          <Divider />
+          <Button href="#" active={blockType === 'ORDERED-LIST'} onClick={handleOrderedList}>
+            <FormatNumberList size="20" />
+          </Button>
+          <Button href="#" active={blockType === 'BULLET-LIST'} onClick={handleBulletList}>
+            <FormatBulletList size="20" />
+          </Button>
+          <Divider />
+          <Button href="#" active={blockType === 'TASK'} onClick={handleTask}>
+            <FormatTask size="20" />
+          </Button>
+          <Button href="#" active={blockType === 'DECISION'} onClick={handleDecision}>
+            <FormatDecision size="20" />
           </Button>
         </Container>
       )}

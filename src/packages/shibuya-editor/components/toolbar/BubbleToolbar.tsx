@@ -134,44 +134,6 @@ export const BubbleToolbar = React.memo(
       [formats],
     );
 
-    const handleHeader1 = React.useCallback(
-      (event: React.MouseEvent) => {
-        event.preventDefault();
-        editor.getModule('toolbar').formatBlock('HEADER1');
-      },
-      [formats],
-    );
-    const handleHeader2 = React.useCallback(
-      (event: React.MouseEvent) => {
-        event.preventDefault();
-        editor.getModule('toolbar').formatBlock('HEADER2');
-      },
-      [formats],
-    );
-    const handleHeader3 = React.useCallback(
-      (event: React.MouseEvent) => {
-        event.preventDefault();
-        editor.getModule('toolbar').formatBlock('HEADER3');
-      },
-      [formats],
-    );
-
-    const handleOrderedList = React.useCallback(
-      (event: React.MouseEvent) => {
-        event.preventDefault();
-        editor.getModule('toolbar').formatBlock('ORDERED-LIST');
-      },
-      [formats],
-    );
-
-    const handleBulletList = React.useCallback(
-      (event: React.MouseEvent) => {
-        event.preventDefault();
-        editor.getModule('toolbar').formatBlock('BULLET-LIST');
-      },
-      [formats],
-    );
-
     const handleColor = React.useCallback(
       (event: React.MouseEvent) => {
         event.preventDefault();
@@ -272,7 +234,6 @@ export const BubbleToolbar = React.memo(
           onMouseDown={handleMouseDown}
           {...props}
         >
-          {/* <Button href="#" onClick={handleHeader1} active={blockType === 'HEADER1'}></Button> */}
           <Button href="#" onClick={handleBold} active={!!formats?.bold}>
             <FormatBold size="20" />
           </Button>
@@ -285,30 +246,15 @@ export const BubbleToolbar = React.memo(
           <Button href="#" onClick={handleStrike} active={!!formats?.strike}>
             <FormatStrike size="20" />
           </Button>
-          <Button href="#" onClick={handleInlineCode} active={!!formats?.code}>
-            <FormatCode size="20" />
-          </Button>
+
           <Button id="toolbar-palette" href="#" onClick={handleColor} active={!!formats?.color}>
             <FormatColor size="20" />
           </Button>
           <Button id="toolbar-link" href="#" onClick={handleLink} active={!!formats?.link}>
             <FormatLink size="20" />
           </Button>
-          <Divider />
-          <Button href="#" onClick={handleHeader1} active={blockType === 'HEADER1'}>
-            <FormatHeader1 size="20" />
-          </Button>
-          <Button href="#" onClick={handleHeader2} active={blockType === 'HEADER2'}>
-            <FormatHeader2 size="20" />
-          </Button>
-          <Button href="#" onClick={handleHeader3} active={blockType === 'HEADER3'}>
-            <FormatHeader3 size="20" />
-          </Button>
-          <Button href="#" onClick={handleBulletList} active={blockType === 'BULLET-LIST'}>
-            <FormatBulletList size="20" />
-          </Button>
-          <Button href="#" onClick={handleOrderedList} active={blockType === 'ORDERED-LIST'}>
-            <FormatNumberList size="20" />
+          <Button href="#" onClick={handleInlineCode} active={!!formats?.code}>
+            <FormatCode size="20" />
           </Button>
         </Container>
       </>,

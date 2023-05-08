@@ -208,6 +208,10 @@ export const Task = React.memo(
       handleChangeElement();
     }, []);
 
+    React.useEffect(() => {
+      setSelectedMembers(attributes.assignees);
+    }, [attributes.assignees]);
+
     const handleClickCheckBox = React.useCallback(
       (e: React.MouseEvent) => {
         e.preventDefault();

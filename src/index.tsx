@@ -87,7 +87,7 @@ export const Container: React.FC = React.memo(() => {
     setTimeout(() => {
       editorRef2.current?.setBlocks(
         JSON.parse(
-          '[{"id":"OodywE2HkiW1KeTBPCa96","contents":[{"id":"OYbvu_ZB9QppDCeIOSfbZ","attributes":{"bold": true},"text":"今日はいい天気ですね!!🤗","type":"TEXT","isEmbed":false}],"attributes":{},"type":"PARAGRAPH"}]',
+          '[{"id":"OodywE2HkiW1KeTBPCa96","contents":[{"id":"OYbvu_ZB9QppDCeIOSfbZ","attributes":{"bold":true},"text":"今日はいい天気ですね!!🤗","type":"TEXT","isEmbed":false}],"attributes":{"assignees":[{"id":"aaa2","name":"笹川裕也","selected":false},{"id":"aaa1","name":"田中 健太郎","imageUrl":"https://lh3.googleusercontent.com/a-/AAuE7mDqNcnkUNpr7-X6WOAp4QaSI399ToQaP38tSD5x=s100","selected":false}]},"type":"TASK","meta":{"listNumber":0}}]',
         ),
       );
     }, 20);
@@ -118,7 +118,7 @@ export const Container: React.FC = React.memo(() => {
       eventEmitter.select(EditorEvents.EVENT_EDITOR_CHANGED).subscribe((payload) => {
         payload.forEach((v: any) => {
           const block = editorRef2.current?.getBlock(v.blockId);
-          // console.log(JSON.stringify(block?.contents));
+          console.log(JSON.stringify(block));
         });
       }),
     );

@@ -20140,6 +20140,9 @@ const Task = React__namespace.memo((_a) => {
     React__namespace.useEffect(() => {
         handleChangeElement();
     }, []);
+    React__namespace.useEffect(() => {
+        setSelectedMembers(attributes.assignees);
+    }, [attributes.assignees]);
     const handleClickCheckBox = React__namespace.useCallback((e) => {
         e.preventDefault();
         e.stopPropagation();

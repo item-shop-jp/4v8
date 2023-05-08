@@ -7,7 +7,7 @@ import { EditorController } from '../../types/editor';
 import { InlineAttributes } from '../../types/inline';
 import { BlockType } from '../../types/block';
 import { getHtmlElement } from '../../utils/dom';
-import { LinkPopup } from '../popups';
+import { LinkPopup, Tooltip } from '../popups';
 import { CaretPosition } from '../../types/caret';
 import {
   FormatBold,
@@ -83,7 +83,11 @@ export const BubbleToolbar = React.memo(
     const handleBold = React.useCallback(
       (event: React.MouseEvent) => {
         event.preventDefault();
+        editor.getModule('toolbar').setUpdating(true);
         editor.getModule('toolbar').formatInline({ bold: !formats?.bold });
+        setTimeout(() => {
+          editor.getModule('toolbar').setUpdating(false);
+        }, 100);
       },
       [formats],
     );
@@ -91,7 +95,11 @@ export const BubbleToolbar = React.memo(
     const handleItalic = React.useCallback(
       (event: React.MouseEvent) => {
         event.preventDefault();
+        editor.getModule('toolbar').setUpdating(true);
         editor.getModule('toolbar').formatInline({ italic: !formats?.italic });
+        setTimeout(() => {
+          editor.getModule('toolbar').setUpdating(false);
+        }, 100);
       },
       [formats],
     );
@@ -99,7 +107,11 @@ export const BubbleToolbar = React.memo(
     const handleUnderline = React.useCallback(
       (event: React.MouseEvent) => {
         event.preventDefault();
+        editor.getModule('toolbar').setUpdating(true);
         editor.getModule('toolbar').formatInline({ underline: !formats?.underline });
+        setTimeout(() => {
+          editor.getModule('toolbar').setUpdating(false);
+        }, 100);
       },
       [formats],
     );
@@ -107,7 +119,11 @@ export const BubbleToolbar = React.memo(
     const handleStrike = React.useCallback(
       (event: React.MouseEvent) => {
         event.preventDefault();
+        editor.getModule('toolbar').setUpdating(true);
         editor.getModule('toolbar').formatInline({ strike: !formats?.strike });
+        setTimeout(() => {
+          editor.getModule('toolbar').setUpdating(false);
+        }, 100);
       },
       [formats],
     );
@@ -128,7 +144,11 @@ export const BubbleToolbar = React.memo(
     const handleInlineCode = React.useCallback(
       (event: React.MouseEvent) => {
         event.preventDefault();
+        editor.getModule('toolbar').setUpdating(true);
         editor.getModule('toolbar').formatInline({ code: !formats?.code });
+        setTimeout(() => {
+          editor.getModule('toolbar').setUpdating(false);
+        }, 100);
       },
       [formats],
     );
@@ -170,6 +190,7 @@ export const BubbleToolbar = React.memo(
 
       subs.add(
         eventEmitter.select(EditorEvents.EVENT_SELECTION_CHANGE).subscribe((v) => {
+          if (editor.getModule('toolbar').getUpdating()) return;
           const caret = editor.getCaretPosition();
           if (!caret) {
             setPosition(undefined);
@@ -197,6 +218,7 @@ export const BubbleToolbar = React.memo(
 
       subs.add(
         eventEmitter.select<string[]>(EditorEvents.EVENT_BLOCK_RERENDER).subscribe(() => {
+          if (editor.getModule('toolbar')?.getUpdating()) return;
           setDisplay(false);
           setTimeout(() => {
             const caret = editor.getCaretPosition();
@@ -232,28 +254,89 @@ export const BubbleToolbar = React.memo(
           onMouseDown={handleMouseDown}
           {...props}
         >
-          <Button href="#" onClick={handleBold} active={!!formats?.bold}>
-            <FormatBold size="20" />
-          </Button>
-          <Button href="#" onClick={handleItalic} active={!!formats?.italic}>
-            <FormatItalic size="20" />
-          </Button>
-          <Button href="#" onClick={handleUnderline} active={!!formats?.underline}>
-            <FormatUnderLine size="20" />
-          </Button>
-          <Button href="#" onClick={handleStrike} active={!!formats?.strike}>
-            <FormatStrike size="20" />
-          </Button>
-
-          <Button id="toolbar-palette" href="#" onClick={handleColor} active={!!formats?.color}>
-            <FormatColor size="20" />
-          </Button>
-          <Button id="toolbar-link" href="#" onClick={handleLink} active={!!formats?.link}>
-            <FormatLink size="20" />
-          </Button>
-          <Button href="#" onClick={handleInlineCode} active={!!formats?.code}>
-            <FormatCode size="20" />
-          </Button>
+          <Tooltip
+            targetElement={
+              <Button href="#" onClick={handleBold} active={!!formats?.bold}>
+                <FormatBold size="20" />
+              </Button>
+            }
+            maxWidth={200}
+            position={'top'}
+          >
+            太字
+            <br />
+            <div className="description">Ctrl + B</div>
+          </Tooltip>
+          <Tooltip
+            targetElement={
+              <Button href="#" onClick={handleItalic} active={!!formats?.italic}>
+                <FormatItalic size="20" />
+              </Button>
+            }
+            maxWidth={200}
+            position={'top'}
+          >
+            斜体
+            <br />
+            <div className="description">Ctrl + I</div>
+          </Tooltip>
+          <Tooltip
+            targetElement={
+              <Button href="#" onClick={handleUnderline} active={!!formats?.underline}>
+                <FormatUnderLine size="20" />
+              </Button>
+            }
+            maxWidth={200}
+            position={'top'}
+          >
+            下線
+            <br />
+            <div className="description">Ctrl + U</div>
+          </Tooltip>
+          <Tooltip
+            targetElement={
+              <Button href="#" onClick={handleStrike} active={!!formats?.strike}>
+                <FormatStrike size="20" />
+              </Button>
+            }
+            maxWidth={200}
+            position={'top'}
+          >
+            打消し線
+          </Tooltip>
+          <Tooltip
+            targetElement={
+              <Button id="toolbar-palette" href="#" onClick={handleColor} active={!!formats?.color}>
+                <FormatColor size="20" />
+              </Button>
+            }
+            maxWidth={200}
+            position={'top'}
+          >
+            文字色を変更
+          </Tooltip>
+          <Tooltip
+            targetElement={
+              <Button id="toolbar-link" href="#" onClick={handleLink} active={!!formats?.link}>
+                <FormatLink size="20" />
+              </Button>
+            }
+            maxWidth={200}
+            position={'top'}
+          >
+            リンクを追加
+          </Tooltip>
+          <Tooltip
+            targetElement={
+              <Button href="#" onClick={handleInlineCode} active={!!formats?.code}>
+                <FormatCode size="20" />
+              </Button>
+            }
+            maxWidth={200}
+            position={'top'}
+          >
+            インラインコード
+          </Tooltip>
         </Container>
       </>,
       getHtmlElement(scrollContainer) ?? document.body,

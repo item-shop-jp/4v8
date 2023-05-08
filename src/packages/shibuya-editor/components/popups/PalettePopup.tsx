@@ -54,6 +54,7 @@ export const PalettePopup = React.memo(({ editor, scrollContainer }: PalettePopu
   const handleFormatColor = React.useCallback(
     (color: string) => (e: React.MouseEvent) => {
       e.preventDefault();
+      editor.getModule('toolbar').setUpdating(true);
       if (formats?.color === color) {
         editor.getModule('toolbar').formatInline({ color: false }, currentCaretPosition);
         setFormats({ ...formats, color: null });
@@ -61,6 +62,9 @@ export const PalettePopup = React.memo(({ editor, scrollContainer }: PalettePopu
         editor.getModule('toolbar').formatInline({ color }, currentCaretPosition);
         setFormats({ ...formats, color });
       }
+      setTimeout(() => {
+        editor.getModule('toolbar').setUpdating(false);
+      }, 100);
     },
     [formats, currentCaretPosition],
   );

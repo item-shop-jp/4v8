@@ -86,6 +86,7 @@ const TooltipContainer = styled.div<TooltipProps>`
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
   pointer-events: none;
   font-size: ${({ fontSize }) => `${fontSize}px`};
   font-weight: ${({ fontWeight }) => `${fontWeight}`};
@@ -95,6 +96,10 @@ const TooltipContainer = styled.div<TooltipProps>`
   background: rgba(0, 0, 0, 0.8);
   color: #ffffff;
   opacity: ${({ isDisplay }) => (isDisplay ? 1 : 0)};
+  .description {
+    color: #ccc;
+    font-size: 10px;
+  }
   ${({ containerRect, position, theme, isDisplay }) => {
     if (!containerRect) return;
     switch (position) {

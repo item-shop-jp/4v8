@@ -87,6 +87,7 @@ const MemberIcon = styled.div`
   background-color: #fff;
   margin-right: 8px;
   overflow: hidden;
+  flex-shrink: 0;
   img {
     width: 100%;
     height: 100%;

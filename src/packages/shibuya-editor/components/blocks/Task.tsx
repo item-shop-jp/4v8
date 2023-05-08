@@ -308,7 +308,14 @@ export const Task = React.memo(
                 maxWidth={200}
                 position={'bottom'}
               >
-                {attributes.assignees.map((v: Member) => v.name).join(',')}
+                {attributes.assignees.map((v: Member) => {
+                  return (
+                    <React.Fragment key={v.id}>
+                      {v.name}
+                      <br />
+                    </React.Fragment>
+                  );
+                })}
               </Tooltip>
             ) : (
               <Tooltip

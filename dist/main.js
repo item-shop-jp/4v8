@@ -19694,7 +19694,7 @@ const MemberInfo = He.div `
   align-items: center;
   flex-direction: row;
   padding: 8px 16px;
-  height: 52px;
+  height: 48px;
   font-size: 16px;
   color: #fff;
   position: relative;
@@ -19715,16 +19715,11 @@ const MemberIcon$1 = He.div `
   background-color: #fff;
   margin-right: 8px;
   overflow: hidden;
-  flex-shrink: 0;
   img {
     width: 100%;
     height: 100%;
     object-fit: cover;
   }
-`;
-const MemberName = He.div `
-  max-height: 48px;
-  margin-left: 8px;
 `;
 const Text$5 = He.div `
   font-size: 16px;
@@ -19809,7 +19804,7 @@ const AssigneePicker = React__namespace.memo((_a) => {
     }, [members, searchValue, selectedMembers]);
     return ReactDOM__default["default"].createPortal(jsxRuntime.exports.jsxs(Wrapper$1, Object.assign({ ref: modalRef, style: { top, left } }, { children: [jsxRuntime.exports.jsx(Search, { children: jsxRuntime.exports.jsx("input", { type: "text", placeholder: "\u30E6\u30FC\u30B6\u30FC\u3092\u7D5E\u308A\u8FBC\u3080", value: searchValue, onKeyDown: handleKeyDown, onChange: handleChangeSearchValue }) }), jsxRuntime.exports.jsx(Members, { children: memoMembers.map((member) => {
                     var _a;
-                    return (jsxRuntime.exports.jsxs(MemberInfo, Object.assign({ onClick: handleSelectMember(member), selected: (_a = member.selected) !== null && _a !== void 0 ? _a : false }, { children: [jsxRuntime.exports.jsx(MemberIcon$1, { children: (member === null || member === void 0 ? void 0 : member.imageUrl) ? (jsxRuntime.exports.jsx("img", { draggable: "false", src: member === null || member === void 0 ? void 0 : member.imageUrl })) : (jsxRuntime.exports.jsx(Text$5, { children: member.name.slice(0, 1) })) }), jsxRuntime.exports.jsx(MemberName, { children: member.name }), member.selected && (jsxRuntime.exports.jsx(RemoveButton, Object.assign({ href: "#", onClick: handleRemove(member) }, { children: jsxRuntime.exports.jsx(Close, {}) })))] }), member.id));
+                    return (jsxRuntime.exports.jsxs(MemberInfo, Object.assign({ onClick: handleSelectMember(member), selected: (_a = member.selected) !== null && _a !== void 0 ? _a : false }, { children: [jsxRuntime.exports.jsx(MemberIcon$1, { children: (member === null || member === void 0 ? void 0 : member.imageUrl) ? (jsxRuntime.exports.jsx("img", { draggable: "false", src: member === null || member === void 0 ? void 0 : member.imageUrl })) : (jsxRuntime.exports.jsx(Text$5, { children: member.name.slice(0, 1) })) }), jsxRuntime.exports.jsx("div", Object.assign({ style: { marginLeft: '8px' } }, { children: member.name })), member.selected && (jsxRuntime.exports.jsx(RemoveButton, Object.assign({ href: "#", onClick: handleRemove(member) }, { children: jsxRuntime.exports.jsx(Close, {}) })))] }), member.id));
                 }) })] })), (_b = getHtmlElement(scrollContainer)) !== null && _b !== void 0 ? _b : document.body);
 });
 
@@ -20180,7 +20175,9 @@ const Task = React__namespace.memo((_a) => {
                             textDecoration: checked ? 'line-through' : 'none',
                         } }, props, { children: [jsxRuntime.exports.jsx(CheckBoxOuter, Object.assign({ onClick: handleClickCheckBox }, { children: jsxRuntime.exports.jsx(CheckSquare, { size: "20px", checked: checked }) })), contents] })), jsxRuntime.exports.jsxs(Buttons, { children: [((_q = attributes === null || attributes === void 0 ? void 0 : attributes.assignees) !== null && _q !== void 0 ? _q : []).length > 0 ? (jsxRuntime.exports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntime.exports.jsxs(IconButton, Object.assign({ onClick: handleClickAssigneePicker }, { children: [attributes.assignees.slice(0, 2).map((assignee, i) => {
                                             return (jsxRuntime.exports.jsx(MemberIcon, Object.assign({ style: { right: `${12 * i}px` } }, { children: assignee.imageUrl ? (jsxRuntime.exports.jsx("img", { draggable: "false", src: assignee.imageUrl })) : (jsxRuntime.exports.jsx(Text$4, { children: assignee.name.slice(0, 1) })) }), assignee.id));
-                                        }), attributes.assignees.length > 2 && (jsxRuntime.exports.jsx(MemberIcon, Object.assign({ style: { right: `${12 * 2}px` } }, { children: jsxRuntime.exports.jsxs(Text$4, { children: ["+", attributes.assignees.length - 2] }) })))] })), maxWidth: 200, position: 'bottom' }, { children: attributes.assignees.map((v) => v.name).join(',') }))) : (jsxRuntime.exports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntime.exports.jsx(IconButton, Object.assign({ onClick: handleClickAssigneePicker, style: { visibility: isHover ? 'visible' : 'hidden' } }, { children: jsxRuntime.exports.jsx(Assignment, { size: "20px", fill: "#A1A1AA" }) })), maxWidth: 200, position: 'bottom' }, { children: "\u62C5\u5F53\u8005\u3092\u5272\u308A\u5F53\u3066\u308B" }))), (attributes === null || attributes === void 0 ? void 0 : attributes.deadline) ? (jsxRuntime.exports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntime.exports.jsx(IconButton, Object.assign({ onClick: handleClickDatePicker }, { children: formatDate(new Date(attributes.deadline)) })), position: 'bottom' }, { children: "\u7DE0\u3081\u5207\u308A\u3092\u5909\u66F4\u3059\u308B" }))) : (jsxRuntime.exports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntime.exports.jsx(IconButton, Object.assign({ onClick: handleClickDatePicker, style: { visibility: isHover ? 'visible' : 'hidden' } }, { children: jsxRuntime.exports.jsx(Schedule, { size: "20px", fill: "#A1A1AA" }) })), position: 'bottom' }, { children: "\u7DE0\u3081\u5207\u308A\u3092\u8A2D\u5B9A\u3059\u308B" })))] })] })), showDatePicker && (jsxRuntime.exports.jsx(DatePicker, { editor: editor, scrollContainer: scrollContainer, top: modalPosition.top, left: modalPosition.left, selected: (attributes === null || attributes === void 0 ? void 0 : attributes.deadline) ? new Date(attributes.deadline) : undefined, onSelect: handleSelectDatePicker, onClose: handleCloseDatePicker })), showAssigneePicker && (jsxRuntime.exports.jsx(AssigneePicker, { editor: editor, scrollContainer: scrollContainer, top: modalPosition.top, left: modalPosition.left + 70, selectedMembers: selectedMembers, onSelect: handleSelectAssigneePicker, onRemove: handleRemoveAssigneePicker, onClose: handleCloseAssigneePicker }))] }));
+                                        }), attributes.assignees.length > 2 && (jsxRuntime.exports.jsx(MemberIcon, Object.assign({ style: { right: `${12 * 2}px` } }, { children: jsxRuntime.exports.jsxs(Text$4, { children: ["+", attributes.assignees.length - 2] }) })))] })), maxWidth: 200, position: 'bottom' }, { children: attributes.assignees.map((v) => {
+                                    return (jsxRuntime.exports.jsxs(React__namespace.Fragment, { children: [v.name, jsxRuntime.exports.jsx("br", {})] }, v.id));
+                                }) }))) : (jsxRuntime.exports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntime.exports.jsx(IconButton, Object.assign({ onClick: handleClickAssigneePicker, style: { visibility: isHover ? 'visible' : 'hidden' } }, { children: jsxRuntime.exports.jsx(Assignment, { size: "20px", fill: "#A1A1AA" }) })), maxWidth: 200, position: 'bottom' }, { children: "\u62C5\u5F53\u8005\u3092\u5272\u308A\u5F53\u3066\u308B" }))), (attributes === null || attributes === void 0 ? void 0 : attributes.deadline) ? (jsxRuntime.exports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntime.exports.jsx(IconButton, Object.assign({ onClick: handleClickDatePicker }, { children: formatDate(new Date(attributes.deadline)) })), position: 'bottom' }, { children: "\u7DE0\u3081\u5207\u308A\u3092\u5909\u66F4\u3059\u308B" }))) : (jsxRuntime.exports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntime.exports.jsx(IconButton, Object.assign({ onClick: handleClickDatePicker, style: { visibility: isHover ? 'visible' : 'hidden' } }, { children: jsxRuntime.exports.jsx(Schedule, { size: "20px", fill: "#A1A1AA" }) })), position: 'bottom' }, { children: "\u7DE0\u3081\u5207\u308A\u3092\u8A2D\u5B9A\u3059\u308B" })))] })] })), showDatePicker && (jsxRuntime.exports.jsx(DatePicker, { editor: editor, scrollContainer: scrollContainer, top: modalPosition.top, left: modalPosition.left, selected: (attributes === null || attributes === void 0 ? void 0 : attributes.deadline) ? new Date(attributes.deadline) : undefined, onSelect: handleSelectDatePicker, onClose: handleCloseDatePicker })), showAssigneePicker && (jsxRuntime.exports.jsx(AssigneePicker, { editor: editor, scrollContainer: scrollContainer, top: modalPosition.top, left: modalPosition.left + 70, selectedMembers: selectedMembers, onSelect: handleSelectAssigneePicker, onRemove: handleRemoveAssigneePicker, onClose: handleCloseAssigneePicker }))] }));
 });
 
 var getDefaultStyle = function (visible) { return ({

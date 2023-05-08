@@ -19715,11 +19715,16 @@ const MemberIcon$1 = He.div `
   background-color: #fff;
   margin-right: 8px;
   overflow: hidden;
+  flex-shrink: 0;
   img {
     width: 100%;
     height: 100%;
     object-fit: cover;
   }
+`;
+const MemberName = He.div `
+  max-height: 48px;
+  margin-left: 8px;
 `;
 const Text$5 = He.div `
   font-size: 16px;
@@ -19804,7 +19809,7 @@ const AssigneePicker = React__namespace.memo((_a) => {
     }, [members, searchValue, selectedMembers]);
     return ReactDOM__default["default"].createPortal(jsxRuntime.exports.jsxs(Wrapper$1, Object.assign({ ref: modalRef, style: { top, left } }, { children: [jsxRuntime.exports.jsx(Search, { children: jsxRuntime.exports.jsx("input", { type: "text", placeholder: "\u30E6\u30FC\u30B6\u30FC\u3092\u7D5E\u308A\u8FBC\u3080", value: searchValue, onKeyDown: handleKeyDown, onChange: handleChangeSearchValue }) }), jsxRuntime.exports.jsx(Members, { children: memoMembers.map((member) => {
                     var _a;
-                    return (jsxRuntime.exports.jsxs(MemberInfo, Object.assign({ onClick: handleSelectMember(member), selected: (_a = member.selected) !== null && _a !== void 0 ? _a : false }, { children: [jsxRuntime.exports.jsx(MemberIcon$1, { children: (member === null || member === void 0 ? void 0 : member.imageUrl) ? (jsxRuntime.exports.jsx("img", { draggable: "false", src: member === null || member === void 0 ? void 0 : member.imageUrl })) : (jsxRuntime.exports.jsx(Text$5, { children: member.name.slice(0, 1) })) }), jsxRuntime.exports.jsx("div", Object.assign({ style: { marginLeft: '8px' } }, { children: member.name })), member.selected && (jsxRuntime.exports.jsx(RemoveButton, Object.assign({ href: "#", onClick: handleRemove(member) }, { children: jsxRuntime.exports.jsx(Close, {}) })))] }), member.id));
+                    return (jsxRuntime.exports.jsxs(MemberInfo, Object.assign({ onClick: handleSelectMember(member), selected: (_a = member.selected) !== null && _a !== void 0 ? _a : false }, { children: [jsxRuntime.exports.jsx(MemberIcon$1, { children: (member === null || member === void 0 ? void 0 : member.imageUrl) ? (jsxRuntime.exports.jsx("img", { draggable: "false", src: member === null || member === void 0 ? void 0 : member.imageUrl })) : (jsxRuntime.exports.jsx(Text$5, { children: member.name.slice(0, 1) })) }), jsxRuntime.exports.jsx(MemberName, { children: member.name }), member.selected && (jsxRuntime.exports.jsx(RemoveButton, Object.assign({ href: "#", onClick: handleRemove(member) }, { children: jsxRuntime.exports.jsx(Close, {}) })))] }), member.id));
                 }) })] })), (_b = getHtmlElement(scrollContainer)) !== null && _b !== void 0 ? _b : document.body);
 });
 

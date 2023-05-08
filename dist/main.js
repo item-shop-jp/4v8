@@ -7829,6 +7829,26 @@ const FormatNumberList = React__namespace.memo((_a) => {
     return (jsxRuntime.exports.jsx(Icon, Object.assign({ width: size, height: size, fill: fill, viewBox: "0 0 20 20", xmlns: "http://www.w3.org/2000/svg" }, props, { children: jsxRuntime.exports.jsx(Path, { d: "M6.66663 5.83337H16.6666C17.125 5.83337 17.5 5.45837 17.5 5.00004C17.5 4.54171 17.125 4.16671 16.6666 4.16671H6.66663C6.20829 4.16671 5.83329 4.54171 5.83329 5.00004C5.83329 5.45837 6.20829 5.83337 6.66663 5.83337ZM16.6666 14.1667H6.66663C6.20829 14.1667 5.83329 14.5417 5.83329 15C5.83329 15.4584 6.20829 15.8334 6.66663 15.8334H16.6666C17.125 15.8334 17.5 15.4584 17.5 15C17.5 14.5417 17.125 14.1667 16.6666 14.1667ZM16.6666 9.16671H6.66663C6.20829 9.16671 5.83329 9.54171 5.83329 10C5.83329 10.4584 6.20829 10.8334 6.66663 10.8334H16.6666C17.125 10.8334 17.5 10.4584 17.5 10C17.5 9.54171 17.125 9.16671 16.6666 9.16671ZM3.74996 13.3334H2.08329C1.84996 13.3334 1.66663 13.5167 1.66663 13.75C1.66663 13.9834 1.84996 14.1667 2.08329 14.1667H3.33329V14.5834H2.91663C2.68329 14.5834 2.49996 14.7667 2.49996 15C2.49996 15.2334 2.68329 15.4167 2.91663 15.4167H3.33329V15.8334H2.08329C1.84996 15.8334 1.66663 16.0167 1.66663 16.25C1.66663 16.4834 1.84996 16.6667 2.08329 16.6667H3.74996C3.98329 16.6667 4.16663 16.4834 4.16663 16.25V13.75C4.16663 13.5167 3.98329 13.3334 3.74996 13.3334ZM2.08329 4.16671H2.49996V6.25004C2.49996 6.48337 2.68329 6.66671 2.91663 6.66671C3.14996 6.66671 3.33329 6.48337 3.33329 6.25004V3.75004C3.33329 3.51671 3.14996 3.33337 2.91663 3.33337H2.08329C1.84996 3.33337 1.66663 3.51671 1.66663 3.75004C1.66663 3.98337 1.84996 4.16671 2.08329 4.16671ZM3.74996 8.33337H2.08329C1.84996 8.33337 1.66663 8.51671 1.66663 8.75004C1.66663 8.98337 1.84996 9.16671 2.08329 9.16671H3.16663L1.76663 10.8C1.69996 10.875 1.66663 10.975 1.66663 11.0667V11.25C1.66663 11.4834 1.84996 11.6667 2.08329 11.6667H3.74996C3.98329 11.6667 4.16663 11.4834 4.16663 11.25C4.16663 11.0167 3.98329 10.8334 3.74996 10.8334H2.66663L4.06663 9.20004C4.13329 9.12504 4.16663 9.02504 4.16663 8.93337V8.75004C4.16663 8.51671 3.98329 8.33337 3.74996 8.33337Z", fill: fill }) })));
 });
 
+const FormatCodeBlock = React__namespace.memo((_a) => {
+    var { size = baseIconProps.size, fill = baseIconProps.fill } = _a; __rest$1(_a, ["size", "fill"]);
+    return (jsxRuntime.exports.jsxs(Icon, Object.assign({ width: size, height: size, viewBox: "0 0 20 20", fill: "none", xmlns: "http://www.w3.org/2000/svg" }, { children: [jsxRuntime.exports.jsx(Path, { d: "M16.6666 2.5H3.33329C2.41413 2.5 1.66663 3.2475 1.66663 4.16667V15.8333C1.66663 16.7525 2.41413 17.5 3.33329 17.5H16.6666C17.5858 17.5 18.3333 16.7525 18.3333 15.8333V4.16667C18.3333 3.2475 17.5858 2.5 16.6666 2.5ZM3.33329 15.8333V5.83333H16.6666L16.6683 15.8333H3.33329Z", fill: "white" }), jsxRuntime.exports.jsx(Path, { d: "M8.33336 8.33331C8.00798 8.00792 7.48042 8.00792 7.15503 8.33331L5.36214 10.1262C4.97161 10.5167 4.97161 11.1499 5.36214 11.5404L7.15503 13.3333C7.48042 13.6587 8.00798 13.6587 8.33336 13.3333C8.65875 13.0079 8.65875 12.4804 8.33336 12.155L7.0117 10.8333L8.33336 9.51164C8.65875 9.18625 8.65875 8.65869 8.33336 8.33331ZM12.845 8.33331C12.5196 8.00792 11.9921 8.00792 11.6667 8.33331C11.3413 8.65869 11.3413 9.18625 11.6667 9.51164L12.9884 10.8333L11.6667 12.155C11.3413 12.4804 11.3413 13.0079 11.6667 13.3333C11.9921 13.6587 12.5196 13.6587 12.845 13.3333L14.6379 11.5404C15.0284 11.1499 15.0284 10.5167 14.6379 10.1262L12.845 8.33331Z", fill: "white" })] })));
+});
+
+const FormatBlockQuote = React__namespace.memo((_a) => {
+    var { size = baseIconProps.size, fill = baseIconProps.fill } = _a; __rest$1(_a, ["size", "fill"]);
+    return (jsxRuntime.exports.jsx(Icon, Object.assign({ width: size, height: size, viewBox: "0 0 20 20", fill: "none", xmlns: "http://www.w3.org/2000/svg" }, { children: jsxRuntime.exports.jsx(Path, { d: "M15.5167 15H11.15L12.8167 11.6667H10.8333V5H17.5V11.0333L15.5167 15ZM13.85 13.3333H14.4833L15.8333 10.6333V6.66667H12.5V10H15.5167L13.85 13.3333ZM7.18333 15H2.81667L4.48333 11.6667H2.5V5H9.16667V11.0333L7.18333 15ZM5.51667 13.3333H6.15L7.5 10.6333V6.66667H4.16667V10H7.18333L5.51667 13.3333Z", fill: "white" }) })));
+});
+
+const FormatTask = React__namespace.memo((_a) => {
+    var { size = baseIconProps.size, fill = baseIconProps.fill } = _a; __rest$1(_a, ["size", "fill"]);
+    return (jsxRuntime.exports.jsx(Icon, Object.assign({ width: size, height: size, viewBox: "0 0 20 20", fill: "none", xmlns: "http://www.w3.org/2000/svg" }, { children: jsxRuntime.exports.jsx(Path, { d: "M15 7.50004L13.825 6.31671L8.33333 11.8084L6.175 9.65837L5 10.8334L8.33333 14.1667L15 7.50004ZM15.8333 2.50004H12.35C12 1.53337 11.0833 0.833374 10 0.833374C8.91667 0.833374 8 1.53337 7.65 2.50004H4.16667C4.05 2.50004 3.94167 2.50837 3.83333 2.53337C3.50833 2.60004 3.21667 2.76671 2.99167 2.99171C2.84167 3.14171 2.71667 3.32504 2.63333 3.52504C2.55 3.71671 2.5 3.93337 2.5 4.16671V15.8334C2.5 16.0584 2.55 16.2834 2.63333 16.4834C2.71667 16.6834 2.84167 16.8584 2.99167 17.0167C3.21667 17.2417 3.50833 17.4084 3.83333 17.475C3.94167 17.4917 4.05 17.5 4.16667 17.5H15.8333C16.75 17.5 17.5 16.75 17.5 15.8334V4.16671C17.5 3.25004 16.75 2.50004 15.8333 2.50004ZM10 2.29171C10.3417 2.29171 10.625 2.57504 10.625 2.91671C10.625 3.25837 10.3417 3.54171 10 3.54171C9.65833 3.54171 9.375 3.25837 9.375 2.91671C9.375 2.57504 9.65833 2.29171 10 2.29171ZM15.8333 15.8334H4.16667V4.16671H15.8333V15.8334Z", fill: "white" }) })));
+});
+
+const FormatDecision = React__namespace.memo((_a) => {
+    var { size = baseIconProps.size, fill = baseIconProps.fill } = _a; __rest$1(_a, ["size", "fill"]);
+    return (jsxRuntime.exports.jsx(Icon, Object.assign({ width: size, height: size, viewBox: "0 0 20 20", fill: "none", xmlns: "http://www.w3.org/2000/svg" }, { children: jsxRuntime.exports.jsx(Path, { d: "M9.16667 12.5H10.8333V14.1667H9.16667V12.5ZM9.16667 5.83337H10.8333V10.8334H9.16667V5.83337ZM15.8333 2.50004H12.35C12 1.53337 11.0833 0.833374 10 0.833374C8.91667 0.833374 8 1.53337 7.65 2.50004H4.16667C4.05 2.50004 3.94167 2.50837 3.83333 2.53337C3.50833 2.60004 3.21667 2.76671 2.99167 2.99171C2.84167 3.14171 2.71667 3.32504 2.63333 3.52504C2.55 3.71671 2.5 3.93337 2.5 4.16671V15.8334C2.5 16.0584 2.55 16.2834 2.63333 16.4834C2.71667 16.6834 2.84167 16.8584 2.99167 17.0167C3.21667 17.2417 3.50833 17.4084 3.83333 17.475C3.94167 17.4917 4.05 17.5 4.16667 17.5H15.8333C16.75 17.5 17.5 16.75 17.5 15.8334V4.16671C17.5 3.25004 16.75 2.50004 15.8333 2.50004ZM10 2.29171C10.3417 2.29171 10.625 2.57504 10.625 2.91671C10.625 3.25837 10.3417 3.54171 10 3.54171C9.65833 3.54171 9.375 3.25837 9.375 2.91671C9.375 2.57504 9.65833 2.29171 10 2.29171ZM15.8333 15.8334H4.16667V4.16671H15.8333V15.8334Z", fill: "white" }) })));
+});
+
 const CheckSquare = React__namespace.memo((_a) => {
     var { size = baseIconProps.size, fill = baseIconProps.fill, checked = false } = _a, props = __rest$1(_a, ["size", "fill", "checked"]);
     return (jsxRuntime.exports.jsx(Icon, Object.assign({ width: size, height: size, fill: fill, viewBox: "0 0 24 24", xmlns: "http://www.w3.org/2000/svg" }, props, { children: checked ? (jsxRuntime.exports.jsx("path", { d: "M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM19 19H5V5H19V19ZM17.99 9L16.58 7.58L9.99 14.17L7.41 11.6L5.99 13.01L9.99 17L17.99 9Z", fill: fill })) : (jsxRuntime.exports.jsx("path", { d: "M19 5V19H5V5H19ZM19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3Z", fill: fill })) })));
@@ -9736,7 +9756,7 @@ const EnterLinkContainer = He.input `
 `;
 const LinkPopup = React__namespace.memo((_a) => {
     var _b, _c, _d;
-    var { editor, scrollContainer, onFocus, onBlur, onLinkSave } = _a, props = __rest$1(_a, ["editor", "scrollContainer", "onFocus", "onBlur", "onLinkSave"]);
+    var { editor, scrollContainer } = _a, props = __rest$1(_a, ["editor", "scrollContainer"]);
     const [formats, setFormats] = React__namespace.useState({});
     const [linkUrl, setLinkUrl] = React__namespace.useState('');
     const [popupMode, setPopupMode] = React__namespace.useState();
@@ -9747,13 +9767,21 @@ const LinkPopup = React__namespace.memo((_a) => {
     const handleChange = React__namespace.useCallback((event) => {
         setLinkUrl(event.target.value);
     }, [linkUrl]);
-    const handleSave = React__namespace.useCallback(() => {
-        editor.getModule('toolbar').formatInline({ link: linkUrl }, currentCaretPosition);
-        setPopupOpen(false);
-        setTimeout(() => {
-            editor.focus();
-        }, 10);
+    const handleKeyDown = React__namespace.useCallback((event) => {
+        if (event.code === KeyCodes.ENTER) {
+            handleSave();
+        }
     }, [linkUrl, currentCaretPosition]);
+    const handleSave = React__namespace.useCallback(() => {
+        editor.getModule('toolbar').setUpdating(true);
+        editor.getModule('toolbar').formatInline({ link: linkUrl }, currentCaretPosition);
+        setTimeout(() => editor.getModule('toolbar').setUpdating(false), 100);
+        setPopupOpen(false);
+        setTimeout(() => editor.focus(), 10);
+    }, [linkUrl, currentCaretPosition]);
+    const handleClick = React__namespace.useCallback((event) => {
+        event.stopPropagation();
+    }, []);
     const handleClose = React__namespace.useCallback(() => {
         setPopupOpen(false);
         setLinkUrl('');
@@ -9831,7 +9859,7 @@ const LinkPopup = React__namespace.memo((_a) => {
             document.removeEventListener('click', handleClose, true);
         };
     }, [popupOpen]);
-    return ReactDOM__default["default"].createPortal(popupOpen && (jsxRuntime.exports.jsx("div", Object.assign({ ref: modalRef }, { children: popupMode === 'openEnterLink' && (jsxRuntime.exports.jsx(jsxRuntime.exports.Fragment, { children: jsxRuntime.exports.jsx(EnterLinkContainer, Object.assign({ style: { top: (_b = popupPosition === null || popupPosition === void 0 ? void 0 : popupPosition.top) !== null && _b !== void 0 ? _b : 0, left: (_c = popupPosition === null || popupPosition === void 0 ? void 0 : popupPosition.left) !== null && _c !== void 0 ? _c : 0 } }, props, { value: linkUrl, placeholder: "\u30EA\u30F3\u30AF\u5148\u3092\u5165\u529B\u3057\u3066\u304F\u3060\u3055\u3044", onFocus: onFocus, onBlur: handleSave, onChange: handleChange })) })) }))), (_d = getHtmlElement(scrollContainer)) !== null && _d !== void 0 ? _d : document.body);
+    return ReactDOM__default["default"].createPortal(popupOpen && (jsxRuntime.exports.jsx("div", Object.assign({ ref: modalRef }, { children: popupMode === 'openEnterLink' && (jsxRuntime.exports.jsx(jsxRuntime.exports.Fragment, { children: jsxRuntime.exports.jsx(EnterLinkContainer, Object.assign({ style: { top: (_b = popupPosition === null || popupPosition === void 0 ? void 0 : popupPosition.top) !== null && _b !== void 0 ? _b : 0, left: (_c = popupPosition === null || popupPosition === void 0 ? void 0 : popupPosition.left) !== null && _c !== void 0 ? _c : 0 } }, props, { value: linkUrl, placeholder: "\u30EA\u30F3\u30AF\u5148\u3092\u5165\u529B\u3057\u3066\u304F\u3060\u3055\u3044", onMouseDown: handleClick, onClick: handleClick, onChange: handleChange, onBlur: handleSave, onKeyDown: handleKeyDown })) })) }))), (_d = getHtmlElement(scrollContainer)) !== null && _d !== void 0 ? _d : document.body);
 });
 
 const Container$8 = He.div `
@@ -9868,6 +9896,7 @@ const PalettePopup = React__namespace.memo(({ editor, scrollContainer }) => {
     }, []);
     const handleFormatColor = React__namespace.useCallback((color) => (e) => {
         e.preventDefault();
+        editor.getModule('toolbar').setUpdating(true);
         if ((formats === null || formats === void 0 ? void 0 : formats.color) === color) {
             editor.getModule('toolbar').formatInline({ color: false }, currentCaretPosition);
             setFormats(Object.assign(Object.assign({}, formats), { color: null }));
@@ -9876,12 +9905,15 @@ const PalettePopup = React__namespace.memo(({ editor, scrollContainer }) => {
             editor.getModule('toolbar').formatInline({ color }, currentCaretPosition);
             setFormats(Object.assign(Object.assign({}, formats), { color }));
         }
+        setTimeout(() => {
+            editor.getModule('toolbar').setUpdating(false);
+        }, 100);
     }, [formats, currentCaretPosition]);
     React__namespace.useEffect(() => {
         const subs = new Subscription();
         const eventEmitter = editor.getEventEmitter();
         subs.add(eventEmitter.select(EditorEvents.EVENT_PALETTE_CLICK).subscribe((v) => {
-            var _a, _b, _c;
+            var _a, _b;
             const caret = editor.getCaretPosition();
             if (!caret) {
                 handleClose();
@@ -9889,18 +9921,13 @@ const PalettePopup = React__namespace.memo(({ editor, scrollContainer }) => {
             }
             setPopupOpen(true);
             const container = getHtmlElement(scrollContainer);
-            const bubbleToolbarRect = (_a = document
-                .getElementById('bubble-toolbar')) === null || _a === void 0 ? void 0 : _a.getBoundingClientRect();
-            const paletteToolbarRect = (_b = document
-                .getElementById('toolbar-palette')) === null || _b === void 0 ? void 0 : _b.getBoundingClientRect();
+            const paletteToolbarRect = (_a = document
+                .getElementById('toolbar-palette')) === null || _a === void 0 ? void 0 : _a.getBoundingClientRect();
             if (container) {
                 const containerRect = container.getBoundingClientRect();
-                const top = ((_c = container === null || container === void 0 ? void 0 : container.scrollTop) !== null && _c !== void 0 ? _c : 0) + caret.rect.top - containerRect.top + 4;
-                if (paletteToolbarRect && bubbleToolbarRect) {
-                    const left = caret.rect.left -
-                        containerRect.left +
-                        (paletteToolbarRect.left - bubbleToolbarRect.left) -
-                        (104 - paletteToolbarRect.width) / 2; // ContainerはInputの幅
+                const top = ((_b = container === null || container === void 0 ? void 0 : container.scrollTop) !== null && _b !== void 0 ? _b : 0) + caret.rect.top - containerRect.top + 4;
+                if (paletteToolbarRect) {
+                    const left = paletteToolbarRect.left - containerRect.left;
                     setPosition({
                         top,
                         left,
@@ -19667,7 +19694,7 @@ const MemberInfo = He.div `
   align-items: center;
   flex-direction: row;
   padding: 8px 16px;
-  height: 40px;
+  height: 52px;
   font-size: 16px;
   color: #fff;
   position: relative;
@@ -19688,11 +19715,16 @@ const MemberIcon$1 = He.div `
   background-color: #fff;
   margin-right: 8px;
   overflow: hidden;
+  flex-shrink: 0;
   img {
     width: 100%;
     height: 100%;
     object-fit: cover;
   }
+`;
+const MemberName = He.div `
+  max-height: 48px;
+  margin-left: 8px;
 `;
 const Text$5 = He.div `
   font-size: 16px;
@@ -19777,7 +19809,7 @@ const AssigneePicker = React__namespace.memo((_a) => {
     }, [members, searchValue, selectedMembers]);
     return ReactDOM__default["default"].createPortal(jsxRuntime.exports.jsxs(Wrapper$1, Object.assign({ ref: modalRef, style: { top, left } }, { children: [jsxRuntime.exports.jsx(Search, { children: jsxRuntime.exports.jsx("input", { type: "text", placeholder: "\u30E6\u30FC\u30B6\u30FC\u3092\u7D5E\u308A\u8FBC\u3080", value: searchValue, onKeyDown: handleKeyDown, onChange: handleChangeSearchValue }) }), jsxRuntime.exports.jsx(Members, { children: memoMembers.map((member) => {
                     var _a;
-                    return (jsxRuntime.exports.jsxs(MemberInfo, Object.assign({ onClick: handleSelectMember(member), selected: (_a = member.selected) !== null && _a !== void 0 ? _a : false }, { children: [jsxRuntime.exports.jsx(MemberIcon$1, { children: (member === null || member === void 0 ? void 0 : member.imageUrl) ? (jsxRuntime.exports.jsx("img", { draggable: "false", src: member === null || member === void 0 ? void 0 : member.imageUrl })) : (jsxRuntime.exports.jsx(Text$5, { children: member.name.slice(0, 1) })) }), jsxRuntime.exports.jsx("div", Object.assign({ style: { marginLeft: '8px' } }, { children: member.name })), member.selected && (jsxRuntime.exports.jsx(RemoveButton, Object.assign({ href: "#", onClick: handleRemove(member) }, { children: jsxRuntime.exports.jsx(Close, {}) })))] }), member.id));
+                    return (jsxRuntime.exports.jsxs(MemberInfo, Object.assign({ onClick: handleSelectMember(member), selected: (_a = member.selected) !== null && _a !== void 0 ? _a : false }, { children: [jsxRuntime.exports.jsx(MemberIcon$1, { children: (member === null || member === void 0 ? void 0 : member.imageUrl) ? (jsxRuntime.exports.jsx("img", { draggable: "false", src: member === null || member === void 0 ? void 0 : member.imageUrl })) : (jsxRuntime.exports.jsx(Text$5, { children: member.name.slice(0, 1) })) }), jsxRuntime.exports.jsx(MemberName, { children: member.name }), member.selected && (jsxRuntime.exports.jsx(RemoveButton, Object.assign({ href: "#", onClick: handleRemove(member) }, { children: jsxRuntime.exports.jsx(Close, {}) })))] }), member.id));
                 }) })] })), (_b = getHtmlElement(scrollContainer)) !== null && _b !== void 0 ? _b : document.body);
 });
 
@@ -19841,6 +19873,7 @@ const TooltipContainer = He.div `
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
   pointer-events: none;
   font-size: ${({ fontSize }) => `${fontSize}px`};
   font-weight: ${({ fontWeight }) => `${fontWeight}`};
@@ -19850,6 +19883,10 @@ const TooltipContainer = He.div `
   background: rgba(0, 0, 0, 0.8);
   color: #ffffff;
   opacity: ${({ isDisplay }) => (isDisplay ? 1 : 0)};
+  .description {
+    color: #ccc;
+    font-size: 10px;
+  }
   ${({ containerRect, position, theme, isDisplay }) => {
     if (!containerRect)
         return;
@@ -20958,6 +20995,18 @@ const Text$3 = He.span `
 }}
 `;
 const Link$1 = He.a `
+  &::selection {
+    background: rgba(46, 170, 220, 0.2);
+  }
+  img.emoji {
+    height: 1em;
+    width: 1em;
+    margin: 0 0.05em 0 0.1em;
+    vertical-align: -0.1em;
+    &::selection {
+      background: rgba(46, 170, 220, 0.2);
+    }
+  }
   ${({ attributes, formats }) => {
     return Object.keys(attributes).map((key) => {
         const styleFormat = `inline/style/${key}`;
@@ -21108,42 +21157,76 @@ const Container$3 = He.div `
   bottom: 12px;
   left: 50%;
   transform: translate(-50%, -50%);
-  padding: 8px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  position: absolute;
+  background-color: #18181b;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  z-index: 1;
 `;
 const Button$1 = He.a `
-  margin: 8px;
-  border: 1px solid #666;
-  border-radius: 4px;
-  padding: 4px;
+  display: flex;
+  padding: 7px;
+  ${({ active }) => active && 'background: rgba(255, 255, 255, 0.15)'};
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.4);
+  }
+`;
+const Divider = He.div `
+  width: 1px;
+  height: 100%;
+  background: #fff;
+  opacity: 0.2;
 `;
 const GlobalToolbar = React__namespace.memo((_a) => {
     var { editor } = _a, props = __rest$1(_a, ["editor"]);
     const [formats, setFormats] = React__namespace.useState({});
+    const [blockType, setBlockType] = React__namespace.useState();
     const [isDisplay, setDisplay] = React__namespace.useState(false);
+    const formatBlock = React__namespace.useCallback((type) => {
+        editor.getModule('toolbar').setUpdating(true);
+        editor.getModule('toolbar').formatBlock(blockType !== type ? type : 'PARAGRAPH');
+        setTimeout(() => {
+            editor.getModule('toolbar').setUpdating(false);
+        }, 100);
+    }, [formats, blockType]);
+    const handleHeader1 = React__namespace.useCallback((event) => {
+        event.preventDefault();
+        formatBlock('HEADER1');
+    }, [formats, blockType]);
+    const handleHeader2 = React__namespace.useCallback((event) => {
+        event.preventDefault();
+        formatBlock('HEADER2');
+    }, [formats, blockType]);
+    const handleHeader3 = React__namespace.useCallback((event) => {
+        event.preventDefault();
+        formatBlock('HEADER3');
+    }, [formats, blockType]);
     const handleCodeBlock = React__namespace.useCallback((event) => {
         event.preventDefault();
-        editor.getModule('toolbar').formatBlock('CODE-BLOCK');
-    }, [formats]);
+        formatBlock('CODE-BLOCK');
+    }, [formats, blockType]);
     const handleDecision = React__namespace.useCallback((event) => {
         event.preventDefault();
-        editor.getModule('toolbar').formatBlock('DECISION');
-    }, [formats]);
+        formatBlock('DECISION');
+    }, [formats, blockType]);
     const handleTask = React__namespace.useCallback((event) => {
         event.preventDefault();
-        editor.getModule('toolbar').formatBlock('TASK');
-    }, [formats]);
+        formatBlock('TASK');
+    }, [formats, blockType]);
     const handleBlockquote = React__namespace.useCallback((event) => {
         event.preventDefault();
-        editor.getModule('toolbar').formatBlock('BLOCKQUOTE');
-    }, [formats]);
+        formatBlock('BLOCKQUOTE');
+    }, [formats, blockType]);
     const handleOrderedList = React__namespace.useCallback((event) => {
         event.preventDefault();
-        editor.getModule('toolbar').formatBlock('ORDERED-LIST');
-    }, [formats]);
+        formatBlock('ORDERED-LIST');
+    }, [formats, blockType]);
     const handleBulletList = React__namespace.useCallback((event) => {
         event.preventDefault();
-        editor.getModule('toolbar').formatBlock('BULLET-LIST');
-    }, [formats]);
+        formatBlock('BULLET-LIST');
+    }, [formats, blockType]);
     React__namespace.useEffect(() => {
         const subs = new Subscription();
         const eventEmitter = editor.getEventEmitter();
@@ -21151,6 +21234,9 @@ const GlobalToolbar = React__namespace.memo((_a) => {
             .select(EditorEvents.EVENT_SELECTION_CHANGE)
             .pipe(combineLatestWith(eventEmitter.select(EditorEvents.EVENT_BLOCK_SELECTED)))
             .subscribe((v) => {
+            var _a;
+            if (editor.getModule('toolbar').getUpdating())
+                return;
             const caret = editor.getCaretPosition();
             if (!caret || !editor.hasFocus()) {
                 if (editor.getModule('selector').getSelectedBlocks().length > 0)
@@ -21160,14 +21246,16 @@ const GlobalToolbar = React__namespace.memo((_a) => {
             }
             setDisplay(true);
             setFormats(editor.getFormats(caret.blockId, caret.index, caret.length));
+            setBlockType((_a = editor.getBlock(caret.blockId)) === null || _a === void 0 ? void 0 : _a.type);
         }));
         return () => {
             subs.unsubscribe();
         };
     }, []);
-    return ReactDOM__default["default"].createPortal(jsxRuntime.exports.jsx(jsxRuntime.exports.Fragment, { children: isDisplay && (jsxRuntime.exports.jsxs(Container$3, Object.assign({}, props, { children: [jsxRuntime.exports.jsx(Button$1, Object.assign({ href: "#", onClick: handleTask }, { children: "\u30BF\u30B9\u30AF" })), jsxRuntime.exports.jsx(Button$1, Object.assign({ href: "#", onClick: handleDecision }, { children: "\u6C7A\u5B9A\u4E8B\u9805" })), jsxRuntime.exports.jsx(Button$1, Object.assign({ href: "#", onClick: handleCodeBlock }, { children: "CodeBlock" })), jsxRuntime.exports.jsx(Button$1, Object.assign({ href: "#", onClick: handleBlockquote }, { children: "\u5F15\u7528" })), jsxRuntime.exports.jsx(Button$1, Object.assign({ href: "#", onClick: handleOrderedList }, { children: "\u756A\u53F7\u30EA\u30B9\u30C8" })), jsxRuntime.exports.jsx(Button$1, Object.assign({ href: "#", onClick: handleBulletList }, { children: "\u30EA\u30B9\u30C8" }))] }))) }), document.body);
+    return ReactDOM__default["default"].createPortal(jsxRuntime.exports.jsx(jsxRuntime.exports.Fragment, { children: isDisplay && (jsxRuntime.exports.jsxs(Container$3, Object.assign({}, props, { children: [jsxRuntime.exports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntime.exports.jsx(Button$1, Object.assign({ href: "#", onClick: handleHeader1, active: blockType === 'HEADER1' }, { children: jsxRuntime.exports.jsx(FormatHeader1, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u898B\u51FA\u3057(\u5927)\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntime.exports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntime.exports.jsx(Button$1, Object.assign({ href: "#", onClick: handleHeader2, active: blockType === 'HEADER2' }, { children: jsxRuntime.exports.jsx(FormatHeader2, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u898B\u51FA\u3057(\u4E2D)\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntime.exports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntime.exports.jsx(Button$1, Object.assign({ href: "#", onClick: handleHeader3, active: blockType === 'HEADER3' }, { children: jsxRuntime.exports.jsx(FormatHeader3, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u898B\u51FA\u3057(\u5C0F)\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntime.exports.jsx(Divider, {}), jsxRuntime.exports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntime.exports.jsx(Button$1, Object.assign({ href: "#", active: blockType === 'CODE-BLOCK', onClick: handleCodeBlock }, { children: jsxRuntime.exports.jsx(FormatCodeBlock, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u30B3\u30FC\u30C9\u30D6\u30ED\u30C3\u30AF\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntime.exports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntime.exports.jsx(Button$1, Object.assign({ href: "#", active: blockType === 'BLOCKQUOTE', onClick: handleBlockquote }, { children: jsxRuntime.exports.jsx(FormatBlockQuote, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u5F15\u7528\u30D6\u30ED\u30C3\u30AF\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntime.exports.jsx(Divider, {}), jsxRuntime.exports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntime.exports.jsx(Button$1, Object.assign({ href: "#", active: blockType === 'BULLET-LIST', onClick: handleBulletList }, { children: jsxRuntime.exports.jsx(FormatBulletList, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u7B87\u6761\u66F8\u304D\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntime.exports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntime.exports.jsx(Button$1, Object.assign({ href: "#", active: blockType === 'ORDERED-LIST', onClick: handleOrderedList }, { children: jsxRuntime.exports.jsx(FormatNumberList, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u756A\u53F7\u4ED8\u304D\u30EA\u30B9\u30C8\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntime.exports.jsx(Divider, {}), jsxRuntime.exports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntime.exports.jsx(Button$1, Object.assign({ href: "#", active: blockType === 'TASK', onClick: handleTask }, { children: jsxRuntime.exports.jsx(FormatTask, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u30BF\u30B9\u30AF\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntime.exports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntime.exports.jsx(Button$1, Object.assign({ href: "#", active: blockType === 'DECISION', onClick: handleDecision }, { children: jsxRuntime.exports.jsx(FormatDecision, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u6C7A\u5B9A\u4E8B\u9805\u306B\u5207\u308A\u66FF\u3048\u308B" }))] }))) }), document.body);
 });
 
+const TOOLBAR_CHILD_WIDTH = 34;
 const Container$2 = He.div `
   height: 34px;
   align-items: center;
@@ -21186,7 +21274,7 @@ const Button = He.a `
     background-color: rgba(255, 255, 255, 0.4);
   }
 `;
-const Divider = He.div `
+He.div `
   width: 1px;
   height: 100%;
   background: #fff;
@@ -21197,25 +21285,41 @@ const BubbleToolbar = React__namespace.memo((_a) => {
     var { editor, scrollContainer } = _a, props = __rest$1(_a, ["editor", "scrollContainer"]);
     const [formats, setFormats] = React__namespace.useState({});
     const [position, setPosition] = React__namespace.useState();
-    const [blockType, setBlockType] = React__namespace.useState();
     const [isDisplay, setDisplay] = React__namespace.useState(false);
     const [currentCaretPosition, setCurrentCaretPosition] = React__namespace.useState();
+    const [toolbarWidth, setToolbarWidth] = React__namespace.useState(0);
     const containerRef = React__namespace.useRef(null);
     const handleBold = React__namespace.useCallback((event) => {
         event.preventDefault();
+        editor.getModule('toolbar').setUpdating(true);
         editor.getModule('toolbar').formatInline({ bold: !(formats === null || formats === void 0 ? void 0 : formats.bold) });
+        setTimeout(() => {
+            editor.getModule('toolbar').setUpdating(false);
+        }, 100);
     }, [formats]);
     const handleItalic = React__namespace.useCallback((event) => {
         event.preventDefault();
+        editor.getModule('toolbar').setUpdating(true);
         editor.getModule('toolbar').formatInline({ italic: !(formats === null || formats === void 0 ? void 0 : formats.italic) });
+        setTimeout(() => {
+            editor.getModule('toolbar').setUpdating(false);
+        }, 100);
     }, [formats]);
     const handleUnderline = React__namespace.useCallback((event) => {
         event.preventDefault();
+        editor.getModule('toolbar').setUpdating(true);
         editor.getModule('toolbar').formatInline({ underline: !(formats === null || formats === void 0 ? void 0 : formats.underline) });
+        setTimeout(() => {
+            editor.getModule('toolbar').setUpdating(false);
+        }, 100);
     }, [formats]);
     const handleStrike = React__namespace.useCallback((event) => {
         event.preventDefault();
+        editor.getModule('toolbar').setUpdating(true);
         editor.getModule('toolbar').formatInline({ strike: !(formats === null || formats === void 0 ? void 0 : formats.strike) });
+        setTimeout(() => {
+            editor.getModule('toolbar').setUpdating(false);
+        }, 100);
     }, [formats]);
     const handleLink = React__namespace.useCallback((event) => {
         event.preventDefault();
@@ -21228,27 +21332,11 @@ const BubbleToolbar = React__namespace.memo((_a) => {
     }, [formats, currentCaretPosition]);
     const handleInlineCode = React__namespace.useCallback((event) => {
         event.preventDefault();
+        editor.getModule('toolbar').setUpdating(true);
         editor.getModule('toolbar').formatInline({ code: !(formats === null || formats === void 0 ? void 0 : formats.code) });
-    }, [formats]);
-    const handleHeader1 = React__namespace.useCallback((event) => {
-        event.preventDefault();
-        editor.getModule('toolbar').formatBlock('HEADER1');
-    }, [formats]);
-    const handleHeader2 = React__namespace.useCallback((event) => {
-        event.preventDefault();
-        editor.getModule('toolbar').formatBlock('HEADER2');
-    }, [formats]);
-    const handleHeader3 = React__namespace.useCallback((event) => {
-        event.preventDefault();
-        editor.getModule('toolbar').formatBlock('HEADER3');
-    }, [formats]);
-    const handleOrderedList = React__namespace.useCallback((event) => {
-        event.preventDefault();
-        editor.getModule('toolbar').formatBlock('ORDERED-LIST');
-    }, [formats]);
-    const handleBulletList = React__namespace.useCallback((event) => {
-        event.preventDefault();
-        editor.getModule('toolbar').formatBlock('BULLET-LIST');
+        setTimeout(() => {
+            editor.getModule('toolbar').setUpdating(false);
+        }, 100);
     }, [formats]);
     const handleColor = React__namespace.useCallback((event) => {
         event.preventDefault();
@@ -21256,11 +21344,6 @@ const BubbleToolbar = React__namespace.memo((_a) => {
         eventEmitter.emit(EditorEvents.EVENT_PALETTE_CLICK, {
             caretPosition: currentCaretPosition,
         });
-        // if (formats?.color) {
-        //   editor.getModule('toolbar').formatInline({ color: false });
-        // } else {
-        //   editor.getModule('toolbar').formatInline({ color: 'red' });
-        // }
     }, [formats, currentCaretPosition]);
     const handleMouseDown = (e) => {
         e.preventDefault();
@@ -21274,19 +21357,21 @@ const BubbleToolbar = React__namespace.memo((_a) => {
             const container = getHtmlElement(scrollContainer);
             if (container) {
                 const containerRect = container.getBoundingClientRect();
-                const top = ((_a = container === null || container === void 0 ? void 0 : container.scrollTop) !== null && _a !== void 0 ? _a : 0) + caret.rect.top - containerRect.top - 4;
-                const left = caret.rect.left - containerRect.left;
+                const top = ((_a = container === null || container === void 0 ? void 0 : container.scrollTop) !== null && _a !== void 0 ? _a : 0) + caret.rect.top - containerRect.top - 4; // ブロックとツールバーの隙間をあける
+                const left = caret.rect.left - containerRect.left - toolbarWidth / 2;
                 setPosition({ top, left });
             }
             else {
                 const scrollEl = document.scrollingElement;
                 const top = scrollEl.scrollTop + caret.rect.top - 4;
-                const left = caret.rect.left;
+                const left = caret.rect.left - toolbarWidth / 2;
                 setPosition({ top, left });
             }
         };
         subs.add(eventEmitter.select(EditorEvents.EVENT_SELECTION_CHANGE).subscribe((v) => {
-            var _a, _b, _c;
+            var _a, _b;
+            if (editor.getModule('toolbar').getUpdating())
+                return;
             const caret = editor.getCaretPosition();
             if (!caret) {
                 setPosition(undefined);
@@ -21307,9 +21392,11 @@ const BubbleToolbar = React__namespace.memo((_a) => {
             updatePosition(caret);
             setDisplay(!caret.collapsed);
             setFormats(editor.getFormats(caret.blockId, caret.index, caret.length));
-            setBlockType((_c = editor.getBlock(caret.blockId)) === null || _c === void 0 ? void 0 : _c.type);
         }));
         subs.add(eventEmitter.select(EditorEvents.EVENT_BLOCK_RERENDER).subscribe(() => {
+            var _a;
+            if ((_a = editor.getModule('toolbar')) === null || _a === void 0 ? void 0 : _a.getUpdating())
+                return;
             setDisplay(false);
             setTimeout(() => {
                 const caret = editor.getCaretPosition();
@@ -21322,18 +21409,19 @@ const BubbleToolbar = React__namespace.memo((_a) => {
         return () => {
             subs.unsubscribe();
         };
-    }, [editor, scrollContainer]);
+    }, [editor, scrollContainer, toolbarWidth]);
     React__namespace.useEffect(() => {
         setTimeout(() => {
             if (!containerRef.current)
                 return;
             editor.getModule('toolbar').setBubbleToolbarRef(containerRef.current);
+            setToolbarWidth((containerRef.current.children.length - 1) * TOOLBAR_CHILD_WIDTH);
         });
     }, [editor]);
     return ReactDOM__default["default"].createPortal(jsxRuntime.exports.jsx(jsxRuntime.exports.Fragment, { children: jsxRuntime.exports.jsxs(Container$2, Object.assign({ id: "bubble-toolbar", style: {
                 top: (_b = position === null || position === void 0 ? void 0 : position.top) !== null && _b !== void 0 ? _b : 0,
                 left: (_c = position === null || position === void 0 ? void 0 : position.left) !== null && _c !== void 0 ? _c : 0,
-            }, isDisplay: isDisplay, ref: containerRef, onMouseDown: handleMouseDown }, props, { children: [jsxRuntime.exports.jsx(Button, Object.assign({ href: "#", onClick: handleBold, active: !!(formats === null || formats === void 0 ? void 0 : formats.bold) }, { children: jsxRuntime.exports.jsx(FormatBold, { size: "20" }) })), jsxRuntime.exports.jsx(Button, Object.assign({ href: "#", onClick: handleItalic, active: !!(formats === null || formats === void 0 ? void 0 : formats.italic) }, { children: jsxRuntime.exports.jsx(FormatItalic, { size: "20" }) })), jsxRuntime.exports.jsx(Button, Object.assign({ href: "#", onClick: handleUnderline, active: !!(formats === null || formats === void 0 ? void 0 : formats.underline) }, { children: jsxRuntime.exports.jsx(FormatUnderLine, { size: "20" }) })), jsxRuntime.exports.jsx(Button, Object.assign({ href: "#", onClick: handleStrike, active: !!(formats === null || formats === void 0 ? void 0 : formats.strike) }, { children: jsxRuntime.exports.jsx(FormatStrike, { size: "20" }) })), jsxRuntime.exports.jsx(Button, Object.assign({ href: "#", onClick: handleInlineCode, active: !!(formats === null || formats === void 0 ? void 0 : formats.code) }, { children: jsxRuntime.exports.jsx(FormatCode, { size: "20" }) })), jsxRuntime.exports.jsx(Button, Object.assign({ id: "toolbar-palette", href: "#", onClick: handleColor, active: !!(formats === null || formats === void 0 ? void 0 : formats.color) }, { children: jsxRuntime.exports.jsx(FormatColor, { size: "20" }) })), jsxRuntime.exports.jsx(Button, Object.assign({ id: "toolbar-link", href: "#", onClick: handleLink, active: !!(formats === null || formats === void 0 ? void 0 : formats.link) }, { children: jsxRuntime.exports.jsx(FormatLink, { size: "20" }) })), jsxRuntime.exports.jsx(Divider, {}), jsxRuntime.exports.jsx(Button, Object.assign({ href: "#", onClick: handleHeader1, active: blockType === 'HEADER1' }, { children: jsxRuntime.exports.jsx(FormatHeader1, { size: "20" }) })), jsxRuntime.exports.jsx(Button, Object.assign({ href: "#", onClick: handleHeader2, active: blockType === 'HEADER2' }, { children: jsxRuntime.exports.jsx(FormatHeader2, { size: "20" }) })), jsxRuntime.exports.jsx(Button, Object.assign({ href: "#", onClick: handleHeader3, active: blockType === 'HEADER3' }, { children: jsxRuntime.exports.jsx(FormatHeader3, { size: "20" }) })), jsxRuntime.exports.jsx(Button, Object.assign({ href: "#", onClick: handleBulletList, active: blockType === 'BULLET-LIST' }, { children: jsxRuntime.exports.jsx(FormatBulletList, { size: "20" }) })), jsxRuntime.exports.jsx(Button, Object.assign({ href: "#", onClick: handleOrderedList, active: blockType === 'ORDERED-LIST' }, { children: jsxRuntime.exports.jsx(FormatNumberList, { size: "20" }) }))] })) }), (_d = getHtmlElement(scrollContainer)) !== null && _d !== void 0 ? _d : document.body);
+            }, isDisplay: isDisplay, ref: containerRef, onMouseDown: handleMouseDown }, props, { children: [jsxRuntime.exports.jsxs(Tooltip, Object.assign({ targetElement: jsxRuntime.exports.jsx(Button, Object.assign({ href: "#", onClick: handleBold, active: !!(formats === null || formats === void 0 ? void 0 : formats.bold) }, { children: jsxRuntime.exports.jsx(FormatBold, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: ["\u592A\u5B57", jsxRuntime.exports.jsx("br", {}), jsxRuntime.exports.jsx("div", Object.assign({ className: "description" }, { children: "Ctrl + B" }))] })), jsxRuntime.exports.jsxs(Tooltip, Object.assign({ targetElement: jsxRuntime.exports.jsx(Button, Object.assign({ href: "#", onClick: handleItalic, active: !!(formats === null || formats === void 0 ? void 0 : formats.italic) }, { children: jsxRuntime.exports.jsx(FormatItalic, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: ["\u659C\u4F53", jsxRuntime.exports.jsx("br", {}), jsxRuntime.exports.jsx("div", Object.assign({ className: "description" }, { children: "Ctrl + I" }))] })), jsxRuntime.exports.jsxs(Tooltip, Object.assign({ targetElement: jsxRuntime.exports.jsx(Button, Object.assign({ href: "#", onClick: handleUnderline, active: !!(formats === null || formats === void 0 ? void 0 : formats.underline) }, { children: jsxRuntime.exports.jsx(FormatUnderLine, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: ["\u4E0B\u7DDA", jsxRuntime.exports.jsx("br", {}), jsxRuntime.exports.jsx("div", Object.assign({ className: "description" }, { children: "Ctrl + U" }))] })), jsxRuntime.exports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntime.exports.jsx(Button, Object.assign({ href: "#", onClick: handleStrike, active: !!(formats === null || formats === void 0 ? void 0 : formats.strike) }, { children: jsxRuntime.exports.jsx(FormatStrike, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u6253\u6D88\u3057\u7DDA" })), jsxRuntime.exports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntime.exports.jsx(Button, Object.assign({ id: "toolbar-palette", href: "#", onClick: handleColor, active: !!(formats === null || formats === void 0 ? void 0 : formats.color) }, { children: jsxRuntime.exports.jsx(FormatColor, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u6587\u5B57\u8272\u3092\u5909\u66F4" })), jsxRuntime.exports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntime.exports.jsx(Button, Object.assign({ id: "toolbar-link", href: "#", onClick: handleLink, active: !!(formats === null || formats === void 0 ? void 0 : formats.link) }, { children: jsxRuntime.exports.jsx(FormatLink, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u30EA\u30F3\u30AF\u3092\u8FFD\u52A0" })), jsxRuntime.exports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntime.exports.jsx(Button, Object.assign({ href: "#", onClick: handleInlineCode, active: !!(formats === null || formats === void 0 ? void 0 : formats.code) }, { children: jsxRuntime.exports.jsx(FormatCode, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u30A4\u30F3\u30E9\u30A4\u30F3\u30B3\u30FC\u30C9" }))] })) }), (_d = getHtmlElement(scrollContainer)) !== null && _d !== void 0 ? _d : document.body);
 });
 
 var lodash_isequal = {exports: {}};
@@ -28501,6 +28589,7 @@ class LoggerModule {
 
 class ToolbarModule {
     constructor({ eventEmitter, editor }) {
+        this.isUpdating = false;
         this.editor = editor;
         this.eventEmitter = eventEmitter;
         this.bubbleRef = null;
@@ -28561,6 +28650,12 @@ class ToolbarModule {
             index: caretPosition.index,
             length: caretPosition.length,
         }), 10);
+    }
+    setUpdating(isUpdating) {
+        this.isUpdating = isUpdating;
+    }
+    getUpdating() {
+        return this.isUpdating;
     }
 }
 
@@ -31574,7 +31669,7 @@ const Editor = React__namespace.memo(React__namespace.forwardRef((_a, forwardRef
             blockId: lastBlock.id,
             index: (_a = editor.getBlockLength(lastBlock.id)) !== null && _a !== void 0 ? _a : 0,
         });
-    }, [blocks.length]);
+    }, [blocks]);
     React__namespace.useEffect(() => {
         var _a;
         const subs = new Subscription();

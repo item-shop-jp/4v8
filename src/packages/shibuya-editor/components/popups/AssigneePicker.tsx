@@ -65,7 +65,7 @@ const MemberInfo = styled.div<{ selected: boolean }>`
   align-items: center;
   flex-direction: row;
   padding: 8px 16px;
-  height: 40px;
+  height: 52px;
   font-size: 16px;
   color: #fff;
   position: relative;
@@ -93,6 +93,11 @@ const MemberIcon = styled.div`
     height: 100%;
     object-fit: cover;
   }
+`;
+
+const MemberName = styled.div`
+  max-height: 48px;
+  margin-left: 8px;
 `;
 
 const Text = styled.div`
@@ -226,7 +231,7 @@ export const AssigneePicker = React.memo(
                     <Text>{member.name.slice(0, 1)}</Text>
                   )}
                 </MemberIcon>
-                <div style={{ marginLeft: '8px' }}>{member.name}</div>
+                <MemberName>{member.name}</MemberName>
                 {member.selected && (
                   <RemoveButton href="#" onClick={handleRemove(member)}>
                     <Close />

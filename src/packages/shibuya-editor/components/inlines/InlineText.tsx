@@ -43,6 +43,18 @@ const Text = styled.span<InlineContentProps>`
 `;
 
 const Link = styled.a<InlineContentProps>`
+  &::selection {
+    background: rgba(46, 170, 220, 0.2);
+  }
+  img.emoji {
+    height: 1em;
+    width: 1em;
+    margin: 0 0.05em 0 0.1em;
+    vertical-align: -0.1em;
+    &::selection {
+      background: rgba(46, 170, 220, 0.2);
+    }
+  }
   ${({ attributes, formats }) => {
     return Object.keys(attributes).map((key: string) => {
       const styleFormat = `inline/style/${key}`;

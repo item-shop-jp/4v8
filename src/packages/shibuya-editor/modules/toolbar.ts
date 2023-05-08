@@ -12,6 +12,7 @@ interface Props {
 export class ToolbarModule implements Module {
   private eventEmitter;
   private editor;
+  private isUpdating = false;
   private bubbleRef: HTMLDivElement | null;
 
   constructor({ eventEmitter, editor }: Props) {
@@ -85,5 +86,13 @@ export class ToolbarModule implements Module {
         }),
       10,
     );
+  }
+
+  setUpdating(isUpdating: boolean) {
+    this.isUpdating = isUpdating;
+  }
+
+  getUpdating() {
+    return this.isUpdating;
   }
 }

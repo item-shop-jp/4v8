@@ -54,6 +54,7 @@ export const PalettePopup = React.memo(({ editor, scrollContainer }: PalettePopu
   const handleFormatColor = React.useCallback(
     (color: string) => (e: React.MouseEvent) => {
       e.preventDefault();
+      editor.getModule('toolbar').setUpdating(true);
       if (formats?.color === color) {
         editor.getModule('toolbar').formatInline({ color: false }, currentCaretPosition);
         setFormats({ ...formats, color: null });
@@ -61,6 +62,9 @@ export const PalettePopup = React.memo(({ editor, scrollContainer }: PalettePopu
         editor.getModule('toolbar').formatInline({ color }, currentCaretPosition);
         setFormats({ ...formats, color });
       }
+      setTimeout(() => {
+        editor.getModule('toolbar').setUpdating(false);
+      }, 100);
     },
     [formats, currentCaretPosition],
   );
@@ -77,22 +81,14 @@ export const PalettePopup = React.memo(({ editor, scrollContainer }: PalettePopu
         }
         setPopupOpen(true);
         const container = getHtmlElement(scrollContainer);
-        const bubbleToolbarRect = document
-          .getElementById('bubble-toolbar')
-          ?.getBoundingClientRect();
         const paletteToolbarRect = document
           .getElementById('toolbar-palette')
           ?.getBoundingClientRect();
         if (container) {
           const containerRect = container.getBoundingClientRect();
           const top = (container?.scrollTop ?? 0) + caret.rect.top - containerRect.top + 4;
-          if (paletteToolbarRect && bubbleToolbarRect) {
-            const left =
-              caret.rect.left -
-              containerRect.left +
-              (paletteToolbarRect.left - bubbleToolbarRect.left) -
-              (104 - paletteToolbarRect.width) / 2; // ContainerはInputの幅
-
+          if (paletteToolbarRect) {
+            const left = paletteToolbarRect.left - containerRect.left;
             setPosition({
               top,
               left,

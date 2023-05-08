@@ -42,7 +42,7 @@ interface ButtonProps {
   active: boolean;
 }
 
-const TOOLBAR_CHILD_WIDTH = 34;
+export const TOOLBAR_CHILD_WIDTH = 34;
 
 const Container = styled.div<ContainerProps>`
   height: 34px;
@@ -62,13 +62,6 @@ const Button = styled.a<ButtonProps>`
   &:hover {
     background-color: rgba(255, 255, 255, 0.4);
   }
-`;
-
-const Divider = styled.div`
-  width: 1px;
-  height: 100%;
-  background: #fff;
-  opacity: 0.2;
 `;
 
 export const BubbleToolbar = React.memo(

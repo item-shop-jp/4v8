@@ -7,6 +7,7 @@ import { CaretPosition } from '../../types/caret';
 import { EditorController } from '../../types/editor';
 import { Inline, InlineAttributes } from '../../types/inline';
 import { getHtmlElement } from '../../utils/dom';
+import { TOOLBAR_CHILD_WIDTH } from '../toolbar';
 
 export interface LinkPopupProps {
   editor: EditorController;
@@ -100,13 +101,8 @@ export const LinkPopup = React.memo(({ editor, scrollContainer, ...props }: Prop
         if (container) {
           const containerRect = container.getBoundingClientRect();
           const top = (container?.scrollTop ?? 0) + caret.rect.top - containerRect.top + 4;
-          if (linkRect && bubbleToolbarRect) {
-            const left =
-              caret.rect.left -
-              containerRect.left +
-              (linkRect.left - bubbleToolbarRect.left) -
-              (200 - linkRect.width) / 2; // 200はInputの幅
-
+          if (linkRect) {
+            const left = linkRect.left - containerRect.left - TOOLBAR_CHILD_WIDTH; // パレットに合わせるのでパレットの横幅分引く
             setPopupPosition({
               top,
               left,

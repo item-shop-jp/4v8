@@ -57,7 +57,7 @@ const Members = styled.div`
   height: 100%;
   flex-grow: 0;
   overflow-x: hidden;
-  overflow-y: scroll;
+  overflow-y: auto;
 `;
 
 const MemberInfo = styled.div<{ selected: boolean }>`

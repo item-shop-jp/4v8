@@ -307,6 +307,17 @@ export const Editor = React.memo(
           eventEmitter.select(EditorEvents.EVENT_BLOCK_RERENDER).subscribe(() => {
             const renderBlocks = editor.getBlocks();
             setBlocks(renderBlocks);
+
+            if (
+              renderBlocks.length <= 1 &&
+              renderBlocks[0].type === 'PARAGRAPH' &&
+              (getBlockLength(renderBlocks[0].id) ?? 0) < 1
+            ) {
+              setShowPlaceholder(true);
+            } else {
+              setShowPlaceholder(false);
+            }
+
             if (renderBlocks.length > 2000) {
               editor.getModule('selector').changeAreaMoveDelay(300);
             } else if (renderBlocks.length > 1000) {

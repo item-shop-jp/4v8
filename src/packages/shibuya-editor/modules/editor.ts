@@ -101,7 +101,7 @@ export class EditorModule implements Module {
 
   deleteBlocks(blockIds: string[]) {
     const blocks = this.editor.getBlocks();
-    if (blocks.length <= 1) return;
+    if (blocks.length < 1) return;
     this.editor.deleteBlocks(blockIds);
     const deletedBlocks = this.editor.getBlocks();
     if (deletedBlocks.length < 1) {

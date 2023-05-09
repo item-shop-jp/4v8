@@ -27707,7 +27707,7 @@ class EditorModule {
     deleteBlocks(blockIds) {
         var _a;
         const blocks = this.editor.getBlocks();
-        if (blocks.length <= 1)
+        if (blocks.length < 1)
             return;
         this.editor.deleteBlocks(blockIds);
         const deletedBlocks = this.editor.getBlocks();
@@ -31692,8 +31692,17 @@ const Editor = React__namespace.memo(React__namespace.forwardRef((_a, forwardRef
             { name: 'collaborator', module: CollaboratorModule },
         ], (_a = settings === null || settings === void 0 ? void 0 : settings.modules) !== null && _a !== void 0 ? _a : {});
         subs.add(eventEmitter.select(EditorEvents.EVENT_BLOCK_RERENDER).subscribe(() => {
+            var _a;
             const renderBlocks = editor.getBlocks();
             setBlocks(renderBlocks);
+            if (renderBlocks.length <= 1 &&
+                renderBlocks[0].type === 'PARAGRAPH' &&
+                ((_a = getBlockLength(renderBlocks[0].id)) !== null && _a !== void 0 ? _a : 0) < 1) {
+                setShowPlaceholder(true);
+            }
+            else {
+                setShowPlaceholder(false);
+            }
             if (renderBlocks.length > 2000) {
                 editor.getModule('selector').changeAreaMoveDelay(300);
             }

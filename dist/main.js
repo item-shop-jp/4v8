@@ -20141,8 +20141,9 @@ const Task = React__namespace.memo((_a) => {
         handleChangeElement();
     }, []);
     React__namespace.useEffect(() => {
-        setSelectedMembers(attributes.assignees);
-    }, [attributes.assignees]);
+        var _a;
+        setSelectedMembers((_a = attributes === null || attributes === void 0 ? void 0 : attributes.assignees) !== null && _a !== void 0 ? _a : []);
+    }, [attributes === null || attributes === void 0 ? void 0 : attributes.assignees]);
     const handleClickCheckBox = React__namespace.useCallback((e) => {
         e.preventDefault();
         e.stopPropagation();
@@ -31053,16 +31054,16 @@ class MarkdownShortcutModule {
             handler: this._handleCodeBlock.bind(this),
         });
         this.addShortcut({
-            name: 'check-list',
+            name: 'check-task',
             type: 'block',
             pattern: /^\[\s?\]$/,
-            handler: this._handleCheckList.bind(this),
+            handler: this._handleCheckTask.bind(this),
         });
         this.addShortcut({
-            name: 'checked-list',
+            name: 'checked-task',
             type: 'block',
             pattern: /^\[x\]$/,
-            handler: this._handleCheckedList.bind(this),
+            handler: this._handleCheckedTask.bind(this),
         });
         this.addShortcut({
             name: 'code',
@@ -31152,11 +31153,15 @@ class MarkdownShortcutModule {
     _handleCodeBlock(caret, match) {
         this.formatBlock(caret.blockId, 'CODE-BLOCK', 0, stringLength(match[0]));
     }
-    _handleCheckList(caret, match) {
-        this.formatBlock(caret.blockId, 'CHECK-LIST', 0, stringLength(match[0]), { checked: false });
+    _handleCheckTask(caret, match) {
+        this.formatBlock(caret.blockId, 'TASK', 0, stringLength(match[0]), {
+            checked: false,
+        });
     }
-    _handleCheckedList(caret, match) {
-        this.formatBlock(caret.blockId, 'CHECK-LIST', 0, stringLength(match[0]), { checked: true });
+    _handleCheckedTask(caret, match) {
+        this.formatBlock(caret.blockId, 'TASK', 0, stringLength(match[0]), {
+            checked: true,
+        });
     }
     _handleImage(caret, match) {
         var _a, _b;

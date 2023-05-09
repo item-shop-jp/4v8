@@ -105,17 +105,17 @@ export class MarkdownShortcutModule implements Module {
     });
 
     this.addShortcut({
-      name: 'check-list',
+      name: 'check-task',
       type: 'block',
       pattern: /^\[\s?\]$/,
-      handler: this._handleCheckList.bind(this),
+      handler: this._handleCheckTask.bind(this),
     });
 
     this.addShortcut({
-      name: 'checked-list',
+      name: 'checked-task',
       type: 'block',
       pattern: /^\[x\]$/,
-      handler: this._handleCheckedList.bind(this),
+      handler: this._handleCheckedTask.bind(this),
     });
 
     this.addShortcut({
@@ -249,12 +249,16 @@ export class MarkdownShortcutModule implements Module {
     this.formatBlock(caret.blockId, 'CODE-BLOCK', 0, stringLength(match[0]));
   }
 
-  private _handleCheckList(caret: CaretPosition, match: RegExpMatchArray) {
-    this.formatBlock(caret.blockId, 'CHECK-LIST', 0, stringLength(match[0]), { checked: false });
+  private _handleCheckTask(caret: CaretPosition, match: RegExpMatchArray) {
+    this.formatBlock(caret.blockId, 'TASK', 0, stringLength(match[0]), {
+      checked: false,
+    });
   }
 
-  private _handleCheckedList(caret: CaretPosition, match: RegExpMatchArray) {
-    this.formatBlock(caret.blockId, 'CHECK-LIST', 0, stringLength(match[0]), { checked: true });
+  private _handleCheckedTask(caret: CaretPosition, match: RegExpMatchArray) {
+    this.formatBlock(caret.blockId, 'TASK', 0, stringLength(match[0]), {
+      checked: true,
+    });
   }
 
   private _handleImage(caret: CaretPosition, match: RegExpMatchArray) {

@@ -1,14 +1,9 @@
 'use strict';
 
-Object.defineProperty(exports, '__esModule', { value: true });
-
 var React = require('react');
 var ReactDOM = require('react-dom');
 
-function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
-
-function _interopNamespace(e) {
-    if (e && e.__esModule) return e;
+function _interopNamespaceDefault(e) {
     var n = Object.create(null);
     if (e) {
         Object.keys(e).forEach(function (k) {
@@ -21,15 +16,13 @@ function _interopNamespace(e) {
             }
         });
     }
-    n["default"] = e;
+    n.default = e;
     return Object.freeze(n);
 }
 
-var React__default = /*#__PURE__*/_interopDefaultLegacy(React);
-var React__namespace = /*#__PURE__*/_interopNamespace(React);
-var ReactDOM__default = /*#__PURE__*/_interopDefaultLegacy(ReactDOM);
+var React__namespace = /*#__PURE__*/_interopNamespaceDefault(React);
 
-/*! *****************************************************************************
+/******************************************************************************
 Copyright (c) Microsoft Corporation.
 
 Permission to use, copy, modify, and/or distribute this software for any
@@ -43,6 +36,22 @@ LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
 OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 PERFORMANCE OF THIS SOFTWARE.
 ***************************************************************************** */
+/* global Reflect, Promise */
+
+var extendStatics = function(d, b) {
+    extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+    return extendStatics(d, b);
+};
+
+function __extends(d, b) {
+    if (typeof b !== "function" && b !== null)
+        throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+    extendStatics(d, b);
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+}
 
 function __rest$1(s, e) {
     var t = {};
@@ -56,7 +65,7 @@ function __rest$1(s, e) {
     return t;
 }
 
-function __awaiter$1(thisArg, _arguments, P, generator) {
+function __awaiter(thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -66,12 +75,114 @@ function __awaiter$1(thisArg, _arguments, P, generator) {
     });
 }
 
+function __generator(thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+}
+
+function __values(o) {
+    var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
+    if (m) return m.call(o);
+    if (o && typeof o.length === "number") return {
+        next: function () {
+            if (o && i >= o.length) o = void 0;
+            return { value: o && o[i++], done: !o };
+        }
+    };
+    throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
+}
+
+function __read(o, n) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
+    if (!m) return o;
+    var i = m.call(o), r, ar = [], e;
+    try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+    }
+    catch (error) { e = { error: error }; }
+    finally {
+        try {
+            if (r && !r.done && (m = i["return"])) m.call(i);
+        }
+        finally { if (e) throw e.error; }
+    }
+    return ar;
+}
+
+function __spreadArray$1(to, from, pack) {
+    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+        if (ar || !(i in from)) {
+            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+            ar[i] = from[i];
+        }
+    }
+    return to.concat(ar || Array.prototype.slice.call(from));
+}
+
+function __await(v) {
+    return this instanceof __await ? (this.v = v, this) : new __await(v);
+}
+
+function __asyncGenerator(thisArg, _arguments, generator) {
+    if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
+    var g = generator.apply(thisArg, _arguments || []), i, q = [];
+    return i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i;
+    function verb(n) { if (g[n]) i[n] = function (v) { return new Promise(function (a, b) { q.push([n, v, a, b]) > 1 || resume(n, v); }); }; }
+    function resume(n, v) { try { step(g[n](v)); } catch (e) { settle(q[0][3], e); } }
+    function step(r) { r.value instanceof __await ? Promise.resolve(r.value.v).then(fulfill, reject) : settle(q[0][2], r); }
+    function fulfill(value) { resume("next", value); }
+    function reject(value) { resume("throw", value); }
+    function settle(f, v) { if (f(v), q.shift(), q.length) resume(q[0][0], q[0][1]); }
+}
+
+function __asyncValues(o) {
+    if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
+    var m = o[Symbol.asyncIterator], i;
+    return m ? m.call(o) : (o = typeof __values === "function" ? __values(o) : o[Symbol.iterator](), i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i);
+    function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
+    function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
+}
+
 var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
+function getDefaultExportFromCjs (x) {
+	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
+}
+
 function getAugmentedNamespace(n) {
+  if (n.__esModule) return n;
   var f = n.default;
 	if (typeof f == "function") {
-		var a = function () {
+		var a = function a () {
+			if (this instanceof a) {
+				var args = [null];
+				args.push.apply(args, arguments);
+				var Ctor = Function.bind.apply(f, args);
+				return new Ctor();
+			}
 			return f.apply(this, arguments);
 		};
 		a.prototype = f.prototype;
@@ -108,7 +219,7 @@ var hasRequiredReactJsxRuntime_production_min;
 function requireReactJsxRuntime_production_min () {
 	if (hasRequiredReactJsxRuntime_production_min) return reactJsxRuntime_production_min;
 	hasRequiredReactJsxRuntime_production_min = 1;
-var f=React__default["default"],k=Symbol.for("react.element"),l=Symbol.for("react.fragment"),m=Object.prototype.hasOwnProperty,n=f.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED.ReactCurrentOwner,p={key:!0,ref:!0,__self:!0,__source:!0};
+var f=React,k=Symbol.for("react.element"),l=Symbol.for("react.fragment"),m=Object.prototype.hasOwnProperty,n=f.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED.ReactCurrentOwner,p={key:!0,ref:!0,__self:!0,__source:!0};
 	function q(c,a,g){var b,d={},e=null,h=null;void 0!==g&&(e=""+g);void 0!==a.key&&(e=""+a.key);void 0!==a.ref&&(h=a.ref);for(b in a)m.call(a,b)&&!p.hasOwnProperty(b)&&(d[b]=a[b]);if(c&&c.defaultProps)for(b in a=c.defaultProps,a)void 0===d[b]&&(d[b]=a[b]);return {$$typeof:k,type:c,key:e,ref:h,props:d,_owner:n.current}}reactJsxRuntime_production_min.Fragment=l;reactJsxRuntime_production_min.jsx=q;reactJsxRuntime_production_min.jsxs=q;
 	return reactJsxRuntime_production_min;
 }
@@ -134,7 +245,7 @@ function requireReactJsxRuntime_development () {
 	if (process.env.NODE_ENV !== "production") {
 	  (function() {
 
-	var React = React__default["default"];
+	var React$1 = React;
 
 	// ATTENTION
 	// When adding new symbols to this file,
@@ -169,7 +280,7 @@ function requireReactJsxRuntime_development () {
 	  return null;
 	}
 
-	var ReactSharedInternals = React.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
+	var ReactSharedInternals = React$1.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
 
 	function error(format) {
 	  {
@@ -1435,18 +1546,17 @@ function requireReactJsxRuntime_development () {
 	return reactJsxRuntime_development;
 }
 
-(function (module) {
+if (process.env.NODE_ENV === 'production') {
+  jsxRuntime.exports = requireReactJsxRuntime_production_min();
+} else {
+  jsxRuntime.exports = requireReactJsxRuntime_development();
+}
 
-	if (process.env.NODE_ENV === 'production') {
-	  module.exports = requireReactJsxRuntime_production_min();
-	} else {
-	  module.exports = requireReactJsxRuntime_development();
-	}
-} (jsxRuntime));
+var jsxRuntimeExports = jsxRuntime.exports;
 
-var reactIs$2 = {exports: {}};
+var reactIs$3 = {exports: {}};
 
-var reactIs_production_min$1 = {};
+var reactIs_production_min$2 = {};
 
 /** @license React v17.0.1
  * react-is.production.min.js
@@ -1457,21 +1567,21 @@ var reactIs_production_min$1 = {};
  * LICENSE file in the root directory of this source tree.
  */
 
-var hasRequiredReactIs_production_min$1;
+var hasRequiredReactIs_production_min$2;
 
-function requireReactIs_production_min$1 () {
-	if (hasRequiredReactIs_production_min$1) return reactIs_production_min$1;
-	hasRequiredReactIs_production_min$1 = 1;
+function requireReactIs_production_min$2 () {
+	if (hasRequiredReactIs_production_min$2) return reactIs_production_min$2;
+	hasRequiredReactIs_production_min$2 = 1;
 var b=60103,c=60106,d=60107,e=60108,f=60114,g=60109,h=60110,k=60112,l=60113,m=60120,n=60115,p=60116,q=60121,r=60122,u=60117,v=60129,w=60131;
 	if("function"===typeof Symbol&&Symbol.for){var x=Symbol.for;b=x("react.element");c=x("react.portal");d=x("react.fragment");e=x("react.strict_mode");f=x("react.profiler");g=x("react.provider");h=x("react.context");k=x("react.forward_ref");l=x("react.suspense");m=x("react.suspense_list");n=x("react.memo");p=x("react.lazy");q=x("react.block");r=x("react.server.block");u=x("react.fundamental");v=x("react.debug_trace_mode");w=x("react.legacy_hidden");}
-	function y(a){if("object"===typeof a&&null!==a){var t=a.$$typeof;switch(t){case b:switch(a=a.type,a){case d:case f:case e:case l:case m:return a;default:switch(a=a&&a.$$typeof,a){case h:case k:case p:case n:case g:return a;default:return t}}case c:return t}}}var z=g,A=b,B=k,C=d,D=p,E=n,F=c,G=f,H=e,I=l;reactIs_production_min$1.ContextConsumer=h;reactIs_production_min$1.ContextProvider=z;reactIs_production_min$1.Element=A;reactIs_production_min$1.ForwardRef=B;reactIs_production_min$1.Fragment=C;reactIs_production_min$1.Lazy=D;reactIs_production_min$1.Memo=E;reactIs_production_min$1.Portal=F;reactIs_production_min$1.Profiler=G;reactIs_production_min$1.StrictMode=H;
-	reactIs_production_min$1.Suspense=I;reactIs_production_min$1.isAsyncMode=function(){return !1};reactIs_production_min$1.isConcurrentMode=function(){return !1};reactIs_production_min$1.isContextConsumer=function(a){return y(a)===h};reactIs_production_min$1.isContextProvider=function(a){return y(a)===g};reactIs_production_min$1.isElement=function(a){return "object"===typeof a&&null!==a&&a.$$typeof===b};reactIs_production_min$1.isForwardRef=function(a){return y(a)===k};reactIs_production_min$1.isFragment=function(a){return y(a)===d};reactIs_production_min$1.isLazy=function(a){return y(a)===p};reactIs_production_min$1.isMemo=function(a){return y(a)===n};
-	reactIs_production_min$1.isPortal=function(a){return y(a)===c};reactIs_production_min$1.isProfiler=function(a){return y(a)===f};reactIs_production_min$1.isStrictMode=function(a){return y(a)===e};reactIs_production_min$1.isSuspense=function(a){return y(a)===l};reactIs_production_min$1.isValidElementType=function(a){return "string"===typeof a||"function"===typeof a||a===d||a===f||a===v||a===e||a===l||a===m||a===w||"object"===typeof a&&null!==a&&(a.$$typeof===p||a.$$typeof===n||a.$$typeof===g||a.$$typeof===h||a.$$typeof===k||a.$$typeof===u||a.$$typeof===q||a[0]===r)?!0:!1};
-	reactIs_production_min$1.typeOf=y;
-	return reactIs_production_min$1;
+	function y(a){if("object"===typeof a&&null!==a){var t=a.$$typeof;switch(t){case b:switch(a=a.type,a){case d:case f:case e:case l:case m:return a;default:switch(a=a&&a.$$typeof,a){case h:case k:case p:case n:case g:return a;default:return t}}case c:return t}}}var z=g,A=b,B=k,C=d,D=p,E=n,F=c,G=f,H=e,I=l;reactIs_production_min$2.ContextConsumer=h;reactIs_production_min$2.ContextProvider=z;reactIs_production_min$2.Element=A;reactIs_production_min$2.ForwardRef=B;reactIs_production_min$2.Fragment=C;reactIs_production_min$2.Lazy=D;reactIs_production_min$2.Memo=E;reactIs_production_min$2.Portal=F;reactIs_production_min$2.Profiler=G;reactIs_production_min$2.StrictMode=H;
+	reactIs_production_min$2.Suspense=I;reactIs_production_min$2.isAsyncMode=function(){return !1};reactIs_production_min$2.isConcurrentMode=function(){return !1};reactIs_production_min$2.isContextConsumer=function(a){return y(a)===h};reactIs_production_min$2.isContextProvider=function(a){return y(a)===g};reactIs_production_min$2.isElement=function(a){return "object"===typeof a&&null!==a&&a.$$typeof===b};reactIs_production_min$2.isForwardRef=function(a){return y(a)===k};reactIs_production_min$2.isFragment=function(a){return y(a)===d};reactIs_production_min$2.isLazy=function(a){return y(a)===p};reactIs_production_min$2.isMemo=function(a){return y(a)===n};
+	reactIs_production_min$2.isPortal=function(a){return y(a)===c};reactIs_production_min$2.isProfiler=function(a){return y(a)===f};reactIs_production_min$2.isStrictMode=function(a){return y(a)===e};reactIs_production_min$2.isSuspense=function(a){return y(a)===l};reactIs_production_min$2.isValidElementType=function(a){return "string"===typeof a||"function"===typeof a||a===d||a===f||a===v||a===e||a===l||a===m||a===w||"object"===typeof a&&null!==a&&(a.$$typeof===p||a.$$typeof===n||a.$$typeof===g||a.$$typeof===h||a.$$typeof===k||a.$$typeof===u||a.$$typeof===q||a[0]===r)?!0:!1};
+	reactIs_production_min$2.typeOf=y;
+	return reactIs_production_min$2;
 }
 
-var reactIs_development$1 = {};
+var reactIs_development$2 = {};
 
 /** @license React v17.0.1
  * react-is.development.js
@@ -1482,11 +1592,11 @@ var reactIs_development$1 = {};
  * LICENSE file in the root directory of this source tree.
  */
 
-var hasRequiredReactIs_development$1;
+var hasRequiredReactIs_development$2;
 
-function requireReactIs_development$1 () {
-	if (hasRequiredReactIs_development$1) return reactIs_development$1;
-	hasRequiredReactIs_development$1 = 1;
+function requireReactIs_development$2 () {
+	if (hasRequiredReactIs_development$2) return reactIs_development$2;
+	hasRequiredReactIs_development$2 = 1;
 
 	if (process.env.NODE_ENV !== "production") {
 	  (function() {
@@ -1671,45 +1781,44 @@ function requireReactIs_development$1 () {
 	  return typeOf(object) === REACT_SUSPENSE_TYPE;
 	}
 
-	reactIs_development$1.ContextConsumer = ContextConsumer;
-	reactIs_development$1.ContextProvider = ContextProvider;
-	reactIs_development$1.Element = Element;
-	reactIs_development$1.ForwardRef = ForwardRef;
-	reactIs_development$1.Fragment = Fragment;
-	reactIs_development$1.Lazy = Lazy;
-	reactIs_development$1.Memo = Memo;
-	reactIs_development$1.Portal = Portal;
-	reactIs_development$1.Profiler = Profiler;
-	reactIs_development$1.StrictMode = StrictMode;
-	reactIs_development$1.Suspense = Suspense;
-	reactIs_development$1.isAsyncMode = isAsyncMode;
-	reactIs_development$1.isConcurrentMode = isConcurrentMode;
-	reactIs_development$1.isContextConsumer = isContextConsumer;
-	reactIs_development$1.isContextProvider = isContextProvider;
-	reactIs_development$1.isElement = isElement;
-	reactIs_development$1.isForwardRef = isForwardRef;
-	reactIs_development$1.isFragment = isFragment;
-	reactIs_development$1.isLazy = isLazy;
-	reactIs_development$1.isMemo = isMemo;
-	reactIs_development$1.isPortal = isPortal;
-	reactIs_development$1.isProfiler = isProfiler;
-	reactIs_development$1.isStrictMode = isStrictMode;
-	reactIs_development$1.isSuspense = isSuspense;
-	reactIs_development$1.isValidElementType = isValidElementType;
-	reactIs_development$1.typeOf = typeOf;
+	reactIs_development$2.ContextConsumer = ContextConsumer;
+	reactIs_development$2.ContextProvider = ContextProvider;
+	reactIs_development$2.Element = Element;
+	reactIs_development$2.ForwardRef = ForwardRef;
+	reactIs_development$2.Fragment = Fragment;
+	reactIs_development$2.Lazy = Lazy;
+	reactIs_development$2.Memo = Memo;
+	reactIs_development$2.Portal = Portal;
+	reactIs_development$2.Profiler = Profiler;
+	reactIs_development$2.StrictMode = StrictMode;
+	reactIs_development$2.Suspense = Suspense;
+	reactIs_development$2.isAsyncMode = isAsyncMode;
+	reactIs_development$2.isConcurrentMode = isConcurrentMode;
+	reactIs_development$2.isContextConsumer = isContextConsumer;
+	reactIs_development$2.isContextProvider = isContextProvider;
+	reactIs_development$2.isElement = isElement;
+	reactIs_development$2.isForwardRef = isForwardRef;
+	reactIs_development$2.isFragment = isFragment;
+	reactIs_development$2.isLazy = isLazy;
+	reactIs_development$2.isMemo = isMemo;
+	reactIs_development$2.isPortal = isPortal;
+	reactIs_development$2.isProfiler = isProfiler;
+	reactIs_development$2.isStrictMode = isStrictMode;
+	reactIs_development$2.isSuspense = isSuspense;
+	reactIs_development$2.isValidElementType = isValidElementType;
+	reactIs_development$2.typeOf = typeOf;
 	  })();
 	}
-	return reactIs_development$1;
+	return reactIs_development$2;
 }
 
-(function (module) {
+if (process.env.NODE_ENV === 'production') {
+  reactIs$3.exports = requireReactIs_production_min$2();
+} else {
+  reactIs$3.exports = requireReactIs_development$2();
+}
 
-	if (process.env.NODE_ENV === 'production') {
-	  module.exports = requireReactIs_production_min$1();
-	} else {
-	  module.exports = requireReactIs_development$1();
-	}
-} (reactIs$2));
+var reactIsExports$2 = reactIs$3.exports;
 
 function stylis_min (W) {
   function M(d, c, e, h, a) {
@@ -2394,9 +2503,9 @@ var isPropValid = /* #__PURE__ */memoize(function (prop) {
 /* Z+1 */
 );
 
-var reactIs$1 = {exports: {}};
+var reactIs$2 = {exports: {}};
 
-var reactIs_production_min = {};
+var reactIs_production_min$1 = {};
 
 /** @license React v16.13.1
  * react-is.production.min.js
@@ -2407,21 +2516,21 @@ var reactIs_production_min = {};
  * LICENSE file in the root directory of this source tree.
  */
 
-var hasRequiredReactIs_production_min;
+var hasRequiredReactIs_production_min$1;
 
-function requireReactIs_production_min () {
-	if (hasRequiredReactIs_production_min) return reactIs_production_min;
-	hasRequiredReactIs_production_min = 1;
+function requireReactIs_production_min$1 () {
+	if (hasRequiredReactIs_production_min$1) return reactIs_production_min$1;
+	hasRequiredReactIs_production_min$1 = 1;
 var b="function"===typeof Symbol&&Symbol.for,c=b?Symbol.for("react.element"):60103,d=b?Symbol.for("react.portal"):60106,e=b?Symbol.for("react.fragment"):60107,f=b?Symbol.for("react.strict_mode"):60108,g=b?Symbol.for("react.profiler"):60114,h=b?Symbol.for("react.provider"):60109,k=b?Symbol.for("react.context"):60110,l=b?Symbol.for("react.async_mode"):60111,m=b?Symbol.for("react.concurrent_mode"):60111,n=b?Symbol.for("react.forward_ref"):60112,p=b?Symbol.for("react.suspense"):60113,q=b?
 	Symbol.for("react.suspense_list"):60120,r=b?Symbol.for("react.memo"):60115,t=b?Symbol.for("react.lazy"):60116,v=b?Symbol.for("react.block"):60121,w=b?Symbol.for("react.fundamental"):60117,x=b?Symbol.for("react.responder"):60118,y=b?Symbol.for("react.scope"):60119;
-	function z(a){if("object"===typeof a&&null!==a){var u=a.$$typeof;switch(u){case c:switch(a=a.type,a){case l:case m:case e:case g:case f:case p:return a;default:switch(a=a&&a.$$typeof,a){case k:case n:case t:case r:case h:return a;default:return u}}case d:return u}}}function A(a){return z(a)===m}reactIs_production_min.AsyncMode=l;reactIs_production_min.ConcurrentMode=m;reactIs_production_min.ContextConsumer=k;reactIs_production_min.ContextProvider=h;reactIs_production_min.Element=c;reactIs_production_min.ForwardRef=n;reactIs_production_min.Fragment=e;reactIs_production_min.Lazy=t;reactIs_production_min.Memo=r;reactIs_production_min.Portal=d;
-	reactIs_production_min.Profiler=g;reactIs_production_min.StrictMode=f;reactIs_production_min.Suspense=p;reactIs_production_min.isAsyncMode=function(a){return A(a)||z(a)===l};reactIs_production_min.isConcurrentMode=A;reactIs_production_min.isContextConsumer=function(a){return z(a)===k};reactIs_production_min.isContextProvider=function(a){return z(a)===h};reactIs_production_min.isElement=function(a){return "object"===typeof a&&null!==a&&a.$$typeof===c};reactIs_production_min.isForwardRef=function(a){return z(a)===n};reactIs_production_min.isFragment=function(a){return z(a)===e};reactIs_production_min.isLazy=function(a){return z(a)===t};
-	reactIs_production_min.isMemo=function(a){return z(a)===r};reactIs_production_min.isPortal=function(a){return z(a)===d};reactIs_production_min.isProfiler=function(a){return z(a)===g};reactIs_production_min.isStrictMode=function(a){return z(a)===f};reactIs_production_min.isSuspense=function(a){return z(a)===p};
-	reactIs_production_min.isValidElementType=function(a){return "string"===typeof a||"function"===typeof a||a===e||a===m||a===g||a===f||a===p||a===q||"object"===typeof a&&null!==a&&(a.$$typeof===t||a.$$typeof===r||a.$$typeof===h||a.$$typeof===k||a.$$typeof===n||a.$$typeof===w||a.$$typeof===x||a.$$typeof===y||a.$$typeof===v)};reactIs_production_min.typeOf=z;
-	return reactIs_production_min;
+	function z(a){if("object"===typeof a&&null!==a){var u=a.$$typeof;switch(u){case c:switch(a=a.type,a){case l:case m:case e:case g:case f:case p:return a;default:switch(a=a&&a.$$typeof,a){case k:case n:case t:case r:case h:return a;default:return u}}case d:return u}}}function A(a){return z(a)===m}reactIs_production_min$1.AsyncMode=l;reactIs_production_min$1.ConcurrentMode=m;reactIs_production_min$1.ContextConsumer=k;reactIs_production_min$1.ContextProvider=h;reactIs_production_min$1.Element=c;reactIs_production_min$1.ForwardRef=n;reactIs_production_min$1.Fragment=e;reactIs_production_min$1.Lazy=t;reactIs_production_min$1.Memo=r;reactIs_production_min$1.Portal=d;
+	reactIs_production_min$1.Profiler=g;reactIs_production_min$1.StrictMode=f;reactIs_production_min$1.Suspense=p;reactIs_production_min$1.isAsyncMode=function(a){return A(a)||z(a)===l};reactIs_production_min$1.isConcurrentMode=A;reactIs_production_min$1.isContextConsumer=function(a){return z(a)===k};reactIs_production_min$1.isContextProvider=function(a){return z(a)===h};reactIs_production_min$1.isElement=function(a){return "object"===typeof a&&null!==a&&a.$$typeof===c};reactIs_production_min$1.isForwardRef=function(a){return z(a)===n};reactIs_production_min$1.isFragment=function(a){return z(a)===e};reactIs_production_min$1.isLazy=function(a){return z(a)===t};
+	reactIs_production_min$1.isMemo=function(a){return z(a)===r};reactIs_production_min$1.isPortal=function(a){return z(a)===d};reactIs_production_min$1.isProfiler=function(a){return z(a)===g};reactIs_production_min$1.isStrictMode=function(a){return z(a)===f};reactIs_production_min$1.isSuspense=function(a){return z(a)===p};
+	reactIs_production_min$1.isValidElementType=function(a){return "string"===typeof a||"function"===typeof a||a===e||a===m||a===g||a===f||a===p||a===q||"object"===typeof a&&null!==a&&(a.$$typeof===t||a.$$typeof===r||a.$$typeof===h||a.$$typeof===k||a.$$typeof===n||a.$$typeof===w||a.$$typeof===x||a.$$typeof===y||a.$$typeof===v)};reactIs_production_min$1.typeOf=z;
+	return reactIs_production_min$1;
 }
 
-var reactIs_development = {};
+var reactIs_development$1 = {};
 
 /** @license React v16.13.1
  * react-is.development.js
@@ -2432,11 +2541,11 @@ var reactIs_development = {};
  * LICENSE file in the root directory of this source tree.
  */
 
-var hasRequiredReactIs_development;
+var hasRequiredReactIs_development$1;
 
-function requireReactIs_development () {
-	if (hasRequiredReactIs_development) return reactIs_development;
-	hasRequiredReactIs_development = 1;
+function requireReactIs_development$1 () {
+	if (hasRequiredReactIs_development$1) return reactIs_development$1;
+	hasRequiredReactIs_development$1 = 1;
 
 
 
@@ -2577,49 +2686,48 @@ function requireReactIs_development () {
 	  return typeOf(object) === REACT_SUSPENSE_TYPE;
 	}
 
-	reactIs_development.AsyncMode = AsyncMode;
-	reactIs_development.ConcurrentMode = ConcurrentMode;
-	reactIs_development.ContextConsumer = ContextConsumer;
-	reactIs_development.ContextProvider = ContextProvider;
-	reactIs_development.Element = Element;
-	reactIs_development.ForwardRef = ForwardRef;
-	reactIs_development.Fragment = Fragment;
-	reactIs_development.Lazy = Lazy;
-	reactIs_development.Memo = Memo;
-	reactIs_development.Portal = Portal;
-	reactIs_development.Profiler = Profiler;
-	reactIs_development.StrictMode = StrictMode;
-	reactIs_development.Suspense = Suspense;
-	reactIs_development.isAsyncMode = isAsyncMode;
-	reactIs_development.isConcurrentMode = isConcurrentMode;
-	reactIs_development.isContextConsumer = isContextConsumer;
-	reactIs_development.isContextProvider = isContextProvider;
-	reactIs_development.isElement = isElement;
-	reactIs_development.isForwardRef = isForwardRef;
-	reactIs_development.isFragment = isFragment;
-	reactIs_development.isLazy = isLazy;
-	reactIs_development.isMemo = isMemo;
-	reactIs_development.isPortal = isPortal;
-	reactIs_development.isProfiler = isProfiler;
-	reactIs_development.isStrictMode = isStrictMode;
-	reactIs_development.isSuspense = isSuspense;
-	reactIs_development.isValidElementType = isValidElementType;
-	reactIs_development.typeOf = typeOf;
+	reactIs_development$1.AsyncMode = AsyncMode;
+	reactIs_development$1.ConcurrentMode = ConcurrentMode;
+	reactIs_development$1.ContextConsumer = ContextConsumer;
+	reactIs_development$1.ContextProvider = ContextProvider;
+	reactIs_development$1.Element = Element;
+	reactIs_development$1.ForwardRef = ForwardRef;
+	reactIs_development$1.Fragment = Fragment;
+	reactIs_development$1.Lazy = Lazy;
+	reactIs_development$1.Memo = Memo;
+	reactIs_development$1.Portal = Portal;
+	reactIs_development$1.Profiler = Profiler;
+	reactIs_development$1.StrictMode = StrictMode;
+	reactIs_development$1.Suspense = Suspense;
+	reactIs_development$1.isAsyncMode = isAsyncMode;
+	reactIs_development$1.isConcurrentMode = isConcurrentMode;
+	reactIs_development$1.isContextConsumer = isContextConsumer;
+	reactIs_development$1.isContextProvider = isContextProvider;
+	reactIs_development$1.isElement = isElement;
+	reactIs_development$1.isForwardRef = isForwardRef;
+	reactIs_development$1.isFragment = isFragment;
+	reactIs_development$1.isLazy = isLazy;
+	reactIs_development$1.isMemo = isMemo;
+	reactIs_development$1.isPortal = isPortal;
+	reactIs_development$1.isProfiler = isProfiler;
+	reactIs_development$1.isStrictMode = isStrictMode;
+	reactIs_development$1.isSuspense = isSuspense;
+	reactIs_development$1.isValidElementType = isValidElementType;
+	reactIs_development$1.typeOf = typeOf;
 	  })();
 	}
-	return reactIs_development;
+	return reactIs_development$1;
 }
 
-(function (module) {
+if (process.env.NODE_ENV === 'production') {
+  reactIs$2.exports = requireReactIs_production_min$1();
+} else {
+  reactIs$2.exports = requireReactIs_development$1();
+}
 
-	if (process.env.NODE_ENV === 'production') {
-	  module.exports = requireReactIs_production_min();
-	} else {
-	  module.exports = requireReactIs_development();
-	}
-} (reactIs$1));
+var reactIsExports$1 = reactIs$2.exports;
 
-var reactIs = reactIs$1.exports;
+var reactIs$1 = reactIsExports$1;
 
 /**
  * Copyright 2015, Yahoo! Inc.
@@ -2663,12 +2771,12 @@ var MEMO_STATICS = {
   type: true
 };
 var TYPE_STATICS = {};
-TYPE_STATICS[reactIs.ForwardRef] = FORWARD_REF_STATICS;
-TYPE_STATICS[reactIs.Memo] = MEMO_STATICS;
+TYPE_STATICS[reactIs$1.ForwardRef] = FORWARD_REF_STATICS;
+TYPE_STATICS[reactIs$1.Memo] = MEMO_STATICS;
 
 function getStatics(component) {
   // React v16.11 and below
-  if (reactIs.isMemo(component)) {
+  if (reactIs$1.isMemo(component)) {
     return MEMO_STATICS;
   } // React v16.12 and above
 
@@ -2721,139 +2829,9 @@ function hoistNonReactStatics(targetComponent, sourceComponent, blacklist) {
 
 var hoistNonReactStatics_cjs = hoistNonReactStatics;
 
-function v(){return (v=Object.assign||function(e){for(var t=1;t<arguments.length;t++){var n=arguments[t];for(var r in n)Object.prototype.hasOwnProperty.call(n,r)&&(e[r]=n[r]);}return e}).apply(this,arguments)}var g=function(e,t){for(var n=[e[0]],r=0,o=t.length;r<o;r+=1)n.push(t[r],e[r+1]);return n},S=function(t){return null!==t&&"object"==typeof t&&"[object Object]"===(t.toString?t.toString():Object.prototype.toString.call(t))&&!reactIs$2.exports.typeOf(t)},w=Object.freeze([]),E=Object.freeze({});function b(e){return "function"==typeof e}function _(e){return "production"!==process.env.NODE_ENV&&"string"==typeof e&&e||e.displayName||e.name||"Component"}function N(e){return e&&"string"==typeof e.styledComponentId}var A="undefined"!=typeof process&&(process.env.REACT_APP_SC_ATTR||process.env.SC_ATTR)||"data-styled",I="undefined"!=typeof window&&"HTMLElement"in window,P$1=Boolean("boolean"==typeof SC_DISABLE_SPEEDY?SC_DISABLE_SPEEDY:"undefined"!=typeof process&&void 0!==process.env.REACT_APP_SC_DISABLE_SPEEDY&&""!==process.env.REACT_APP_SC_DISABLE_SPEEDY?"false"!==process.env.REACT_APP_SC_DISABLE_SPEEDY&&process.env.REACT_APP_SC_DISABLE_SPEEDY:"undefined"!=typeof process&&void 0!==process.env.SC_DISABLE_SPEEDY&&""!==process.env.SC_DISABLE_SPEEDY?"false"!==process.env.SC_DISABLE_SPEEDY&&process.env.SC_DISABLE_SPEEDY:"production"!==process.env.NODE_ENV),R="production"!==process.env.NODE_ENV?{1:"Cannot create styled-component for component: %s.\n\n",2:"Can't collect styles once you've consumed a `ServerStyleSheet`'s styles! `ServerStyleSheet` is a one off instance for each server-side render cycle.\n\n- Are you trying to reuse it across renders?\n- Are you accidentally calling collectStyles twice?\n\n",3:"Streaming SSR is only supported in a Node.js environment; Please do not try to call this method in the browser.\n\n",4:"The `StyleSheetManager` expects a valid target or sheet prop!\n\n- Does this error occur on the client and is your target falsy?\n- Does this error occur on the server and is the sheet falsy?\n\n",5:"The clone method cannot be used on the client!\n\n- Are you running in a client-like environment on the server?\n- Are you trying to run SSR on the client?\n\n",6:"Trying to insert a new style tag, but the given Node is unmounted!\n\n- Are you using a custom target that isn't mounted?\n- Does your document not have a valid head element?\n- Have you accidentally removed a style tag manually?\n\n",7:'ThemeProvider: Please return an object from your "theme" prop function, e.g.\n\n```js\ntheme={() => ({})}\n```\n\n',8:'ThemeProvider: Please make your "theme" prop an object.\n\n',9:"Missing document `<head>`\n\n",10:"Cannot find a StyleSheet instance. Usually this happens if there are multiple copies of styled-components loaded at once. Check out this issue for how to troubleshoot and fix the common cases where this situation can happen: https://github.com/styled-components/styled-components/issues/1941#issuecomment-417862021\n\n",11:"_This error was replaced with a dev-time warning, it will be deleted for v4 final._ [createGlobalStyle] received children which will not be rendered. Please use the component without passing children elements.\n\n",12:"It seems you are interpolating a keyframe declaration (%s) into an untagged string. This was supported in styled-components v3, but is not longer supported in v4 as keyframes are now injected on-demand. Please wrap your string in the css\\`\\` helper which ensures the styles are injected correctly. See https://www.styled-components.com/docs/api#css\n\n",13:"%s is not a styled component and cannot be referred to via component selector. See https://www.styled-components.com/docs/advanced#referring-to-other-components for more details.\n\n",14:'ThemeProvider: "theme" prop is required.\n\n',15:"A stylis plugin has been supplied that is not named. We need a name for each plugin to be able to prevent styling collisions between different stylis configurations within the same app. Before you pass your plugin to `<StyleSheetManager stylisPlugins={[]}>`, please make sure each plugin is uniquely-named, e.g.\n\n```js\nObject.defineProperty(importedPlugin, 'name', { value: 'some-unique-name' });\n```\n\n",16:"Reached the limit of how many styled components may be created at group %s.\nYou may only create up to 1,073,741,824 components. If you're creating components dynamically,\nas for instance in your render method then you may be running into this limitation.\n\n",17:"CSSStyleSheet could not be found on HTMLStyleElement.\nHas styled-components' style tag been unmounted or altered by another script?\n"}:{};function D(){for(var e=arguments.length<=0?void 0:arguments[0],t=[],n=1,r=arguments.length;n<r;n+=1)t.push(n<0||arguments.length<=n?void 0:arguments[n]);return t.forEach((function(t){e=e.replace(/%[a-z]/,t);})),e}function j(e){for(var t=arguments.length,n=new Array(t>1?t-1:0),r=1;r<t;r++)n[r-1]=arguments[r];throw "production"===process.env.NODE_ENV?new Error("An error occurred. See https://git.io/JUIaE#"+e+" for more information."+(n.length>0?" Args: "+n.join(", "):"")):new Error(D.apply(void 0,[R[e]].concat(n)).trim())}var T=function(){function e(e){this.groupSizes=new Uint32Array(512),this.length=512,this.tag=e;}var t=e.prototype;return t.indexOfGroup=function(e){for(var t=0,n=0;n<e;n++)t+=this.groupSizes[n];return t},t.insertRules=function(e,t){if(e>=this.groupSizes.length){for(var n=this.groupSizes,r=n.length,o=r;e>=o;)(o<<=1)<0&&j(16,""+e);this.groupSizes=new Uint32Array(o),this.groupSizes.set(n),this.length=o;for(var s=r;s<o;s++)this.groupSizes[s]=0;}for(var i=this.indexOfGroup(e+1),a=0,c=t.length;a<c;a++)this.tag.insertRule(i,t[a])&&(this.groupSizes[e]++,i++);},t.clearGroup=function(e){if(e<this.length){var t=this.groupSizes[e],n=this.indexOfGroup(e),r=n+t;this.groupSizes[e]=0;for(var o=n;o<r;o++)this.tag.deleteRule(n);}},t.getGroup=function(e){var t="";if(e>=this.length||0===this.groupSizes[e])return t;for(var n=this.groupSizes[e],r=this.indexOfGroup(e),o=r+n,s=r;s<o;s++)t+=this.tag.getRule(s)+"/*!sc*/\n";return t},e}(),x=new Map,k=new Map,V=1,B=function(e){if(x.has(e))return x.get(e);for(;k.has(V);)V++;var t=V++;return "production"!==process.env.NODE_ENV&&((0|t)<0||t>1<<30)&&j(16,""+t),x.set(e,t),k.set(t,e),t},z=function(e){return k.get(e)},M=function(e,t){t>=V&&(V=t+1),x.set(e,t),k.set(t,e);},G="style["+A+'][data-styled-version="5.3.5"]',L=new RegExp("^"+A+'\\.g(\\d+)\\[id="([\\w\\d-]+)"\\].*?"([^"]*)'),F=function(e,t,n){for(var r,o=n.split(","),s=0,i=o.length;s<i;s++)(r=o[s])&&e.registerName(t,r);},Y=function(e,t){for(var n=(t.textContent||"").split("/*!sc*/\n"),r=[],o=0,s=n.length;o<s;o++){var i=n[o].trim();if(i){var a=i.match(L);if(a){var c=0|parseInt(a[1],10),u=a[2];0!==c&&(M(u,c),F(e,u,a[3]),e.getTag().insertRules(c,r)),r.length=0;}else r.push(i);}}},q=function(){return "undefined"!=typeof window&&void 0!==window.__webpack_nonce__?window.__webpack_nonce__:null},H=function(e){var t=document.head,n=e||t,r=document.createElement("style"),o=function(e){for(var t=e.childNodes,n=t.length;n>=0;n--){var r=t[n];if(r&&1===r.nodeType&&r.hasAttribute(A))return r}}(n),s=void 0!==o?o.nextSibling:null;r.setAttribute(A,"active"),r.setAttribute("data-styled-version","5.3.5");var i=q();return i&&r.setAttribute("nonce",i),n.insertBefore(r,s),r},$=function(){function e(e){var t=this.element=H(e);t.appendChild(document.createTextNode("")),this.sheet=function(e){if(e.sheet)return e.sheet;for(var t=document.styleSheets,n=0,r=t.length;n<r;n++){var o=t[n];if(o.ownerNode===e)return o}j(17);}(t),this.length=0;}var t=e.prototype;return t.insertRule=function(e,t){try{return this.sheet.insertRule(t,e),this.length++,!0}catch(e){return !1}},t.deleteRule=function(e){this.sheet.deleteRule(e),this.length--;},t.getRule=function(e){var t=this.sheet.cssRules[e];return void 0!==t&&"string"==typeof t.cssText?t.cssText:""},e}(),W=function(){function e(e){var t=this.element=H(e);this.nodes=t.childNodes,this.length=0;}var t=e.prototype;return t.insertRule=function(e,t){if(e<=this.length&&e>=0){var n=document.createTextNode(t),r=this.nodes[e];return this.element.insertBefore(n,r||null),this.length++,!0}return !1},t.deleteRule=function(e){this.element.removeChild(this.nodes[e]),this.length--;},t.getRule=function(e){return e<this.length?this.nodes[e].textContent:""},e}(),U=function(){function e(e){this.rules=[],this.length=0;}var t=e.prototype;return t.insertRule=function(e,t){return e<=this.length&&(this.rules.splice(e,0,t),this.length++,!0)},t.deleteRule=function(e){this.rules.splice(e,1),this.length--;},t.getRule=function(e){return e<this.length?this.rules[e]:""},e}(),J=I,X={isServer:!I,useCSSOMInjection:!P$1},Z=function(){function e(e,t,n){void 0===e&&(e=E),void 0===t&&(t={}),this.options=v({},X,{},e),this.gs=t,this.names=new Map(n),this.server=!!e.isServer,!this.server&&I&&J&&(J=!1,function(e){for(var t=document.querySelectorAll(G),n=0,r=t.length;n<r;n++){var o=t[n];o&&"active"!==o.getAttribute(A)&&(Y(e,o),o.parentNode&&o.parentNode.removeChild(o));}}(this));}e.registerId=function(e){return B(e)};var t=e.prototype;return t.reconstructWithOptions=function(t,n){return void 0===n&&(n=!0),new e(v({},this.options,{},t),this.gs,n&&this.names||void 0)},t.allocateGSInstance=function(e){return this.gs[e]=(this.gs[e]||0)+1},t.getTag=function(){return this.tag||(this.tag=(n=(t=this.options).isServer,r=t.useCSSOMInjection,o=t.target,e=n?new U(o):r?new $(o):new W(o),new T(e)));var e,t,n,r,o;},t.hasNameForId=function(e,t){return this.names.has(e)&&this.names.get(e).has(t)},t.registerName=function(e,t){if(B(e),this.names.has(e))this.names.get(e).add(t);else {var n=new Set;n.add(t),this.names.set(e,n);}},t.insertRules=function(e,t,n){this.registerName(e,t),this.getTag().insertRules(B(e),n);},t.clearNames=function(e){this.names.has(e)&&this.names.get(e).clear();},t.clearRules=function(e){this.getTag().clearGroup(B(e)),this.clearNames(e);},t.clearTag=function(){this.tag=void 0;},t.toString=function(){return function(e){for(var t=e.getTag(),n=t.length,r="",o=0;o<n;o++){var s=z(o);if(void 0!==s){var i=e.names.get(s),a=t.getGroup(o);if(i&&a&&i.size){var c=A+".g"+o+'[id="'+s+'"]',u="";void 0!==i&&i.forEach((function(e){e.length>0&&(u+=e+",");})),r+=""+a+c+'{content:"'+u+'"}/*!sc*/\n';}}}return r}(this)},e}(),K=/(a)(d)/gi,Q=function(e){return String.fromCharCode(e+(e>25?39:97))};function ee(e){var t,n="";for(t=Math.abs(e);t>52;t=t/52|0)n=Q(t%52)+n;return (Q(t%52)+n).replace(K,"$1-$2")}var te=function(e,t){for(var n=t.length;n;)e=33*e^t.charCodeAt(--n);return e},ne=function(e){return te(5381,e)};function re(e){for(var t=0;t<e.length;t+=1){var n=e[t];if(b(n)&&!N(n))return !1}return !0}var oe=ne("5.3.5"),se=function(){function e(e,t,n){this.rules=e,this.staticRulesId="",this.isStatic="production"===process.env.NODE_ENV&&(void 0===n||n.isStatic)&&re(e),this.componentId=t,this.baseHash=te(oe,t),this.baseStyle=n,Z.registerId(t);}return e.prototype.generateAndInjectStyles=function(e,t,n){var r=this.componentId,o=[];if(this.baseStyle&&o.push(this.baseStyle.generateAndInjectStyles(e,t,n)),this.isStatic&&!n.hash)if(this.staticRulesId&&t.hasNameForId(r,this.staticRulesId))o.push(this.staticRulesId);else {var s=Ne(this.rules,e,t,n).join(""),i=ee(te(this.baseHash,s)>>>0);if(!t.hasNameForId(r,i)){var a=n(s,"."+i,void 0,r);t.insertRules(r,i,a);}o.push(i),this.staticRulesId=i;}else {for(var c=this.rules.length,u=te(this.baseHash,n.hash),l="",d=0;d<c;d++){var h=this.rules[d];if("string"==typeof h)l+=h,"production"!==process.env.NODE_ENV&&(u=te(u,h+d));else if(h){var p=Ne(h,e,t,n),f=Array.isArray(p)?p.join(""):p;u=te(u,f+d),l+=f;}}if(l){var m=ee(u>>>0);if(!t.hasNameForId(r,m)){var y=n(l,"."+m,void 0,r);t.insertRules(r,m,y);}o.push(m);}}return o.join(" ")},e}(),ie=/^\s*\/\/.*$/gm,ae=[":","[",".","#"];function ce(e){var t,n,r,o,s=void 0===e?E:e,i=s.options,a=void 0===i?E:i,c=s.plugins,u=void 0===c?w:c,l=new stylis_min(a),d=[],h=function(e){function t(t){if(t)try{e(t+"}");}catch(e){}}return function(n,r,o,s,i,a,c,u,l,d){switch(n){case 1:if(0===l&&64===r.charCodeAt(0))return e(r+";"),"";break;case 2:if(0===u)return r+"/*|*/";break;case 3:switch(u){case 102:case 112:return e(o[0]+r),"";default:return r+(0===d?"/*|*/":"")}case-2:r.split("/*|*/}").forEach(t);}}}((function(e){d.push(e);})),f=function(e,r,s){return 0===r&&-1!==ae.indexOf(s[n.length])||s.match(o)?e:"."+t};function m(e,s,i,a){void 0===a&&(a="&");var c=e.replace(ie,""),u=s&&i?i+" "+s+" { "+c+" }":c;return t=a,n=s,r=new RegExp("\\"+n+"\\b","g"),o=new RegExp("(\\"+n+"\\b){2,}"),l(i||!s?"":s,u)}return l.use([].concat(u,[function(e,t,o){2===e&&o.length&&o[0].lastIndexOf(n)>0&&(o[0]=o[0].replace(r,f));},h,function(e){if(-2===e){var t=d;return d=[],t}}])),m.hash=u.length?u.reduce((function(e,t){return t.name||j(15),te(e,t.name)}),5381).toString():"",m}var ue=React__default["default"].createContext();ue.Consumer;var de=React__default["default"].createContext(),he=(de.Consumer,new Z),pe=ce();function fe(){return React.useContext(ue)||he}function me(){return React.useContext(de)||pe}var ve=function(){function e(e,t){var n=this;this.inject=function(e,t){void 0===t&&(t=pe);var r=n.name+t.hash;e.hasNameForId(n.id,r)||e.insertRules(n.id,r,t(n.rules,r,"@keyframes"));},this.toString=function(){return j(12,String(n.name))},this.name=e,this.id="sc-keyframes-"+e,this.rules=t;}return e.prototype.getName=function(e){return void 0===e&&(e=pe),this.name+e.hash},e}(),ge=/([A-Z])/,Se=/([A-Z])/g,we=/^ms-/,Ee=function(e){return "-"+e.toLowerCase()};function be(e){return ge.test(e)?e.replace(Se,Ee).replace(we,"-ms-"):e}var _e=function(e){return null==e||!1===e||""===e};function Ne(e,n,r,o){if(Array.isArray(e)){for(var s,i=[],a=0,c=e.length;a<c;a+=1)""!==(s=Ne(e[a],n,r,o))&&(Array.isArray(s)?i.push.apply(i,s):i.push(s));return i}if(_e(e))return "";if(N(e))return "."+e.styledComponentId;if(b(e)){if("function"!=typeof(l=e)||l.prototype&&l.prototype.isReactComponent||!n)return e;var u=e(n);return "production"!==process.env.NODE_ENV&&reactIs$2.exports.isElement(u)&&console.warn(_(e)+" is not a styled component and cannot be referred to via component selector. See https://www.styled-components.com/docs/advanced#referring-to-other-components for more details."),Ne(u,n,r,o)}var l;return e instanceof ve?r?(e.inject(r,o),e.getName(o)):e:S(e)?function e(t,n){var r,o,s=[];for(var i in t)t.hasOwnProperty(i)&&!_e(t[i])&&(Array.isArray(t[i])&&t[i].isCss||b(t[i])?s.push(be(i)+":",t[i],";"):S(t[i])?s.push.apply(s,e(t[i],i)):s.push(be(i)+": "+(r=i,null==(o=t[i])||"boolean"==typeof o||""===o?"":"number"!=typeof o||0===o||r in unitlessKeys?String(o).trim():o+"px")+";"));return n?[n+" {"].concat(s,["}"]):s}(e):e.toString()}var Ae=function(e){return Array.isArray(e)&&(e.isCss=!0),e};function Ce(e){for(var t=arguments.length,n=new Array(t>1?t-1:0),r=1;r<t;r++)n[r-1]=arguments[r];return b(e)||S(e)?Ae(Ne(g(w,[e].concat(n)))):0===n.length&&1===e.length&&"string"==typeof e[0]?e:Ae(Ne(g(e,n)))}var Ie=/invalid hook call/i,Pe=new Set,Oe=function(e,t){if("production"!==process.env.NODE_ENV){var n="The component "+e+(t?' with the id of "'+t+'"':"")+" has been created dynamically.\nYou may see this warning because you've called styled inside another component.\nTo resolve this only create new StyledComponents outside of any render method and function component.",r=console.error;try{var o=!0;console.error=function(e){if(Ie.test(e))o=!1,Pe.delete(n);else {for(var t=arguments.length,s=new Array(t>1?t-1:0),i=1;i<t;i++)s[i-1]=arguments[i];r.apply(void 0,[e].concat(s));}},React.useRef(),o&&!Pe.has(n)&&(console.warn(n),Pe.add(n));}catch(e){Ie.test(e.message)&&Pe.delete(n);}finally{console.error=r;}}},Re=function(e,t,n){return void 0===n&&(n=E),e.theme!==n.theme&&e.theme||t||n.theme},De=/[!"#$%&'()*+,./:;<=>?@[\\\]^`{|}~-]+/g,je=/(^-|-$)/g;function Te(e){return e.replace(De,"-").replace(je,"")}var xe=function(e){return ee(ne(e)>>>0)};function ke(e){return "string"==typeof e&&("production"===process.env.NODE_ENV||e.charAt(0)===e.charAt(0).toLowerCase())}var Ve=function(e){return "function"==typeof e||"object"==typeof e&&null!==e&&!Array.isArray(e)},Be=function(e){return "__proto__"!==e&&"constructor"!==e&&"prototype"!==e};function ze(e,t,n){var r=e[n];Ve(t)&&Ve(r)?Me(r,t):e[n]=t;}function Me(e){for(var t=arguments.length,n=new Array(t>1?t-1:0),r=1;r<t;r++)n[r-1]=arguments[r];for(var o=0,s=n;o<s.length;o++){var i=s[o];if(Ve(i))for(var a in i)Be(a)&&ze(e,i[a],a);}return e}var Ge=React__default["default"].createContext();Ge.Consumer;var Ye={};function qe(e,t,n){var o=N(e),i=!ke(e),a=t.attrs,c=void 0===a?w:a,d=t.componentId,h=void 0===d?function(e,t){var n="string"!=typeof e?"sc":Te(e);Ye[n]=(Ye[n]||0)+1;var r=n+"-"+xe("5.3.5"+n+Ye[n]);return t?t+"-"+r:r}(t.displayName,t.parentComponentId):d,p=t.displayName,f=void 0===p?function(e){return ke(e)?"styled."+e:"Styled("+_(e)+")"}(e):p,g=t.displayName&&t.componentId?Te(t.displayName)+"-"+t.componentId:t.componentId||h,S=o&&e.attrs?Array.prototype.concat(e.attrs,c).filter(Boolean):c,A=t.shouldForwardProp;o&&e.shouldForwardProp&&(A=t.shouldForwardProp?function(n,r,o){return e.shouldForwardProp(n,r,o)&&t.shouldForwardProp(n,r,o)}:e.shouldForwardProp);var C,I=new se(n,g,o?e.componentStyle:void 0),P=I.isStatic&&0===c.length,O=function(e,t){return function(e,t,n,r){var o=e.attrs,i=e.componentStyle,a=e.defaultProps,c=e.foldedComponentIds,d=e.shouldForwardProp,h=e.styledComponentId,p=e.target;"production"!==process.env.NODE_ENV&&React.useDebugValue(h);var f=function(e,t,n){void 0===e&&(e=E);var r=v({},t,{theme:e}),o={};return n.forEach((function(e){var t,n,s,i=e;for(t in b(i)&&(i=i(r)),i)r[t]=o[t]="className"===t?(n=o[t],s=i[t],n&&s?n+" "+s:n||s):i[t];})),[r,o]}(Re(t,React.useContext(Ge),a)||E,t,o),y=f[0],g=f[1],S=function(e,t,n,r){var o=fe(),s=me(),i=t?e.generateAndInjectStyles(E,o,s):e.generateAndInjectStyles(n,o,s);return "production"!==process.env.NODE_ENV&&React.useDebugValue(i),"production"!==process.env.NODE_ENV&&!t&&r&&r(i),i}(i,r,y,"production"!==process.env.NODE_ENV?e.warnTooManyClasses:void 0),w=n,_=g.$as||t.$as||g.as||t.as||p,N=ke(_),A=g!==t?v({},t,{},g):t,C={};for(var I in A)"$"!==I[0]&&"as"!==I&&("forwardedAs"===I?C.as=A[I]:(d?d(I,isPropValid,_):!N||isPropValid(I))&&(C[I]=A[I]));return t.style&&g.style!==t.style&&(C.style=v({},t.style,{},g.style)),C.className=Array.prototype.concat(c,h,S!==h?S:null,t.className,g.className).filter(Boolean).join(" "),C.ref=w,React.createElement(_,C)}(C,e,t,P)};return O.displayName=f,(C=React__default["default"].forwardRef(O)).attrs=S,C.componentStyle=I,C.displayName=f,C.shouldForwardProp=A,C.foldedComponentIds=o?Array.prototype.concat(e.foldedComponentIds,e.styledComponentId):w,C.styledComponentId=g,C.target=o?e.target:e,C.withComponent=function(e){var r=t.componentId,o=function(e,t){if(null==e)return {};var n,r,o={},s=Object.keys(e);for(r=0;r<s.length;r++)n=s[r],t.indexOf(n)>=0||(o[n]=e[n]);return o}(t,["componentId"]),s=r&&r+"-"+(ke(e)?e:Te(_(e)));return qe(e,v({},o,{attrs:S,componentId:s}),n)},Object.defineProperty(C,"defaultProps",{get:function(){return this._foldedDefaultProps},set:function(t){this._foldedDefaultProps=o?Me({},e.defaultProps,t):t;}}),"production"!==process.env.NODE_ENV&&(Oe(f,g),C.warnTooManyClasses=function(e,t){var n={},r=!1;return function(o){if(!r&&(n[o]=!0,Object.keys(n).length>=200)){var s=t?' with the id of "'+t+'"':"";console.warn("Over 200 classes were generated for component "+e+s+".\nConsider using the attrs method, together with a style object for frequently changed styles.\nExample:\n  const Component = styled.div.attrs(props => ({\n    style: {\n      background: props.background,\n    },\n  }))`width: 100%;`\n\n  <Component />"),r=!0,n={};}}}(f,g)),C.toString=function(){return "."+C.styledComponentId},i&&hoistNonReactStatics_cjs(C,e,{attrs:!0,componentStyle:!0,displayName:!0,foldedComponentIds:!0,shouldForwardProp:!0,styledComponentId:!0,target:!0,withComponent:!0}),C}var He=function(e){return function e(t,r,o){if(void 0===o&&(o=E),!reactIs$2.exports.isValidElementType(r))return j(1,String(r));var s=function(){return t(r,o,Ce.apply(void 0,arguments))};return s.withConfig=function(n){return e(t,r,v({},o,{},n))},s.attrs=function(n){return e(t,r,v({},o,{attrs:Array.prototype.concat(o.attrs,n).filter(Boolean)}))},s}(qe,e)};["a","abbr","address","area","article","aside","audio","b","base","bdi","bdo","big","blockquote","body","br","button","canvas","caption","cite","code","col","colgroup","data","datalist","dd","del","details","dfn","dialog","div","dl","dt","em","embed","fieldset","figcaption","figure","footer","form","h1","h2","h3","h4","h5","h6","head","header","hgroup","hr","html","i","iframe","img","input","ins","kbd","keygen","label","legend","li","link","main","map","mark","marquee","menu","menuitem","meta","meter","nav","noscript","object","ol","optgroup","option","output","p","param","picture","pre","progress","q","rp","rt","ruby","s","samp","script","section","select","small","source","span","strong","style","sub","summary","sup","table","tbody","td","textarea","tfoot","th","thead","time","title","tr","track","u","ul","var","video","wbr","circle","clipPath","defs","ellipse","foreignObject","g","image","line","linearGradient","marker","mask","path","pattern","polygon","polyline","radialGradient","rect","stop","svg","text","textPath","tspan"].forEach((function(e){He[e]=He(e);}));function Ue(e){"production"!==process.env.NODE_ENV&&"undefined"!=typeof navigator&&"ReactNative"===navigator.product&&console.warn("`keyframes` cannot be used on ReactNative, only on the web. To do animation in ReactNative please use Animated.");for(var t=arguments.length,n=new Array(t>1?t-1:0),r=1;r<t;r++)n[r-1]=arguments[r];var o=Ce.apply(void 0,[e].concat(n)).join(""),s=xe(o);return new ve(s,o)}"production"!==process.env.NODE_ENV&&"undefined"!=typeof navigator&&"ReactNative"===navigator.product&&console.warn("It looks like you've imported 'styled-components' on React Native.\nPerhaps you're looking to import 'styled-components/native'?\nRead more about this at https://www.styled-components.com/docs/basics#react-native"),"production"!==process.env.NODE_ENV&&"test"!==process.env.NODE_ENV&&"undefined"!=typeof window&&(window["__styled-components-init__"]=window["__styled-components-init__"]||0,1===window["__styled-components-init__"]&&console.warn("It looks like there are several instances of 'styled-components' initialized in this application. This may cause dynamic styles to not render properly, errors during the rehydration process, a missing theme prop, and makes your application bigger without good reason.\n\nSee https://s-c.sh/2BAXzed for more info."),window["__styled-components-init__"]+=1);
+var y = /*@__PURE__*/getDefaultExportFromCjs(hoistNonReactStatics_cjs);
 
-/*! *****************************************************************************
-Copyright (c) Microsoft Corporation.
-
-Permission to use, copy, modify, and/or distribute this software for any
-purpose with or without fee is hereby granted.
-
-THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
-REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
-AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
-INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
-LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
-OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
-PERFORMANCE OF THIS SOFTWARE.
-***************************************************************************** */
-/* global Reflect, Promise */
-
-var extendStatics = function(d, b) {
-    extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-    return extendStatics(d, b);
-};
-
-function __extends(d, b) {
-    if (typeof b !== "function" && b !== null)
-        throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-    extendStatics(d, b);
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-}
-
-function __awaiter(thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-}
-
-function __generator(thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
-    function verb(n) { return function (v) { return step([n, v]); }; }
-    function step(op) {
-        if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
-            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
-            if (y = 0, t) op = [op[0] & 2, t.value];
-            switch (op[0]) {
-                case 0: case 1: t = op; break;
-                case 4: _.label++; return { value: op[1], done: false };
-                case 5: _.label++; y = op[1]; op = [0]; continue;
-                case 7: op = _.ops.pop(); _.trys.pop(); continue;
-                default:
-                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
-                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
-                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
-                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
-                    if (t[2]) _.ops.pop();
-                    _.trys.pop(); continue;
-            }
-            op = body.call(thisArg, _);
-        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
-        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
-    }
-}
-
-function __values(o) {
-    var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
-    if (m) return m.call(o);
-    if (o && typeof o.length === "number") return {
-        next: function () {
-            if (o && i >= o.length) o = void 0;
-            return { value: o && o[i++], done: !o };
-        }
-    };
-    throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
-}
-
-function __read(o, n) {
-    var m = typeof Symbol === "function" && o[Symbol.iterator];
-    if (!m) return o;
-    var i = m.call(o), r, ar = [], e;
-    try {
-        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
-    }
-    catch (error) { e = { error: error }; }
-    finally {
-        try {
-            if (r && !r.done && (m = i["return"])) m.call(i);
-        }
-        finally { if (e) throw e.error; }
-    }
-    return ar;
-}
-
-function __spreadArray$1(to, from, pack) {
-    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
-        if (ar || !(i in from)) {
-            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
-            ar[i] = from[i];
-        }
-    }
-    return to.concat(ar || Array.prototype.slice.call(from));
-}
-
-function __await(v) {
-    return this instanceof __await ? (this.v = v, this) : new __await(v);
-}
-
-function __asyncGenerator(thisArg, _arguments, generator) {
-    if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
-    var g = generator.apply(thisArg, _arguments || []), i, q = [];
-    return i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i;
-    function verb(n) { if (g[n]) i[n] = function (v) { return new Promise(function (a, b) { q.push([n, v, a, b]) > 1 || resume(n, v); }); }; }
-    function resume(n, v) { try { step(g[n](v)); } catch (e) { settle(q[0][3], e); } }
-    function step(r) { r.value instanceof __await ? Promise.resolve(r.value.v).then(fulfill, reject) : settle(q[0][2], r); }
-    function fulfill(value) { resume("next", value); }
-    function reject(value) { resume("throw", value); }
-    function settle(f, v) { if (f(v), q.shift(), q.length) resume(q[0][0], q[0][1]); }
-}
-
-function __asyncValues(o) {
-    if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
-    var m = o[Symbol.asyncIterator], i;
-    return m ? m.call(o) : (o = typeof __values === "function" ? __values(o) : o[Symbol.iterator](), i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i);
-    function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
-    function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
-}
+function v$1(){return (v$1=Object.assign||function(e){for(var t=1;t<arguments.length;t++){var n=arguments[t];for(var r in n)Object.prototype.hasOwnProperty.call(n,r)&&(e[r]=n[r]);}return e}).apply(this,arguments)}var g$1=function(e,t){for(var n=[e[0]],r=0,o=t.length;r<o;r+=1)n.push(t[r],e[r+1]);return n},S$1=function(t){return null!==t&&"object"==typeof t&&"[object Object]"===(t.toString?t.toString():Object.prototype.toString.call(t))&&!reactIsExports$2.typeOf(t)},w$1=Object.freeze([]),E$1=Object.freeze({});function b$1(e){return "function"==typeof e}function _$1(e){return "production"!==process.env.NODE_ENV&&"string"==typeof e&&e||e.displayName||e.name||"Component"}function N$1(e){return e&&"string"==typeof e.styledComponentId}var A$1="undefined"!=typeof process&&void 0!==process.env&&(process.env.REACT_APP_SC_ATTR||process.env.SC_ATTR)||"data-styled",I$1="undefined"!=typeof window&&"HTMLElement"in window,P$2=Boolean("boolean"==typeof SC_DISABLE_SPEEDY?SC_DISABLE_SPEEDY:"undefined"!=typeof process&&void 0!==process.env&&(void 0!==process.env.REACT_APP_SC_DISABLE_SPEEDY&&""!==process.env.REACT_APP_SC_DISABLE_SPEEDY?"false"!==process.env.REACT_APP_SC_DISABLE_SPEEDY&&process.env.REACT_APP_SC_DISABLE_SPEEDY:void 0!==process.env.SC_DISABLE_SPEEDY&&""!==process.env.SC_DISABLE_SPEEDY?"false"!==process.env.SC_DISABLE_SPEEDY&&process.env.SC_DISABLE_SPEEDY:"production"!==process.env.NODE_ENV)),R$1="production"!==process.env.NODE_ENV?{1:"Cannot create styled-component for component: %s.\n\n",2:"Can't collect styles once you've consumed a `ServerStyleSheet`'s styles! `ServerStyleSheet` is a one off instance for each server-side render cycle.\n\n- Are you trying to reuse it across renders?\n- Are you accidentally calling collectStyles twice?\n\n",3:"Streaming SSR is only supported in a Node.js environment; Please do not try to call this method in the browser.\n\n",4:"The `StyleSheetManager` expects a valid target or sheet prop!\n\n- Does this error occur on the client and is your target falsy?\n- Does this error occur on the server and is the sheet falsy?\n\n",5:"The clone method cannot be used on the client!\n\n- Are you running in a client-like environment on the server?\n- Are you trying to run SSR on the client?\n\n",6:"Trying to insert a new style tag, but the given Node is unmounted!\n\n- Are you using a custom target that isn't mounted?\n- Does your document not have a valid head element?\n- Have you accidentally removed a style tag manually?\n\n",7:'ThemeProvider: Please return an object from your "theme" prop function, e.g.\n\n```js\ntheme={() => ({})}\n```\n\n',8:'ThemeProvider: Please make your "theme" prop an object.\n\n',9:"Missing document `<head>`\n\n",10:"Cannot find a StyleSheet instance. Usually this happens if there are multiple copies of styled-components loaded at once. Check out this issue for how to troubleshoot and fix the common cases where this situation can happen: https://github.com/styled-components/styled-components/issues/1941#issuecomment-417862021\n\n",11:"_This error was replaced with a dev-time warning, it will be deleted for v4 final._ [createGlobalStyle] received children which will not be rendered. Please use the component without passing children elements.\n\n",12:"It seems you are interpolating a keyframe declaration (%s) into an untagged string. This was supported in styled-components v3, but is not longer supported in v4 as keyframes are now injected on-demand. Please wrap your string in the css\\`\\` helper which ensures the styles are injected correctly. See https://www.styled-components.com/docs/api#css\n\n",13:"%s is not a styled component and cannot be referred to via component selector. See https://www.styled-components.com/docs/advanced#referring-to-other-components for more details.\n\n",14:'ThemeProvider: "theme" prop is required.\n\n',15:"A stylis plugin has been supplied that is not named. We need a name for each plugin to be able to prevent styling collisions between different stylis configurations within the same app. Before you pass your plugin to `<StyleSheetManager stylisPlugins={[]}>`, please make sure each plugin is uniquely-named, e.g.\n\n```js\nObject.defineProperty(importedPlugin, 'name', { value: 'some-unique-name' });\n```\n\n",16:"Reached the limit of how many styled components may be created at group %s.\nYou may only create up to 1,073,741,824 components. If you're creating components dynamically,\nas for instance in your render method then you may be running into this limitation.\n\n",17:"CSSStyleSheet could not be found on HTMLStyleElement.\nHas styled-components' style tag been unmounted or altered by another script?\n"}:{};function D$1(){for(var e=arguments.length<=0?void 0:arguments[0],t=[],n=1,r=arguments.length;n<r;n+=1)t.push(n<0||arguments.length<=n?void 0:arguments[n]);return t.forEach((function(t){e=e.replace(/%[a-z]/,t);})),e}function j$1(e){for(var t=arguments.length,n=new Array(t>1?t-1:0),r=1;r<t;r++)n[r-1]=arguments[r];throw "production"===process.env.NODE_ENV?new Error("An error occurred. See https://git.io/JUIaE#"+e+" for more information."+(n.length>0?" Args: "+n.join(", "):"")):new Error(D$1.apply(void 0,[R$1[e]].concat(n)).trim())}var T$1=function(){function e(e){this.groupSizes=new Uint32Array(512),this.length=512,this.tag=e;}var t=e.prototype;return t.indexOfGroup=function(e){for(var t=0,n=0;n<e;n++)t+=this.groupSizes[n];return t},t.insertRules=function(e,t){if(e>=this.groupSizes.length){for(var n=this.groupSizes,r=n.length,o=r;e>=o;)(o<<=1)<0&&j$1(16,""+e);this.groupSizes=new Uint32Array(o),this.groupSizes.set(n),this.length=o;for(var s=r;s<o;s++)this.groupSizes[s]=0;}for(var i=this.indexOfGroup(e+1),a=0,c=t.length;a<c;a++)this.tag.insertRule(i,t[a])&&(this.groupSizes[e]++,i++);},t.clearGroup=function(e){if(e<this.length){var t=this.groupSizes[e],n=this.indexOfGroup(e),r=n+t;this.groupSizes[e]=0;for(var o=n;o<r;o++)this.tag.deleteRule(n);}},t.getGroup=function(e){var t="";if(e>=this.length||0===this.groupSizes[e])return t;for(var n=this.groupSizes[e],r=this.indexOfGroup(e),o=r+n,s=r;s<o;s++)t+=this.tag.getRule(s)+"/*!sc*/\n";return t},e}(),x$1=new Map,k$1=new Map,V$1=1,B$1=function(e){if(x$1.has(e))return x$1.get(e);for(;k$1.has(V$1);)V$1++;var t=V$1++;return "production"!==process.env.NODE_ENV&&((0|t)<0||t>1<<30)&&j$1(16,""+t),x$1.set(e,t),k$1.set(t,e),t},z$1=function(e){return k$1.get(e)},M$1=function(e,t){t>=V$1&&(V$1=t+1),x$1.set(e,t),k$1.set(t,e);},G$1="style["+A$1+'][data-styled-version="5.3.10"]',L$1=new RegExp("^"+A$1+'\\.g(\\d+)\\[id="([\\w\\d-]+)"\\].*?"([^"]*)'),F$1=function(e,t,n){for(var r,o=n.split(","),s=0,i=o.length;s<i;s++)(r=o[s])&&e.registerName(t,r);},Y$1=function(e,t){for(var n=(t.textContent||"").split("/*!sc*/\n"),r=[],o=0,s=n.length;o<s;o++){var i=n[o].trim();if(i){var a=i.match(L$1);if(a){var c=0|parseInt(a[1],10),u=a[2];0!==c&&(M$1(u,c),F$1(e,u,a[3]),e.getTag().insertRules(c,r)),r.length=0;}else r.push(i);}}},q$1=function(){return "undefined"!=typeof __webpack_nonce__?__webpack_nonce__:null},H$1=function(e){var t=document.head,n=e||t,r=document.createElement("style"),o=function(e){for(var t=e.childNodes,n=t.length;n>=0;n--){var r=t[n];if(r&&1===r.nodeType&&r.hasAttribute(A$1))return r}}(n),s=void 0!==o?o.nextSibling:null;r.setAttribute(A$1,"active"),r.setAttribute("data-styled-version","5.3.10");var i=q$1();return i&&r.setAttribute("nonce",i),n.insertBefore(r,s),r},$$1=function(){function e(e){var t=this.element=H$1(e);t.appendChild(document.createTextNode("")),this.sheet=function(e){if(e.sheet)return e.sheet;for(var t=document.styleSheets,n=0,r=t.length;n<r;n++){var o=t[n];if(o.ownerNode===e)return o}j$1(17);}(t),this.length=0;}var t=e.prototype;return t.insertRule=function(e,t){try{return this.sheet.insertRule(t,e),this.length++,!0}catch(e){return !1}},t.deleteRule=function(e){this.sheet.deleteRule(e),this.length--;},t.getRule=function(e){var t=this.sheet.cssRules[e];return void 0!==t&&"string"==typeof t.cssText?t.cssText:""},e}(),W$1=function(){function e(e){var t=this.element=H$1(e);this.nodes=t.childNodes,this.length=0;}var t=e.prototype;return t.insertRule=function(e,t){if(e<=this.length&&e>=0){var n=document.createTextNode(t),r=this.nodes[e];return this.element.insertBefore(n,r||null),this.length++,!0}return !1},t.deleteRule=function(e){this.element.removeChild(this.nodes[e]),this.length--;},t.getRule=function(e){return e<this.length?this.nodes[e].textContent:""},e}(),U$1=function(){function e(e){this.rules=[],this.length=0;}var t=e.prototype;return t.insertRule=function(e,t){return e<=this.length&&(this.rules.splice(e,0,t),this.length++,!0)},t.deleteRule=function(e){this.rules.splice(e,1),this.length--;},t.getRule=function(e){return e<this.length?this.rules[e]:""},e}(),J$1=I$1,X$1={isServer:!I$1,useCSSOMInjection:!P$2},Z$1=function(){function e(e,t,n){void 0===e&&(e=E$1),void 0===t&&(t={}),this.options=v$1({},X$1,{},e),this.gs=t,this.names=new Map(n),this.server=!!e.isServer,!this.server&&I$1&&J$1&&(J$1=!1,function(e){for(var t=document.querySelectorAll(G$1),n=0,r=t.length;n<r;n++){var o=t[n];o&&"active"!==o.getAttribute(A$1)&&(Y$1(e,o),o.parentNode&&o.parentNode.removeChild(o));}}(this));}e.registerId=function(e){return B$1(e)};var t=e.prototype;return t.reconstructWithOptions=function(t,n){return void 0===n&&(n=!0),new e(v$1({},this.options,{},t),this.gs,n&&this.names||void 0)},t.allocateGSInstance=function(e){return this.gs[e]=(this.gs[e]||0)+1},t.getTag=function(){return this.tag||(this.tag=(n=(t=this.options).isServer,r=t.useCSSOMInjection,o=t.target,e=n?new U$1(o):r?new $$1(o):new W$1(o),new T$1(e)));var e,t,n,r,o;},t.hasNameForId=function(e,t){return this.names.has(e)&&this.names.get(e).has(t)},t.registerName=function(e,t){if(B$1(e),this.names.has(e))this.names.get(e).add(t);else {var n=new Set;n.add(t),this.names.set(e,n);}},t.insertRules=function(e,t,n){this.registerName(e,t),this.getTag().insertRules(B$1(e),n);},t.clearNames=function(e){this.names.has(e)&&this.names.get(e).clear();},t.clearRules=function(e){this.getTag().clearGroup(B$1(e)),this.clearNames(e);},t.clearTag=function(){this.tag=void 0;},t.toString=function(){return function(e){for(var t=e.getTag(),n=t.length,r="",o=0;o<n;o++){var s=z$1(o);if(void 0!==s){var i=e.names.get(s),a=t.getGroup(o);if(i&&a&&i.size){var c=A$1+".g"+o+'[id="'+s+'"]',u="";void 0!==i&&i.forEach((function(e){e.length>0&&(u+=e+",");})),r+=""+a+c+'{content:"'+u+'"}/*!sc*/\n';}}}return r}(this)},e}(),K$1=/(a)(d)/gi,Q$1=function(e){return String.fromCharCode(e+(e>25?39:97))};function ee$1(e){var t,n="";for(t=Math.abs(e);t>52;t=t/52|0)n=Q$1(t%52)+n;return (Q$1(t%52)+n).replace(K$1,"$1-$2")}var te$1=function(e,t){for(var n=t.length;n;)e=33*e^t.charCodeAt(--n);return e},ne$1=function(e){return te$1(5381,e)};function re$1(e){for(var t=0;t<e.length;t+=1){var n=e[t];if(b$1(n)&&!N$1(n))return !1}return !0}var oe$1=ne$1("5.3.10"),se$1=function(){function e(e,t,n){this.rules=e,this.staticRulesId="",this.isStatic="production"===process.env.NODE_ENV&&(void 0===n||n.isStatic)&&re$1(e),this.componentId=t,this.baseHash=te$1(oe$1,t),this.baseStyle=n,Z$1.registerId(t);}return e.prototype.generateAndInjectStyles=function(e,t,n){var r=this.componentId,o=[];if(this.baseStyle&&o.push(this.baseStyle.generateAndInjectStyles(e,t,n)),this.isStatic&&!n.hash)if(this.staticRulesId&&t.hasNameForId(r,this.staticRulesId))o.push(this.staticRulesId);else {var s=Ne$1(this.rules,e,t,n).join(""),i=ee$1(te$1(this.baseHash,s)>>>0);if(!t.hasNameForId(r,i)){var a=n(s,"."+i,void 0,r);t.insertRules(r,i,a);}o.push(i),this.staticRulesId=i;}else {for(var c=this.rules.length,u=te$1(this.baseHash,n.hash),l="",d=0;d<c;d++){var h=this.rules[d];if("string"==typeof h)l+=h,"production"!==process.env.NODE_ENV&&(u=te$1(u,h+d));else if(h){var p=Ne$1(h,e,t,n),f=Array.isArray(p)?p.join(""):p;u=te$1(u,f+d),l+=f;}}if(l){var m=ee$1(u>>>0);if(!t.hasNameForId(r,m)){var y=n(l,"."+m,void 0,r);t.insertRules(r,m,y);}o.push(m);}}return o.join(" ")},e}(),ie$1=/^\s*\/\/.*$/gm,ae$1=[":","[",".","#"];function ce$1(e){var t,n,r,o,s=void 0===e?E$1:e,i=s.options,a=void 0===i?E$1:i,c=s.plugins,u=void 0===c?w$1:c,l=new stylis_min(a),d=[],h=function(e){function t(t){if(t)try{e(t+"}");}catch(e){}}return function(n,r,o,s,i,a,c,u,l,d){switch(n){case 1:if(0===l&&64===r.charCodeAt(0))return e(r+";"),"";break;case 2:if(0===u)return r+"/*|*/";break;case 3:switch(u){case 102:case 112:return e(o[0]+r),"";default:return r+(0===d?"/*|*/":"")}case-2:r.split("/*|*/}").forEach(t);}}}((function(e){d.push(e);})),f=function(e,r,s){return 0===r&&-1!==ae$1.indexOf(s[n.length])||s.match(o)?e:"."+t};function m(e,s,i,a){void 0===a&&(a="&");var c=e.replace(ie$1,""),u=s&&i?i+" "+s+" { "+c+" }":c;return t=a,n=s,r=new RegExp("\\"+n+"\\b","g"),o=new RegExp("(\\"+n+"\\b){2,}"),l(i||!s?"":s,u)}return l.use([].concat(u,[function(e,t,o){2===e&&o.length&&o[0].lastIndexOf(n)>0&&(o[0]=o[0].replace(r,f));},h,function(e){if(-2===e){var t=d;return d=[],t}}])),m.hash=u.length?u.reduce((function(e,t){return t.name||j$1(15),te$1(e,t.name)}),5381).toString():"",m}var ue$1=React.createContext();ue$1.Consumer;var de$1=React.createContext(),he$1=(de$1.Consumer,new Z$1),pe$1=ce$1();function fe$1(){return React.useContext(ue$1)||he$1}function me$1(){return React.useContext(de$1)||pe$1}var ve$1=function(){function e(e,t){var n=this;this.inject=function(e,t){void 0===t&&(t=pe$1);var r=n.name+t.hash;e.hasNameForId(n.id,r)||e.insertRules(n.id,r,t(n.rules,r,"@keyframes"));},this.toString=function(){return j$1(12,String(n.name))},this.name=e,this.id="sc-keyframes-"+e,this.rules=t;}return e.prototype.getName=function(e){return void 0===e&&(e=pe$1),this.name+e.hash},e}(),ge$1=/([A-Z])/,Se$1=/([A-Z])/g,we$1=/^ms-/,Ee$1=function(e){return "-"+e.toLowerCase()};function be$1(e){return ge$1.test(e)?e.replace(Se$1,Ee$1).replace(we$1,"-ms-"):e}var _e$1=function(e){return null==e||!1===e||""===e};function Ne$1(e,n,r,o){if(Array.isArray(e)){for(var s,i=[],a=0,c=e.length;a<c;a+=1)""!==(s=Ne$1(e[a],n,r,o))&&(Array.isArray(s)?i.push.apply(i,s):i.push(s));return i}if(_e$1(e))return "";if(N$1(e))return "."+e.styledComponentId;if(b$1(e)){if("function"!=typeof(l=e)||l.prototype&&l.prototype.isReactComponent||!n)return e;var u=e(n);return "production"!==process.env.NODE_ENV&&reactIsExports$2.isElement(u)&&console.warn(_$1(e)+" is not a styled component and cannot be referred to via component selector. See https://www.styled-components.com/docs/advanced#referring-to-other-components for more details."),Ne$1(u,n,r,o)}var l;return e instanceof ve$1?r?(e.inject(r,o),e.getName(o)):e:S$1(e)?function e(t,n){var r,o,s=[];for(var i in t)t.hasOwnProperty(i)&&!_e$1(t[i])&&(Array.isArray(t[i])&&t[i].isCss||b$1(t[i])?s.push(be$1(i)+":",t[i],";"):S$1(t[i])?s.push.apply(s,e(t[i],i)):s.push(be$1(i)+": "+(r=i,null==(o=t[i])||"boolean"==typeof o||""===o?"":"number"!=typeof o||0===o||r in unitlessKeys||r.startsWith("--")?String(o).trim():o+"px")+";"));return n?[n+" {"].concat(s,["}"]):s}(e):e.toString()}var Ae$1=function(e){return Array.isArray(e)&&(e.isCss=!0),e};function Ce$1(e){for(var t=arguments.length,n=new Array(t>1?t-1:0),r=1;r<t;r++)n[r-1]=arguments[r];return b$1(e)||S$1(e)?Ae$1(Ne$1(g$1(w$1,[e].concat(n)))):0===n.length&&1===e.length&&"string"==typeof e[0]?e:Ae$1(Ne$1(g$1(e,n)))}var Ie$1=/invalid hook call/i,Pe$1=new Set,Oe$1=function(e,t){if("production"!==process.env.NODE_ENV){var n="The component "+e+(t?' with the id of "'+t+'"':"")+" has been created dynamically.\nYou may see this warning because you've called styled inside another component.\nTo resolve this only create new StyledComponents outside of any render method and function component.",r=console.error;try{var o=!0;console.error=function(e){if(Ie$1.test(e))o=!1,Pe$1.delete(n);else {for(var t=arguments.length,s=new Array(t>1?t-1:0),i=1;i<t;i++)s[i-1]=arguments[i];r.apply(void 0,[e].concat(s));}},React.useRef(),o&&!Pe$1.has(n)&&(console.warn(n),Pe$1.add(n));}catch(e){Ie$1.test(e.message)&&Pe$1.delete(n);}finally{console.error=r;}}},Re$1=function(e,t,n){return void 0===n&&(n=E$1),e.theme!==n.theme&&e.theme||t||n.theme},De$1=/[!"#$%&'()*+,./:;<=>?@[\\\]^`{|}~-]+/g,je$1=/(^-|-$)/g;function Te$1(e){return e.replace(De$1,"-").replace(je$1,"")}var xe$1=function(e){return ee$1(ne$1(e)>>>0)};function ke$1(e){return "string"==typeof e&&("production"===process.env.NODE_ENV||e.charAt(0)===e.charAt(0).toLowerCase())}var Ve$1=function(e){return "function"==typeof e||"object"==typeof e&&null!==e&&!Array.isArray(e)},Be$1=function(e){return "__proto__"!==e&&"constructor"!==e&&"prototype"!==e};function ze$1(e,t,n){var r=e[n];Ve$1(t)&&Ve$1(r)?Me$1(r,t):e[n]=t;}function Me$1(e){for(var t=arguments.length,n=new Array(t>1?t-1:0),r=1;r<t;r++)n[r-1]=arguments[r];for(var o=0,s=n;o<s.length;o++){var i=s[o];if(Ve$1(i))for(var a in i)Be$1(a)&&ze$1(e,i[a],a);}return e}var Ge$1=React.createContext();Ge$1.Consumer;var Ye$1={};function qe$1(e,t,n){var o=N$1(e),i=!ke$1(e),a=t.attrs,c=void 0===a?w$1:a,d=t.componentId,h=void 0===d?function(e,t){var n="string"!=typeof e?"sc":Te$1(e);Ye$1[n]=(Ye$1[n]||0)+1;var r=n+"-"+xe$1("5.3.10"+n+Ye$1[n]);return t?t+"-"+r:r}(t.displayName,t.parentComponentId):d,p=t.displayName,f=void 0===p?function(e){return ke$1(e)?"styled."+e:"Styled("+_$1(e)+")"}(e):p,g=t.displayName&&t.componentId?Te$1(t.displayName)+"-"+t.componentId:t.componentId||h,S=o&&e.attrs?Array.prototype.concat(e.attrs,c).filter(Boolean):c,A=t.shouldForwardProp;o&&e.shouldForwardProp&&(A=t.shouldForwardProp?function(n,r,o){return e.shouldForwardProp(n,r,o)&&t.shouldForwardProp(n,r,o)}:e.shouldForwardProp);var C,I=new se$1(n,g,o?e.componentStyle:void 0),P=I.isStatic&&0===c.length,O=function(e,t){return function(e,t,n,r){var o=e.attrs,i=e.componentStyle,a=e.defaultProps,c=e.foldedComponentIds,d=e.shouldForwardProp,h=e.styledComponentId,p=e.target;"production"!==process.env.NODE_ENV&&React.useDebugValue(h);var f=function(e,t,n){void 0===e&&(e=E$1);var r=v$1({},t,{theme:e}),o={};return n.forEach((function(e){var t,n,s,i=e;for(t in b$1(i)&&(i=i(r)),i)r[t]=o[t]="className"===t?(n=o[t],s=i[t],n&&s?n+" "+s:n||s):i[t];})),[r,o]}(Re$1(t,React.useContext(Ge$1),a)||E$1,t,o),y=f[0],g=f[1],S=function(e,t,n,r){var o=fe$1(),s=me$1(),i=t?e.generateAndInjectStyles(E$1,o,s):e.generateAndInjectStyles(n,o,s);return "production"!==process.env.NODE_ENV&&React.useDebugValue(i),"production"!==process.env.NODE_ENV&&!t&&r&&r(i),i}(i,r,y,"production"!==process.env.NODE_ENV?e.warnTooManyClasses:void 0),w=n,_=g.$as||t.$as||g.as||t.as||p,N=ke$1(_),A=g!==t?v$1({},t,{},g):t,C={};for(var I in A)"$"!==I[0]&&"as"!==I&&("forwardedAs"===I?C.as=A[I]:(d?d(I,isPropValid,_):!N||isPropValid(I))&&(C[I]=A[I]));return t.style&&g.style!==t.style&&(C.style=v$1({},t.style,{},g.style)),C.className=Array.prototype.concat(c,h,S!==h?S:null,t.className,g.className).filter(Boolean).join(" "),C.ref=w,React.createElement(_,C)}(C,e,t,P)};return O.displayName=f,(C=React.forwardRef(O)).attrs=S,C.componentStyle=I,C.displayName=f,C.shouldForwardProp=A,C.foldedComponentIds=o?Array.prototype.concat(e.foldedComponentIds,e.styledComponentId):w$1,C.styledComponentId=g,C.target=o?e.target:e,C.withComponent=function(e){var r=t.componentId,o=function(e,t){if(null==e)return {};var n,r,o={},s=Object.keys(e);for(r=0;r<s.length;r++)n=s[r],t.indexOf(n)>=0||(o[n]=e[n]);return o}(t,["componentId"]),s=r&&r+"-"+(ke$1(e)?e:Te$1(_$1(e)));return qe$1(e,v$1({},o,{attrs:S,componentId:s}),n)},Object.defineProperty(C,"defaultProps",{get:function(){return this._foldedDefaultProps},set:function(t){this._foldedDefaultProps=o?Me$1({},e.defaultProps,t):t;}}),"production"!==process.env.NODE_ENV&&(Oe$1(f,g),C.warnTooManyClasses=function(e,t){var n={},r=!1;return function(o){if(!r&&(n[o]=!0,Object.keys(n).length>=200)){var s=t?' with the id of "'+t+'"':"";console.warn("Over 200 classes were generated for component "+e+s+".\nConsider using the attrs method, together with a style object for frequently changed styles.\nExample:\n  const Component = styled.div.attrs(props => ({\n    style: {\n      background: props.background,\n    },\n  }))`width: 100%;`\n\n  <Component />"),r=!0,n={};}}}(f,g)),Object.defineProperty(C,"toString",{value:function(){return "."+C.styledComponentId}}),i&&y(C,e,{attrs:!0,componentStyle:!0,displayName:!0,foldedComponentIds:!0,shouldForwardProp:!0,styledComponentId:!0,target:!0,withComponent:!0}),C}var He$1=function(e){return function e(t,r,o){if(void 0===o&&(o=E$1),!reactIsExports$2.isValidElementType(r))return j$1(1,String(r));var s=function(){return t(r,o,Ce$1.apply(void 0,arguments))};return s.withConfig=function(n){return e(t,r,v$1({},o,{},n))},s.attrs=function(n){return e(t,r,v$1({},o,{attrs:Array.prototype.concat(o.attrs,n).filter(Boolean)}))},s}(qe$1,e)};["a","abbr","address","area","article","aside","audio","b","base","bdi","bdo","big","blockquote","body","br","button","canvas","caption","cite","code","col","colgroup","data","datalist","dd","del","details","dfn","dialog","div","dl","dt","em","embed","fieldset","figcaption","figure","footer","form","h1","h2","h3","h4","h5","h6","head","header","hgroup","hr","html","i","iframe","img","input","ins","kbd","keygen","label","legend","li","link","main","map","mark","marquee","menu","menuitem","meta","meter","nav","noscript","object","ol","optgroup","option","output","p","param","picture","pre","progress","q","rp","rt","ruby","s","samp","script","section","select","small","source","span","strong","style","sub","summary","sup","table","tbody","td","textarea","tfoot","th","thead","time","title","tr","track","u","ul","var","video","wbr","circle","clipPath","defs","ellipse","foreignObject","g","image","line","linearGradient","marker","mask","path","pattern","polygon","polyline","radialGradient","rect","stop","svg","text","textPath","tspan"].forEach((function(e){He$1[e]=He$1(e);}));function Ue$1(e){"production"!==process.env.NODE_ENV&&"undefined"!=typeof navigator&&"ReactNative"===navigator.product&&console.warn("`keyframes` cannot be used on ReactNative, only on the web. To do animation in ReactNative please use Animated.");for(var t=arguments.length,n=new Array(t>1?t-1:0),r=1;r<t;r++)n[r-1]=arguments[r];var o=Ce$1.apply(void 0,[e].concat(n)).join(""),s=xe$1(o);return new ve$1(s,o)}"production"!==process.env.NODE_ENV&&"undefined"!=typeof navigator&&"ReactNative"===navigator.product&&console.warn("It looks like you've imported 'styled-components' on React Native.\nPerhaps you're looking to import 'styled-components/native'?\nRead more about this at https://www.styled-components.com/docs/basics#react-native"),"production"!==process.env.NODE_ENV&&"test"!==process.env.NODE_ENV&&"undefined"!=typeof window&&(window["__styled-components-init__"]=window["__styled-components-init__"]||0,1===window["__styled-components-init__"]&&console.warn("It looks like there are several instances of 'styled-components' initialized in this application. This may cause dynamic styles to not render properly, errors during the rehydration process, a missing theme prop, and makes your application bigger without good reason.\n\nSee https://s-c.sh/2BAXzed for more info."),window["__styled-components-init__"]+=1);var styled$1 = He$1;
 
 function isFunction(value) {
     return typeof value === 'function';
@@ -3040,10 +3018,15 @@ var timeoutProvider = {
         for (var _i = 2; _i < arguments.length; _i++) {
             args[_i - 2] = arguments[_i];
         }
+        var delegate = timeoutProvider.delegate;
+        if (delegate === null || delegate === void 0 ? void 0 : delegate.setTimeout) {
+            return delegate.setTimeout.apply(delegate, __spreadArray$1([handler, timeout], __read(args)));
+        }
         return setTimeout.apply(void 0, __spreadArray$1([handler, timeout], __read(args)));
     },
     clearTimeout: function (handle) {
-        return (clearTimeout)(handle);
+        var delegate = timeoutProvider.delegate;
+        return ((delegate === null || delegate === void 0 ? void 0 : delegate.clearTimeout) || clearTimeout)(handle);
     },
     delegate: undefined,
 };
@@ -3420,143 +3403,6 @@ var OperatorSubscriber = (function (_super) {
     return OperatorSubscriber;
 }(Subscriber));
 
-function refCount() {
-    return operate(function (source, subscriber) {
-        var connection = null;
-        source._refCount++;
-        var refCounter = createOperatorSubscriber(subscriber, undefined, undefined, undefined, function () {
-            if (!source || source._refCount <= 0 || 0 < --source._refCount) {
-                connection = null;
-                return;
-            }
-            var sharedConnection = source._connection;
-            var conn = connection;
-            connection = null;
-            if (sharedConnection && (!conn || sharedConnection === conn)) {
-                sharedConnection.unsubscribe();
-            }
-            subscriber.unsubscribe();
-        });
-        source.subscribe(refCounter);
-        if (!refCounter.closed) {
-            connection = source.connect();
-        }
-    });
-}
-
-((function (_super) {
-    __extends(ConnectableObservable, _super);
-    function ConnectableObservable(source, subjectFactory) {
-        var _this = _super.call(this) || this;
-        _this.source = source;
-        _this.subjectFactory = subjectFactory;
-        _this._subject = null;
-        _this._refCount = 0;
-        _this._connection = null;
-        if (hasLift(source)) {
-            _this.lift = source.lift;
-        }
-        return _this;
-    }
-    ConnectableObservable.prototype._subscribe = function (subscriber) {
-        return this.getSubject().subscribe(subscriber);
-    };
-    ConnectableObservable.prototype.getSubject = function () {
-        var subject = this._subject;
-        if (!subject || subject.isStopped) {
-            this._subject = this.subjectFactory();
-        }
-        return this._subject;
-    };
-    ConnectableObservable.prototype._teardown = function () {
-        this._refCount = 0;
-        var _connection = this._connection;
-        this._subject = this._connection = null;
-        _connection === null || _connection === void 0 ? void 0 : _connection.unsubscribe();
-    };
-    ConnectableObservable.prototype.connect = function () {
-        var _this = this;
-        var connection = this._connection;
-        if (!connection) {
-            connection = this._connection = new Subscription();
-            var subject_1 = this.getSubject();
-            connection.add(this.source.subscribe(createOperatorSubscriber(subject_1, undefined, function () {
-                _this._teardown();
-                subject_1.complete();
-            }, function (err) {
-                _this._teardown();
-                subject_1.error(err);
-            }, function () { return _this._teardown(); })));
-            if (connection.closed) {
-                this._connection = null;
-                connection = Subscription.EMPTY;
-            }
-        }
-        return connection;
-    };
-    ConnectableObservable.prototype.refCount = function () {
-        return refCount()(this);
-    };
-    return ConnectableObservable;
-})(Observable));
-
-var performanceTimestampProvider = {
-    now: function () {
-        return (performanceTimestampProvider.delegate || performance).now();
-    },
-    delegate: undefined,
-};
-
-var animationFrameProvider = {
-    schedule: function (callback) {
-        var request = requestAnimationFrame;
-        var cancel = cancelAnimationFrame;
-        var handle = request(function (timestamp) {
-            cancel = undefined;
-            callback(timestamp);
-        });
-        return new Subscription(function () { return cancel === null || cancel === void 0 ? void 0 : cancel(handle); });
-    },
-    requestAnimationFrame: function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        var delegate = animationFrameProvider.delegate;
-        return ((delegate === null || delegate === void 0 ? void 0 : delegate.requestAnimationFrame) || requestAnimationFrame).apply(void 0, __spreadArray$1([], __read(args)));
-    },
-    cancelAnimationFrame: function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        return (cancelAnimationFrame).apply(void 0, __spreadArray$1([], __read(args)));
-    },
-    delegate: undefined,
-};
-
-function animationFramesFactory(timestampProvider) {
-    var schedule = animationFrameProvider.schedule;
-    return new Observable(function (subscriber) {
-        var subscription = new Subscription();
-        var provider = timestampProvider || performanceTimestampProvider;
-        var start = provider.now();
-        var run = function (timestamp) {
-            var now = provider.now();
-            subscriber.next({
-                timestamp: timestampProvider ? now : timestamp,
-                elapsed: now - start,
-            });
-            if (!subscriber.closed) {
-                subscription.add(schedule(run));
-            }
-        };
-        subscription.add(schedule(run));
-        return subscription;
-    });
-}
-animationFramesFactory();
-
 var ObjectUnsubscribedError = createErrorClass(function (_super) {
     return function ObjectUnsubscribedErrorImpl() {
         _super(this);
@@ -3718,596 +3564,6 @@ var AnonymousSubject = (function (_super) {
     };
     return AnonymousSubject;
 }(Subject));
-
-((function (_super) {
-    __extends(BehaviorSubject, _super);
-    function BehaviorSubject(_value) {
-        var _this = _super.call(this) || this;
-        _this._value = _value;
-        return _this;
-    }
-    Object.defineProperty(BehaviorSubject.prototype, "value", {
-        get: function () {
-            return this.getValue();
-        },
-        enumerable: false,
-        configurable: true
-    });
-    BehaviorSubject.prototype._subscribe = function (subscriber) {
-        var subscription = _super.prototype._subscribe.call(this, subscriber);
-        !subscription.closed && subscriber.next(this._value);
-        return subscription;
-    };
-    BehaviorSubject.prototype.getValue = function () {
-        var _a = this, hasError = _a.hasError, thrownError = _a.thrownError, _value = _a._value;
-        if (hasError) {
-            throw thrownError;
-        }
-        this._throwIfClosed();
-        return _value;
-    };
-    BehaviorSubject.prototype.next = function (value) {
-        _super.prototype.next.call(this, (this._value = value));
-    };
-    return BehaviorSubject;
-})(Subject));
-
-var dateTimestampProvider = {
-    now: function () {
-        return (dateTimestampProvider.delegate || Date).now();
-    },
-    delegate: undefined,
-};
-
-((function (_super) {
-    __extends(ReplaySubject, _super);
-    function ReplaySubject(_bufferSize, _windowTime, _timestampProvider) {
-        if (_bufferSize === void 0) { _bufferSize = Infinity; }
-        if (_windowTime === void 0) { _windowTime = Infinity; }
-        if (_timestampProvider === void 0) { _timestampProvider = dateTimestampProvider; }
-        var _this = _super.call(this) || this;
-        _this._bufferSize = _bufferSize;
-        _this._windowTime = _windowTime;
-        _this._timestampProvider = _timestampProvider;
-        _this._buffer = [];
-        _this._infiniteTimeWindow = true;
-        _this._infiniteTimeWindow = _windowTime === Infinity;
-        _this._bufferSize = Math.max(1, _bufferSize);
-        _this._windowTime = Math.max(1, _windowTime);
-        return _this;
-    }
-    ReplaySubject.prototype.next = function (value) {
-        var _a = this, isStopped = _a.isStopped, _buffer = _a._buffer, _infiniteTimeWindow = _a._infiniteTimeWindow, _timestampProvider = _a._timestampProvider, _windowTime = _a._windowTime;
-        if (!isStopped) {
-            _buffer.push(value);
-            !_infiniteTimeWindow && _buffer.push(_timestampProvider.now() + _windowTime);
-        }
-        this._trimBuffer();
-        _super.prototype.next.call(this, value);
-    };
-    ReplaySubject.prototype._subscribe = function (subscriber) {
-        this._throwIfClosed();
-        this._trimBuffer();
-        var subscription = this._innerSubscribe(subscriber);
-        var _a = this, _infiniteTimeWindow = _a._infiniteTimeWindow, _buffer = _a._buffer;
-        var copy = _buffer.slice();
-        for (var i = 0; i < copy.length && !subscriber.closed; i += _infiniteTimeWindow ? 1 : 2) {
-            subscriber.next(copy[i]);
-        }
-        this._checkFinalizedStatuses(subscriber);
-        return subscription;
-    };
-    ReplaySubject.prototype._trimBuffer = function () {
-        var _a = this, _bufferSize = _a._bufferSize, _timestampProvider = _a._timestampProvider, _buffer = _a._buffer, _infiniteTimeWindow = _a._infiniteTimeWindow;
-        var adjustedBufferSize = (_infiniteTimeWindow ? 1 : 2) * _bufferSize;
-        _bufferSize < Infinity && adjustedBufferSize < _buffer.length && _buffer.splice(0, _buffer.length - adjustedBufferSize);
-        if (!_infiniteTimeWindow) {
-            var now = _timestampProvider.now();
-            var last = 0;
-            for (var i = 1; i < _buffer.length && _buffer[i] <= now; i += 2) {
-                last = i;
-            }
-            last && _buffer.splice(0, last + 1);
-        }
-    };
-    return ReplaySubject;
-})(Subject));
-
-((function (_super) {
-    __extends(AsyncSubject, _super);
-    function AsyncSubject() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this._value = null;
-        _this._hasValue = false;
-        _this._isComplete = false;
-        return _this;
-    }
-    AsyncSubject.prototype._checkFinalizedStatuses = function (subscriber) {
-        var _a = this, hasError = _a.hasError, _hasValue = _a._hasValue, _value = _a._value, thrownError = _a.thrownError, isStopped = _a.isStopped, _isComplete = _a._isComplete;
-        if (hasError) {
-            subscriber.error(thrownError);
-        }
-        else if (isStopped || _isComplete) {
-            _hasValue && subscriber.next(_value);
-            subscriber.complete();
-        }
-    };
-    AsyncSubject.prototype.next = function (value) {
-        if (!this.isStopped) {
-            this._value = value;
-            this._hasValue = true;
-        }
-    };
-    AsyncSubject.prototype.complete = function () {
-        var _a = this, _hasValue = _a._hasValue, _value = _a._value, _isComplete = _a._isComplete;
-        if (!_isComplete) {
-            this._isComplete = true;
-            _hasValue && _super.prototype.next.call(this, _value);
-            _super.prototype.complete.call(this);
-        }
-    };
-    return AsyncSubject;
-})(Subject));
-
-var Action = (function (_super) {
-    __extends(Action, _super);
-    function Action(scheduler, work) {
-        return _super.call(this) || this;
-    }
-    Action.prototype.schedule = function (state, delay) {
-        return this;
-    };
-    return Action;
-}(Subscription));
-
-var intervalProvider = {
-    setInterval: function (handler, timeout) {
-        var args = [];
-        for (var _i = 2; _i < arguments.length; _i++) {
-            args[_i - 2] = arguments[_i];
-        }
-        return setInterval.apply(void 0, __spreadArray$1([handler, timeout], __read(args)));
-    },
-    clearInterval: function (handle) {
-        return (clearInterval)(handle);
-    },
-    delegate: undefined,
-};
-
-var AsyncAction = (function (_super) {
-    __extends(AsyncAction, _super);
-    function AsyncAction(scheduler, work) {
-        var _this = _super.call(this, scheduler, work) || this;
-        _this.scheduler = scheduler;
-        _this.work = work;
-        _this.pending = false;
-        return _this;
-    }
-    AsyncAction.prototype.schedule = function (state, delay) {
-        if (delay === void 0) { delay = 0; }
-        if (this.closed) {
-            return this;
-        }
-        this.state = state;
-        var id = this.id;
-        var scheduler = this.scheduler;
-        if (id != null) {
-            this.id = this.recycleAsyncId(scheduler, id, delay);
-        }
-        this.pending = true;
-        this.delay = delay;
-        this.id = this.id || this.requestAsyncId(scheduler, this.id, delay);
-        return this;
-    };
-    AsyncAction.prototype.requestAsyncId = function (scheduler, _id, delay) {
-        if (delay === void 0) { delay = 0; }
-        return intervalProvider.setInterval(scheduler.flush.bind(scheduler, this), delay);
-    };
-    AsyncAction.prototype.recycleAsyncId = function (_scheduler, id, delay) {
-        if (delay === void 0) { delay = 0; }
-        if (delay != null && this.delay === delay && this.pending === false) {
-            return id;
-        }
-        intervalProvider.clearInterval(id);
-        return undefined;
-    };
-    AsyncAction.prototype.execute = function (state, delay) {
-        if (this.closed) {
-            return new Error('executing a cancelled action');
-        }
-        this.pending = false;
-        var error = this._execute(state, delay);
-        if (error) {
-            return error;
-        }
-        else if (this.pending === false && this.id != null) {
-            this.id = this.recycleAsyncId(this.scheduler, this.id, null);
-        }
-    };
-    AsyncAction.prototype._execute = function (state, _delay) {
-        var errored = false;
-        var errorValue;
-        try {
-            this.work(state);
-        }
-        catch (e) {
-            errored = true;
-            errorValue = e ? e : new Error('Scheduled action threw falsy error');
-        }
-        if (errored) {
-            this.unsubscribe();
-            return errorValue;
-        }
-    };
-    AsyncAction.prototype.unsubscribe = function () {
-        if (!this.closed) {
-            var _a = this, id = _a.id, scheduler = _a.scheduler;
-            var actions = scheduler.actions;
-            this.work = this.state = this.scheduler = null;
-            this.pending = false;
-            arrRemove(actions, this);
-            if (id != null) {
-                this.id = this.recycleAsyncId(scheduler, id, null);
-            }
-            this.delay = null;
-            _super.prototype.unsubscribe.call(this);
-        }
-    };
-    return AsyncAction;
-}(Action));
-
-var nextHandle = 1;
-var resolved;
-var activeHandles = {};
-function findAndClearHandle(handle) {
-    if (handle in activeHandles) {
-        delete activeHandles[handle];
-        return true;
-    }
-    return false;
-}
-var Immediate = {
-    setImmediate: function (cb) {
-        var handle = nextHandle++;
-        activeHandles[handle] = true;
-        if (!resolved) {
-            resolved = Promise.resolve();
-        }
-        resolved.then(function () { return findAndClearHandle(handle) && cb(); });
-        return handle;
-    },
-    clearImmediate: function (handle) {
-        findAndClearHandle(handle);
-    },
-};
-
-var setImmediate = Immediate.setImmediate, clearImmediate = Immediate.clearImmediate;
-var immediateProvider = {
-    setImmediate: function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        var delegate = immediateProvider.delegate;
-        return ((delegate === null || delegate === void 0 ? void 0 : delegate.setImmediate) || setImmediate).apply(void 0, __spreadArray$1([], __read(args)));
-    },
-    clearImmediate: function (handle) {
-        return (clearImmediate)(handle);
-    },
-    delegate: undefined,
-};
-
-var AsapAction = (function (_super) {
-    __extends(AsapAction, _super);
-    function AsapAction(scheduler, work) {
-        var _this = _super.call(this, scheduler, work) || this;
-        _this.scheduler = scheduler;
-        _this.work = work;
-        return _this;
-    }
-    AsapAction.prototype.requestAsyncId = function (scheduler, id, delay) {
-        if (delay === void 0) { delay = 0; }
-        if (delay !== null && delay > 0) {
-            return _super.prototype.requestAsyncId.call(this, scheduler, id, delay);
-        }
-        scheduler.actions.push(this);
-        return scheduler._scheduled || (scheduler._scheduled = immediateProvider.setImmediate(scheduler.flush.bind(scheduler, undefined)));
-    };
-    AsapAction.prototype.recycleAsyncId = function (scheduler, id, delay) {
-        if (delay === void 0) { delay = 0; }
-        if ((delay != null && delay > 0) || (delay == null && this.delay > 0)) {
-            return _super.prototype.recycleAsyncId.call(this, scheduler, id, delay);
-        }
-        if (!scheduler.actions.some(function (action) { return action.id === id; })) {
-            immediateProvider.clearImmediate(id);
-            scheduler._scheduled = undefined;
-        }
-        return undefined;
-    };
-    return AsapAction;
-}(AsyncAction));
-
-var Scheduler = (function () {
-    function Scheduler(schedulerActionCtor, now) {
-        if (now === void 0) { now = Scheduler.now; }
-        this.schedulerActionCtor = schedulerActionCtor;
-        this.now = now;
-    }
-    Scheduler.prototype.schedule = function (work, delay, state) {
-        if (delay === void 0) { delay = 0; }
-        return new this.schedulerActionCtor(this, work).schedule(state, delay);
-    };
-    Scheduler.now = dateTimestampProvider.now;
-    return Scheduler;
-}());
-
-var AsyncScheduler = (function (_super) {
-    __extends(AsyncScheduler, _super);
-    function AsyncScheduler(SchedulerAction, now) {
-        if (now === void 0) { now = Scheduler.now; }
-        var _this = _super.call(this, SchedulerAction, now) || this;
-        _this.actions = [];
-        _this._active = false;
-        _this._scheduled = undefined;
-        return _this;
-    }
-    AsyncScheduler.prototype.flush = function (action) {
-        var actions = this.actions;
-        if (this._active) {
-            actions.push(action);
-            return;
-        }
-        var error;
-        this._active = true;
-        do {
-            if ((error = action.execute(action.state, action.delay))) {
-                break;
-            }
-        } while ((action = actions.shift()));
-        this._active = false;
-        if (error) {
-            while ((action = actions.shift())) {
-                action.unsubscribe();
-            }
-            throw error;
-        }
-    };
-    return AsyncScheduler;
-}(Scheduler));
-
-var AsapScheduler = (function (_super) {
-    __extends(AsapScheduler, _super);
-    function AsapScheduler() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    AsapScheduler.prototype.flush = function (action) {
-        this._active = true;
-        var flushId = this._scheduled;
-        this._scheduled = undefined;
-        var actions = this.actions;
-        var error;
-        action = action || actions.shift();
-        do {
-            if ((error = action.execute(action.state, action.delay))) {
-                break;
-            }
-        } while ((action = actions[0]) && action.id === flushId && actions.shift());
-        this._active = false;
-        if (error) {
-            while ((action = actions[0]) && action.id === flushId && actions.shift()) {
-                action.unsubscribe();
-            }
-            throw error;
-        }
-    };
-    return AsapScheduler;
-}(AsyncScheduler));
-
-new AsapScheduler(AsapAction);
-
-new AsyncScheduler(AsyncAction);
-
-var QueueAction = (function (_super) {
-    __extends(QueueAction, _super);
-    function QueueAction(scheduler, work) {
-        var _this = _super.call(this, scheduler, work) || this;
-        _this.scheduler = scheduler;
-        _this.work = work;
-        return _this;
-    }
-    QueueAction.prototype.schedule = function (state, delay) {
-        if (delay === void 0) { delay = 0; }
-        if (delay > 0) {
-            return _super.prototype.schedule.call(this, state, delay);
-        }
-        this.delay = delay;
-        this.state = state;
-        this.scheduler.flush(this);
-        return this;
-    };
-    QueueAction.prototype.execute = function (state, delay) {
-        return (delay > 0 || this.closed) ?
-            _super.prototype.execute.call(this, state, delay) :
-            this._execute(state, delay);
-    };
-    QueueAction.prototype.requestAsyncId = function (scheduler, id, delay) {
-        if (delay === void 0) { delay = 0; }
-        if ((delay != null && delay > 0) || (delay == null && this.delay > 0)) {
-            return _super.prototype.requestAsyncId.call(this, scheduler, id, delay);
-        }
-        return scheduler.flush(this);
-    };
-    return QueueAction;
-}(AsyncAction));
-
-var QueueScheduler = (function (_super) {
-    __extends(QueueScheduler, _super);
-    function QueueScheduler() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    return QueueScheduler;
-}(AsyncScheduler));
-
-new QueueScheduler(QueueAction);
-
-var AnimationFrameAction = (function (_super) {
-    __extends(AnimationFrameAction, _super);
-    function AnimationFrameAction(scheduler, work) {
-        var _this = _super.call(this, scheduler, work) || this;
-        _this.scheduler = scheduler;
-        _this.work = work;
-        return _this;
-    }
-    AnimationFrameAction.prototype.requestAsyncId = function (scheduler, id, delay) {
-        if (delay === void 0) { delay = 0; }
-        if (delay !== null && delay > 0) {
-            return _super.prototype.requestAsyncId.call(this, scheduler, id, delay);
-        }
-        scheduler.actions.push(this);
-        return scheduler._scheduled || (scheduler._scheduled = animationFrameProvider.requestAnimationFrame(function () { return scheduler.flush(undefined); }));
-    };
-    AnimationFrameAction.prototype.recycleAsyncId = function (scheduler, id, delay) {
-        if (delay === void 0) { delay = 0; }
-        if ((delay != null && delay > 0) || (delay == null && this.delay > 0)) {
-            return _super.prototype.recycleAsyncId.call(this, scheduler, id, delay);
-        }
-        if (!scheduler.actions.some(function (action) { return action.id === id; })) {
-            animationFrameProvider.cancelAnimationFrame(id);
-            scheduler._scheduled = undefined;
-        }
-        return undefined;
-    };
-    return AnimationFrameAction;
-}(AsyncAction));
-
-var AnimationFrameScheduler = (function (_super) {
-    __extends(AnimationFrameScheduler, _super);
-    function AnimationFrameScheduler() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    AnimationFrameScheduler.prototype.flush = function (action) {
-        this._active = true;
-        var flushId = this._scheduled;
-        this._scheduled = undefined;
-        var actions = this.actions;
-        var error;
-        action = action || actions.shift();
-        do {
-            if ((error = action.execute(action.state, action.delay))) {
-                break;
-            }
-        } while ((action = actions[0]) && action.id === flushId && actions.shift());
-        this._active = false;
-        if (error) {
-            while ((action = actions[0]) && action.id === flushId && actions.shift()) {
-                action.unsubscribe();
-            }
-            throw error;
-        }
-    };
-    return AnimationFrameScheduler;
-}(AsyncScheduler));
-
-new AnimationFrameScheduler(AnimationFrameAction);
-
-((function (_super) {
-    __extends(VirtualTimeScheduler, _super);
-    function VirtualTimeScheduler(schedulerActionCtor, maxFrames) {
-        if (schedulerActionCtor === void 0) { schedulerActionCtor = VirtualAction; }
-        if (maxFrames === void 0) { maxFrames = Infinity; }
-        var _this = _super.call(this, schedulerActionCtor, function () { return _this.frame; }) || this;
-        _this.maxFrames = maxFrames;
-        _this.frame = 0;
-        _this.index = -1;
-        return _this;
-    }
-    VirtualTimeScheduler.prototype.flush = function () {
-        var _a = this, actions = _a.actions, maxFrames = _a.maxFrames;
-        var error;
-        var action;
-        while ((action = actions[0]) && action.delay <= maxFrames) {
-            actions.shift();
-            this.frame = action.delay;
-            if ((error = action.execute(action.state, action.delay))) {
-                break;
-            }
-        }
-        if (error) {
-            while ((action = actions.shift())) {
-                action.unsubscribe();
-            }
-            throw error;
-        }
-    };
-    VirtualTimeScheduler.frameTimeFactor = 10;
-    return VirtualTimeScheduler;
-})(AsyncScheduler));
-var VirtualAction = (function (_super) {
-    __extends(VirtualAction, _super);
-    function VirtualAction(scheduler, work, index) {
-        if (index === void 0) { index = (scheduler.index += 1); }
-        var _this = _super.call(this, scheduler, work) || this;
-        _this.scheduler = scheduler;
-        _this.work = work;
-        _this.index = index;
-        _this.active = true;
-        _this.index = scheduler.index = index;
-        return _this;
-    }
-    VirtualAction.prototype.schedule = function (state, delay) {
-        if (delay === void 0) { delay = 0; }
-        if (Number.isFinite(delay)) {
-            if (!this.id) {
-                return _super.prototype.schedule.call(this, state, delay);
-            }
-            this.active = false;
-            var action = new VirtualAction(this.scheduler, this.work);
-            this.add(action);
-            return action.schedule(state, delay);
-        }
-        else {
-            return Subscription.EMPTY;
-        }
-    };
-    VirtualAction.prototype.requestAsyncId = function (scheduler, id, delay) {
-        if (delay === void 0) { delay = 0; }
-        this.delay = scheduler.frame + delay;
-        var actions = scheduler.actions;
-        actions.push(this);
-        actions.sort(VirtualAction.sortActions);
-        return true;
-    };
-    VirtualAction.prototype.recycleAsyncId = function (scheduler, id, delay) {
-        return undefined;
-    };
-    VirtualAction.prototype._execute = function (state, delay) {
-        if (this.active === true) {
-            return _super.prototype._execute.call(this, state, delay);
-        }
-    };
-    VirtualAction.sortActions = function (a, b) {
-        if (a.delay === b.delay) {
-            if (a.index === b.index) {
-                return 0;
-            }
-            else if (a.index > b.index) {
-                return 1;
-            }
-            else {
-                return -1;
-            }
-        }
-        else if (a.delay > b.delay) {
-            return 1;
-        }
-        else {
-            return -1;
-        }
-    };
-    return VirtualAction;
-}(AsyncAction));
-
-new Observable(function (subscriber) { return subscriber.complete(); });
 
 function last(arr) {
     return arr[arr.length - 1];
@@ -4651,53 +3907,6 @@ function from(input, scheduler) {
     return scheduler ? scheduled(input, scheduler) : innerFrom(input);
 }
 
-var NotificationKind;
-(function (NotificationKind) {
-    NotificationKind["NEXT"] = "N";
-    NotificationKind["ERROR"] = "E";
-    NotificationKind["COMPLETE"] = "C";
-})(NotificationKind || (NotificationKind = {}));
-
-createErrorClass(function (_super) { return function EmptyErrorImpl() {
-    _super(this);
-    this.name = 'EmptyError';
-    this.message = 'no elements in sequence';
-}; });
-
-createErrorClass(function (_super) {
-    return function ArgumentOutOfRangeErrorImpl() {
-        _super(this);
-        this.name = 'ArgumentOutOfRangeError';
-        this.message = 'argument out of range';
-    };
-});
-
-createErrorClass(function (_super) {
-    return function NotFoundErrorImpl(message) {
-        _super(this);
-        this.name = 'NotFoundError';
-        this.message = message;
-    };
-});
-
-createErrorClass(function (_super) {
-    return function SequenceErrorImpl(message) {
-        _super(this);
-        this.name = 'SequenceError';
-        this.message = message;
-    };
-});
-
-createErrorClass(function (_super) {
-    return function TimeoutErrorImpl(info) {
-        if (info === void 0) { info = null; }
-        _super(this);
-        this.message = 'Timeout has occurred';
-        this.name = 'TimeoutError';
-        this.info = info;
-    };
-});
-
 function map(project, thisArg) {
     return operate(function (source, subscriber) {
         var index = 0;
@@ -4758,8 +3967,6 @@ function maybeSchedule(scheduler, execute, subscription) {
     }
 }
 
-new Observable(noop);
-
 var isArray$1 = Array.isArray;
 function argsOrArgArray(args) {
     return args.length === 1 && isArray$1(args[0]) ? args[0] : args;
@@ -4812,12 +4019,6 @@ function rng() {
   return getRandomValues(rnds8);
 }
 
-var REGEX = /^(?:[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}|00000000-0000-0000-0000-000000000000)$/i;
-
-function validate(uuid) {
-  return typeof uuid === 'string' && REGEX.test(uuid);
-}
-
 /**
  * Convert array of 16 byte values to UUID string format of the form:
  * XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
@@ -4834,318 +4035,6 @@ function unsafeStringify(arr, offset = 0) {
   // and works in ways you may not expect. See https://github.com/uuidjs/uuid/pull/434
   return (byteToHex[arr[offset + 0]] + byteToHex[arr[offset + 1]] + byteToHex[arr[offset + 2]] + byteToHex[arr[offset + 3]] + '-' + byteToHex[arr[offset + 4]] + byteToHex[arr[offset + 5]] + '-' + byteToHex[arr[offset + 6]] + byteToHex[arr[offset + 7]] + '-' + byteToHex[arr[offset + 8]] + byteToHex[arr[offset + 9]] + '-' + byteToHex[arr[offset + 10]] + byteToHex[arr[offset + 11]] + byteToHex[arr[offset + 12]] + byteToHex[arr[offset + 13]] + byteToHex[arr[offset + 14]] + byteToHex[arr[offset + 15]]).toLowerCase();
 }
-
-function parse(uuid) {
-  if (!validate(uuid)) {
-    throw TypeError('Invalid UUID');
-  }
-
-  let v;
-  const arr = new Uint8Array(16); // Parse ########-....-....-....-............
-
-  arr[0] = (v = parseInt(uuid.slice(0, 8), 16)) >>> 24;
-  arr[1] = v >>> 16 & 0xff;
-  arr[2] = v >>> 8 & 0xff;
-  arr[3] = v & 0xff; // Parse ........-####-....-....-............
-
-  arr[4] = (v = parseInt(uuid.slice(9, 13), 16)) >>> 8;
-  arr[5] = v & 0xff; // Parse ........-....-####-....-............
-
-  arr[6] = (v = parseInt(uuid.slice(14, 18), 16)) >>> 8;
-  arr[7] = v & 0xff; // Parse ........-....-....-####-............
-
-  arr[8] = (v = parseInt(uuid.slice(19, 23), 16)) >>> 8;
-  arr[9] = v & 0xff; // Parse ........-....-....-....-############
-  // (Use "/" to avoid 32-bit truncation when bit-shifting high-order bytes)
-
-  arr[10] = (v = parseInt(uuid.slice(24, 36), 16)) / 0x10000000000 & 0xff;
-  arr[11] = v / 0x100000000 & 0xff;
-  arr[12] = v >>> 24 & 0xff;
-  arr[13] = v >>> 16 & 0xff;
-  arr[14] = v >>> 8 & 0xff;
-  arr[15] = v & 0xff;
-  return arr;
-}
-
-function stringToBytes(str) {
-  str = unescape(encodeURIComponent(str)); // UTF8 escape
-
-  const bytes = [];
-
-  for (let i = 0; i < str.length; ++i) {
-    bytes.push(str.charCodeAt(i));
-  }
-
-  return bytes;
-}
-
-const DNS = '6ba7b810-9dad-11d1-80b4-00c04fd430c8';
-const URL = '6ba7b811-9dad-11d1-80b4-00c04fd430c8';
-function v35(name, version, hashfunc) {
-  function generateUUID(value, namespace, buf, offset) {
-    var _namespace;
-
-    if (typeof value === 'string') {
-      value = stringToBytes(value);
-    }
-
-    if (typeof namespace === 'string') {
-      namespace = parse(namespace);
-    }
-
-    if (((_namespace = namespace) === null || _namespace === void 0 ? void 0 : _namespace.length) !== 16) {
-      throw TypeError('Namespace must be array-like (16 iterable integer values, 0-255)');
-    } // Compute hash of namespace and value, Per 4.3
-    // Future: Use spread syntax when supported on all platforms, e.g. `bytes =
-    // hashfunc([...namespace, ... value])`
-
-
-    let bytes = new Uint8Array(16 + value.length);
-    bytes.set(namespace);
-    bytes.set(value, namespace.length);
-    bytes = hashfunc(bytes);
-    bytes[6] = bytes[6] & 0x0f | version;
-    bytes[8] = bytes[8] & 0x3f | 0x80;
-
-    if (buf) {
-      offset = offset || 0;
-
-      for (let i = 0; i < 16; ++i) {
-        buf[offset + i] = bytes[i];
-      }
-
-      return buf;
-    }
-
-    return unsafeStringify(bytes);
-  } // Function#name is not settable on some platforms (#270)
-
-
-  try {
-    generateUUID.name = name; // eslint-disable-next-line no-empty
-  } catch (err) {} // For CommonJS default export support
-
-
-  generateUUID.DNS = DNS;
-  generateUUID.URL = URL;
-  return generateUUID;
-}
-
-/*
- * Browser-compatible JavaScript MD5
- *
- * Modification of JavaScript MD5
- * https://github.com/blueimp/JavaScript-MD5
- *
- * Copyright 2011, Sebastian Tschan
- * https://blueimp.net
- *
- * Licensed under the MIT license:
- * https://opensource.org/licenses/MIT
- *
- * Based on
- * A JavaScript implementation of the RSA Data Security, Inc. MD5 Message
- * Digest Algorithm, as defined in RFC 1321.
- * Version 2.2 Copyright (C) Paul Johnston 1999 - 2009
- * Other contributors: Greg Holt, Andrew Kepert, Ydnar, Lostinet
- * Distributed under the BSD License
- * See http://pajhome.org.uk/crypt/md5 for more info.
- */
-function md5(bytes) {
-  if (typeof bytes === 'string') {
-    const msg = unescape(encodeURIComponent(bytes)); // UTF8 escape
-
-    bytes = new Uint8Array(msg.length);
-
-    for (let i = 0; i < msg.length; ++i) {
-      bytes[i] = msg.charCodeAt(i);
-    }
-  }
-
-  return md5ToHexEncodedArray(wordsToMd5(bytesToWords(bytes), bytes.length * 8));
-}
-/*
- * Convert an array of little-endian words to an array of bytes
- */
-
-
-function md5ToHexEncodedArray(input) {
-  const output = [];
-  const length32 = input.length * 32;
-  const hexTab = '0123456789abcdef';
-
-  for (let i = 0; i < length32; i += 8) {
-    const x = input[i >> 5] >>> i % 32 & 0xff;
-    const hex = parseInt(hexTab.charAt(x >>> 4 & 0x0f) + hexTab.charAt(x & 0x0f), 16);
-    output.push(hex);
-  }
-
-  return output;
-}
-/**
- * Calculate output length with padding and bit length
- */
-
-
-function getOutputLength(inputLength8) {
-  return (inputLength8 + 64 >>> 9 << 4) + 14 + 1;
-}
-/*
- * Calculate the MD5 of an array of little-endian words, and a bit length.
- */
-
-
-function wordsToMd5(x, len) {
-  /* append padding */
-  x[len >> 5] |= 0x80 << len % 32;
-  x[getOutputLength(len) - 1] = len;
-  let a = 1732584193;
-  let b = -271733879;
-  let c = -1732584194;
-  let d = 271733878;
-
-  for (let i = 0; i < x.length; i += 16) {
-    const olda = a;
-    const oldb = b;
-    const oldc = c;
-    const oldd = d;
-    a = md5ff(a, b, c, d, x[i], 7, -680876936);
-    d = md5ff(d, a, b, c, x[i + 1], 12, -389564586);
-    c = md5ff(c, d, a, b, x[i + 2], 17, 606105819);
-    b = md5ff(b, c, d, a, x[i + 3], 22, -1044525330);
-    a = md5ff(a, b, c, d, x[i + 4], 7, -176418897);
-    d = md5ff(d, a, b, c, x[i + 5], 12, 1200080426);
-    c = md5ff(c, d, a, b, x[i + 6], 17, -1473231341);
-    b = md5ff(b, c, d, a, x[i + 7], 22, -45705983);
-    a = md5ff(a, b, c, d, x[i + 8], 7, 1770035416);
-    d = md5ff(d, a, b, c, x[i + 9], 12, -1958414417);
-    c = md5ff(c, d, a, b, x[i + 10], 17, -42063);
-    b = md5ff(b, c, d, a, x[i + 11], 22, -1990404162);
-    a = md5ff(a, b, c, d, x[i + 12], 7, 1804603682);
-    d = md5ff(d, a, b, c, x[i + 13], 12, -40341101);
-    c = md5ff(c, d, a, b, x[i + 14], 17, -1502002290);
-    b = md5ff(b, c, d, a, x[i + 15], 22, 1236535329);
-    a = md5gg(a, b, c, d, x[i + 1], 5, -165796510);
-    d = md5gg(d, a, b, c, x[i + 6], 9, -1069501632);
-    c = md5gg(c, d, a, b, x[i + 11], 14, 643717713);
-    b = md5gg(b, c, d, a, x[i], 20, -373897302);
-    a = md5gg(a, b, c, d, x[i + 5], 5, -701558691);
-    d = md5gg(d, a, b, c, x[i + 10], 9, 38016083);
-    c = md5gg(c, d, a, b, x[i + 15], 14, -660478335);
-    b = md5gg(b, c, d, a, x[i + 4], 20, -405537848);
-    a = md5gg(a, b, c, d, x[i + 9], 5, 568446438);
-    d = md5gg(d, a, b, c, x[i + 14], 9, -1019803690);
-    c = md5gg(c, d, a, b, x[i + 3], 14, -187363961);
-    b = md5gg(b, c, d, a, x[i + 8], 20, 1163531501);
-    a = md5gg(a, b, c, d, x[i + 13], 5, -1444681467);
-    d = md5gg(d, a, b, c, x[i + 2], 9, -51403784);
-    c = md5gg(c, d, a, b, x[i + 7], 14, 1735328473);
-    b = md5gg(b, c, d, a, x[i + 12], 20, -1926607734);
-    a = md5hh(a, b, c, d, x[i + 5], 4, -378558);
-    d = md5hh(d, a, b, c, x[i + 8], 11, -2022574463);
-    c = md5hh(c, d, a, b, x[i + 11], 16, 1839030562);
-    b = md5hh(b, c, d, a, x[i + 14], 23, -35309556);
-    a = md5hh(a, b, c, d, x[i + 1], 4, -1530992060);
-    d = md5hh(d, a, b, c, x[i + 4], 11, 1272893353);
-    c = md5hh(c, d, a, b, x[i + 7], 16, -155497632);
-    b = md5hh(b, c, d, a, x[i + 10], 23, -1094730640);
-    a = md5hh(a, b, c, d, x[i + 13], 4, 681279174);
-    d = md5hh(d, a, b, c, x[i], 11, -358537222);
-    c = md5hh(c, d, a, b, x[i + 3], 16, -722521979);
-    b = md5hh(b, c, d, a, x[i + 6], 23, 76029189);
-    a = md5hh(a, b, c, d, x[i + 9], 4, -640364487);
-    d = md5hh(d, a, b, c, x[i + 12], 11, -421815835);
-    c = md5hh(c, d, a, b, x[i + 15], 16, 530742520);
-    b = md5hh(b, c, d, a, x[i + 2], 23, -995338651);
-    a = md5ii(a, b, c, d, x[i], 6, -198630844);
-    d = md5ii(d, a, b, c, x[i + 7], 10, 1126891415);
-    c = md5ii(c, d, a, b, x[i + 14], 15, -1416354905);
-    b = md5ii(b, c, d, a, x[i + 5], 21, -57434055);
-    a = md5ii(a, b, c, d, x[i + 12], 6, 1700485571);
-    d = md5ii(d, a, b, c, x[i + 3], 10, -1894986606);
-    c = md5ii(c, d, a, b, x[i + 10], 15, -1051523);
-    b = md5ii(b, c, d, a, x[i + 1], 21, -2054922799);
-    a = md5ii(a, b, c, d, x[i + 8], 6, 1873313359);
-    d = md5ii(d, a, b, c, x[i + 15], 10, -30611744);
-    c = md5ii(c, d, a, b, x[i + 6], 15, -1560198380);
-    b = md5ii(b, c, d, a, x[i + 13], 21, 1309151649);
-    a = md5ii(a, b, c, d, x[i + 4], 6, -145523070);
-    d = md5ii(d, a, b, c, x[i + 11], 10, -1120210379);
-    c = md5ii(c, d, a, b, x[i + 2], 15, 718787259);
-    b = md5ii(b, c, d, a, x[i + 9], 21, -343485551);
-    a = safeAdd(a, olda);
-    b = safeAdd(b, oldb);
-    c = safeAdd(c, oldc);
-    d = safeAdd(d, oldd);
-  }
-
-  return [a, b, c, d];
-}
-/*
- * Convert an array bytes to an array of little-endian words
- * Characters >255 have their high-byte silently ignored.
- */
-
-
-function bytesToWords(input) {
-  if (input.length === 0) {
-    return [];
-  }
-
-  const length8 = input.length * 8;
-  const output = new Uint32Array(getOutputLength(length8));
-
-  for (let i = 0; i < length8; i += 8) {
-    output[i >> 5] |= (input[i / 8] & 0xff) << i % 32;
-  }
-
-  return output;
-}
-/*
- * Add integers, wrapping at 2^32. This uses 16-bit operations internally
- * to work around bugs in some JS interpreters.
- */
-
-
-function safeAdd(x, y) {
-  const lsw = (x & 0xffff) + (y & 0xffff);
-  const msw = (x >> 16) + (y >> 16) + (lsw >> 16);
-  return msw << 16 | lsw & 0xffff;
-}
-/*
- * Bitwise rotate a 32-bit number to the left.
- */
-
-
-function bitRotateLeft(num, cnt) {
-  return num << cnt | num >>> 32 - cnt;
-}
-/*
- * These functions implement the four basic operations the algorithm uses.
- */
-
-
-function md5cmn(q, a, b, x, s, t) {
-  return safeAdd(bitRotateLeft(safeAdd(safeAdd(a, q), safeAdd(x, t)), s), b);
-}
-
-function md5ff(a, b, c, d, x, s, t) {
-  return md5cmn(b & c | ~b & d, a, b, x, s, t);
-}
-
-function md5gg(a, b, c, d, x, s, t) {
-  return md5cmn(b & d | c & ~d, a, b, x, s, t);
-}
-
-function md5hh(a, b, c, d, x, s, t) {
-  return md5cmn(b ^ c ^ d, a, b, x, s, t);
-}
-
-function md5ii(a, b, c, d, x, s, t) {
-  return md5cmn(c ^ (b | ~d), a, b, x, s, t);
-}
-
-v35('v3', 0x30, md5);
 
 const randomUUID = typeof crypto !== 'undefined' && crypto.randomUUID && crypto.randomUUID.bind(crypto);
 var native = {
@@ -5175,103 +4064,6 @@ function v4(options, buf, offset) {
 
   return unsafeStringify(rnds);
 }
-
-// Adapted from Chris Veness' SHA1 code at
-// http://www.movable-type.co.uk/scripts/sha1.html
-function f(s, x, y, z) {
-  switch (s) {
-    case 0:
-      return x & y ^ ~x & z;
-
-    case 1:
-      return x ^ y ^ z;
-
-    case 2:
-      return x & y ^ x & z ^ y & z;
-
-    case 3:
-      return x ^ y ^ z;
-  }
-}
-
-function ROTL(x, n) {
-  return x << n | x >>> 32 - n;
-}
-
-function sha1(bytes) {
-  const K = [0x5a827999, 0x6ed9eba1, 0x8f1bbcdc, 0xca62c1d6];
-  const H = [0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476, 0xc3d2e1f0];
-
-  if (typeof bytes === 'string') {
-    const msg = unescape(encodeURIComponent(bytes)); // UTF8 escape
-
-    bytes = [];
-
-    for (let i = 0; i < msg.length; ++i) {
-      bytes.push(msg.charCodeAt(i));
-    }
-  } else if (!Array.isArray(bytes)) {
-    // Convert Array-like to Array
-    bytes = Array.prototype.slice.call(bytes);
-  }
-
-  bytes.push(0x80);
-  const l = bytes.length / 4 + 2;
-  const N = Math.ceil(l / 16);
-  const M = new Array(N);
-
-  for (let i = 0; i < N; ++i) {
-    const arr = new Uint32Array(16);
-
-    for (let j = 0; j < 16; ++j) {
-      arr[j] = bytes[i * 64 + j * 4] << 24 | bytes[i * 64 + j * 4 + 1] << 16 | bytes[i * 64 + j * 4 + 2] << 8 | bytes[i * 64 + j * 4 + 3];
-    }
-
-    M[i] = arr;
-  }
-
-  M[N - 1][14] = (bytes.length - 1) * 8 / Math.pow(2, 32);
-  M[N - 1][14] = Math.floor(M[N - 1][14]);
-  M[N - 1][15] = (bytes.length - 1) * 8 & 0xffffffff;
-
-  for (let i = 0; i < N; ++i) {
-    const W = new Uint32Array(80);
-
-    for (let t = 0; t < 16; ++t) {
-      W[t] = M[i][t];
-    }
-
-    for (let t = 16; t < 80; ++t) {
-      W[t] = ROTL(W[t - 3] ^ W[t - 8] ^ W[t - 14] ^ W[t - 16], 1);
-    }
-
-    let a = H[0];
-    let b = H[1];
-    let c = H[2];
-    let d = H[3];
-    let e = H[4];
-
-    for (let t = 0; t < 80; ++t) {
-      const s = Math.floor(t / 20);
-      const T = ROTL(a, 5) + f(s, b, c, d) + e + K[s] + W[t] >>> 0;
-      e = d;
-      d = c;
-      c = ROTL(b, 30) >>> 0;
-      b = a;
-      a = T;
-    }
-
-    H[0] = H[0] + a >>> 0;
-    H[1] = H[1] + b >>> 0;
-    H[2] = H[2] + c >>> 0;
-    H[3] = H[3] + d >>> 0;
-    H[4] = H[4] + e >>> 0;
-  }
-
-  return [H[0] >> 24 & 0xff, H[0] >> 16 & 0xff, H[0] >> 8 & 0xff, H[0] & 0xff, H[1] >> 24 & 0xff, H[1] >> 16 & 0xff, H[1] >> 8 & 0xff, H[1] & 0xff, H[2] >> 24 & 0xff, H[2] >> 16 & 0xff, H[2] >> 8 & 0xff, H[2] & 0xff, H[3] >> 24 & 0xff, H[3] >> 16 & 0xff, H[3] >> 8 & 0xff, H[3] & 0xff, H[4] >> 24 & 0xff, H[4] >> 16 & 0xff, H[4] >> 8 & 0xff, H[4] & 0xff];
-}
-
-v35('v5', 0x50, sha1);
 
 const KeyCodes = {
     ESC: 'Escape',
@@ -5402,7 +4194,7 @@ function useBlockRenderer({ blockId, editor }) {
 
 const InlineContainer = (_a) => {
     var { contents, formats, editor } = _a, props = __rest$1(_a, ["contents", "formats", "editor"]);
-    return (jsxRuntime.exports.jsx(jsxRuntime.exports.Fragment, { children: contents.map((content) => {
+    return (jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: contents.map((content) => {
             let Container;
             const inlineFormat = `inline/${content.type.toLocaleLowerCase()}`;
             if (!formats[inlineFormat]) {
@@ -5412,7 +4204,7 @@ const InlineContainer = (_a) => {
             else {
                 Container = formats[inlineFormat];
             }
-            return (jsxRuntime.exports.jsx(Container, Object.assign({ formats: formats, editor: editor, attributes: content.attributes, "data-inline-id": content.id, "data-format": inlineFormat, "data-attributes": JSON.stringify(content.attributes), inline: content }, props), content.id));
+            return (jsxRuntimeExports.jsx(Container, Object.assign({ formats: formats, editor: editor, attributes: content.attributes, "data-inline-id": content.id, "data-format": inlineFormat, "data-attributes": JSON.stringify(content.attributes), inline: content }, props), content.id));
         }) }));
 };
 
@@ -7363,10 +6155,11 @@ var prism = {exports: {}};
 			Prism.plugins.fileHighlight.highlight.apply(this, arguments);
 		};
 
-	}());
+	}()); 
 } (prism));
 
-var Prism$1 = prism.exports;
+var prismExports = prism.exports;
+var Prism$1 = /*@__PURE__*/getDefaultExportFromCjs(prismExports);
 
 function getInlineId(node) {
     var _a;
@@ -7435,10 +6228,10 @@ function parseTokens(tokens, result = []) {
     return codeContents;
 }
 
-const Outer = He.div `
+const Outer = styled$1.div `
   position: relative;
 `;
-const Overlay = He.div `
+const Overlay = styled$1.div `
   position: absolute;
   top: 0;
   left: 0;
@@ -7474,7 +6267,7 @@ const BlockContainer = React__namespace.memo((_a) => {
     }, [block === null || block === void 0 ? void 0 : block.contents, block === null || block === void 0 ? void 0 : block.type, formats, editor]);
     const blockFormat = `block/${block === null || block === void 0 ? void 0 : block.type.toLocaleLowerCase()}`;
     const Container = (_b = formats[blockFormat]) !== null && _b !== void 0 ? _b : formats['block/paragraph'];
-    return (jsxRuntime.exports.jsxs(Outer, Object.assign({ "data-id": blockId, className: 'shibuya-block-outer', style: { '--indent': `${(_d = (_c = block === null || block === void 0 ? void 0 : block.attributes) === null || _c === void 0 ? void 0 : _c.indent) !== null && _d !== void 0 ? _d : 0}` } }, { children: [jsxRuntime.exports.jsx(Container, Object.assign({ suppressContentEditableWarning: true, className: 'notranslate', contentEditable: !readOnly, blockId: blockId, "data-block-id": blockId, "data-attributes": JSON.stringify(block === null || block === void 0 ? void 0 : block.attributes), "data-metas": JSON.stringify(block === null || block === void 0 ? void 0 : block.meta), "data-format": blockFormat, formats: formats, attributes: block === null || block === void 0 ? void 0 : block.attributes, meta: (_e = block === null || block === void 0 ? void 0 : block.meta) !== null && _e !== void 0 ? _e : {}, contents: memoContents, editor: editor, scrollContainer: scrollContainer, selected: selected }, props)), selected && jsxRuntime.exports.jsx(Overlay, {})] })));
+    return (jsxRuntimeExports.jsxs(Outer, Object.assign({ "data-id": blockId, className: 'shibuya-block-outer', style: { '--indent': `${(_d = (_c = block === null || block === void 0 ? void 0 : block.attributes) === null || _c === void 0 ? void 0 : _c.indent) !== null && _d !== void 0 ? _d : 0}` } }, { children: [jsxRuntimeExports.jsx(Container, Object.assign({ suppressContentEditableWarning: true, className: 'notranslate', contentEditable: !readOnly, blockId: blockId, "data-block-id": blockId, "data-attributes": JSON.stringify(block === null || block === void 0 ? void 0 : block.attributes), "data-metas": JSON.stringify(block === null || block === void 0 ? void 0 : block.meta), "data-format": blockFormat, formats: formats, attributes: block === null || block === void 0 ? void 0 : block.attributes, meta: (_e = block === null || block === void 0 ? void 0 : block.meta) !== null && _e !== void 0 ? _e : {}, contents: memoContents, editor: editor, scrollContainer: scrollContainer, selected: selected }, props)), selected && jsxRuntimeExports.jsx(Overlay, {})] })));
 });
 
 function useMutationObserver(ref, callback, options = {
@@ -7492,7 +6285,7 @@ function useMutationObserver(ref, callback, options = {
     }, []);
 }
 
-const Header$3 = He.h1 `
+const Header$3 = styled$1.h1 `
   font-size: 24px;
   outline: 0;
   margin: 0;
@@ -7518,10 +6311,10 @@ const Header1 = React__namespace.memo((_a) => {
     React__namespace.useEffect(() => {
         handleChangeElement();
     }, []);
-    return (jsxRuntime.exports.jsx(Header$3, Object.assign({ ref: headerRef, spellCheck: false, placeholder: showPlaceholder ? placeholder : '' }, props, { children: contents })));
+    return (jsxRuntimeExports.jsx(Header$3, Object.assign({ ref: headerRef, spellCheck: false, placeholder: showPlaceholder ? placeholder : '' }, props, { children: contents })));
 });
 
-const Header$2 = He.h2 `
+const Header$2 = styled$1.h2 `
   font-size: 20px;
   outline: 0;
   margin: 0;
@@ -7547,10 +6340,10 @@ const Header2 = React__namespace.memo((_a) => {
     React__namespace.useEffect(() => {
         handleChangeElement();
     }, []);
-    return (jsxRuntime.exports.jsx(Header$2, Object.assign({ ref: headerRef, spellCheck: false, placeholder: showPlaceholder ? placeholder : '' }, props, { children: contents })));
+    return (jsxRuntimeExports.jsx(Header$2, Object.assign({ ref: headerRef, spellCheck: false, placeholder: showPlaceholder ? placeholder : '' }, props, { children: contents })));
 });
 
-const Header$1 = He.h3 `
+const Header$1 = styled$1.h3 `
   font-size: 16px;
   outline: 0;
   margin: 0;
@@ -7576,7 +6369,7 @@ const Header3 = React__namespace.memo((_a) => {
     React__namespace.useEffect(() => {
         handleChangeElement();
     }, []);
-    return (jsxRuntime.exports.jsx(Header$1, Object.assign({ ref: headerRef, spellCheck: false, placeholder: showPlaceholder ? placeholder : '' }, props, { children: contents })));
+    return (jsxRuntimeExports.jsx(Header$1, Object.assign({ ref: headerRef, spellCheck: false, placeholder: showPlaceholder ? placeholder : '' }, props, { children: contents })));
 });
 
 function decimalToRoman(num) {
@@ -7632,7 +6425,7 @@ function decimalToAlphabet(num) {
     return dest;
 }
 
-const ListItem$2 = He.div `
+const ListItem$2 = styled$1.div `
   font-size: 1rem;
   outline: 0;
   margin: 0;
@@ -7650,7 +6443,7 @@ const ListItem$2 = He.div `
   }
   ${({ placeholder }) => {
     return (placeholder &&
-        Ce `
+        Ce$1 `
         ::after {
           opacity: 0.3;
           content: attr(placeholder);
@@ -7693,10 +6486,10 @@ const OrderedList = React__namespace.memo((_a) => {
     React__namespace.useEffect(() => {
         handleChangeElement();
     }, []);
-    return (jsxRuntime.exports.jsx(ListItem$2, Object.assign({ ref: headerRef, style: memoStyle, spellCheck: false, placeholder: showPlaceholder ? placeholder : '' }, props, { children: contents })));
+    return (jsxRuntimeExports.jsx(ListItem$2, Object.assign({ ref: headerRef, style: memoStyle, spellCheck: false, placeholder: showPlaceholder ? placeholder : '' }, props, { children: contents })));
 });
 
-const ListItem$1 = He.div `
+const ListItem$1 = styled$1.div `
   font-size: 1rem;
   outline: 0;
   margin: 0;
@@ -7715,7 +6508,7 @@ const ListItem$1 = He.div `
   }
   ${({ placeholder }) => {
     return (placeholder &&
-        Ce `
+        Ce$1 `
         ::after {
           opacity: 0.3;
           content: attr(placeholder);
@@ -7754,127 +6547,127 @@ const BulletList = React__namespace.memo((_a) => {
         }
         return { '--content': `'${content}'` };
     }, [attributes === null || attributes === void 0 ? void 0 : attributes.indent]);
-    return (jsxRuntime.exports.jsx(ListItem$1, Object.assign({ ref: headerRef, style: memoStyle, spellCheck: false, placeholder: showPlaceholder ? placeholder : '' }, props, { children: contents })));
+    return (jsxRuntimeExports.jsx(ListItem$1, Object.assign({ ref: headerRef, style: memoStyle, spellCheck: false, placeholder: showPlaceholder ? placeholder : '' }, props, { children: contents })));
 });
 
 const baseIconProps = {
     size: '24',
 };
-const Icon = He.svg `
+const Icon = styled$1.svg `
   max-width: 100%;
   height: auto;
   max-height: 100%;
 `;
-const Path = He.path `
+const Path = styled$1.path `
   fill: ${({ fill }) => (fill ? fill : '#fff')};
 `;
 
 const FormatBold = React__namespace.memo((_a) => {
     var { size = baseIconProps.size, fill = baseIconProps.fill } = _a, props = __rest$1(_a, ["size", "fill"]);
-    return (jsxRuntime.exports.jsx(Icon, Object.assign({ width: size, height: size, fill: fill, viewBox: "0 0 20 20", xmlns: "http://www.w3.org/2000/svg" }, props, { children: jsxRuntime.exports.jsx(Path, { d: "M13 8.99171C13.8084 8.43337 14.375 7.51671 14.375 6.66671C14.375 4.78337 12.9167 3.33337 11.0417 3.33337H5.83337V15H11.7C13.4417 15 14.7917 13.5834 14.7917 11.8417C14.7917 10.575 14.075 9.49171 13 8.99171V8.99171ZM8.33337 5.41671H10.8334C11.525 5.41671 12.0834 5.97504 12.0834 6.66671C12.0834 7.35837 11.525 7.91671 10.8334 7.91671H8.33337V5.41671ZM11.25 12.9167H8.33337V10.4167H11.25C11.9417 10.4167 12.5 10.975 12.5 11.6667C12.5 12.3584 11.9417 12.9167 11.25 12.9167Z", fill: fill }) })));
+    return (jsxRuntimeExports.jsx(Icon, Object.assign({ width: size, height: size, fill: fill, viewBox: "0 0 20 20", xmlns: "http://www.w3.org/2000/svg" }, props, { children: jsxRuntimeExports.jsx(Path, { d: "M13 8.99171C13.8084 8.43337 14.375 7.51671 14.375 6.66671C14.375 4.78337 12.9167 3.33337 11.0417 3.33337H5.83337V15H11.7C13.4417 15 14.7917 13.5834 14.7917 11.8417C14.7917 10.575 14.075 9.49171 13 8.99171V8.99171ZM8.33337 5.41671H10.8334C11.525 5.41671 12.0834 5.97504 12.0834 6.66671C12.0834 7.35837 11.525 7.91671 10.8334 7.91671H8.33337V5.41671ZM11.25 12.9167H8.33337V10.4167H11.25C11.9417 10.4167 12.5 10.975 12.5 11.6667C12.5 12.3584 11.9417 12.9167 11.25 12.9167Z", fill: fill }) })));
 });
 
 const FormatItalic = React__namespace.memo((_a) => {
     var { size = baseIconProps.size, fill = baseIconProps.fill } = _a, props = __rest$1(_a, ["size", "fill"]);
-    return (jsxRuntime.exports.jsx(Icon, Object.assign({ width: size, height: size, fill: fill, viewBox: "0 0 20 20", xmlns: "http://www.w3.org/2000/svg" }, props, { children: jsxRuntime.exports.jsx(Path, { d: "M8.33333 3.33337V5.83337H10.175L7.325 12.5H5V15H11.6667V12.5H9.825L12.675 5.83337H15V3.33337H8.33333Z", fill: fill }) })));
+    return (jsxRuntimeExports.jsx(Icon, Object.assign({ width: size, height: size, fill: fill, viewBox: "0 0 20 20", xmlns: "http://www.w3.org/2000/svg" }, props, { children: jsxRuntimeExports.jsx(Path, { d: "M8.33333 3.33337V5.83337H10.175L7.325 12.5H5V15H11.6667V12.5H9.825L12.675 5.83337H15V3.33337H8.33333Z", fill: fill }) })));
 });
 
 const FormatUnderLine = React__namespace.memo((_a) => {
     var { size = baseIconProps.size, fill = baseIconProps.fill } = _a, props = __rest$1(_a, ["size", "fill"]);
-    return (jsxRuntime.exports.jsx(Icon, Object.assign({ width: size, height: size, fill: fill, viewBox: "0 0 20 20", xmlns: "http://www.w3.org/2000/svg" }, props, { children: jsxRuntime.exports.jsx(Path, { d: "M10.6583 14.125C13.1833 13.8 15 11.5333 15 8.99167V3.54167C15 2.96667 14.5333 2.5 13.9583 2.5C13.3833 2.5 12.9166 2.96667 12.9166 3.54167V9.08333C12.9166 10.475 11.975 11.7417 10.6083 12.0167C8.73329 12.4083 7.08329 10.975 7.08329 9.16667V3.54167C7.08329 2.96667 6.61663 2.5 6.04163 2.5C5.46663 2.5 4.99996 2.96667 4.99996 3.54167V9.16667C4.99996 12.1417 7.60829 14.5167 10.6583 14.125ZM4.16663 16.6667C4.16663 17.125 4.54163 17.5 4.99996 17.5H15C15.4583 17.5 15.8333 17.125 15.8333 16.6667C15.8333 16.2083 15.4583 15.8333 15 15.8333H4.99996C4.54163 15.8333 4.16663 16.2083 4.16663 16.6667Z", fill: fill }) })));
+    return (jsxRuntimeExports.jsx(Icon, Object.assign({ width: size, height: size, fill: fill, viewBox: "0 0 20 20", xmlns: "http://www.w3.org/2000/svg" }, props, { children: jsxRuntimeExports.jsx(Path, { d: "M10.6583 14.125C13.1833 13.8 15 11.5333 15 8.99167V3.54167C15 2.96667 14.5333 2.5 13.9583 2.5C13.3833 2.5 12.9166 2.96667 12.9166 3.54167V9.08333C12.9166 10.475 11.975 11.7417 10.6083 12.0167C8.73329 12.4083 7.08329 10.975 7.08329 9.16667V3.54167C7.08329 2.96667 6.61663 2.5 6.04163 2.5C5.46663 2.5 4.99996 2.96667 4.99996 3.54167V9.16667C4.99996 12.1417 7.60829 14.5167 10.6583 14.125ZM4.16663 16.6667C4.16663 17.125 4.54163 17.5 4.99996 17.5H15C15.4583 17.5 15.8333 17.125 15.8333 16.6667C15.8333 16.2083 15.4583 15.8333 15 15.8333H4.99996C4.54163 15.8333 4.16663 16.2083 4.16663 16.6667Z", fill: fill }) })));
 });
 
 const FormatStrike = React__namespace.memo((_a) => {
     var { size = baseIconProps.size, fill = baseIconProps.fill } = _a, props = __rest$1(_a, ["size", "fill"]);
-    return (jsxRuntime.exports.jsx(Icon, Object.assign({ width: size, height: size, fill: fill, viewBox: "0 0 20 20", xmlns: "http://www.w3.org/2000/svg" }, props, { children: jsxRuntime.exports.jsx(Path, { d: "M6.03333 7.29167C5.81667 6.89167 5.70833 6.43333 5.70833 5.9C5.70833 5.39167 5.81667 4.93333 6.04167 4.50833C6.25833 4.09167 6.56667 3.73333 6.96667 3.43333C7.36667 3.14167 7.84167 2.90833 8.38333 2.74167C8.93333 2.58333 9.54167 2.5 10.2 2.5C10.875 2.5 11.4833 2.59167 12.0417 2.78333C12.5917 2.96667 13.0667 3.23333 13.45 3.56667C13.8417 3.9 14.1417 4.3 14.35 4.75833C14.5583 5.21667 14.6667 5.71667 14.6667 6.26667H12.1583C12.1583 6.00833 12.1167 5.775 12.0333 5.55833C11.9583 5.33333 11.8333 5.15 11.6667 4.99167C11.5 4.83333 11.2917 4.71667 11.0417 4.625C10.7917 4.54167 10.4917 4.49167 10.1583 4.49167C9.83333 4.49167 9.54167 4.525 9.3 4.6C9.05833 4.675 8.85833 4.775 8.7 4.9C8.54167 5.03333 8.41667 5.18333 8.33333 5.35833C8.25 5.53333 8.20833 5.71667 8.20833 5.90833C8.20833 6.30833 8.41667 6.64167 8.825 6.91667C9.14167 7.125 9.46667 7.31667 10 7.5H6.15833C6.11667 7.43333 6.06667 7.35833 6.03333 7.29167ZM17.5 10V8.33333H2.5V10H10.5167C10.6667 10.0583 10.85 10.1167 10.975 10.1667C11.2833 10.3083 11.525 10.45 11.7 10.5917C11.875 10.7333 11.9917 10.8917 12.0583 11.0667C12.1167 11.2333 12.15 11.425 12.15 11.6417C12.15 11.8333 12.1083 12.0167 12.0333 12.1917C11.9583 12.3583 11.8417 12.5083 11.6833 12.6333C11.525 12.7583 11.3333 12.85 11.0917 12.925C10.85 12.9917 10.5667 13.0333 10.25 13.0333C9.89167 13.0333 9.55833 13 9.26667 12.925C8.975 12.85 8.71667 12.7333 8.50833 12.575C8.3 12.4167 8.13333 12.2083 8.01667 11.95C7.9 11.6917 7.80833 11.3167 7.80833 10.9417H5.33333C5.33333 11.4 5.4 11.8833 5.53333 12.2583C5.66667 12.6333 5.84167 12.9667 6.075 13.2667C6.30833 13.5583 6.575 13.8167 6.89167 14.0333C7.2 14.25 7.54167 14.4333 7.90833 14.575C8.275 14.7167 8.65833 14.825 9.05833 14.9C9.45833 14.9667 9.85833 15.0083 10.2583 15.0083C10.925 15.0083 11.5333 14.9333 12.075 14.775C12.6167 14.6167 13.0833 14.4 13.4667 14.1167C13.85 13.8333 14.15 13.475 14.3583 13.0583C14.5667 12.6417 14.675 12.1667 14.675 11.6333C14.675 11.1333 14.5917 10.6833 14.4167 10.2917C14.375 10.2 14.325 10.1 14.275 10.0167H17.5V10Z", fill: fill }) })));
+    return (jsxRuntimeExports.jsx(Icon, Object.assign({ width: size, height: size, fill: fill, viewBox: "0 0 20 20", xmlns: "http://www.w3.org/2000/svg" }, props, { children: jsxRuntimeExports.jsx(Path, { d: "M6.03333 7.29167C5.81667 6.89167 5.70833 6.43333 5.70833 5.9C5.70833 5.39167 5.81667 4.93333 6.04167 4.50833C6.25833 4.09167 6.56667 3.73333 6.96667 3.43333C7.36667 3.14167 7.84167 2.90833 8.38333 2.74167C8.93333 2.58333 9.54167 2.5 10.2 2.5C10.875 2.5 11.4833 2.59167 12.0417 2.78333C12.5917 2.96667 13.0667 3.23333 13.45 3.56667C13.8417 3.9 14.1417 4.3 14.35 4.75833C14.5583 5.21667 14.6667 5.71667 14.6667 6.26667H12.1583C12.1583 6.00833 12.1167 5.775 12.0333 5.55833C11.9583 5.33333 11.8333 5.15 11.6667 4.99167C11.5 4.83333 11.2917 4.71667 11.0417 4.625C10.7917 4.54167 10.4917 4.49167 10.1583 4.49167C9.83333 4.49167 9.54167 4.525 9.3 4.6C9.05833 4.675 8.85833 4.775 8.7 4.9C8.54167 5.03333 8.41667 5.18333 8.33333 5.35833C8.25 5.53333 8.20833 5.71667 8.20833 5.90833C8.20833 6.30833 8.41667 6.64167 8.825 6.91667C9.14167 7.125 9.46667 7.31667 10 7.5H6.15833C6.11667 7.43333 6.06667 7.35833 6.03333 7.29167ZM17.5 10V8.33333H2.5V10H10.5167C10.6667 10.0583 10.85 10.1167 10.975 10.1667C11.2833 10.3083 11.525 10.45 11.7 10.5917C11.875 10.7333 11.9917 10.8917 12.0583 11.0667C12.1167 11.2333 12.15 11.425 12.15 11.6417C12.15 11.8333 12.1083 12.0167 12.0333 12.1917C11.9583 12.3583 11.8417 12.5083 11.6833 12.6333C11.525 12.7583 11.3333 12.85 11.0917 12.925C10.85 12.9917 10.5667 13.0333 10.25 13.0333C9.89167 13.0333 9.55833 13 9.26667 12.925C8.975 12.85 8.71667 12.7333 8.50833 12.575C8.3 12.4167 8.13333 12.2083 8.01667 11.95C7.9 11.6917 7.80833 11.3167 7.80833 10.9417H5.33333C5.33333 11.4 5.4 11.8833 5.53333 12.2583C5.66667 12.6333 5.84167 12.9667 6.075 13.2667C6.30833 13.5583 6.575 13.8167 6.89167 14.0333C7.2 14.25 7.54167 14.4333 7.90833 14.575C8.275 14.7167 8.65833 14.825 9.05833 14.9C9.45833 14.9667 9.85833 15.0083 10.2583 15.0083C10.925 15.0083 11.5333 14.9333 12.075 14.775C12.6167 14.6167 13.0833 14.4 13.4667 14.1167C13.85 13.8333 14.15 13.475 14.3583 13.0583C14.5667 12.6417 14.675 12.1667 14.675 11.6333C14.675 11.1333 14.5917 10.6833 14.4167 10.2917C14.375 10.2 14.325 10.1 14.275 10.0167H17.5V10Z", fill: fill }) })));
 });
 
 const FormatCode = React__namespace.memo((_a) => {
     var { size = baseIconProps.size, fill = baseIconProps.fill } = _a, props = __rest$1(_a, ["size", "fill"]);
-    return (jsxRuntime.exports.jsx(Icon, Object.assign({ width: size, height: size, fill: fill, viewBox: "0 0 20 20", xmlns: "http://www.w3.org/2000/svg" }, props, { children: jsxRuntime.exports.jsx(Path, { d: "M7.83329 13.8333L3.99996 10L7.83329 6.16667L6.66663 5L1.66663 10L6.66663 15L7.83329 13.8333ZM12.1666 13.8333L16 10L12.1666 6.16667L13.3333 5L18.3333 10L13.3333 15L12.1666 13.8333Z", fill: fill }) })));
+    return (jsxRuntimeExports.jsx(Icon, Object.assign({ width: size, height: size, fill: fill, viewBox: "0 0 20 20", xmlns: "http://www.w3.org/2000/svg" }, props, { children: jsxRuntimeExports.jsx(Path, { d: "M7.83329 13.8333L3.99996 10L7.83329 6.16667L6.66663 5L1.66663 10L6.66663 15L7.83329 13.8333ZM12.1666 13.8333L16 10L12.1666 6.16667L13.3333 5L18.3333 10L13.3333 15L12.1666 13.8333Z", fill: fill }) })));
 });
 
 const FormatColor = React__namespace.memo((_a) => {
     var { size = baseIconProps.size, fill = baseIconProps.fill } = _a, props = __rest$1(_a, ["size", "fill"]);
-    return (jsxRuntime.exports.jsx(Icon, Object.assign({ width: size, height: size, fill: fill, viewBox: "0 0 20 20", xmlns: "http://www.w3.org/2000/svg" }, props, { children: jsxRuntime.exports.jsx(Path, { d: "M10 2.5C5.85833 2.5 2.5 5.85833 2.5 10C2.5 14.1417 5.85833 17.5 10 17.5C10.6917 17.5 11.25 16.9417 11.25 16.25C11.25 15.925 11.125 15.6333 10.925 15.4083C10.7333 15.1917 10.6083 14.9 10.6083 14.5833C10.6083 13.8917 11.1667 13.3333 11.8583 13.3333H13.3333C15.6333 13.3333 17.5 11.4667 17.5 9.16667C17.5 5.48333 14.1417 2.5 10 2.5ZM5.41667 10C4.725 10 4.16667 9.44167 4.16667 8.75C4.16667 8.05833 4.725 7.5 5.41667 7.5C6.10833 7.5 6.66667 8.05833 6.66667 8.75C6.66667 9.44167 6.10833 10 5.41667 10ZM7.91667 6.66667C7.225 6.66667 6.66667 6.10833 6.66667 5.41667C6.66667 4.725 7.225 4.16667 7.91667 4.16667C8.60833 4.16667 9.16667 4.725 9.16667 5.41667C9.16667 6.10833 8.60833 6.66667 7.91667 6.66667ZM12.0833 6.66667C11.3917 6.66667 10.8333 6.10833 10.8333 5.41667C10.8333 4.725 11.3917 4.16667 12.0833 4.16667C12.775 4.16667 13.3333 4.725 13.3333 5.41667C13.3333 6.10833 12.775 6.66667 12.0833 6.66667ZM14.5833 10C13.8917 10 13.3333 9.44167 13.3333 8.75C13.3333 8.05833 13.8917 7.5 14.5833 7.5C15.275 7.5 15.8333 8.05833 15.8333 8.75C15.8333 9.44167 15.275 10 14.5833 10Z", fill: fill }) })));
+    return (jsxRuntimeExports.jsx(Icon, Object.assign({ width: size, height: size, fill: fill, viewBox: "0 0 20 20", xmlns: "http://www.w3.org/2000/svg" }, props, { children: jsxRuntimeExports.jsx(Path, { d: "M10 2.5C5.85833 2.5 2.5 5.85833 2.5 10C2.5 14.1417 5.85833 17.5 10 17.5C10.6917 17.5 11.25 16.9417 11.25 16.25C11.25 15.925 11.125 15.6333 10.925 15.4083C10.7333 15.1917 10.6083 14.9 10.6083 14.5833C10.6083 13.8917 11.1667 13.3333 11.8583 13.3333H13.3333C15.6333 13.3333 17.5 11.4667 17.5 9.16667C17.5 5.48333 14.1417 2.5 10 2.5ZM5.41667 10C4.725 10 4.16667 9.44167 4.16667 8.75C4.16667 8.05833 4.725 7.5 5.41667 7.5C6.10833 7.5 6.66667 8.05833 6.66667 8.75C6.66667 9.44167 6.10833 10 5.41667 10ZM7.91667 6.66667C7.225 6.66667 6.66667 6.10833 6.66667 5.41667C6.66667 4.725 7.225 4.16667 7.91667 4.16667C8.60833 4.16667 9.16667 4.725 9.16667 5.41667C9.16667 6.10833 8.60833 6.66667 7.91667 6.66667ZM12.0833 6.66667C11.3917 6.66667 10.8333 6.10833 10.8333 5.41667C10.8333 4.725 11.3917 4.16667 12.0833 4.16667C12.775 4.16667 13.3333 4.725 13.3333 5.41667C13.3333 6.10833 12.775 6.66667 12.0833 6.66667ZM14.5833 10C13.8917 10 13.3333 9.44167 13.3333 8.75C13.3333 8.05833 13.8917 7.5 14.5833 7.5C15.275 7.5 15.8333 8.05833 15.8333 8.75C15.8333 9.44167 15.275 10 14.5833 10Z", fill: fill }) })));
 });
 
 const FormatLink = React__namespace.memo((_a) => {
     var { size = baseIconProps.size, fill = baseIconProps.fill } = _a, props = __rest$1(_a, ["size", "fill"]);
-    return (jsxRuntime.exports.jsx(Icon, Object.assign({ width: size, height: size, fill: fill, viewBox: "0 0 20 20", xmlns: "http://www.w3.org/2000/svg" }, props, { children: jsxRuntime.exports.jsx(Path, { d: "M3.24996 10C3.24996 8.57504 4.40829 7.41671 5.83329 7.41671H9.16663V5.83337H5.83329C3.53329 5.83337 1.66663 7.70004 1.66663 10C1.66663 12.3 3.53329 14.1667 5.83329 14.1667H9.16663V12.5834H5.83329C4.40829 12.5834 3.24996 11.425 3.24996 10ZM6.66663 10.8334H13.3333V9.16671H6.66663V10.8334ZM14.1666 5.83337H10.8333V7.41671H14.1666C15.5916 7.41671 16.75 8.57504 16.75 10C16.75 11.425 15.5916 12.5834 14.1666 12.5834H10.8333V14.1667H14.1666C16.4666 14.1667 18.3333 12.3 18.3333 10C18.3333 7.70004 16.4666 5.83337 14.1666 5.83337Z", fill: fill }) })));
+    return (jsxRuntimeExports.jsx(Icon, Object.assign({ width: size, height: size, fill: fill, viewBox: "0 0 20 20", xmlns: "http://www.w3.org/2000/svg" }, props, { children: jsxRuntimeExports.jsx(Path, { d: "M3.24996 10C3.24996 8.57504 4.40829 7.41671 5.83329 7.41671H9.16663V5.83337H5.83329C3.53329 5.83337 1.66663 7.70004 1.66663 10C1.66663 12.3 3.53329 14.1667 5.83329 14.1667H9.16663V12.5834H5.83329C4.40829 12.5834 3.24996 11.425 3.24996 10ZM6.66663 10.8334H13.3333V9.16671H6.66663V10.8334ZM14.1666 5.83337H10.8333V7.41671H14.1666C15.5916 7.41671 16.75 8.57504 16.75 10C16.75 11.425 15.5916 12.5834 14.1666 12.5834H10.8333V14.1667H14.1666C16.4666 14.1667 18.3333 12.3 18.3333 10C18.3333 7.70004 16.4666 5.83337 14.1666 5.83337Z", fill: fill }) })));
 });
 
 const FormatHeader1 = React__namespace.memo((_a) => {
     var { size = baseIconProps.size, fill = baseIconProps.fill } = _a, props = __rest$1(_a, ["size", "fill"]);
-    return (jsxRuntime.exports.jsxs(Icon, Object.assign({ width: size, height: size, fill: fill, viewBox: "0 0 20 20", xmlns: "http://www.w3.org/2000/svg" }, props, { children: [jsxRuntime.exports.jsx(Path, { d: "M3.33337 14.8485V3.33337H4.72779V8.46122H10.8677V3.33337H12.2621V14.8485H10.8677V9.69819H4.72779V14.8485H3.33337Z", fill: fill }), jsxRuntime.exports.jsx(Path, { d: "M16.7873 8.78792V14.8485H15.5059V10.0042H15.4704L14.0825 10.8742V9.73785L15.5829 8.78792H16.7873Z", fill: fill })] })));
+    return (jsxRuntimeExports.jsxs(Icon, Object.assign({ width: size, height: size, fill: fill, viewBox: "0 0 20 20", xmlns: "http://www.w3.org/2000/svg" }, props, { children: [jsxRuntimeExports.jsx(Path, { d: "M3.33337 14.8485V3.33337H4.72779V8.46122H10.8677V3.33337H12.2621V14.8485H10.8677V9.69819H4.72779V14.8485H3.33337Z", fill: fill }), jsxRuntimeExports.jsx(Path, { d: "M16.7873 8.78792V14.8485H15.5059V10.0042H15.4704L14.0825 10.8742V9.73785L15.5829 8.78792H16.7873Z", fill: fill })] })));
 });
 
 const FormatHeader2 = React__namespace.memo((_a) => {
     var { size = baseIconProps.size, fill = baseIconProps.fill } = _a, props = __rest$1(_a, ["size", "fill"]);
-    return (jsxRuntime.exports.jsxs(Icon, Object.assign({ width: size, height: size, fill: fill, viewBox: "0 0 20 20", xmlns: "http://www.w3.org/2000/svg" }, props, { children: [jsxRuntime.exports.jsx(Path, { d: "M2.5 14.8485V3.33337H3.89441V8.46122H10.0343V3.33337H11.4287V14.8485H10.0343V9.69819H3.89441V14.8485H2.5Z", fill: "white" }), jsxRuntime.exports.jsx(Path, { d: "M13.3172 14.8485V13.9252L15.4745 11.9277C15.658 11.7502 15.8119 11.5904 15.9362 11.4483C16.0624 11.3063 16.1581 11.1672 16.2232 11.0311C16.2883 10.893 16.3209 10.744 16.3209 10.5842C16.3209 10.4066 16.2804 10.2537 16.1995 10.1255C16.1187 9.99531 16.0082 9.89568 15.8681 9.82663C15.728 9.7556 15.5692 9.72009 15.3917 9.72009C15.2062 9.72009 15.0444 9.75758 14.9063 9.83255C14.7682 9.90751 14.6617 10.015 14.5867 10.1551C14.5118 10.2952 14.4743 10.4619 14.4743 10.6552H13.258C13.258 10.2587 13.3478 9.91442 13.5273 9.62244C13.7068 9.33045 13.9584 9.10456 14.2819 8.94476C14.6055 8.78496 14.9783 8.70506 15.4005 8.70506C15.8346 8.70506 16.2124 8.782 16.5339 8.93588C16.8575 9.08779 17.109 9.29889 17.2886 9.56917C17.4681 9.83945 17.5579 10.1492 17.5579 10.4984C17.5579 10.7272 17.5125 10.9531 17.4217 11.1761C17.3329 11.399 17.1741 11.6466 16.9453 11.9188C16.7164 12.1891 16.3939 12.5137 15.9776 12.8924L15.0928 13.7595V13.8009H17.6378V14.8485H13.3172Z", fill: "white" })] })));
+    return (jsxRuntimeExports.jsxs(Icon, Object.assign({ width: size, height: size, fill: fill, viewBox: "0 0 20 20", xmlns: "http://www.w3.org/2000/svg" }, props, { children: [jsxRuntimeExports.jsx(Path, { d: "M2.5 14.8485V3.33337H3.89441V8.46122H10.0343V3.33337H11.4287V14.8485H10.0343V9.69819H3.89441V14.8485H2.5Z", fill: "white" }), jsxRuntimeExports.jsx(Path, { d: "M13.3172 14.8485V13.9252L15.4745 11.9277C15.658 11.7502 15.8119 11.5904 15.9362 11.4483C16.0624 11.3063 16.1581 11.1672 16.2232 11.0311C16.2883 10.893 16.3209 10.744 16.3209 10.5842C16.3209 10.4066 16.2804 10.2537 16.1995 10.1255C16.1187 9.99531 16.0082 9.89568 15.8681 9.82663C15.728 9.7556 15.5692 9.72009 15.3917 9.72009C15.2062 9.72009 15.0444 9.75758 14.9063 9.83255C14.7682 9.90751 14.6617 10.015 14.5867 10.1551C14.5118 10.2952 14.4743 10.4619 14.4743 10.6552H13.258C13.258 10.2587 13.3478 9.91442 13.5273 9.62244C13.7068 9.33045 13.9584 9.10456 14.2819 8.94476C14.6055 8.78496 14.9783 8.70506 15.4005 8.70506C15.8346 8.70506 16.2124 8.782 16.5339 8.93588C16.8575 9.08779 17.109 9.29889 17.2886 9.56917C17.4681 9.83945 17.5579 10.1492 17.5579 10.4984C17.5579 10.7272 17.5125 10.9531 17.4217 11.1761C17.3329 11.399 17.1741 11.6466 16.9453 11.9188C16.7164 12.1891 16.3939 12.5137 15.9776 12.8924L15.0928 13.7595V13.8009H17.6378V14.8485H13.3172Z", fill: "white" })] })));
 });
 
 const FormatHeader3 = React__namespace.memo((_a) => {
     var { size = baseIconProps.size, fill = baseIconProps.fill } = _a, props = __rest$1(_a, ["size", "fill"]);
-    return (jsxRuntime.exports.jsxs(Icon, Object.assign({ width: size, height: size, fill: fill, viewBox: "0 0 20 20", xmlns: "http://www.w3.org/2000/svg" }, props, { children: [jsxRuntime.exports.jsx(Path, { d: "M2.5 14.8485V3.33337H3.89441V8.46122H10.0343V3.33337H11.4287V14.8485H10.0343V9.69819H3.89441V14.8485H2.5Z", fill: fill }), jsxRuntime.exports.jsx(Path, { d: "M15.5574 14.9314C15.1155 14.9314 14.7219 14.8554 14.3766 14.7035C14.0334 14.5496 13.7621 14.3385 13.5628 14.0702C13.3655 13.8 13.2639 13.4882 13.258 13.1351H14.5483C14.5562 13.2831 14.6045 13.4133 14.6933 13.5257C14.784 13.6362 14.9044 13.722 15.0543 13.7832C15.2042 13.8443 15.3729 13.8749 15.5603 13.8749C15.7557 13.8749 15.9283 13.8404 16.0782 13.7713C16.2282 13.7023 16.3455 13.6066 16.4304 13.4843C16.5152 13.362 16.5576 13.2209 16.5576 13.0611C16.5576 12.8993 16.5122 12.7563 16.4215 12.632C16.3327 12.5058 16.2045 12.4071 16.0368 12.3361C15.8711 12.2651 15.6738 12.2296 15.4449 12.2296H14.8797V11.2885H15.4449C15.6383 11.2885 15.8089 11.255 15.9569 11.1879C16.1068 11.1208 16.2232 11.0281 16.3061 10.9097C16.3889 10.7894 16.4304 10.6493 16.4304 10.4895C16.4304 10.3376 16.3939 10.2044 16.3209 10.09C16.2499 9.9736 16.1492 9.88285 16.019 9.81775C15.8908 9.75265 15.7409 9.72009 15.5692 9.72009C15.3956 9.72009 15.2368 9.75166 15.0928 9.81479C14.9488 9.87595 14.8333 9.96374 14.7465 10.0782C14.6597 10.1926 14.6134 10.3267 14.6075 10.4806H13.3794C13.3853 10.1314 13.4849 9.82367 13.6782 9.55733C13.8716 9.291 14.132 9.08286 14.4595 8.93292C14.789 8.78101 15.1608 8.70506 15.5751 8.70506C15.9934 8.70506 16.3593 8.78101 16.673 8.93292C16.9867 9.08483 17.2304 9.29001 17.404 9.54845C17.5796 9.80493 17.6664 10.093 17.6644 10.4126C17.6664 10.7519 17.5608 11.035 17.3477 11.2619C17.1366 11.4888 16.8614 11.6328 16.5221 11.6939V11.7413C16.968 11.7985 17.3073 11.9534 17.5401 12.2059C17.7749 12.4564 17.8913 12.7701 17.8893 13.1469C17.8913 13.4922 17.7916 13.799 17.5904 14.0673C17.3911 14.3356 17.1159 14.5467 16.7648 14.7006C16.4136 14.8544 16.0111 14.9314 15.5574 14.9314Z", fill: fill })] })));
+    return (jsxRuntimeExports.jsxs(Icon, Object.assign({ width: size, height: size, fill: fill, viewBox: "0 0 20 20", xmlns: "http://www.w3.org/2000/svg" }, props, { children: [jsxRuntimeExports.jsx(Path, { d: "M2.5 14.8485V3.33337H3.89441V8.46122H10.0343V3.33337H11.4287V14.8485H10.0343V9.69819H3.89441V14.8485H2.5Z", fill: fill }), jsxRuntimeExports.jsx(Path, { d: "M15.5574 14.9314C15.1155 14.9314 14.7219 14.8554 14.3766 14.7035C14.0334 14.5496 13.7621 14.3385 13.5628 14.0702C13.3655 13.8 13.2639 13.4882 13.258 13.1351H14.5483C14.5562 13.2831 14.6045 13.4133 14.6933 13.5257C14.784 13.6362 14.9044 13.722 15.0543 13.7832C15.2042 13.8443 15.3729 13.8749 15.5603 13.8749C15.7557 13.8749 15.9283 13.8404 16.0782 13.7713C16.2282 13.7023 16.3455 13.6066 16.4304 13.4843C16.5152 13.362 16.5576 13.2209 16.5576 13.0611C16.5576 12.8993 16.5122 12.7563 16.4215 12.632C16.3327 12.5058 16.2045 12.4071 16.0368 12.3361C15.8711 12.2651 15.6738 12.2296 15.4449 12.2296H14.8797V11.2885H15.4449C15.6383 11.2885 15.8089 11.255 15.9569 11.1879C16.1068 11.1208 16.2232 11.0281 16.3061 10.9097C16.3889 10.7894 16.4304 10.6493 16.4304 10.4895C16.4304 10.3376 16.3939 10.2044 16.3209 10.09C16.2499 9.9736 16.1492 9.88285 16.019 9.81775C15.8908 9.75265 15.7409 9.72009 15.5692 9.72009C15.3956 9.72009 15.2368 9.75166 15.0928 9.81479C14.9488 9.87595 14.8333 9.96374 14.7465 10.0782C14.6597 10.1926 14.6134 10.3267 14.6075 10.4806H13.3794C13.3853 10.1314 13.4849 9.82367 13.6782 9.55733C13.8716 9.291 14.132 9.08286 14.4595 8.93292C14.789 8.78101 15.1608 8.70506 15.5751 8.70506C15.9934 8.70506 16.3593 8.78101 16.673 8.93292C16.9867 9.08483 17.2304 9.29001 17.404 9.54845C17.5796 9.80493 17.6664 10.093 17.6644 10.4126C17.6664 10.7519 17.5608 11.035 17.3477 11.2619C17.1366 11.4888 16.8614 11.6328 16.5221 11.6939V11.7413C16.968 11.7985 17.3073 11.9534 17.5401 12.2059C17.7749 12.4564 17.8913 12.7701 17.8893 13.1469C17.8913 13.4922 17.7916 13.799 17.5904 14.0673C17.3911 14.3356 17.1159 14.5467 16.7648 14.7006C16.4136 14.8544 16.0111 14.9314 15.5574 14.9314Z", fill: fill })] })));
 });
 
 const FormatBulletList = React__namespace.memo((_a) => {
     var { size = baseIconProps.size, fill = baseIconProps.fill } = _a, props = __rest$1(_a, ["size", "fill"]);
-    return (jsxRuntime.exports.jsx(Icon, Object.assign({ width: size, height: size, fill: fill, viewBox: "0 0 20 20", xmlns: "http://www.w3.org/2000/svg" }, props, { children: jsxRuntime.exports.jsx(Path, { d: "M3.33337 8.75C2.64171 8.75 2.08337 9.30833 2.08337 10C2.08337 10.6917 2.64171 11.25 3.33337 11.25C4.02504 11.25 4.58337 10.6917 4.58337 10C4.58337 9.30833 4.02504 8.75 3.33337 8.75ZM3.33337 3.75C2.64171 3.75 2.08337 4.30833 2.08337 5C2.08337 5.69167 2.64171 6.25 3.33337 6.25C4.02504 6.25 4.58337 5.69167 4.58337 5C4.58337 4.30833 4.02504 3.75 3.33337 3.75ZM3.33337 13.75C2.64171 13.75 2.08337 14.3167 2.08337 15C2.08337 15.6833 2.65004 16.25 3.33337 16.25C4.01671 16.25 4.58337 15.6833 4.58337 15C4.58337 14.3167 4.02504 13.75 3.33337 13.75ZM6.66671 15.8333H16.6667C17.125 15.8333 17.5 15.4583 17.5 15C17.5 14.5417 17.125 14.1667 16.6667 14.1667H6.66671C6.20837 14.1667 5.83337 14.5417 5.83337 15C5.83337 15.4583 6.20837 15.8333 6.66671 15.8333ZM6.66671 10.8333H16.6667C17.125 10.8333 17.5 10.4583 17.5 10C17.5 9.54167 17.125 9.16667 16.6667 9.16667H6.66671C6.20837 9.16667 5.83337 9.54167 5.83337 10C5.83337 10.4583 6.20837 10.8333 6.66671 10.8333ZM5.83337 5C5.83337 5.45833 6.20837 5.83333 6.66671 5.83333H16.6667C17.125 5.83333 17.5 5.45833 17.5 5C17.5 4.54167 17.125 4.16667 16.6667 4.16667H6.66671C6.20837 4.16667 5.83337 4.54167 5.83337 5Z", fill: fill }) })));
+    return (jsxRuntimeExports.jsx(Icon, Object.assign({ width: size, height: size, fill: fill, viewBox: "0 0 20 20", xmlns: "http://www.w3.org/2000/svg" }, props, { children: jsxRuntimeExports.jsx(Path, { d: "M3.33337 8.75C2.64171 8.75 2.08337 9.30833 2.08337 10C2.08337 10.6917 2.64171 11.25 3.33337 11.25C4.02504 11.25 4.58337 10.6917 4.58337 10C4.58337 9.30833 4.02504 8.75 3.33337 8.75ZM3.33337 3.75C2.64171 3.75 2.08337 4.30833 2.08337 5C2.08337 5.69167 2.64171 6.25 3.33337 6.25C4.02504 6.25 4.58337 5.69167 4.58337 5C4.58337 4.30833 4.02504 3.75 3.33337 3.75ZM3.33337 13.75C2.64171 13.75 2.08337 14.3167 2.08337 15C2.08337 15.6833 2.65004 16.25 3.33337 16.25C4.01671 16.25 4.58337 15.6833 4.58337 15C4.58337 14.3167 4.02504 13.75 3.33337 13.75ZM6.66671 15.8333H16.6667C17.125 15.8333 17.5 15.4583 17.5 15C17.5 14.5417 17.125 14.1667 16.6667 14.1667H6.66671C6.20837 14.1667 5.83337 14.5417 5.83337 15C5.83337 15.4583 6.20837 15.8333 6.66671 15.8333ZM6.66671 10.8333H16.6667C17.125 10.8333 17.5 10.4583 17.5 10C17.5 9.54167 17.125 9.16667 16.6667 9.16667H6.66671C6.20837 9.16667 5.83337 9.54167 5.83337 10C5.83337 10.4583 6.20837 10.8333 6.66671 10.8333ZM5.83337 5C5.83337 5.45833 6.20837 5.83333 6.66671 5.83333H16.6667C17.125 5.83333 17.5 5.45833 17.5 5C17.5 4.54167 17.125 4.16667 16.6667 4.16667H6.66671C6.20837 4.16667 5.83337 4.54167 5.83337 5Z", fill: fill }) })));
 });
 
 const FormatNumberList = React__namespace.memo((_a) => {
     var { size = baseIconProps.size, fill = baseIconProps.fill } = _a, props = __rest$1(_a, ["size", "fill"]);
-    return (jsxRuntime.exports.jsx(Icon, Object.assign({ width: size, height: size, fill: fill, viewBox: "0 0 20 20", xmlns: "http://www.w3.org/2000/svg" }, props, { children: jsxRuntime.exports.jsx(Path, { d: "M6.66663 5.83337H16.6666C17.125 5.83337 17.5 5.45837 17.5 5.00004C17.5 4.54171 17.125 4.16671 16.6666 4.16671H6.66663C6.20829 4.16671 5.83329 4.54171 5.83329 5.00004C5.83329 5.45837 6.20829 5.83337 6.66663 5.83337ZM16.6666 14.1667H6.66663C6.20829 14.1667 5.83329 14.5417 5.83329 15C5.83329 15.4584 6.20829 15.8334 6.66663 15.8334H16.6666C17.125 15.8334 17.5 15.4584 17.5 15C17.5 14.5417 17.125 14.1667 16.6666 14.1667ZM16.6666 9.16671H6.66663C6.20829 9.16671 5.83329 9.54171 5.83329 10C5.83329 10.4584 6.20829 10.8334 6.66663 10.8334H16.6666C17.125 10.8334 17.5 10.4584 17.5 10C17.5 9.54171 17.125 9.16671 16.6666 9.16671ZM3.74996 13.3334H2.08329C1.84996 13.3334 1.66663 13.5167 1.66663 13.75C1.66663 13.9834 1.84996 14.1667 2.08329 14.1667H3.33329V14.5834H2.91663C2.68329 14.5834 2.49996 14.7667 2.49996 15C2.49996 15.2334 2.68329 15.4167 2.91663 15.4167H3.33329V15.8334H2.08329C1.84996 15.8334 1.66663 16.0167 1.66663 16.25C1.66663 16.4834 1.84996 16.6667 2.08329 16.6667H3.74996C3.98329 16.6667 4.16663 16.4834 4.16663 16.25V13.75C4.16663 13.5167 3.98329 13.3334 3.74996 13.3334ZM2.08329 4.16671H2.49996V6.25004C2.49996 6.48337 2.68329 6.66671 2.91663 6.66671C3.14996 6.66671 3.33329 6.48337 3.33329 6.25004V3.75004C3.33329 3.51671 3.14996 3.33337 2.91663 3.33337H2.08329C1.84996 3.33337 1.66663 3.51671 1.66663 3.75004C1.66663 3.98337 1.84996 4.16671 2.08329 4.16671ZM3.74996 8.33337H2.08329C1.84996 8.33337 1.66663 8.51671 1.66663 8.75004C1.66663 8.98337 1.84996 9.16671 2.08329 9.16671H3.16663L1.76663 10.8C1.69996 10.875 1.66663 10.975 1.66663 11.0667V11.25C1.66663 11.4834 1.84996 11.6667 2.08329 11.6667H3.74996C3.98329 11.6667 4.16663 11.4834 4.16663 11.25C4.16663 11.0167 3.98329 10.8334 3.74996 10.8334H2.66663L4.06663 9.20004C4.13329 9.12504 4.16663 9.02504 4.16663 8.93337V8.75004C4.16663 8.51671 3.98329 8.33337 3.74996 8.33337Z", fill: fill }) })));
+    return (jsxRuntimeExports.jsx(Icon, Object.assign({ width: size, height: size, fill: fill, viewBox: "0 0 20 20", xmlns: "http://www.w3.org/2000/svg" }, props, { children: jsxRuntimeExports.jsx(Path, { d: "M6.66663 5.83337H16.6666C17.125 5.83337 17.5 5.45837 17.5 5.00004C17.5 4.54171 17.125 4.16671 16.6666 4.16671H6.66663C6.20829 4.16671 5.83329 4.54171 5.83329 5.00004C5.83329 5.45837 6.20829 5.83337 6.66663 5.83337ZM16.6666 14.1667H6.66663C6.20829 14.1667 5.83329 14.5417 5.83329 15C5.83329 15.4584 6.20829 15.8334 6.66663 15.8334H16.6666C17.125 15.8334 17.5 15.4584 17.5 15C17.5 14.5417 17.125 14.1667 16.6666 14.1667ZM16.6666 9.16671H6.66663C6.20829 9.16671 5.83329 9.54171 5.83329 10C5.83329 10.4584 6.20829 10.8334 6.66663 10.8334H16.6666C17.125 10.8334 17.5 10.4584 17.5 10C17.5 9.54171 17.125 9.16671 16.6666 9.16671ZM3.74996 13.3334H2.08329C1.84996 13.3334 1.66663 13.5167 1.66663 13.75C1.66663 13.9834 1.84996 14.1667 2.08329 14.1667H3.33329V14.5834H2.91663C2.68329 14.5834 2.49996 14.7667 2.49996 15C2.49996 15.2334 2.68329 15.4167 2.91663 15.4167H3.33329V15.8334H2.08329C1.84996 15.8334 1.66663 16.0167 1.66663 16.25C1.66663 16.4834 1.84996 16.6667 2.08329 16.6667H3.74996C3.98329 16.6667 4.16663 16.4834 4.16663 16.25V13.75C4.16663 13.5167 3.98329 13.3334 3.74996 13.3334ZM2.08329 4.16671H2.49996V6.25004C2.49996 6.48337 2.68329 6.66671 2.91663 6.66671C3.14996 6.66671 3.33329 6.48337 3.33329 6.25004V3.75004C3.33329 3.51671 3.14996 3.33337 2.91663 3.33337H2.08329C1.84996 3.33337 1.66663 3.51671 1.66663 3.75004C1.66663 3.98337 1.84996 4.16671 2.08329 4.16671ZM3.74996 8.33337H2.08329C1.84996 8.33337 1.66663 8.51671 1.66663 8.75004C1.66663 8.98337 1.84996 9.16671 2.08329 9.16671H3.16663L1.76663 10.8C1.69996 10.875 1.66663 10.975 1.66663 11.0667V11.25C1.66663 11.4834 1.84996 11.6667 2.08329 11.6667H3.74996C3.98329 11.6667 4.16663 11.4834 4.16663 11.25C4.16663 11.0167 3.98329 10.8334 3.74996 10.8334H2.66663L4.06663 9.20004C4.13329 9.12504 4.16663 9.02504 4.16663 8.93337V8.75004C4.16663 8.51671 3.98329 8.33337 3.74996 8.33337Z", fill: fill }) })));
 });
 
 const FormatCodeBlock = React__namespace.memo((_a) => {
     var { size = baseIconProps.size, fill = baseIconProps.fill } = _a; __rest$1(_a, ["size", "fill"]);
-    return (jsxRuntime.exports.jsxs(Icon, Object.assign({ width: size, height: size, viewBox: "0 0 20 20", fill: "none", xmlns: "http://www.w3.org/2000/svg" }, { children: [jsxRuntime.exports.jsx(Path, { d: "M16.6666 2.5H3.33329C2.41413 2.5 1.66663 3.2475 1.66663 4.16667V15.8333C1.66663 16.7525 2.41413 17.5 3.33329 17.5H16.6666C17.5858 17.5 18.3333 16.7525 18.3333 15.8333V4.16667C18.3333 3.2475 17.5858 2.5 16.6666 2.5ZM3.33329 15.8333V5.83333H16.6666L16.6683 15.8333H3.33329Z", fill: "white" }), jsxRuntime.exports.jsx(Path, { d: "M8.33336 8.33331C8.00798 8.00792 7.48042 8.00792 7.15503 8.33331L5.36214 10.1262C4.97161 10.5167 4.97161 11.1499 5.36214 11.5404L7.15503 13.3333C7.48042 13.6587 8.00798 13.6587 8.33336 13.3333C8.65875 13.0079 8.65875 12.4804 8.33336 12.155L7.0117 10.8333L8.33336 9.51164C8.65875 9.18625 8.65875 8.65869 8.33336 8.33331ZM12.845 8.33331C12.5196 8.00792 11.9921 8.00792 11.6667 8.33331C11.3413 8.65869 11.3413 9.18625 11.6667 9.51164L12.9884 10.8333L11.6667 12.155C11.3413 12.4804 11.3413 13.0079 11.6667 13.3333C11.9921 13.6587 12.5196 13.6587 12.845 13.3333L14.6379 11.5404C15.0284 11.1499 15.0284 10.5167 14.6379 10.1262L12.845 8.33331Z", fill: "white" })] })));
+    return (jsxRuntimeExports.jsxs(Icon, Object.assign({ width: size, height: size, viewBox: "0 0 20 20", fill: "none", xmlns: "http://www.w3.org/2000/svg" }, { children: [jsxRuntimeExports.jsx(Path, { d: "M16.6666 2.5H3.33329C2.41413 2.5 1.66663 3.2475 1.66663 4.16667V15.8333C1.66663 16.7525 2.41413 17.5 3.33329 17.5H16.6666C17.5858 17.5 18.3333 16.7525 18.3333 15.8333V4.16667C18.3333 3.2475 17.5858 2.5 16.6666 2.5ZM3.33329 15.8333V5.83333H16.6666L16.6683 15.8333H3.33329Z", fill: "white" }), jsxRuntimeExports.jsx(Path, { d: "M8.33336 8.33331C8.00798 8.00792 7.48042 8.00792 7.15503 8.33331L5.36214 10.1262C4.97161 10.5167 4.97161 11.1499 5.36214 11.5404L7.15503 13.3333C7.48042 13.6587 8.00798 13.6587 8.33336 13.3333C8.65875 13.0079 8.65875 12.4804 8.33336 12.155L7.0117 10.8333L8.33336 9.51164C8.65875 9.18625 8.65875 8.65869 8.33336 8.33331ZM12.845 8.33331C12.5196 8.00792 11.9921 8.00792 11.6667 8.33331C11.3413 8.65869 11.3413 9.18625 11.6667 9.51164L12.9884 10.8333L11.6667 12.155C11.3413 12.4804 11.3413 13.0079 11.6667 13.3333C11.9921 13.6587 12.5196 13.6587 12.845 13.3333L14.6379 11.5404C15.0284 11.1499 15.0284 10.5167 14.6379 10.1262L12.845 8.33331Z", fill: "white" })] })));
 });
 
 const FormatBlockQuote = React__namespace.memo((_a) => {
     var { size = baseIconProps.size, fill = baseIconProps.fill } = _a; __rest$1(_a, ["size", "fill"]);
-    return (jsxRuntime.exports.jsx(Icon, Object.assign({ width: size, height: size, viewBox: "0 0 20 20", fill: "none", xmlns: "http://www.w3.org/2000/svg" }, { children: jsxRuntime.exports.jsx(Path, { d: "M15.5167 15H11.15L12.8167 11.6667H10.8333V5H17.5V11.0333L15.5167 15ZM13.85 13.3333H14.4833L15.8333 10.6333V6.66667H12.5V10H15.5167L13.85 13.3333ZM7.18333 15H2.81667L4.48333 11.6667H2.5V5H9.16667V11.0333L7.18333 15ZM5.51667 13.3333H6.15L7.5 10.6333V6.66667H4.16667V10H7.18333L5.51667 13.3333Z", fill: "white" }) })));
+    return (jsxRuntimeExports.jsx(Icon, Object.assign({ width: size, height: size, viewBox: "0 0 20 20", fill: "none", xmlns: "http://www.w3.org/2000/svg" }, { children: jsxRuntimeExports.jsx(Path, { d: "M15.5167 15H11.15L12.8167 11.6667H10.8333V5H17.5V11.0333L15.5167 15ZM13.85 13.3333H14.4833L15.8333 10.6333V6.66667H12.5V10H15.5167L13.85 13.3333ZM7.18333 15H2.81667L4.48333 11.6667H2.5V5H9.16667V11.0333L7.18333 15ZM5.51667 13.3333H6.15L7.5 10.6333V6.66667H4.16667V10H7.18333L5.51667 13.3333Z", fill: "white" }) })));
 });
 
 const FormatTask = React__namespace.memo((_a) => {
     var { size = baseIconProps.size, fill = baseIconProps.fill } = _a; __rest$1(_a, ["size", "fill"]);
-    return (jsxRuntime.exports.jsx(Icon, Object.assign({ width: size, height: size, viewBox: "0 0 20 20", fill: "none", xmlns: "http://www.w3.org/2000/svg" }, { children: jsxRuntime.exports.jsx(Path, { d: "M15 7.50004L13.825 6.31671L8.33333 11.8084L6.175 9.65837L5 10.8334L8.33333 14.1667L15 7.50004ZM15.8333 2.50004H12.35C12 1.53337 11.0833 0.833374 10 0.833374C8.91667 0.833374 8 1.53337 7.65 2.50004H4.16667C4.05 2.50004 3.94167 2.50837 3.83333 2.53337C3.50833 2.60004 3.21667 2.76671 2.99167 2.99171C2.84167 3.14171 2.71667 3.32504 2.63333 3.52504C2.55 3.71671 2.5 3.93337 2.5 4.16671V15.8334C2.5 16.0584 2.55 16.2834 2.63333 16.4834C2.71667 16.6834 2.84167 16.8584 2.99167 17.0167C3.21667 17.2417 3.50833 17.4084 3.83333 17.475C3.94167 17.4917 4.05 17.5 4.16667 17.5H15.8333C16.75 17.5 17.5 16.75 17.5 15.8334V4.16671C17.5 3.25004 16.75 2.50004 15.8333 2.50004ZM10 2.29171C10.3417 2.29171 10.625 2.57504 10.625 2.91671C10.625 3.25837 10.3417 3.54171 10 3.54171C9.65833 3.54171 9.375 3.25837 9.375 2.91671C9.375 2.57504 9.65833 2.29171 10 2.29171ZM15.8333 15.8334H4.16667V4.16671H15.8333V15.8334Z", fill: "white" }) })));
+    return (jsxRuntimeExports.jsx(Icon, Object.assign({ width: size, height: size, viewBox: "0 0 20 20", fill: "none", xmlns: "http://www.w3.org/2000/svg" }, { children: jsxRuntimeExports.jsx(Path, { d: "M15 7.50004L13.825 6.31671L8.33333 11.8084L6.175 9.65837L5 10.8334L8.33333 14.1667L15 7.50004ZM15.8333 2.50004H12.35C12 1.53337 11.0833 0.833374 10 0.833374C8.91667 0.833374 8 1.53337 7.65 2.50004H4.16667C4.05 2.50004 3.94167 2.50837 3.83333 2.53337C3.50833 2.60004 3.21667 2.76671 2.99167 2.99171C2.84167 3.14171 2.71667 3.32504 2.63333 3.52504C2.55 3.71671 2.5 3.93337 2.5 4.16671V15.8334C2.5 16.0584 2.55 16.2834 2.63333 16.4834C2.71667 16.6834 2.84167 16.8584 2.99167 17.0167C3.21667 17.2417 3.50833 17.4084 3.83333 17.475C3.94167 17.4917 4.05 17.5 4.16667 17.5H15.8333C16.75 17.5 17.5 16.75 17.5 15.8334V4.16671C17.5 3.25004 16.75 2.50004 15.8333 2.50004ZM10 2.29171C10.3417 2.29171 10.625 2.57504 10.625 2.91671C10.625 3.25837 10.3417 3.54171 10 3.54171C9.65833 3.54171 9.375 3.25837 9.375 2.91671C9.375 2.57504 9.65833 2.29171 10 2.29171ZM15.8333 15.8334H4.16667V4.16671H15.8333V15.8334Z", fill: "white" }) })));
 });
 
 const FormatDecision = React__namespace.memo((_a) => {
     var { size = baseIconProps.size, fill = baseIconProps.fill } = _a; __rest$1(_a, ["size", "fill"]);
-    return (jsxRuntime.exports.jsx(Icon, Object.assign({ width: size, height: size, viewBox: "0 0 20 20", fill: "none", xmlns: "http://www.w3.org/2000/svg" }, { children: jsxRuntime.exports.jsx(Path, { d: "M9.16667 12.5H10.8333V14.1667H9.16667V12.5ZM9.16667 5.83337H10.8333V10.8334H9.16667V5.83337ZM15.8333 2.50004H12.35C12 1.53337 11.0833 0.833374 10 0.833374C8.91667 0.833374 8 1.53337 7.65 2.50004H4.16667C4.05 2.50004 3.94167 2.50837 3.83333 2.53337C3.50833 2.60004 3.21667 2.76671 2.99167 2.99171C2.84167 3.14171 2.71667 3.32504 2.63333 3.52504C2.55 3.71671 2.5 3.93337 2.5 4.16671V15.8334C2.5 16.0584 2.55 16.2834 2.63333 16.4834C2.71667 16.6834 2.84167 16.8584 2.99167 17.0167C3.21667 17.2417 3.50833 17.4084 3.83333 17.475C3.94167 17.4917 4.05 17.5 4.16667 17.5H15.8333C16.75 17.5 17.5 16.75 17.5 15.8334V4.16671C17.5 3.25004 16.75 2.50004 15.8333 2.50004ZM10 2.29171C10.3417 2.29171 10.625 2.57504 10.625 2.91671C10.625 3.25837 10.3417 3.54171 10 3.54171C9.65833 3.54171 9.375 3.25837 9.375 2.91671C9.375 2.57504 9.65833 2.29171 10 2.29171ZM15.8333 15.8334H4.16667V4.16671H15.8333V15.8334Z", fill: "white" }) })));
+    return (jsxRuntimeExports.jsx(Icon, Object.assign({ width: size, height: size, viewBox: "0 0 20 20", fill: "none", xmlns: "http://www.w3.org/2000/svg" }, { children: jsxRuntimeExports.jsx(Path, { d: "M9.16667 12.5H10.8333V14.1667H9.16667V12.5ZM9.16667 5.83337H10.8333V10.8334H9.16667V5.83337ZM15.8333 2.50004H12.35C12 1.53337 11.0833 0.833374 10 0.833374C8.91667 0.833374 8 1.53337 7.65 2.50004H4.16667C4.05 2.50004 3.94167 2.50837 3.83333 2.53337C3.50833 2.60004 3.21667 2.76671 2.99167 2.99171C2.84167 3.14171 2.71667 3.32504 2.63333 3.52504C2.55 3.71671 2.5 3.93337 2.5 4.16671V15.8334C2.5 16.0584 2.55 16.2834 2.63333 16.4834C2.71667 16.6834 2.84167 16.8584 2.99167 17.0167C3.21667 17.2417 3.50833 17.4084 3.83333 17.475C3.94167 17.4917 4.05 17.5 4.16667 17.5H15.8333C16.75 17.5 17.5 16.75 17.5 15.8334V4.16671C17.5 3.25004 16.75 2.50004 15.8333 2.50004ZM10 2.29171C10.3417 2.29171 10.625 2.57504 10.625 2.91671C10.625 3.25837 10.3417 3.54171 10 3.54171C9.65833 3.54171 9.375 3.25837 9.375 2.91671C9.375 2.57504 9.65833 2.29171 10 2.29171ZM15.8333 15.8334H4.16667V4.16671H15.8333V15.8334Z", fill: "white" }) })));
 });
 
 const CheckSquare = React__namespace.memo((_a) => {
     var { size = baseIconProps.size, fill = baseIconProps.fill, checked = false } = _a, props = __rest$1(_a, ["size", "fill", "checked"]);
-    return (jsxRuntime.exports.jsx(Icon, Object.assign({ width: size, height: size, fill: fill, viewBox: "0 0 24 24", xmlns: "http://www.w3.org/2000/svg" }, props, { children: checked ? (jsxRuntime.exports.jsx("path", { d: "M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM19 19H5V5H19V19ZM17.99 9L16.58 7.58L9.99 14.17L7.41 11.6L5.99 13.01L9.99 17L17.99 9Z", fill: fill })) : (jsxRuntime.exports.jsx("path", { d: "M19 5V19H5V5H19ZM19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3Z", fill: fill })) })));
+    return (jsxRuntimeExports.jsx(Icon, Object.assign({ width: size, height: size, fill: fill, viewBox: "0 0 24 24", xmlns: "http://www.w3.org/2000/svg" }, props, { children: checked ? (jsxRuntimeExports.jsx("path", { d: "M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM19 19H5V5H19V19ZM17.99 9L16.58 7.58L9.99 14.17L7.41 11.6L5.99 13.01L9.99 17L17.99 9Z", fill: fill })) : (jsxRuntimeExports.jsx("path", { d: "M19 5V19H5V5H19ZM19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3Z", fill: fill })) })));
 });
 
 const Decision$1 = React__namespace.memo((_a) => {
     var { size = baseIconProps.size, fill = baseIconProps.fill } = _a, props = __rest$1(_a, ["size", "fill"]);
-    return (jsxRuntime.exports.jsx(Icon, Object.assign({ width: size, height: size, fill: fill, viewBox: "0 0 24 24", xmlns: "http://www.w3.org/2000/svg" }, props, { children: jsxRuntime.exports.jsx("path", { d: "M11 15H13V17H11V15ZM11 7H13V13H11V7ZM19 3H14.82C14.4 1.84 13.3 1 12 1C10.7 1 9.6 1.84 9.18 3H5C4.86 3 4.73 3.01 4.6 3.04C4.21 3.12 3.86 3.32 3.59 3.59C3.41 3.77 3.26 3.99 3.16 4.23C3.06 4.46 3 4.72 3 5V19C3 19.27 3.06 19.54 3.16 19.78C3.26 20.02 3.41 20.23 3.59 20.42C3.86 20.69 4.21 20.89 4.6 20.97C4.73 20.99 4.86 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM12 2.75C12.41 2.75 12.75 3.09 12.75 3.5C12.75 3.91 12.41 4.25 12 4.25C11.59 4.25 11.25 3.91 11.25 3.5C11.25 3.09 11.59 2.75 12 2.75ZM19 19H5V5H19V19Z", fill: fill }) })));
+    return (jsxRuntimeExports.jsx(Icon, Object.assign({ width: size, height: size, fill: fill, viewBox: "0 0 24 24", xmlns: "http://www.w3.org/2000/svg" }, props, { children: jsxRuntimeExports.jsx("path", { d: "M11 15H13V17H11V15ZM11 7H13V13H11V7ZM19 3H14.82C14.4 1.84 13.3 1 12 1C10.7 1 9.6 1.84 9.18 3H5C4.86 3 4.73 3.01 4.6 3.04C4.21 3.12 3.86 3.32 3.59 3.59C3.41 3.77 3.26 3.99 3.16 4.23C3.06 4.46 3 4.72 3 5V19C3 19.27 3.06 19.54 3.16 19.78C3.26 20.02 3.41 20.23 3.59 20.42C3.86 20.69 4.21 20.89 4.6 20.97C4.73 20.99 4.86 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM12 2.75C12.41 2.75 12.75 3.09 12.75 3.5C12.75 3.91 12.41 4.25 12 4.25C11.59 4.25 11.25 3.91 11.25 3.5C11.25 3.09 11.59 2.75 12 2.75ZM19 19H5V5H19V19Z", fill: fill }) })));
 });
 
 const Schedule = React__namespace.memo((_a) => {
     var { size = baseIconProps.size, fill = baseIconProps.fill } = _a, props = __rest$1(_a, ["size", "fill"]);
-    return (jsxRuntime.exports.jsx(Icon, Object.assign({ width: size, height: size, fill: fill, viewBox: "0 0 24 24", xmlns: "http://www.w3.org/2000/svg" }, props, { children: jsxRuntime.exports.jsx("path", { d: "M11.99 2C6.47 2 2 6.48 2 12C2 17.52 6.47 22 11.99 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 11.99 2ZM12 20C7.58 20 4 16.42 4 12C4 7.58 7.58 4 12 4C16.42 4 20 7.58 20 12C20 16.42 16.42 20 12 20ZM12.5 7H11V13L16.25 16.15L17 14.92L12.5 12.25V7Z", fill: fill }) })));
+    return (jsxRuntimeExports.jsx(Icon, Object.assign({ width: size, height: size, fill: fill, viewBox: "0 0 24 24", xmlns: "http://www.w3.org/2000/svg" }, props, { children: jsxRuntimeExports.jsx("path", { d: "M11.99 2C6.47 2 2 6.48 2 12C2 17.52 6.47 22 11.99 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 11.99 2ZM12 20C7.58 20 4 16.42 4 12C4 7.58 7.58 4 12 4C16.42 4 20 7.58 20 12C20 16.42 16.42 20 12 20ZM12.5 7H11V13L16.25 16.15L17 14.92L12.5 12.25V7Z", fill: fill }) })));
 });
 
 const Assignment = React__namespace.memo((_a) => {
     var { size = baseIconProps.size, fill = baseIconProps.fill } = _a, props = __rest$1(_a, ["size", "fill"]);
-    return (jsxRuntime.exports.jsx(Icon, Object.assign({ width: size, height: size, fill: fill, viewBox: "0 0 24 24", xmlns: "http://www.w3.org/2000/svg" }, props, { children: jsxRuntime.exports.jsx("path", { d: "M15 12C17.21 12 19 10.21 19 8C19 5.79 17.21 4 15 4C12.79 4 11 5.79 11 8C11 10.21 12.79 12 15 12ZM15 6C16.1 6 17 6.9 17 8C17 9.1 16.1 10 15 10C13.9 10 13 9.1 13 8C13 6.9 13.9 6 15 6ZM15 14C12.33 14 7 15.34 7 18V20H23V18C23 15.34 17.67 14 15 14ZM9 18C9.22 17.28 12.31 16 15 16C17.7 16 20.8 17.29 21 18H9ZM6 15V12H9V10H6V7H4V10H1V12H4V15H6Z", fill: fill }) })));
+    return (jsxRuntimeExports.jsx(Icon, Object.assign({ width: size, height: size, fill: fill, viewBox: "0 0 24 24", xmlns: "http://www.w3.org/2000/svg" }, props, { children: jsxRuntimeExports.jsx("path", { d: "M15 12C17.21 12 19 10.21 19 8C19 5.79 17.21 4 15 4C12.79 4 11 5.79 11 8C11 10.21 12.79 12 15 12ZM15 6C16.1 6 17 6.9 17 8C17 9.1 16.1 10 15 10C13.9 10 13 9.1 13 8C13 6.9 13.9 6 15 6ZM15 14C12.33 14 7 15.34 7 18V20H23V18C23 15.34 17.67 14 15 14ZM9 18C9.22 17.28 12.31 16 15 16C17.7 16 20.8 17.29 21 18H9ZM6 15V12H9V10H6V7H4V10H1V12H4V15H6Z", fill: fill }) })));
 });
 
 const Close = React__namespace.memo((_a) => {
     var { size = baseIconProps.size, fill = baseIconProps.fill } = _a, props = __rest$1(_a, ["size", "fill"]);
-    return (jsxRuntime.exports.jsx(Icon, Object.assign({ width: size, height: size, fill: fill, viewBox: "0 0 24 24", xmlns: "http://www.w3.org/2000/svg" }, props, { children: jsxRuntime.exports.jsx("path", { d: "M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12L19 6.41Z", fill: fill }) })));
+    return (jsxRuntimeExports.jsx(Icon, Object.assign({ width: size, height: size, fill: fill, viewBox: "0 0 24 24", xmlns: "http://www.w3.org/2000/svg" }, props, { children: jsxRuntimeExports.jsx("path", { d: "M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12L19 6.41Z", fill: fill }) })));
 });
 
-const ListItem = He.div `
+const ListItem = styled$1.div `
   font-size: 1rem;
   outline: 0;
   margin: 0;
@@ -7884,7 +6677,7 @@ const ListItem = He.div `
   position: relative;
   ${({ placeholder }) => {
     return (placeholder &&
-        Ce `
+        Ce$1 `
         ::after {
           opacity: 0.3;
           content: attr(placeholder);
@@ -7892,7 +6685,7 @@ const ListItem = He.div `
       `);
 }}
 `;
-const CheckBoxOuter$1 = He.div `
+const CheckBoxOuter$1 = styled$1.div `
   position: absolute;
   left: 4px;
   top: -3px;
@@ -7930,12 +6723,12 @@ const CheckList = React__namespace.memo((_a) => {
         editor.render([blockId]);
     }, [blockId, attributes]);
     const checked = (_b = attributes === null || attributes === void 0 ? void 0 : attributes.checked) !== null && _b !== void 0 ? _b : false;
-    return (jsxRuntime.exports.jsxs(ListItem, Object.assign({ ref: headerRef, spellCheck: false, placeholder: showPlaceholder ? placeholder : '', style: {
+    return (jsxRuntimeExports.jsxs(ListItem, Object.assign({ ref: headerRef, spellCheck: false, placeholder: showPlaceholder ? placeholder : '', style: {
             textDecoration: checked ? 'line-through' : 'none',
-        } }, props, { children: [jsxRuntime.exports.jsx(CheckBoxOuter$1, Object.assign({ onClick: handleClickCheckBox }, { children: jsxRuntime.exports.jsx(CheckSquare, { size: "20px", checked: checked }) })), contents] })));
+        } }, props, { children: [jsxRuntimeExports.jsx(CheckBoxOuter$1, Object.assign({ onClick: handleClickCheckBox }, { children: jsxRuntimeExports.jsx(CheckSquare, { size: "20px", checked: checked }) })), contents] })));
 });
 
-const Container$b = He.blockquote `
+const Container$b = styled$1.blockquote `
   outline: 0;
   margin: 0 0 0 12px;
   padding: 2px 12px;
@@ -7945,10 +6738,10 @@ const Container$b = He.blockquote `
 `;
 const Blockquote = React__namespace.memo((_a) => {
     var { blockId, contents, editor } = _a, props = __rest$1(_a, ["blockId", "contents", "editor"]);
-    return (jsxRuntime.exports.jsx(Container$b, Object.assign({ spellCheck: false }, props, { children: contents })));
+    return (jsxRuntimeExports.jsx(Container$b, Object.assign({ spellCheck: false }, props, { children: contents })));
 });
 
-const P = He.p `
+const P$1 = styled$1.p `
   width: 100%;
   font-size: 1rem;
   outline: 0;
@@ -7959,7 +6752,7 @@ const P = He.p `
 `;
 const Paragraph = React__namespace.memo((_a) => {
     var { blockId, formats, editor, contents } = _a, props = __rest$1(_a, ["blockId", "formats", "editor", "contents"]);
-    return (jsxRuntime.exports.jsx(P, Object.assign({ spellCheck: false }, props, { children: contents })));
+    return (jsxRuntimeExports.jsx(P$1, Object.assign({ spellCheck: false }, props, { children: contents })));
 });
 
 Prism.languages.javascript = Prism.languages.extend('clike', {
@@ -9600,14 +8393,14 @@ Prism.languages.swift['string-literal'].forEach(function (rule) {
 
 }(Prism));
 
-const Wrapper$2 = He.div `
+const Wrapper$2 = styled$1.div `
   padding: 32px 0;
   background: #272822;
   outline: 0;
   overflow: auto;
   border-radius: 0.3em;
 `;
-const Container$a = He.div `
+const Container$a = styled$1.div `
   outline: 0;
   color: #f8f8f2;
   text-shadow: 0 1px rgba(0, 0, 0, 0.3);
@@ -9622,7 +8415,7 @@ const Container$a = He.div `
   hyphens: none;
   padding-left: calc(20px + 1.5em * var(--indent));
 `;
-const LanguageSelectButton = He.div `
+const LanguageSelectButton = styled$1.div `
   position: absolute;
   top: 4px;
   right: 4px;
@@ -9638,7 +8431,7 @@ const LanguageSelectButton = He.div `
     background-color: rgba(255, 255, 255, 0.1);
   }
 `;
-const LanguageSelector = He.div `
+const LanguageSelector = styled$1.div `
   position: absolute;
   top: 28px;
   right: -40px;
@@ -9684,12 +8477,12 @@ const CodeBlock = React__namespace.memo((_a) => {
         var _a;
         return (_a = attributes === null || attributes === void 0 ? void 0 : attributes.language) !== null && _a !== void 0 ? _a : 'typescript';
     }, [attributes]);
-    return (jsxRuntime.exports.jsxs(Wrapper$2, Object.assign({ onMouseEnter: handleShowSelector, onMouseLeave: handleHideSelector }, { children: [jsxRuntime.exports.jsx(Container$a, Object.assign({ spellCheck: false }, props, { children: contents })), jsxRuntime.exports.jsx(LanguageSelectButton, Object.assign({ opacity: displayButtons ? 1 : 0, contentEditable: false, onClick: handleClickLanguageSelectButton }, { children: memoLanguage })), displayLanguageSelector && (jsxRuntime.exports.jsx(LanguageSelector, { children: CodeBlockLanguages.map((v, i) => {
-                    return (jsxRuntime.exports.jsx("div", Object.assign({ className: "button", onClick: handleSelectLanguage(v) }, { children: v }), i));
+    return (jsxRuntimeExports.jsxs(Wrapper$2, Object.assign({ onMouseEnter: handleShowSelector, onMouseLeave: handleHideSelector }, { children: [jsxRuntimeExports.jsx(Container$a, Object.assign({ spellCheck: false }, props, { children: contents })), jsxRuntimeExports.jsx(LanguageSelectButton, Object.assign({ opacity: displayButtons ? 1 : 0, contentEditable: false, onClick: handleClickLanguageSelectButton }, { children: memoLanguage })), displayLanguageSelector && (jsxRuntimeExports.jsx(LanguageSelector, { children: CodeBlockLanguages.map((v, i) => {
+                    return (jsxRuntimeExports.jsx("div", Object.assign({ className: "button", onClick: handleSelectLanguage(v) }, { children: v }), i));
                 }) }))] })));
 });
 
-const Container$9 = He.div `
+const Container$9 = styled$1.div `
   font-size: 1rem;
   outline: 0;
   margin: 0;
@@ -9702,7 +8495,7 @@ const Container$9 = He.div `
     content: attr(placeholder);
   }
 `;
-const IconOuter = He.div `
+const IconOuter = styled$1.div `
   position: absolute;
   left: 4px;
   top: -3px;
@@ -9728,7 +8521,7 @@ const Decision = React__namespace.memo((_a) => {
     React__namespace.useEffect(() => {
         handleChangeElement();
     }, []);
-    return (jsxRuntime.exports.jsxs(Container$9, Object.assign({ ref: headerRef, spellCheck: false, placeholder: showPlaceholder ? placeholder : '' }, props, { children: [jsxRuntime.exports.jsx(IconOuter, { children: jsxRuntime.exports.jsx(Decision$1, { size: "20px" }) }), contents] })));
+    return (jsxRuntimeExports.jsxs(Container$9, Object.assign({ ref: headerRef, spellCheck: false, placeholder: showPlaceholder ? placeholder : '' }, props, { children: [jsxRuntimeExports.jsx(IconOuter, { children: jsxRuntimeExports.jsx(Decision$1, { size: "20px" }) }), contents] })));
 });
 
 function getHtmlElement(el) {
@@ -9741,7 +8534,7 @@ function getHtmlElement(el) {
     return el !== null && el !== void 0 ? el : null;
 }
 
-const EnterLinkContainer = He.input `
+const EnterLinkContainer = styled$1.input `
   position: absolute;
   background-color: #18181b;
   border: 1px solid #ccc;
@@ -9859,10 +8652,10 @@ const LinkPopup = React__namespace.memo((_a) => {
             document.removeEventListener('click', handleClose, true);
         };
     }, [popupOpen]);
-    return ReactDOM__default["default"].createPortal(popupOpen && (jsxRuntime.exports.jsx("div", Object.assign({ ref: modalRef }, { children: popupMode === 'openEnterLink' && (jsxRuntime.exports.jsx(jsxRuntime.exports.Fragment, { children: jsxRuntime.exports.jsx(EnterLinkContainer, Object.assign({ style: { top: (_b = popupPosition === null || popupPosition === void 0 ? void 0 : popupPosition.top) !== null && _b !== void 0 ? _b : 0, left: (_c = popupPosition === null || popupPosition === void 0 ? void 0 : popupPosition.left) !== null && _c !== void 0 ? _c : 0 } }, props, { value: linkUrl, placeholder: "\u30EA\u30F3\u30AF\u5148\u3092\u5165\u529B\u3057\u3066\u304F\u3060\u3055\u3044", onMouseDown: handleClick, onClick: handleClick, onChange: handleChange, onBlur: handleSave, onKeyDown: handleKeyDown })) })) }))), (_d = getHtmlElement(scrollContainer)) !== null && _d !== void 0 ? _d : document.body);
+    return ReactDOM.createPortal(popupOpen && (jsxRuntimeExports.jsx("div", Object.assign({ ref: modalRef }, { children: popupMode === 'openEnterLink' && (jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: jsxRuntimeExports.jsx(EnterLinkContainer, Object.assign({ style: { top: (_b = popupPosition === null || popupPosition === void 0 ? void 0 : popupPosition.top) !== null && _b !== void 0 ? _b : 0, left: (_c = popupPosition === null || popupPosition === void 0 ? void 0 : popupPosition.left) !== null && _c !== void 0 ? _c : 0 } }, props, { value: linkUrl, placeholder: "\u30EA\u30F3\u30AF\u5148\u3092\u5165\u529B\u3057\u3066\u304F\u3060\u3055\u3044", onMouseDown: handleClick, onClick: handleClick, onChange: handleChange, onBlur: handleSave, onKeyDown: handleKeyDown })) })) }))), (_d = getHtmlElement(scrollContainer)) !== null && _d !== void 0 ? _d : document.body);
 });
 
-const Container$8 = He.div `
+const Container$8 = styled$1.div `
   position: absolute;
   background-color: #18181b;
   border: 1px solid #ccc;
@@ -9877,7 +8670,7 @@ const Container$8 = He.div `
   align-items: center;
   gap: 10px;
 `;
-const Color$1 = He.div `
+const Color$1 = styled$1.div `
   width: 12px;
   height: 12px;
   background: ${({ color }) => color};
@@ -9967,7 +8760,7 @@ const PalettePopup = React__namespace.memo(({ editor, scrollContainer }) => {
             document.removeEventListener('click', handleClose, true);
         };
     }, [popupOpen]);
-    return ReactDOM__default["default"].createPortal(popupOpen && (jsxRuntime.exports.jsxs(Container$8, Object.assign({ ref: modalRef, id: "palette-popup", style: { top: (_a = position === null || position === void 0 ? void 0 : position.top) !== null && _a !== void 0 ? _a : 0, left: (_b = position === null || position === void 0 ? void 0 : position.left) !== null && _b !== void 0 ? _b : 0 } }, { children: [jsxRuntime.exports.jsx(Color$1, { color: "#EF4444", onClick: handleFormatColor('#EF4444') }), jsxRuntime.exports.jsx(Color$1, { color: "#55B938", onClick: handleFormatColor('#55B938') }), jsxRuntime.exports.jsx(Color$1, { color: "#EAC645", onClick: handleFormatColor('#EAC645') }), jsxRuntime.exports.jsx(Color$1, { color: "#5296D5", onClick: handleFormatColor('#5296D5') })] }))), (_c = getHtmlElement(scrollContainer)) !== null && _c !== void 0 ? _c : document.body);
+    return ReactDOM.createPortal(popupOpen && (jsxRuntimeExports.jsxs(Container$8, Object.assign({ ref: modalRef, id: "palette-popup", style: { top: (_a = position === null || position === void 0 ? void 0 : position.top) !== null && _a !== void 0 ? _a : 0, left: (_b = position === null || position === void 0 ? void 0 : position.left) !== null && _b !== void 0 ? _b : 0 } }, { children: [jsxRuntimeExports.jsx(Color$1, { color: "#EF4444", onClick: handleFormatColor('#EF4444') }), jsxRuntimeExports.jsx(Color$1, { color: "#55B938", onClick: handleFormatColor('#55B938') }), jsxRuntimeExports.jsx(Color$1, { color: "#EAC645", onClick: handleFormatColor('#EAC645') }), jsxRuntimeExports.jsx(Color$1, { color: "#5296D5", onClick: handleFormatColor('#5296D5') })] }))), (_c = getHtmlElement(scrollContainer)) !== null && _c !== void 0 ? _c : document.body);
 });
 
 function buildFormatLongFn(args) {
@@ -9984,21 +8777,17 @@ function buildLocalizeFn(args) {
   return function (dirtyIndex, options) {
     var context = options !== null && options !== void 0 && options.context ? String(options.context) : 'standalone';
     var valuesArray;
-
     if (context === 'formatting' && args.formattingValues) {
       var defaultWidth = args.defaultFormattingWidth || args.defaultWidth;
       var width = options !== null && options !== void 0 && options.width ? String(options.width) : defaultWidth;
       valuesArray = args.formattingValues[width] || args.formattingValues[defaultWidth];
     } else {
       var _defaultWidth = args.defaultWidth;
-
       var _width = options !== null && options !== void 0 && options.width ? String(options.width) : args.defaultWidth;
-
       valuesArray = args.values[_width] || args.values[_defaultWidth];
     }
-
-    var index = args.argumentCallback ? args.argumentCallback(dirtyIndex) : dirtyIndex; // @ts-ignore: For some reason TypeScript just don't want to match it, no matter how hard we try. I challenge you to try to remove it!
-
+    var index = args.argumentCallback ? args.argumentCallback(dirtyIndex) : dirtyIndex;
+    // @ts-ignore: For some reason TypeScript just don't want to match it, no matter how hard we try. I challenge you to try to remove it!
     return valuesArray[index];
   };
 }
@@ -10009,11 +8798,9 @@ function buildMatchFn(args) {
     var width = options.width;
     var matchPattern = width && args.matchPatterns[width] || args.matchPatterns[args.defaultMatchWidth];
     var matchResult = string.match(matchPattern);
-
     if (!matchResult) {
       return null;
     }
-
     var matchedString = matchResult[0];
     var parsePatterns = width && args.parsePatterns[width] || args.parsePatterns[args.defaultParseWidth];
     var key = Array.isArray(parsePatterns) ? findIndex(parsePatterns, function (pattern) {
@@ -10031,24 +8818,20 @@ function buildMatchFn(args) {
     };
   };
 }
-
 function findKey(object, predicate) {
   for (var key in object) {
     if (object.hasOwnProperty(key) && predicate(object[key])) {
       return key;
     }
   }
-
   return undefined;
 }
-
 function findIndex(array, predicate) {
   for (var key = 0; key < array.length; key++) {
     if (predicate(array[key])) {
       return key;
     }
   }
-
   return undefined;
 }
 
@@ -10070,17 +8853,24 @@ function buildMatchPatternFn(args) {
   };
 }
 
+function _typeof(obj) {
+  "@babel/helpers - typeof";
+
+  return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) {
+    return typeof obj;
+  } : function (obj) {
+    return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+  }, _typeof(obj);
+}
+
 function toInteger(dirtyNumber) {
   if (dirtyNumber === null || dirtyNumber === true || dirtyNumber === false) {
     return NaN;
   }
-
   var number = Number(dirtyNumber);
-
   if (isNaN(number)) {
     return number;
   }
-
   return number < 0 ? Math.ceil(number) : Math.floor(number);
 }
 
@@ -10090,7 +8880,6 @@ function requiredArgs(required, args) {
   }
 }
 
-function _typeof$z(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof$z = function _typeof(obj) { return typeof obj; }; } else { _typeof$z = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof$z(obj); }
 /**
  * @name toDate
  * @category Common Helpers
@@ -10121,12 +8910,12 @@ function _typeof$z(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "func
  * const result = toDate(1392098430000)
  * //=> Tue Feb 11 2014 11:30:30
  */
-
 function toDate(argument) {
   requiredArgs(1, arguments);
-  var argStr = Object.prototype.toString.call(argument); // Clone the date
+  var argStr = Object.prototype.toString.call(argument);
 
-  if (argument instanceof Date || _typeof$z(argument) === 'object' && argStr === '[object Date]') {
+  // Clone the date
+  if (argument instanceof Date || _typeof(argument) === 'object' && argStr === '[object Date]') {
     // Prevent the date to lose the milliseconds when passed to new Date() in IE10
     return new Date(argument.getTime());
   } else if (typeof argument === 'number' || argStr === '[object Number]') {
@@ -10134,11 +8923,10 @@ function toDate(argument) {
   } else {
     if ((typeof argument === 'string' || argStr === '[object String]') && typeof console !== 'undefined') {
       // eslint-disable-next-line no-console
-      console.warn("Starting with v2.0.0-beta.1 date-fns doesn't accept strings as date arguments. Please use `parseISO` to parse strings. See: https://github.com/date-fns/date-fns/blob/master/docs/upgradeGuide.md#string-arguments"); // eslint-disable-next-line no-console
-
+      console.warn("Starting with v2.0.0-beta.1 date-fns doesn't accept strings as date arguments. Please use `parseISO` to parse strings. See: https://github.com/date-fns/date-fns/blob/master/docs/upgradeGuide.md#string-arguments");
+      // eslint-disable-next-line no-console
       console.warn(new Error().stack);
     }
-
     return new Date(NaN);
   }
 }
@@ -10161,21 +8949,17 @@ function toDate(argument) {
  * const result = addDays(new Date(2014, 8, 1), 10)
  * //=> Thu Sep 11 2014 00:00:00
  */
-
 function addDays(dirtyDate, dirtyAmount) {
   requiredArgs(2, arguments);
   var date = toDate(dirtyDate);
   var amount = toInteger(dirtyAmount);
-
   if (isNaN(amount)) {
     return new Date(NaN);
   }
-
   if (!amount) {
     // If 0 days, no-op to avoid changing times in the hour before end of DST
     return date;
   }
-
   date.setDate(date.getDate() + amount);
   return date;
 }
@@ -10198,22 +8982,20 @@ function addDays(dirtyDate, dirtyAmount) {
  * const result = addMonths(new Date(2014, 8, 1), 5)
  * //=> Sun Feb 01 2015 00:00:00
  */
-
 function addMonths(dirtyDate, dirtyAmount) {
   requiredArgs(2, arguments);
   var date = toDate(dirtyDate);
   var amount = toInteger(dirtyAmount);
-
   if (isNaN(amount)) {
     return new Date(NaN);
   }
-
   if (!amount) {
     // If 0 months, no-op to avoid changing times in the hour before end of DST
     return date;
   }
+  var dayOfMonth = date.getDate();
 
-  var dayOfMonth = date.getDate(); // The JS Date object supports date math by accepting out-of-bounds values for
+  // The JS Date object supports date math by accepting out-of-bounds values for
   // month, day, etc. For example, new Date(2020, 0, 0) returns 31 Dec 2019 and
   // new Date(2020, 13, 1) returns 1 Feb 2021.  This is *almost* the behavior we
   // want except that dates will wrap around the end of a month, meaning that
@@ -10221,11 +9003,9 @@ function addMonths(dirtyDate, dirtyAmount) {
   // we'll default to the end of the desired month by adding 1 to the desired
   // month and using a date of 0 to back up one day to the end of the desired
   // month.
-
   var endOfDesiredMonth = new Date(date.getTime());
   endOfDesiredMonth.setMonth(date.getMonth() + amount + 1, 0);
   var daysInMonth = endOfDesiredMonth.getDate();
-
   if (dayOfMonth >= daysInMonth) {
     // If we're already at the end of the month, then this is the correct date
     // and we're done.
@@ -10261,7 +9041,6 @@ function addMonths(dirtyDate, dirtyAmount) {
  * const result = addMilliseconds(new Date(2014, 6, 10, 12, 45, 30, 0), 750)
  * //=> Thu Jul 10 2014 12:45:30.750
  */
-
 function addMilliseconds(dirtyDate, dirtyAmount) {
   requiredArgs(2, arguments);
   var timestamp = toDate(dirtyDate).getTime();
@@ -10301,18 +9080,16 @@ function getDefaultOptions() {
  * const result = startOfWeek(new Date(2014, 8, 2, 11, 55, 0), { weekStartsOn: 1 })
  * //=> Mon Sep 01 2014 00:00:00
  */
-
 function startOfWeek(dirtyDate, options) {
   var _ref, _ref2, _ref3, _options$weekStartsOn, _options$locale, _options$locale$optio, _defaultOptions$local, _defaultOptions$local2;
-
   requiredArgs(1, arguments);
   var defaultOptions = getDefaultOptions();
-  var weekStartsOn = toInteger((_ref = (_ref2 = (_ref3 = (_options$weekStartsOn = options === null || options === void 0 ? void 0 : options.weekStartsOn) !== null && _options$weekStartsOn !== void 0 ? _options$weekStartsOn : options === null || options === void 0 ? void 0 : (_options$locale = options.locale) === null || _options$locale === void 0 ? void 0 : (_options$locale$optio = _options$locale.options) === null || _options$locale$optio === void 0 ? void 0 : _options$locale$optio.weekStartsOn) !== null && _ref3 !== void 0 ? _ref3 : defaultOptions.weekStartsOn) !== null && _ref2 !== void 0 ? _ref2 : (_defaultOptions$local = defaultOptions.locale) === null || _defaultOptions$local === void 0 ? void 0 : (_defaultOptions$local2 = _defaultOptions$local.options) === null || _defaultOptions$local2 === void 0 ? void 0 : _defaultOptions$local2.weekStartsOn) !== null && _ref !== void 0 ? _ref : 0); // Test if weekStartsOn is between 0 and 6 _and_ is not NaN
+  var weekStartsOn = toInteger((_ref = (_ref2 = (_ref3 = (_options$weekStartsOn = options === null || options === void 0 ? void 0 : options.weekStartsOn) !== null && _options$weekStartsOn !== void 0 ? _options$weekStartsOn : options === null || options === void 0 ? void 0 : (_options$locale = options.locale) === null || _options$locale === void 0 ? void 0 : (_options$locale$optio = _options$locale.options) === null || _options$locale$optio === void 0 ? void 0 : _options$locale$optio.weekStartsOn) !== null && _ref3 !== void 0 ? _ref3 : defaultOptions.weekStartsOn) !== null && _ref2 !== void 0 ? _ref2 : (_defaultOptions$local = defaultOptions.locale) === null || _defaultOptions$local === void 0 ? void 0 : (_defaultOptions$local2 = _defaultOptions$local.options) === null || _defaultOptions$local2 === void 0 ? void 0 : _defaultOptions$local2.weekStartsOn) !== null && _ref !== void 0 ? _ref : 0);
 
+  // Test if weekStartsOn is between 0 and 6 _and_ is not NaN
   if (!(weekStartsOn >= 0 && weekStartsOn <= 6)) {
     throw new RangeError('weekStartsOn must be between 0 and 6 inclusively');
   }
-
   var date = toDate(dirtyDate);
   var day = date.getDay();
   var diff = (day < weekStartsOn ? 7 : 0) + day - weekStartsOn;
@@ -10341,7 +9118,6 @@ function startOfWeek(dirtyDate, options) {
  * const result = startOfISOWeek(new Date(2014, 8, 2, 11, 55, 0))
  * //=> Mon Sep 01 2014 00:00:00
  */
-
 function startOfISOWeek(dirtyDate) {
   requiredArgs(1, arguments);
   return startOfWeek(dirtyDate, {
@@ -10369,7 +9145,6 @@ function startOfISOWeek(dirtyDate) {
  * const result = getISOWeekYear(new Date(2005, 0, 2))
  * //=> 2004
  */
-
 function getISOWeekYear(dirtyDate) {
   requiredArgs(1, arguments);
   var date = toDate(dirtyDate);
@@ -10382,7 +9157,6 @@ function getISOWeekYear(dirtyDate) {
   fourthOfJanuaryOfThisYear.setFullYear(year, 0, 4);
   fourthOfJanuaryOfThisYear.setHours(0, 0, 0, 0);
   var startOfThisYear = startOfISOWeek(fourthOfJanuaryOfThisYear);
-
   if (date.getTime() >= startOfNextYear.getTime()) {
     return year + 1;
   } else if (date.getTime() >= startOfThisYear.getTime()) {
@@ -10413,7 +9187,6 @@ function getISOWeekYear(dirtyDate) {
  * const result = startOfISOWeekYear(new Date(2005, 6, 2))
  * //=> Mon Jan 03 2005 00:00:00
  */
-
 function startOfISOWeekYear(dirtyDate) {
   requiredArgs(1, arguments);
   var year = getISOWeekYear(dirtyDate);
@@ -10459,7 +9232,6 @@ function getTimezoneOffsetInMilliseconds(date) {
  * const result = startOfDay(new Date(2014, 8, 2, 11, 55, 0))
  * //=> Tue Sep 02 2014 00:00:00
  */
-
 function startOfDay(dirtyDate) {
   requiredArgs(1, arguments);
   var date = toDate(dirtyDate);
@@ -10468,6 +9240,7 @@ function startOfDay(dirtyDate) {
 }
 
 var MILLISECONDS_IN_DAY$1 = 86400000;
+
 /**
  * @name differenceInCalendarDays
  * @category Day Helpers
@@ -10498,16 +9271,16 @@ var MILLISECONDS_IN_DAY$1 = 86400000;
  * )
  * //=> 1
  */
-
 function differenceInCalendarDays(dirtyDateLeft, dirtyDateRight) {
   requiredArgs(2, arguments);
   var startOfDayLeft = startOfDay(dirtyDateLeft);
   var startOfDayRight = startOfDay(dirtyDateRight);
   var timestampLeft = startOfDayLeft.getTime() - getTimezoneOffsetInMilliseconds(startOfDayLeft);
-  var timestampRight = startOfDayRight.getTime() - getTimezoneOffsetInMilliseconds(startOfDayRight); // Round the number of days to the nearest integer
+  var timestampRight = startOfDayRight.getTime() - getTimezoneOffsetInMilliseconds(startOfDayRight);
+
+  // Round the number of days to the nearest integer
   // because the number of milliseconds in a day is not constant
   // (e.g. it's different in the day of the daylight saving time clock shift)
-
   return Math.round((timestampLeft - timestampRight) / MILLISECONDS_IN_DAY$1);
 }
 
@@ -10529,7 +9302,6 @@ function differenceInCalendarDays(dirtyDateLeft, dirtyDateRight) {
  * const result = addWeeks(new Date(2014, 8, 1), 4)
  * //=> Mon Sep 29 2014 00:00:00
  */
-
 function addWeeks(dirtyDate, dirtyAmount) {
   requiredArgs(2, arguments);
   var amount = toInteger(dirtyAmount);
@@ -10555,14 +9327,12 @@ function addWeeks(dirtyDate, dirtyAmount) {
  * const result = addYears(new Date(2014, 8, 1), 5)
  * //=> Sun Sep 01 2019 00:00:00
  */
-
 function addYears(dirtyDate, dirtyAmount) {
   requiredArgs(2, arguments);
   var amount = toInteger(dirtyAmount);
   return addMonths(dirtyDate, amount * 12);
 }
 
-function _typeof$y(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof$y = function _typeof(obj) { return typeof obj; }; } else { _typeof$y = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof$y(obj); }
 /**
  * @name max
  * @category Common Helpers
@@ -10585,24 +9355,23 @@ function _typeof$y(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "func
  * ])
  * //=> Sun Jul 02 1995 00:00:00
  */
-
 function max(dirtyDatesArray) {
   requiredArgs(1, arguments);
-  var datesArray; // `dirtyDatesArray` is Array, Set or Map, or object with custom `forEach` method
-
+  var datesArray;
+  // `dirtyDatesArray` is Array, Set or Map, or object with custom `forEach` method
   if (dirtyDatesArray && typeof dirtyDatesArray.forEach === 'function') {
-    datesArray = dirtyDatesArray; // If `dirtyDatesArray` is Array-like Object, convert to Array.
-  } else if (_typeof$y(dirtyDatesArray) === 'object' && dirtyDatesArray !== null) {
+    datesArray = dirtyDatesArray;
+
+    // If `dirtyDatesArray` is Array-like Object, convert to Array.
+  } else if (_typeof(dirtyDatesArray) === 'object' && dirtyDatesArray !== null) {
     datesArray = Array.prototype.slice.call(dirtyDatesArray);
   } else {
     // `dirtyDatesArray` is non-iterable, return Invalid Date
     return new Date(NaN);
   }
-
   var result;
   datesArray.forEach(function (dirtyDate) {
     var currentDate = toDate(dirtyDate);
-
     if (result === undefined || result < currentDate || isNaN(Number(currentDate))) {
       result = currentDate;
     }
@@ -10610,7 +9379,6 @@ function max(dirtyDatesArray) {
   return result || new Date(NaN);
 }
 
-function _typeof$x(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof$x = function _typeof(obj) { return typeof obj; }; } else { _typeof$x = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof$x(obj); }
 /**
  * @name min
  * @category Common Helpers
@@ -10633,69 +9401,28 @@ function _typeof$x(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "func
  * ])
  * //=> Wed Feb 11 1987 00:00:00
  */
-
 function min(dirtyDatesArray) {
   requiredArgs(1, arguments);
-  var datesArray; // `dirtyDatesArray` is Array, Set or Map, or object with custom `forEach` method
-
+  var datesArray;
+  // `dirtyDatesArray` is Array, Set or Map, or object with custom `forEach` method
   if (dirtyDatesArray && typeof dirtyDatesArray.forEach === 'function') {
-    datesArray = dirtyDatesArray; // If `dirtyDatesArray` is Array-like Object, convert to Array.
-  } else if (_typeof$x(dirtyDatesArray) === 'object' && dirtyDatesArray !== null) {
+    datesArray = dirtyDatesArray;
+    // If `dirtyDatesArray` is Array-like Object, convert to Array.
+  } else if (_typeof(dirtyDatesArray) === 'object' && dirtyDatesArray !== null) {
     datesArray = Array.prototype.slice.call(dirtyDatesArray);
   } else {
     // `dirtyDatesArray` is non-iterable, return Invalid Date
     return new Date(NaN);
   }
-
   var result;
   datesArray.forEach(function (dirtyDate) {
     var currentDate = toDate(dirtyDate);
-
     if (result === undefined || result > currentDate || isNaN(currentDate.getDate())) {
       result = currentDate;
     }
   });
   return result || new Date(NaN);
 }
-
-/**
- * Days in 1 week.
- *
- * @name daysInWeek
- * @constant
- * @type {number}
- * @default
- */
-/**
- * Milliseconds in 1 minute
- *
- * @name millisecondsInMinute
- * @constant
- * @type {number}
- * @default
- */
-
-var millisecondsInMinute = 60000;
-/**
- * Milliseconds in 1 hour
- *
- * @name millisecondsInHour
- * @constant
- * @type {number}
- * @default
- */
-
-var millisecondsInHour = 3600000;
-/**
- * Milliseconds in 1 second
- *
- * @name millisecondsInSecond
- * @constant
- * @type {number}
- * @default
- */
-
-var millisecondsInSecond = 1000;
 
 /**
  * @name isSameDay
@@ -10725,7 +9452,6 @@ var millisecondsInSecond = 1000;
  * const result = isSameDay(new Date(2014, 8, 4), new Date(2015, 8, 4))
  * //=> false
  */
-
 function isSameDay(dirtyDateLeft, dirtyDateRight) {
   requiredArgs(2, arguments);
   var dateLeftStartOfDay = startOfDay(dirtyDateLeft);
@@ -10733,7 +9459,6 @@ function isSameDay(dirtyDateLeft, dirtyDateRight) {
   return dateLeftStartOfDay.getTime() === dateRightStartOfDay.getTime();
 }
 
-function _typeof$w(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof$w = function _typeof(obj) { return typeof obj; }; } else { _typeof$w = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof$w(obj); }
 /**
  * @name isDate
  * @category Common Helpers
@@ -10766,10 +9491,9 @@ function _typeof$w(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "func
  * const result = isDate({})
  * //=> false
  */
-
 function isDate(value) {
   requiredArgs(1, arguments);
-  return value instanceof Date || _typeof$w(value) === 'object' && Object.prototype.toString.call(value) === '[object Date]';
+  return value instanceof Date || _typeof(value) === 'object' && Object.prototype.toString.call(value) === '[object Date]';
 }
 
 /**
@@ -10803,14 +9527,11 @@ function isDate(value) {
  * const result = isValid(new Date(''))
  * //=> false
  */
-
 function isValid(dirtyDate) {
   requiredArgs(1, arguments);
-
   if (!isDate(dirtyDate) && typeof dirtyDate !== 'number') {
     return false;
   }
-
   var date = toDate(dirtyDate);
   return !isNaN(Number(date));
 }
@@ -10836,7 +9557,6 @@ function isValid(dirtyDate) {
  * )
  * //=> 8
  */
-
 function differenceInCalendarMonths(dirtyDateLeft, dirtyDateRight) {
   requiredArgs(2, arguments);
   var dateLeft = toDate(dirtyDateLeft);
@@ -10847,6 +9567,7 @@ function differenceInCalendarMonths(dirtyDateLeft, dirtyDateRight) {
 }
 
 var MILLISECONDS_IN_WEEK$4 = 604800000;
+
 /**
  * @name differenceInCalendarWeeks
  * @category Week Helpers
@@ -10882,16 +9603,16 @@ var MILLISECONDS_IN_WEEK$4 = 604800000;
  * )
  * //=> 2
  */
-
 function differenceInCalendarWeeks(dirtyDateLeft, dirtyDateRight, options) {
   requiredArgs(2, arguments);
   var startOfWeekLeft = startOfWeek(dirtyDateLeft, options);
   var startOfWeekRight = startOfWeek(dirtyDateRight, options);
   var timestampLeft = startOfWeekLeft.getTime() - getTimezoneOffsetInMilliseconds(startOfWeekLeft);
-  var timestampRight = startOfWeekRight.getTime() - getTimezoneOffsetInMilliseconds(startOfWeekRight); // Round the number of days to the nearest integer
+  var timestampRight = startOfWeekRight.getTime() - getTimezoneOffsetInMilliseconds(startOfWeekRight);
+
+  // Round the number of days to the nearest integer
   // because the number of milliseconds in a week is not constant
   // (e.g. it's different in the week of the daylight saving time clock shift)
-
   return Math.round((timestampLeft - timestampRight) / MILLISECONDS_IN_WEEK$4);
 }
 
@@ -10913,7 +9634,6 @@ function differenceInCalendarWeeks(dirtyDateLeft, dirtyDateRight, options) {
  * const result = endOfMonth(new Date(2014, 8, 2, 11, 55, 0))
  * //=> Tue Sep 30 2014 23:59:59.999
  */
-
 function endOfMonth(dirtyDate) {
   requiredArgs(1, arguments);
   var date = toDate(dirtyDate);
@@ -10941,7 +9661,6 @@ function endOfMonth(dirtyDate) {
  * const result = startOfMonth(new Date(2014, 8, 2, 11, 55, 0))
  * //=> Mon Sep 01 2014 00:00:00
  */
-
 function startOfMonth(dirtyDate) {
   requiredArgs(1, arguments);
   var date = toDate(dirtyDate);
@@ -10968,7 +9687,6 @@ function startOfMonth(dirtyDate) {
  * const result = startOfYear(new Date(2014, 8, 2, 11, 55, 00))
  * //=> Wed Jan 01 2014 00:00:00
  */
-
 function startOfYear(dirtyDate) {
   requiredArgs(1, arguments);
   var cleanDate = toDate(dirtyDate);
@@ -11007,15 +9725,14 @@ function startOfYear(dirtyDate) {
  */
 function endOfWeek(dirtyDate, options) {
   var _ref, _ref2, _ref3, _options$weekStartsOn, _options$locale, _options$locale$optio, _defaultOptions$local, _defaultOptions$local2;
-
   requiredArgs(1, arguments);
   var defaultOptions = getDefaultOptions();
-  var weekStartsOn = toInteger((_ref = (_ref2 = (_ref3 = (_options$weekStartsOn = options === null || options === void 0 ? void 0 : options.weekStartsOn) !== null && _options$weekStartsOn !== void 0 ? _options$weekStartsOn : options === null || options === void 0 ? void 0 : (_options$locale = options.locale) === null || _options$locale === void 0 ? void 0 : (_options$locale$optio = _options$locale.options) === null || _options$locale$optio === void 0 ? void 0 : _options$locale$optio.weekStartsOn) !== null && _ref3 !== void 0 ? _ref3 : defaultOptions.weekStartsOn) !== null && _ref2 !== void 0 ? _ref2 : (_defaultOptions$local = defaultOptions.locale) === null || _defaultOptions$local === void 0 ? void 0 : (_defaultOptions$local2 = _defaultOptions$local.options) === null || _defaultOptions$local2 === void 0 ? void 0 : _defaultOptions$local2.weekStartsOn) !== null && _ref !== void 0 ? _ref : 0); // Test if weekStartsOn is between 0 and 6 _and_ is not NaN
+  var weekStartsOn = toInteger((_ref = (_ref2 = (_ref3 = (_options$weekStartsOn = options === null || options === void 0 ? void 0 : options.weekStartsOn) !== null && _options$weekStartsOn !== void 0 ? _options$weekStartsOn : options === null || options === void 0 ? void 0 : (_options$locale = options.locale) === null || _options$locale === void 0 ? void 0 : (_options$locale$optio = _options$locale.options) === null || _options$locale$optio === void 0 ? void 0 : _options$locale$optio.weekStartsOn) !== null && _ref3 !== void 0 ? _ref3 : defaultOptions.weekStartsOn) !== null && _ref2 !== void 0 ? _ref2 : (_defaultOptions$local = defaultOptions.locale) === null || _defaultOptions$local === void 0 ? void 0 : (_defaultOptions$local2 = _defaultOptions$local.options) === null || _defaultOptions$local2 === void 0 ? void 0 : _defaultOptions$local2.weekStartsOn) !== null && _ref !== void 0 ? _ref : 0);
 
+  // Test if weekStartsOn is between 0 and 6 _and_ is not NaN
   if (!(weekStartsOn >= 0 && weekStartsOn <= 6)) {
     throw new RangeError('weekStartsOn must be between 0 and 6 inclusively');
   }
-
   var date = toDate(dirtyDate);
   var day = date.getDay();
   var diff = (day < weekStartsOn ? -7 : 0) + 6 - (day - weekStartsOn);
@@ -11044,7 +9761,6 @@ function endOfWeek(dirtyDate, options) {
  * const result = endOfISOWeek(new Date(2014, 8, 2, 11, 55, 0))
  * //=> Sun Sep 07 2014 23:59:59.999
  */
-
 function endOfISOWeek(dirtyDate) {
   requiredArgs(1, arguments);
   return endOfWeek(dirtyDate, {
@@ -11070,7 +9786,6 @@ function endOfISOWeek(dirtyDate) {
  * const result = subMilliseconds(new Date(2014, 6, 10, 12, 45, 30, 0), 750)
  * //=> Thu Jul 10 2014 12:45:29.250
  */
-
 function subMilliseconds(dirtyDate, dirtyAmount) {
   requiredArgs(2, arguments);
   var amount = toInteger(dirtyAmount);
@@ -11112,7 +9827,6 @@ function getUTCISOWeekYear(dirtyDate) {
   fourthOfJanuaryOfThisYear.setUTCFullYear(year, 0, 4);
   fourthOfJanuaryOfThisYear.setUTCHours(0, 0, 0, 0);
   var startOfThisYear = startOfUTCISOWeek(fourthOfJanuaryOfThisYear);
-
   if (date.getTime() >= startOfNextYear.getTime()) {
     return year + 1;
   } else if (date.getTime() >= startOfThisYear.getTime()) {
@@ -11136,24 +9850,24 @@ var MILLISECONDS_IN_WEEK$3 = 604800000;
 function getUTCISOWeek(dirtyDate) {
   requiredArgs(1, arguments);
   var date = toDate(dirtyDate);
-  var diff = startOfUTCISOWeek(date).getTime() - startOfUTCISOWeekYear(date).getTime(); // Round the number of days to the nearest integer
+  var diff = startOfUTCISOWeek(date).getTime() - startOfUTCISOWeekYear(date).getTime();
+
+  // Round the number of days to the nearest integer
   // because the number of milliseconds in a week is not constant
   // (e.g. it's different in the week of the daylight saving time clock shift)
-
   return Math.round(diff / MILLISECONDS_IN_WEEK$3) + 1;
 }
 
 function startOfUTCWeek(dirtyDate, options) {
   var _ref, _ref2, _ref3, _options$weekStartsOn, _options$locale, _options$locale$optio, _defaultOptions$local, _defaultOptions$local2;
-
   requiredArgs(1, arguments);
   var defaultOptions = getDefaultOptions();
-  var weekStartsOn = toInteger((_ref = (_ref2 = (_ref3 = (_options$weekStartsOn = options === null || options === void 0 ? void 0 : options.weekStartsOn) !== null && _options$weekStartsOn !== void 0 ? _options$weekStartsOn : options === null || options === void 0 ? void 0 : (_options$locale = options.locale) === null || _options$locale === void 0 ? void 0 : (_options$locale$optio = _options$locale.options) === null || _options$locale$optio === void 0 ? void 0 : _options$locale$optio.weekStartsOn) !== null && _ref3 !== void 0 ? _ref3 : defaultOptions.weekStartsOn) !== null && _ref2 !== void 0 ? _ref2 : (_defaultOptions$local = defaultOptions.locale) === null || _defaultOptions$local === void 0 ? void 0 : (_defaultOptions$local2 = _defaultOptions$local.options) === null || _defaultOptions$local2 === void 0 ? void 0 : _defaultOptions$local2.weekStartsOn) !== null && _ref !== void 0 ? _ref : 0); // Test if weekStartsOn is between 0 and 6 _and_ is not NaN
+  var weekStartsOn = toInteger((_ref = (_ref2 = (_ref3 = (_options$weekStartsOn = options === null || options === void 0 ? void 0 : options.weekStartsOn) !== null && _options$weekStartsOn !== void 0 ? _options$weekStartsOn : options === null || options === void 0 ? void 0 : (_options$locale = options.locale) === null || _options$locale === void 0 ? void 0 : (_options$locale$optio = _options$locale.options) === null || _options$locale$optio === void 0 ? void 0 : _options$locale$optio.weekStartsOn) !== null && _ref3 !== void 0 ? _ref3 : defaultOptions.weekStartsOn) !== null && _ref2 !== void 0 ? _ref2 : (_defaultOptions$local = defaultOptions.locale) === null || _defaultOptions$local === void 0 ? void 0 : (_defaultOptions$local2 = _defaultOptions$local.options) === null || _defaultOptions$local2 === void 0 ? void 0 : _defaultOptions$local2.weekStartsOn) !== null && _ref !== void 0 ? _ref : 0);
 
+  // Test if weekStartsOn is between 0 and 6 _and_ is not NaN
   if (!(weekStartsOn >= 0 && weekStartsOn <= 6)) {
     throw new RangeError('weekStartsOn must be between 0 and 6 inclusively');
   }
-
   var date = toDate(dirtyDate);
   var day = date.getUTCDay();
   var diff = (day < weekStartsOn ? 7 : 0) + day - weekStartsOn;
@@ -11164,17 +9878,16 @@ function startOfUTCWeek(dirtyDate, options) {
 
 function getUTCWeekYear(dirtyDate, options) {
   var _ref, _ref2, _ref3, _options$firstWeekCon, _options$locale, _options$locale$optio, _defaultOptions$local, _defaultOptions$local2;
-
   requiredArgs(1, arguments);
   var date = toDate(dirtyDate);
   var year = date.getUTCFullYear();
   var defaultOptions = getDefaultOptions();
-  var firstWeekContainsDate = toInteger((_ref = (_ref2 = (_ref3 = (_options$firstWeekCon = options === null || options === void 0 ? void 0 : options.firstWeekContainsDate) !== null && _options$firstWeekCon !== void 0 ? _options$firstWeekCon : options === null || options === void 0 ? void 0 : (_options$locale = options.locale) === null || _options$locale === void 0 ? void 0 : (_options$locale$optio = _options$locale.options) === null || _options$locale$optio === void 0 ? void 0 : _options$locale$optio.firstWeekContainsDate) !== null && _ref3 !== void 0 ? _ref3 : defaultOptions.firstWeekContainsDate) !== null && _ref2 !== void 0 ? _ref2 : (_defaultOptions$local = defaultOptions.locale) === null || _defaultOptions$local === void 0 ? void 0 : (_defaultOptions$local2 = _defaultOptions$local.options) === null || _defaultOptions$local2 === void 0 ? void 0 : _defaultOptions$local2.firstWeekContainsDate) !== null && _ref !== void 0 ? _ref : 1); // Test if weekStartsOn is between 1 and 7 _and_ is not NaN
+  var firstWeekContainsDate = toInteger((_ref = (_ref2 = (_ref3 = (_options$firstWeekCon = options === null || options === void 0 ? void 0 : options.firstWeekContainsDate) !== null && _options$firstWeekCon !== void 0 ? _options$firstWeekCon : options === null || options === void 0 ? void 0 : (_options$locale = options.locale) === null || _options$locale === void 0 ? void 0 : (_options$locale$optio = _options$locale.options) === null || _options$locale$optio === void 0 ? void 0 : _options$locale$optio.firstWeekContainsDate) !== null && _ref3 !== void 0 ? _ref3 : defaultOptions.firstWeekContainsDate) !== null && _ref2 !== void 0 ? _ref2 : (_defaultOptions$local = defaultOptions.locale) === null || _defaultOptions$local === void 0 ? void 0 : (_defaultOptions$local2 = _defaultOptions$local.options) === null || _defaultOptions$local2 === void 0 ? void 0 : _defaultOptions$local2.firstWeekContainsDate) !== null && _ref !== void 0 ? _ref : 1);
 
+  // Test if weekStartsOn is between 1 and 7 _and_ is not NaN
   if (!(firstWeekContainsDate >= 1 && firstWeekContainsDate <= 7)) {
     throw new RangeError('firstWeekContainsDate must be between 1 and 7 inclusively');
   }
-
   var firstWeekOfNextYear = new Date(0);
   firstWeekOfNextYear.setUTCFullYear(year + 1, 0, firstWeekContainsDate);
   firstWeekOfNextYear.setUTCHours(0, 0, 0, 0);
@@ -11183,7 +9896,6 @@ function getUTCWeekYear(dirtyDate, options) {
   firstWeekOfThisYear.setUTCFullYear(year, 0, firstWeekContainsDate);
   firstWeekOfThisYear.setUTCHours(0, 0, 0, 0);
   var startOfThisYear = startOfUTCWeek(firstWeekOfThisYear, options);
-
   if (date.getTime() >= startOfNextYear.getTime()) {
     return year + 1;
   } else if (date.getTime() >= startOfThisYear.getTime()) {
@@ -11195,7 +9907,6 @@ function getUTCWeekYear(dirtyDate, options) {
 
 function startOfUTCWeekYear(dirtyDate, options) {
   var _ref, _ref2, _ref3, _options$firstWeekCon, _options$locale, _options$locale$optio, _defaultOptions$local, _defaultOptions$local2;
-
   requiredArgs(1, arguments);
   var defaultOptions = getDefaultOptions();
   var firstWeekContainsDate = toInteger((_ref = (_ref2 = (_ref3 = (_options$firstWeekCon = options === null || options === void 0 ? void 0 : options.firstWeekContainsDate) !== null && _options$firstWeekCon !== void 0 ? _options$firstWeekCon : options === null || options === void 0 ? void 0 : (_options$locale = options.locale) === null || _options$locale === void 0 ? void 0 : (_options$locale$optio = _options$locale.options) === null || _options$locale$optio === void 0 ? void 0 : _options$locale$optio.firstWeekContainsDate) !== null && _ref3 !== void 0 ? _ref3 : defaultOptions.firstWeekContainsDate) !== null && _ref2 !== void 0 ? _ref2 : (_defaultOptions$local = defaultOptions.locale) === null || _defaultOptions$local === void 0 ? void 0 : (_defaultOptions$local2 = _defaultOptions$local.options) === null || _defaultOptions$local2 === void 0 ? void 0 : _defaultOptions$local2.firstWeekContainsDate) !== null && _ref !== void 0 ? _ref : 1);
@@ -11211,21 +9922,20 @@ var MILLISECONDS_IN_WEEK$2 = 604800000;
 function getUTCWeek(dirtyDate, options) {
   requiredArgs(1, arguments);
   var date = toDate(dirtyDate);
-  var diff = startOfUTCWeek(date, options).getTime() - startOfUTCWeekYear(date, options).getTime(); // Round the number of days to the nearest integer
+  var diff = startOfUTCWeek(date, options).getTime() - startOfUTCWeekYear(date, options).getTime();
+
+  // Round the number of days to the nearest integer
   // because the number of milliseconds in a week is not constant
   // (e.g. it's different in the week of the daylight saving time clock shift)
-
   return Math.round(diff / MILLISECONDS_IN_WEEK$2) + 1;
 }
 
 function addLeadingZeros(number, targetLength) {
   var sign = number < 0 ? '-' : '';
   var output = Math.abs(number).toString();
-
   while (output.length < targetLength) {
     output = '0' + output;
   }
-
   return sign + output;
 }
 
@@ -11241,8 +9951,7 @@ function addLeadingZeros(number, targetLength) {
  *
  * Letters marked by * are not implemented but reserved by Unicode standard.
  */
-
-var formatters$2 = {
+var formatters$3 = {
   // Year
   y: function y(date, token) {
     // From http://www.unicode.org/reports/tr35/tr35-31/tr35-dates.html#Date_Format_tokens
@@ -11253,8 +9962,9 @@ var formatters$2 = {
     // | AD 123   |   123 | 23 |   123 |  0123 | 00123 |
     // | AD 1234  |  1234 | 34 |  1234 |  1234 | 01234 |
     // | AD 12345 | 12345 | 45 | 12345 | 12345 | 12345 |
-    var signedYear = date.getUTCFullYear(); // Returns 1 for 1 BC (which is year 0 in JavaScript)
 
+    var signedYear = date.getUTCFullYear();
+    // Returns 1 for 1 BC (which is year 0 in JavaScript)
     var year = signedYear > 0 ? signedYear : 1 - signedYear;
     return addLeadingZeros(token === 'yy' ? year % 100 : year, token.length);
   },
@@ -11270,18 +9980,14 @@ var formatters$2 = {
   // AM or PM
   a: function a(date, token) {
     var dayPeriodEnumValue = date.getUTCHours() / 12 >= 1 ? 'pm' : 'am';
-
     switch (token) {
       case 'a':
       case 'aa':
         return dayPeriodEnumValue.toUpperCase();
-
       case 'aaa':
         return dayPeriodEnumValue;
-
       case 'aaaaa':
         return dayPeriodEnumValue[0];
-
       case 'aaaa':
       default:
         return dayPeriodEnumValue === 'am' ? 'a.m.' : 'p.m.';
@@ -11311,6 +10017,7 @@ var formatters$2 = {
     return addLeadingZeros(fractionalSeconds, token.length);
   }
 };
+var formatters$4 = formatters$3;
 
 var dayPeriodEnum = {
   am: 'am',
@@ -11322,7 +10029,6 @@ var dayPeriodEnum = {
   evening: 'evening',
   night: 'night'
 };
-
 /*
  * |     | Unit                           |     | Unit                           |
  * |-----|--------------------------------|-----|--------------------------------|
@@ -11368,11 +10074,11 @@ var dayPeriodEnum = {
  * - `P` is long localized date format
  * - `p` is long localized time format
  */
+
 var formatters$1 = {
   // Era
   G: function G(date, token, localize) {
     var era = date.getUTCFullYear() > 0 ? 1 : 0;
-
     switch (token) {
       // AD, BC
       case 'G':
@@ -11382,13 +10088,11 @@ var formatters$1 = {
           width: 'abbreviated'
         });
       // A, B
-
       case 'GGGGG':
         return localize.era(era, {
           width: 'narrow'
         });
       // Anno Domini, Before Christ
-
       case 'GGGG':
       default:
         return localize.era(era, {
@@ -11400,41 +10104,42 @@ var formatters$1 = {
   y: function y(date, token, localize) {
     // Ordinal number
     if (token === 'yo') {
-      var signedYear = date.getUTCFullYear(); // Returns 1 for 1 BC (which is year 0 in JavaScript)
-
+      var signedYear = date.getUTCFullYear();
+      // Returns 1 for 1 BC (which is year 0 in JavaScript)
       var year = signedYear > 0 ? signedYear : 1 - signedYear;
       return localize.ordinalNumber(year, {
         unit: 'year'
       });
     }
-
-    return formatters$2.y(date, token);
+    return formatters$4.y(date, token);
   },
   // Local week-numbering year
   Y: function Y(date, token, localize, options) {
-    var signedWeekYear = getUTCWeekYear(date, options); // Returns 1 for 1 BC (which is year 0 in JavaScript)
+    var signedWeekYear = getUTCWeekYear(date, options);
+    // Returns 1 for 1 BC (which is year 0 in JavaScript)
+    var weekYear = signedWeekYear > 0 ? signedWeekYear : 1 - signedWeekYear;
 
-    var weekYear = signedWeekYear > 0 ? signedWeekYear : 1 - signedWeekYear; // Two digit year
-
+    // Two digit year
     if (token === 'YY') {
       var twoDigitYear = weekYear % 100;
       return addLeadingZeros(twoDigitYear, 2);
-    } // Ordinal number
+    }
 
-
+    // Ordinal number
     if (token === 'Yo') {
       return localize.ordinalNumber(weekYear, {
         unit: 'year'
       });
-    } // Padding
+    }
 
-
+    // Padding
     return addLeadingZeros(weekYear, token.length);
   },
   // ISO week-numbering year
   R: function R(date, token) {
-    var isoWeekYear = getUTCISOWeekYear(date); // Padding
+    var isoWeekYear = getUTCISOWeekYear(date);
 
+    // Padding
     return addLeadingZeros(isoWeekYear, token.length);
   },
   // Extended year. This is a single number designating the year of this calendar system.
@@ -11453,37 +10158,31 @@ var formatters$1 = {
   // Quarter
   Q: function Q(date, token, localize) {
     var quarter = Math.ceil((date.getUTCMonth() + 1) / 3);
-
     switch (token) {
       // 1, 2, 3, 4
       case 'Q':
         return String(quarter);
       // 01, 02, 03, 04
-
       case 'QQ':
         return addLeadingZeros(quarter, 2);
       // 1st, 2nd, 3rd, 4th
-
       case 'Qo':
         return localize.ordinalNumber(quarter, {
           unit: 'quarter'
         });
       // Q1, Q2, Q3, Q4
-
       case 'QQQ':
         return localize.quarter(quarter, {
           width: 'abbreviated',
           context: 'formatting'
         });
       // 1, 2, 3, 4 (narrow quarter; could be not numerical)
-
       case 'QQQQQ':
         return localize.quarter(quarter, {
           width: 'narrow',
           context: 'formatting'
         });
       // 1st quarter, 2nd quarter, ...
-
       case 'QQQQ':
       default:
         return localize.quarter(quarter, {
@@ -11495,37 +10194,31 @@ var formatters$1 = {
   // Stand-alone quarter
   q: function q(date, token, localize) {
     var quarter = Math.ceil((date.getUTCMonth() + 1) / 3);
-
     switch (token) {
       // 1, 2, 3, 4
       case 'q':
         return String(quarter);
       // 01, 02, 03, 04
-
       case 'qq':
         return addLeadingZeros(quarter, 2);
       // 1st, 2nd, 3rd, 4th
-
       case 'qo':
         return localize.ordinalNumber(quarter, {
           unit: 'quarter'
         });
       // Q1, Q2, Q3, Q4
-
       case 'qqq':
         return localize.quarter(quarter, {
           width: 'abbreviated',
           context: 'standalone'
         });
       // 1, 2, 3, 4 (narrow quarter; could be not numerical)
-
       case 'qqqqq':
         return localize.quarter(quarter, {
           width: 'narrow',
           context: 'standalone'
         });
       // 1st quarter, 2nd quarter, ...
-
       case 'qqqq':
       default:
         return localize.quarter(quarter, {
@@ -11537,33 +10230,28 @@ var formatters$1 = {
   // Month
   M: function M(date, token, localize) {
     var month = date.getUTCMonth();
-
     switch (token) {
       case 'M':
       case 'MM':
-        return formatters$2.M(date, token);
+        return formatters$4.M(date, token);
       // 1st, 2nd, ..., 12th
-
       case 'Mo':
         return localize.ordinalNumber(month + 1, {
           unit: 'month'
         });
       // Jan, Feb, ..., Dec
-
       case 'MMM':
         return localize.month(month, {
           width: 'abbreviated',
           context: 'formatting'
         });
       // J, F, ..., D
-
       case 'MMMMM':
         return localize.month(month, {
           width: 'narrow',
           context: 'formatting'
         });
       // January, February, ..., December
-
       case 'MMMM':
       default:
         return localize.month(month, {
@@ -11575,37 +10263,31 @@ var formatters$1 = {
   // Stand-alone month
   L: function L(date, token, localize) {
     var month = date.getUTCMonth();
-
     switch (token) {
       // 1, 2, ..., 12
       case 'L':
         return String(month + 1);
       // 01, 02, ..., 12
-
       case 'LL':
         return addLeadingZeros(month + 1, 2);
       // 1st, 2nd, ..., 12th
-
       case 'Lo':
         return localize.ordinalNumber(month + 1, {
           unit: 'month'
         });
       // Jan, Feb, ..., Dec
-
       case 'LLL':
         return localize.month(month, {
           width: 'abbreviated',
           context: 'standalone'
         });
       // J, F, ..., D
-
       case 'LLLLL':
         return localize.month(month, {
           width: 'narrow',
           context: 'standalone'
         });
       // January, February, ..., December
-
       case 'LLLL':
       default:
         return localize.month(month, {
@@ -11617,25 +10299,21 @@ var formatters$1 = {
   // Local week of year
   w: function w(date, token, localize, options) {
     var week = getUTCWeek(date, options);
-
     if (token === 'wo') {
       return localize.ordinalNumber(week, {
         unit: 'week'
       });
     }
-
     return addLeadingZeros(week, token.length);
   },
   // ISO week of year
   I: function I(date, token, localize) {
     var isoWeek = getUTCISOWeek(date);
-
     if (token === 'Io') {
       return localize.ordinalNumber(isoWeek, {
         unit: 'week'
       });
     }
-
     return addLeadingZeros(isoWeek, token.length);
   },
   // Day of the month
@@ -11645,25 +10323,21 @@ var formatters$1 = {
         unit: 'date'
       });
     }
-
-    return formatters$2.d(date, token);
+    return formatters$4.d(date, token);
   },
   // Day of year
   D: function D(date, token, localize) {
     var dayOfYear = getUTCDayOfYear(date);
-
     if (token === 'Do') {
       return localize.ordinalNumber(dayOfYear, {
         unit: 'dayOfYear'
       });
     }
-
     return addLeadingZeros(dayOfYear, token.length);
   },
   // Day of week
   E: function E(date, token, localize) {
     var dayOfWeek = date.getUTCDay();
-
     switch (token) {
       // Tue
       case 'E':
@@ -11674,21 +10348,18 @@ var formatters$1 = {
           context: 'formatting'
         });
       // T
-
       case 'EEEEE':
         return localize.day(dayOfWeek, {
           width: 'narrow',
           context: 'formatting'
         });
       // Tu
-
       case 'EEEEEE':
         return localize.day(dayOfWeek, {
           width: 'short',
           context: 'formatting'
         });
       // Tuesday
-
       case 'EEEE':
       default:
         return localize.day(dayOfWeek, {
@@ -11701,43 +10372,36 @@ var formatters$1 = {
   e: function e(date, token, localize, options) {
     var dayOfWeek = date.getUTCDay();
     var localDayOfWeek = (dayOfWeek - options.weekStartsOn + 8) % 7 || 7;
-
     switch (token) {
       // Numerical value (Nth day of week with current locale or weekStartsOn)
       case 'e':
         return String(localDayOfWeek);
       // Padded numerical value
-
       case 'ee':
         return addLeadingZeros(localDayOfWeek, 2);
       // 1st, 2nd, ..., 7th
-
       case 'eo':
         return localize.ordinalNumber(localDayOfWeek, {
           unit: 'day'
         });
-
       case 'eee':
         return localize.day(dayOfWeek, {
           width: 'abbreviated',
           context: 'formatting'
         });
       // T
-
       case 'eeeee':
         return localize.day(dayOfWeek, {
           width: 'narrow',
           context: 'formatting'
         });
       // Tu
-
       case 'eeeeee':
         return localize.day(dayOfWeek, {
           width: 'short',
           context: 'formatting'
         });
       // Tuesday
-
       case 'eeee':
       default:
         return localize.day(dayOfWeek, {
@@ -11750,43 +10414,36 @@ var formatters$1 = {
   c: function c(date, token, localize, options) {
     var dayOfWeek = date.getUTCDay();
     var localDayOfWeek = (dayOfWeek - options.weekStartsOn + 8) % 7 || 7;
-
     switch (token) {
       // Numerical value (same as in `e`)
       case 'c':
         return String(localDayOfWeek);
       // Padded numerical value
-
       case 'cc':
         return addLeadingZeros(localDayOfWeek, token.length);
       // 1st, 2nd, ..., 7th
-
       case 'co':
         return localize.ordinalNumber(localDayOfWeek, {
           unit: 'day'
         });
-
       case 'ccc':
         return localize.day(dayOfWeek, {
           width: 'abbreviated',
           context: 'standalone'
         });
       // T
-
       case 'ccccc':
         return localize.day(dayOfWeek, {
           width: 'narrow',
           context: 'standalone'
         });
       // Tu
-
       case 'cccccc':
         return localize.day(dayOfWeek, {
           width: 'short',
           context: 'standalone'
         });
       // Tuesday
-
       case 'cccc':
       default:
         return localize.day(dayOfWeek, {
@@ -11799,44 +10456,37 @@ var formatters$1 = {
   i: function i(date, token, localize) {
     var dayOfWeek = date.getUTCDay();
     var isoDayOfWeek = dayOfWeek === 0 ? 7 : dayOfWeek;
-
     switch (token) {
       // 2
       case 'i':
         return String(isoDayOfWeek);
       // 02
-
       case 'ii':
         return addLeadingZeros(isoDayOfWeek, token.length);
       // 2nd
-
       case 'io':
         return localize.ordinalNumber(isoDayOfWeek, {
           unit: 'day'
         });
       // Tue
-
       case 'iii':
         return localize.day(dayOfWeek, {
           width: 'abbreviated',
           context: 'formatting'
         });
       // T
-
       case 'iiiii':
         return localize.day(dayOfWeek, {
           width: 'narrow',
           context: 'formatting'
         });
       // Tu
-
       case 'iiiiii':
         return localize.day(dayOfWeek, {
           width: 'short',
           context: 'formatting'
         });
       // Tuesday
-
       case 'iiii':
       default:
         return localize.day(dayOfWeek, {
@@ -11849,7 +10499,6 @@ var formatters$1 = {
   a: function a(date, token, localize) {
     var hours = date.getUTCHours();
     var dayPeriodEnumValue = hours / 12 >= 1 ? 'pm' : 'am';
-
     switch (token) {
       case 'a':
       case 'aa':
@@ -11857,19 +10506,16 @@ var formatters$1 = {
           width: 'abbreviated',
           context: 'formatting'
         });
-
       case 'aaa':
         return localize.dayPeriod(dayPeriodEnumValue, {
           width: 'abbreviated',
           context: 'formatting'
         }).toLowerCase();
-
       case 'aaaaa':
         return localize.dayPeriod(dayPeriodEnumValue, {
           width: 'narrow',
           context: 'formatting'
         });
-
       case 'aaaa':
       default:
         return localize.dayPeriod(dayPeriodEnumValue, {
@@ -11882,7 +10528,6 @@ var formatters$1 = {
   b: function b(date, token, localize) {
     var hours = date.getUTCHours();
     var dayPeriodEnumValue;
-
     if (hours === 12) {
       dayPeriodEnumValue = dayPeriodEnum.noon;
     } else if (hours === 0) {
@@ -11890,7 +10535,6 @@ var formatters$1 = {
     } else {
       dayPeriodEnumValue = hours / 12 >= 1 ? 'pm' : 'am';
     }
-
     switch (token) {
       case 'b':
       case 'bb':
@@ -11898,19 +10542,16 @@ var formatters$1 = {
           width: 'abbreviated',
           context: 'formatting'
         });
-
       case 'bbb':
         return localize.dayPeriod(dayPeriodEnumValue, {
           width: 'abbreviated',
           context: 'formatting'
         }).toLowerCase();
-
       case 'bbbbb':
         return localize.dayPeriod(dayPeriodEnumValue, {
           width: 'narrow',
           context: 'formatting'
         });
-
       case 'bbbb':
       default:
         return localize.dayPeriod(dayPeriodEnumValue, {
@@ -11923,7 +10564,6 @@ var formatters$1 = {
   B: function B(date, token, localize) {
     var hours = date.getUTCHours();
     var dayPeriodEnumValue;
-
     if (hours >= 17) {
       dayPeriodEnumValue = dayPeriodEnum.evening;
     } else if (hours >= 12) {
@@ -11933,7 +10573,6 @@ var formatters$1 = {
     } else {
       dayPeriodEnumValue = dayPeriodEnum.night;
     }
-
     switch (token) {
       case 'B':
       case 'BB':
@@ -11942,13 +10581,11 @@ var formatters$1 = {
           width: 'abbreviated',
           context: 'formatting'
         });
-
       case 'BBBBB':
         return localize.dayPeriod(dayPeriodEnumValue, {
           width: 'narrow',
           context: 'formatting'
         });
-
       case 'BBBB':
       default:
         return localize.dayPeriod(dayPeriodEnumValue, {
@@ -11966,8 +10603,7 @@ var formatters$1 = {
         unit: 'hour'
       });
     }
-
-    return formatters$2.h(date, token);
+    return formatters$4.h(date, token);
   },
   // Hour [0-23]
   H: function H(date, token, localize) {
@@ -11976,32 +10612,27 @@ var formatters$1 = {
         unit: 'hour'
       });
     }
-
-    return formatters$2.H(date, token);
+    return formatters$4.H(date, token);
   },
   // Hour [0-11]
   K: function K(date, token, localize) {
     var hours = date.getUTCHours() % 12;
-
     if (token === 'Ko') {
       return localize.ordinalNumber(hours, {
         unit: 'hour'
       });
     }
-
     return addLeadingZeros(hours, token.length);
   },
   // Hour [1-24]
   k: function k(date, token, localize) {
     var hours = date.getUTCHours();
     if (hours === 0) hours = 24;
-
     if (token === 'ko') {
       return localize.ordinalNumber(hours, {
         unit: 'hour'
       });
     }
-
     return addLeadingZeros(hours, token.length);
   },
   // Minute
@@ -12011,8 +10642,7 @@ var formatters$1 = {
         unit: 'minute'
       });
     }
-
-    return formatters$2.m(date, token);
+    return formatters$4.m(date, token);
   },
   // Second
   s: function s(date, token, localize) {
@@ -12021,41 +10651,37 @@ var formatters$1 = {
         unit: 'second'
       });
     }
-
-    return formatters$2.s(date, token);
+    return formatters$4.s(date, token);
   },
   // Fraction of second
   S: function S(date, token) {
-    return formatters$2.S(date, token);
+    return formatters$4.S(date, token);
   },
   // Timezone (ISO-8601. If offset is 0, output is always `'Z'`)
   X: function X(date, token, _localize, options) {
     var originalDate = options._originalDate || date;
     var timezoneOffset = originalDate.getTimezoneOffset();
-
     if (timezoneOffset === 0) {
       return 'Z';
     }
-
     switch (token) {
       // Hours and optional minutes
       case 'X':
         return formatTimezoneWithOptionalMinutes(timezoneOffset);
+
       // Hours, minutes and optional seconds without `:` delimiter
       // Note: neither ISO-8601 nor JavaScript supports seconds in timezone offsets
       // so this token always has the same output as `XX`
-
       case 'XXXX':
       case 'XX':
         // Hours and minutes without `:` delimiter
         return formatTimezone(timezoneOffset);
+
       // Hours, minutes and optional seconds with `:` delimiter
       // Note: neither ISO-8601 nor JavaScript supports seconds in timezone offsets
       // so this token always has the same output as `XXX`
-
       case 'XXXXX':
       case 'XXX': // Hours and minutes with `:` delimiter
-
       default:
         return formatTimezone(timezoneOffset, ':');
     }
@@ -12064,26 +10690,24 @@ var formatters$1 = {
   x: function x(date, token, _localize, options) {
     var originalDate = options._originalDate || date;
     var timezoneOffset = originalDate.getTimezoneOffset();
-
     switch (token) {
       // Hours and optional minutes
       case 'x':
         return formatTimezoneWithOptionalMinutes(timezoneOffset);
+
       // Hours, minutes and optional seconds without `:` delimiter
       // Note: neither ISO-8601 nor JavaScript supports seconds in timezone offsets
       // so this token always has the same output as `xx`
-
       case 'xxxx':
       case 'xx':
         // Hours and minutes without `:` delimiter
         return formatTimezone(timezoneOffset);
+
       // Hours, minutes and optional seconds with `:` delimiter
       // Note: neither ISO-8601 nor JavaScript supports seconds in timezone offsets
       // so this token always has the same output as `xxx`
-
       case 'xxxxx':
       case 'xxx': // Hours and minutes with `:` delimiter
-
       default:
         return formatTimezone(timezoneOffset, ':');
     }
@@ -12092,7 +10716,6 @@ var formatters$1 = {
   O: function O(date, token, _localize, options) {
     var originalDate = options._originalDate || date;
     var timezoneOffset = originalDate.getTimezoneOffset();
-
     switch (token) {
       // Short
       case 'O':
@@ -12100,7 +10723,6 @@ var formatters$1 = {
       case 'OOO':
         return 'GMT' + formatTimezoneShort(timezoneOffset, ':');
       // Long
-
       case 'OOOO':
       default:
         return 'GMT' + formatTimezone(timezoneOffset, ':');
@@ -12110,7 +10732,6 @@ var formatters$1 = {
   z: function z(date, token, _localize, options) {
     var originalDate = options._originalDate || date;
     var timezoneOffset = originalDate.getTimezoneOffset();
-
     switch (token) {
       // Short
       case 'z':
@@ -12118,7 +10739,6 @@ var formatters$1 = {
       case 'zzz':
         return 'GMT' + formatTimezoneShort(timezoneOffset, ':');
       // Long
-
       case 'zzzz':
       default:
         return 'GMT' + formatTimezone(timezoneOffset, ':');
@@ -12137,30 +10757,24 @@ var formatters$1 = {
     return addLeadingZeros(timestamp, token.length);
   }
 };
-
 function formatTimezoneShort(offset, dirtyDelimiter) {
   var sign = offset > 0 ? '-' : '+';
   var absOffset = Math.abs(offset);
   var hours = Math.floor(absOffset / 60);
   var minutes = absOffset % 60;
-
   if (minutes === 0) {
     return sign + String(hours);
   }
-
   var delimiter = dirtyDelimiter || '';
   return sign + String(hours) + delimiter + addLeadingZeros(minutes, 2);
 }
-
 function formatTimezoneWithOptionalMinutes(offset, dirtyDelimiter) {
   if (offset % 60 === 0) {
     var sign = offset > 0 ? '-' : '+';
     return sign + addLeadingZeros(Math.abs(offset) / 60, 2);
   }
-
   return formatTimezone(offset, dirtyDelimiter);
 }
-
 function formatTimezone(offset, dirtyDelimiter) {
   var delimiter = dirtyDelimiter || '';
   var sign = offset > 0 ? '-' : '+';
@@ -12169,6 +10783,7 @@ function formatTimezone(offset, dirtyDelimiter) {
   var minutes = addLeadingZeros(absOffset % 60, 2);
   return sign + hours + delimiter + minutes;
 }
+var formatters$2 = formatters$1;
 
 var dateLongFormatter = function dateLongFormatter(pattern, formatLong) {
   switch (pattern) {
@@ -12176,17 +10791,14 @@ var dateLongFormatter = function dateLongFormatter(pattern, formatLong) {
       return formatLong.date({
         width: 'short'
       });
-
     case 'PP':
       return formatLong.date({
         width: 'medium'
       });
-
     case 'PPP':
       return formatLong.date({
         width: 'long'
       });
-
     case 'PPPP':
     default:
       return formatLong.date({
@@ -12194,24 +10806,20 @@ var dateLongFormatter = function dateLongFormatter(pattern, formatLong) {
       });
   }
 };
-
 var timeLongFormatter = function timeLongFormatter(pattern, formatLong) {
   switch (pattern) {
     case 'p':
       return formatLong.time({
         width: 'short'
       });
-
     case 'pp':
       return formatLong.time({
         width: 'medium'
       });
-
     case 'ppp':
       return formatLong.time({
         width: 'long'
       });
-
     case 'pppp':
     default:
       return formatLong.time({
@@ -12219,37 +10827,30 @@ var timeLongFormatter = function timeLongFormatter(pattern, formatLong) {
       });
   }
 };
-
 var dateTimeLongFormatter = function dateTimeLongFormatter(pattern, formatLong) {
   var matchResult = pattern.match(/(P+)(p+)?/) || [];
   var datePattern = matchResult[1];
   var timePattern = matchResult[2];
-
   if (!timePattern) {
     return dateLongFormatter(pattern, formatLong);
   }
-
   var dateTimeFormat;
-
   switch (datePattern) {
     case 'P':
       dateTimeFormat = formatLong.dateTime({
         width: 'short'
       });
       break;
-
     case 'PP':
       dateTimeFormat = formatLong.dateTime({
         width: 'medium'
       });
       break;
-
     case 'PPP':
       dateTimeFormat = formatLong.dateTime({
         width: 'long'
       });
       break;
-
     case 'PPPP':
     default:
       dateTimeFormat = formatLong.dateTime({
@@ -12257,14 +10858,13 @@ var dateTimeLongFormatter = function dateTimeLongFormatter(pattern, formatLong) 
       });
       break;
   }
-
   return dateTimeFormat.replace('{{date}}', dateLongFormatter(datePattern, formatLong)).replace('{{time}}', timeLongFormatter(timePattern, formatLong));
 };
-
 var longFormatters = {
   p: timeLongFormatter,
   P: dateTimeLongFormatter
 };
+var longFormatters$1 = longFormatters;
 
 var protectedDayOfYearTokens = ['D', 'DD'];
 var protectedWeekYearTokens = ['YY', 'YYYY'];
@@ -12349,11 +10949,9 @@ var formatDistanceLocale$1 = {
     other: 'almost {{count}} years'
   }
 };
-
-var formatDistance$1 = function formatDistance(token, count, options) {
+var formatDistance$2 = function formatDistance(token, count, options) {
   var result;
   var tokenValue = formatDistanceLocale$1[token];
-
   if (typeof tokenValue === 'string') {
     result = tokenValue;
   } else if (count === 1) {
@@ -12361,7 +10959,6 @@ var formatDistance$1 = function formatDistance(token, count, options) {
   } else {
     result = tokenValue.other.replace('{{count}}', count.toString());
   }
-
   if (options !== null && options !== void 0 && options.addSuffix) {
     if (options.comparison && options.comparison > 0) {
       return 'in ' + result;
@@ -12369,9 +10966,9 @@ var formatDistance$1 = function formatDistance(token, count, options) {
       return result + ' ago';
     }
   }
-
   return result;
 };
+var formatDistance$3 = formatDistance$2;
 
 var dateFormats$1 = {
   full: 'EEEE, MMMM do, y',
@@ -12391,7 +10988,7 @@ var dateTimeFormats$1 = {
   medium: '{{date}}, {{time}}',
   short: '{{date}}, {{time}}'
 };
-var formatLong$1 = {
+var formatLong$2 = {
   date: buildFormatLongFn({
     formats: dateFormats$1,
     defaultWidth: 'full'
@@ -12405,6 +11002,7 @@ var formatLong$1 = {
     defaultWidth: 'full'
   })
 };
+var formatLong$3 = formatLong$2;
 
 var formatRelativeLocale$1 = {
   lastWeek: "'last' eeee 'at' p",
@@ -12414,10 +11012,10 @@ var formatRelativeLocale$1 = {
   nextWeek: "eeee 'at' p",
   other: 'P'
 };
-
-var formatRelative$1 = function formatRelative(token, _date, _baseDate, _options) {
+var formatRelative$2 = function formatRelative(token, _date, _baseDate, _options) {
   return formatRelativeLocale$1[token];
 };
+var formatRelative$3 = formatRelative$2;
 
 var eraValues$1 = {
   narrow: ['B', 'A'],
@@ -12428,17 +11026,18 @@ var quarterValues$1 = {
   narrow: ['1', '2', '3', '4'],
   abbreviated: ['Q1', 'Q2', 'Q3', 'Q4'],
   wide: ['1st quarter', '2nd quarter', '3rd quarter', '4th quarter']
-}; // Note: in English, the names of days of the week and months are capitalized.
+};
+
+// Note: in English, the names of days of the week and months are capitalized.
 // If you are making a new locale based on this one, check if the same is true for the language you're working on.
 // Generally, formatted dates should look like they are in the middle of a sentence,
 // e.g. in Spanish language the weekdays and months should be in the lowercase.
-
-var monthValues$4 = {
+var monthValues$1 = {
   narrow: ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'],
   abbreviated: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
   wide: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 };
-var dayValues$2 = {
+var dayValues$1 = {
   narrow: ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
   short: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
   abbreviated: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
@@ -12508,9 +11107,10 @@ var formattingDayPeriodValues$1 = {
     night: 'at night'
   }
 };
-
 var ordinalNumber$1 = function ordinalNumber(dirtyNumber, _options) {
-  var number = Number(dirtyNumber); // If ordinal numbers depend on context, for example,
+  var number = Number(dirtyNumber);
+
+  // If ordinal numbers depend on context, for example,
   // if they are different for different grammatical genders,
   // use `options.unit`.
   //
@@ -12518,24 +11118,19 @@ var ordinalNumber$1 = function ordinalNumber(dirtyNumber, _options) {
   // 'day', 'hour', 'minute', 'second'.
 
   var rem100 = number % 100;
-
   if (rem100 > 20 || rem100 < 10) {
     switch (rem100 % 10) {
       case 1:
         return number + 'st';
-
       case 2:
         return number + 'nd';
-
       case 3:
         return number + 'rd';
     }
   }
-
   return number + 'th';
 };
-
-var localize$1 = {
+var localize$2 = {
   ordinalNumber: ordinalNumber$1,
   era: buildLocalizeFn({
     values: eraValues$1,
@@ -12549,11 +11144,11 @@ var localize$1 = {
     }
   }),
   month: buildLocalizeFn({
-    values: monthValues$4,
+    values: monthValues$1,
     defaultWidth: 'wide'
   }),
   day: buildLocalizeFn({
-    values: dayValues$2,
+    values: dayValues$1,
     defaultWidth: 'wide'
   }),
   dayPeriod: buildLocalizeFn({
@@ -12563,6 +11158,7 @@ var localize$1 = {
     defaultFormattingWidth: 'wide'
   })
 };
+var localize$3 = localize$2;
 
 var matchOrdinalNumberPattern$1 = /^(\d+)(th|st|nd|rd)?/i;
 var parseOrdinalNumberPattern$1 = /\d+/i;
@@ -12617,7 +11213,7 @@ var parseDayPeriodPatterns$1 = {
     night: /night/i
   }
 };
-var match$1 = {
+var match$2 = {
   ordinalNumber: buildMatchPatternFn({
     matchPattern: matchOrdinalNumberPattern$1,
     parsePattern: parseOrdinalNumberPattern$1,
@@ -12659,6 +11255,7 @@ var match$1 = {
     defaultParseWidth: 'any'
   })
 };
+var match$3 = match$2;
 
 /**
  * @type {Locale}
@@ -12671,18 +11268,17 @@ var match$1 = {
  */
 var locale$1 = {
   code: 'en-US',
-  formatDistance: formatDistance$1,
-  formatLong: formatLong$1,
-  formatRelative: formatRelative$1,
-  localize: localize$1,
-  match: match$1,
+  formatDistance: formatDistance$3,
+  formatLong: formatLong$3,
+  formatRelative: formatRelative$3,
+  localize: localize$3,
+  match: match$3,
   options: {
-    weekStartsOn: 0
-    /* Sunday */
-    ,
+    weekStartsOn: 0 /* Sunday */,
     firstWeekContainsDate: 1
   }
 };
+var enUS = locale$1;
 
 // - [yYQqMLwIdDecihHKkms]o matches any available ordinal number token
 //   (one of the certain letters followed by `o`)
@@ -12694,14 +11290,15 @@ var locale$1 = {
 //   If there is no matching single quote
 //   then the sequence will continue until the end of the string.
 // - . matches any single character unmatched by previous parts of the RegExps
+var formattingTokensRegExp = /[yYQqMLwIdDecihHKkms]o|(\w)\1*|''|'(''|[^'])+('|$)|./g;
 
-var formattingTokensRegExp = /[yYQqMLwIdDecihHKkms]o|(\w)\1*|''|'(''|[^'])+('|$)|./g; // This RegExp catches symbols escaped by quotes, and also
+// This RegExp catches symbols escaped by quotes, and also
 // sequences of symbols P, p, and the combinations like `PPPPPPPppppp`
-
 var longFormattingTokensRegExp = /P+p+|P+|p+|''|'(''|[^'])+('|$)|./g;
 var escapedStringRegExp = /^'([^]*?)'?$/;
 var doubleQuoteRegExp = /''/g;
 var unescapedLatinCharacterRegExp = /[a-zA-Z]/;
+
 /**
  * @name format
  * @category Common Helpers
@@ -12996,40 +11593,36 @@ var unescapedLatinCharacterRegExp = /[a-zA-Z]/;
 
 function format(dirtyDate, dirtyFormatStr, options) {
   var _ref, _options$locale, _ref2, _ref3, _ref4, _options$firstWeekCon, _options$locale2, _options$locale2$opti, _defaultOptions$local, _defaultOptions$local2, _ref5, _ref6, _ref7, _options$weekStartsOn, _options$locale3, _options$locale3$opti, _defaultOptions$local3, _defaultOptions$local4;
-
   requiredArgs(2, arguments);
   var formatStr = String(dirtyFormatStr);
   var defaultOptions = getDefaultOptions();
-  var locale = (_ref = (_options$locale = options === null || options === void 0 ? void 0 : options.locale) !== null && _options$locale !== void 0 ? _options$locale : defaultOptions.locale) !== null && _ref !== void 0 ? _ref : locale$1;
-  var firstWeekContainsDate = toInteger((_ref2 = (_ref3 = (_ref4 = (_options$firstWeekCon = options === null || options === void 0 ? void 0 : options.firstWeekContainsDate) !== null && _options$firstWeekCon !== void 0 ? _options$firstWeekCon : options === null || options === void 0 ? void 0 : (_options$locale2 = options.locale) === null || _options$locale2 === void 0 ? void 0 : (_options$locale2$opti = _options$locale2.options) === null || _options$locale2$opti === void 0 ? void 0 : _options$locale2$opti.firstWeekContainsDate) !== null && _ref4 !== void 0 ? _ref4 : defaultOptions.firstWeekContainsDate) !== null && _ref3 !== void 0 ? _ref3 : (_defaultOptions$local = defaultOptions.locale) === null || _defaultOptions$local === void 0 ? void 0 : (_defaultOptions$local2 = _defaultOptions$local.options) === null || _defaultOptions$local2 === void 0 ? void 0 : _defaultOptions$local2.firstWeekContainsDate) !== null && _ref2 !== void 0 ? _ref2 : 1); // Test if weekStartsOn is between 1 and 7 _and_ is not NaN
+  var locale = (_ref = (_options$locale = options === null || options === void 0 ? void 0 : options.locale) !== null && _options$locale !== void 0 ? _options$locale : defaultOptions.locale) !== null && _ref !== void 0 ? _ref : enUS;
+  var firstWeekContainsDate = toInteger((_ref2 = (_ref3 = (_ref4 = (_options$firstWeekCon = options === null || options === void 0 ? void 0 : options.firstWeekContainsDate) !== null && _options$firstWeekCon !== void 0 ? _options$firstWeekCon : options === null || options === void 0 ? void 0 : (_options$locale2 = options.locale) === null || _options$locale2 === void 0 ? void 0 : (_options$locale2$opti = _options$locale2.options) === null || _options$locale2$opti === void 0 ? void 0 : _options$locale2$opti.firstWeekContainsDate) !== null && _ref4 !== void 0 ? _ref4 : defaultOptions.firstWeekContainsDate) !== null && _ref3 !== void 0 ? _ref3 : (_defaultOptions$local = defaultOptions.locale) === null || _defaultOptions$local === void 0 ? void 0 : (_defaultOptions$local2 = _defaultOptions$local.options) === null || _defaultOptions$local2 === void 0 ? void 0 : _defaultOptions$local2.firstWeekContainsDate) !== null && _ref2 !== void 0 ? _ref2 : 1);
 
+  // Test if weekStartsOn is between 1 and 7 _and_ is not NaN
   if (!(firstWeekContainsDate >= 1 && firstWeekContainsDate <= 7)) {
     throw new RangeError('firstWeekContainsDate must be between 1 and 7 inclusively');
   }
+  var weekStartsOn = toInteger((_ref5 = (_ref6 = (_ref7 = (_options$weekStartsOn = options === null || options === void 0 ? void 0 : options.weekStartsOn) !== null && _options$weekStartsOn !== void 0 ? _options$weekStartsOn : options === null || options === void 0 ? void 0 : (_options$locale3 = options.locale) === null || _options$locale3 === void 0 ? void 0 : (_options$locale3$opti = _options$locale3.options) === null || _options$locale3$opti === void 0 ? void 0 : _options$locale3$opti.weekStartsOn) !== null && _ref7 !== void 0 ? _ref7 : defaultOptions.weekStartsOn) !== null && _ref6 !== void 0 ? _ref6 : (_defaultOptions$local3 = defaultOptions.locale) === null || _defaultOptions$local3 === void 0 ? void 0 : (_defaultOptions$local4 = _defaultOptions$local3.options) === null || _defaultOptions$local4 === void 0 ? void 0 : _defaultOptions$local4.weekStartsOn) !== null && _ref5 !== void 0 ? _ref5 : 0);
 
-  var weekStartsOn = toInteger((_ref5 = (_ref6 = (_ref7 = (_options$weekStartsOn = options === null || options === void 0 ? void 0 : options.weekStartsOn) !== null && _options$weekStartsOn !== void 0 ? _options$weekStartsOn : options === null || options === void 0 ? void 0 : (_options$locale3 = options.locale) === null || _options$locale3 === void 0 ? void 0 : (_options$locale3$opti = _options$locale3.options) === null || _options$locale3$opti === void 0 ? void 0 : _options$locale3$opti.weekStartsOn) !== null && _ref7 !== void 0 ? _ref7 : defaultOptions.weekStartsOn) !== null && _ref6 !== void 0 ? _ref6 : (_defaultOptions$local3 = defaultOptions.locale) === null || _defaultOptions$local3 === void 0 ? void 0 : (_defaultOptions$local4 = _defaultOptions$local3.options) === null || _defaultOptions$local4 === void 0 ? void 0 : _defaultOptions$local4.weekStartsOn) !== null && _ref5 !== void 0 ? _ref5 : 0); // Test if weekStartsOn is between 0 and 6 _and_ is not NaN
-
+  // Test if weekStartsOn is between 0 and 6 _and_ is not NaN
   if (!(weekStartsOn >= 0 && weekStartsOn <= 6)) {
     throw new RangeError('weekStartsOn must be between 0 and 6 inclusively');
   }
-
   if (!locale.localize) {
     throw new RangeError('locale must contain localize property');
   }
-
   if (!locale.formatLong) {
     throw new RangeError('locale must contain formatLong property');
   }
-
   var originalDate = toDate(dirtyDate);
-
   if (!isValid(originalDate)) {
     throw new RangeError('Invalid time value');
-  } // Convert the date in system timezone to the same date in UTC+00:00 timezone.
+  }
+
+  // Convert the date in system timezone to the same date in UTC+00:00 timezone.
   // This ensures that when UTC functions will be implemented, locales will be compatible with them.
   // See an issue about UTC functions: https://github.com/date-fns/date-fns/issues/376
-
-
   var timezoneOffset = getTimezoneOffsetInMilliseconds(originalDate);
   var utcDate = subMilliseconds(originalDate, timezoneOffset);
   var formatterOptions = {
@@ -13040,55 +11633,42 @@ function format(dirtyDate, dirtyFormatStr, options) {
   };
   var result = formatStr.match(longFormattingTokensRegExp).map(function (substring) {
     var firstCharacter = substring[0];
-
     if (firstCharacter === 'p' || firstCharacter === 'P') {
-      var longFormatter = longFormatters[firstCharacter];
+      var longFormatter = longFormatters$1[firstCharacter];
       return longFormatter(substring, locale.formatLong);
     }
-
     return substring;
   }).join('').match(formattingTokensRegExp).map(function (substring) {
     // Replace two single quote characters with one single quote character
     if (substring === "''") {
       return "'";
     }
-
     var firstCharacter = substring[0];
-
     if (firstCharacter === "'") {
       return cleanEscapedString(substring);
     }
-
-    var formatter = formatters$1[firstCharacter];
-
+    var formatter = formatters$2[firstCharacter];
     if (formatter) {
       if (!(options !== null && options !== void 0 && options.useAdditionalWeekYearTokens) && isProtectedWeekYearToken(substring)) {
         throwProtectedError(substring, dirtyFormatStr, String(dirtyDate));
       }
-
       if (!(options !== null && options !== void 0 && options.useAdditionalDayOfYearTokens) && isProtectedDayOfYearToken(substring)) {
         throwProtectedError(substring, dirtyFormatStr, String(dirtyDate));
       }
-
       return formatter(utcDate, substring, locale.localize, formatterOptions);
     }
-
     if (firstCharacter.match(unescapedLatinCharacterRegExp)) {
       throw new RangeError('Format string contains an unescaped latin alphabet character `' + firstCharacter + '`');
     }
-
     return substring;
   }).join('');
   return result;
 }
-
 function cleanEscapedString(input) {
   var matched = input.match(escapedStringRegExp);
-
   if (!matched) {
     return input;
   }
-
   return matched[1].replace(doubleQuoteRegExp, "'");
 }
 
@@ -13109,7 +11689,6 @@ function cleanEscapedString(input) {
  * const result = getDaysInMonth(new Date(2000, 1))
  * //=> 29
  */
-
 function getDaysInMonth(dirtyDate) {
   requiredArgs(1, arguments);
   var date = toDate(dirtyDate);
@@ -13122,6 +11701,7 @@ function getDaysInMonth(dirtyDate) {
 }
 
 var MILLISECONDS_IN_WEEK$1 = 604800000;
+
 /**
  * @name getISOWeek
  * @category ISO Week Helpers
@@ -13141,14 +11721,14 @@ var MILLISECONDS_IN_WEEK$1 = 604800000;
  * const result = getISOWeek(new Date(2005, 0, 2))
  * //=> 53
  */
-
 function getISOWeek(dirtyDate) {
   requiredArgs(1, arguments);
   var date = toDate(dirtyDate);
-  var diff = startOfISOWeek(date).getTime() - startOfISOWeekYear(date).getTime(); // Round the number of days to the nearest integer
+  var diff = startOfISOWeek(date).getTime() - startOfISOWeekYear(date).getTime();
+
+  // Round the number of days to the nearest integer
   // because the number of milliseconds in a week is not constant
   // (e.g. it's different in the week of the daylight saving time clock shift)
-
   return Math.round(diff / MILLISECONDS_IN_WEEK$1) + 1;
 }
 
@@ -13169,7 +11749,6 @@ function getISOWeek(dirtyDate) {
  * const result = getTime(new Date(2012, 1, 29, 11, 45, 5, 123))
  * //=> 1330515905123
  */
-
 function getTime(dirtyDate) {
   requiredArgs(1, arguments);
   var date = toDate(dirtyDate);
@@ -13194,7 +11773,6 @@ function getTime(dirtyDate) {
  * const result = getUnixTime(new Date(2012, 1, 29, 11, 45, 5))
  * //=> 1330512305
  */
-
 function getUnixTime(dirtyDate) {
   requiredArgs(1, arguments);
   return Math.floor(getTime(dirtyDate) / 1000);
@@ -13239,20 +11817,18 @@ function getUnixTime(dirtyDate) {
  * const result = getWeekYear(new Date(2004, 11, 26), { firstWeekContainsDate: 4 })
  * //=> 2004
  */
-
 function getWeekYear(dirtyDate, options) {
   var _ref, _ref2, _ref3, _options$firstWeekCon, _options$locale, _options$locale$optio, _defaultOptions$local, _defaultOptions$local2;
-
   requiredArgs(1, arguments);
   var date = toDate(dirtyDate);
   var year = date.getFullYear();
   var defaultOptions = getDefaultOptions();
-  var firstWeekContainsDate = toInteger((_ref = (_ref2 = (_ref3 = (_options$firstWeekCon = options === null || options === void 0 ? void 0 : options.firstWeekContainsDate) !== null && _options$firstWeekCon !== void 0 ? _options$firstWeekCon : options === null || options === void 0 ? void 0 : (_options$locale = options.locale) === null || _options$locale === void 0 ? void 0 : (_options$locale$optio = _options$locale.options) === null || _options$locale$optio === void 0 ? void 0 : _options$locale$optio.firstWeekContainsDate) !== null && _ref3 !== void 0 ? _ref3 : defaultOptions.firstWeekContainsDate) !== null && _ref2 !== void 0 ? _ref2 : (_defaultOptions$local = defaultOptions.locale) === null || _defaultOptions$local === void 0 ? void 0 : (_defaultOptions$local2 = _defaultOptions$local.options) === null || _defaultOptions$local2 === void 0 ? void 0 : _defaultOptions$local2.firstWeekContainsDate) !== null && _ref !== void 0 ? _ref : 1); // Test if weekStartsOn is between 1 and 7 _and_ is not NaN
+  var firstWeekContainsDate = toInteger((_ref = (_ref2 = (_ref3 = (_options$firstWeekCon = options === null || options === void 0 ? void 0 : options.firstWeekContainsDate) !== null && _options$firstWeekCon !== void 0 ? _options$firstWeekCon : options === null || options === void 0 ? void 0 : (_options$locale = options.locale) === null || _options$locale === void 0 ? void 0 : (_options$locale$optio = _options$locale.options) === null || _options$locale$optio === void 0 ? void 0 : _options$locale$optio.firstWeekContainsDate) !== null && _ref3 !== void 0 ? _ref3 : defaultOptions.firstWeekContainsDate) !== null && _ref2 !== void 0 ? _ref2 : (_defaultOptions$local = defaultOptions.locale) === null || _defaultOptions$local === void 0 ? void 0 : (_defaultOptions$local2 = _defaultOptions$local.options) === null || _defaultOptions$local2 === void 0 ? void 0 : _defaultOptions$local2.firstWeekContainsDate) !== null && _ref !== void 0 ? _ref : 1);
 
+  // Test if weekStartsOn is between 1 and 7 _and_ is not NaN
   if (!(firstWeekContainsDate >= 1 && firstWeekContainsDate <= 7)) {
     throw new RangeError('firstWeekContainsDate must be between 1 and 7 inclusively');
   }
-
   var firstWeekOfNextYear = new Date(0);
   firstWeekOfNextYear.setFullYear(year + 1, 0, firstWeekContainsDate);
   firstWeekOfNextYear.setHours(0, 0, 0, 0);
@@ -13261,7 +11837,6 @@ function getWeekYear(dirtyDate, options) {
   firstWeekOfThisYear.setFullYear(year, 0, firstWeekContainsDate);
   firstWeekOfThisYear.setHours(0, 0, 0, 0);
   var startOfThisYear = startOfWeek(firstWeekOfThisYear, options);
-
   if (date.getTime() >= startOfNextYear.getTime()) {
     return year + 1;
   } else if (date.getTime() >= startOfThisYear.getTime()) {
@@ -13310,10 +11885,8 @@ function getWeekYear(dirtyDate, options) {
  * })
  * //=> Mon Jan 03 2005 00:00:00
  */
-
 function startOfWeekYear(dirtyDate, options) {
   var _ref, _ref2, _ref3, _options$firstWeekCon, _options$locale, _options$locale$optio, _defaultOptions$local, _defaultOptions$local2;
-
   requiredArgs(1, arguments);
   var defaultOptions = getDefaultOptions();
   var firstWeekContainsDate = toInteger((_ref = (_ref2 = (_ref3 = (_options$firstWeekCon = options === null || options === void 0 ? void 0 : options.firstWeekContainsDate) !== null && _options$firstWeekCon !== void 0 ? _options$firstWeekCon : options === null || options === void 0 ? void 0 : (_options$locale = options.locale) === null || _options$locale === void 0 ? void 0 : (_options$locale$optio = _options$locale.options) === null || _options$locale$optio === void 0 ? void 0 : _options$locale$optio.firstWeekContainsDate) !== null && _ref3 !== void 0 ? _ref3 : defaultOptions.firstWeekContainsDate) !== null && _ref2 !== void 0 ? _ref2 : (_defaultOptions$local = defaultOptions.locale) === null || _defaultOptions$local === void 0 ? void 0 : (_defaultOptions$local2 = _defaultOptions$local.options) === null || _defaultOptions$local2 === void 0 ? void 0 : _defaultOptions$local2.firstWeekContainsDate) !== null && _ref !== void 0 ? _ref : 1);
@@ -13326,6 +11899,7 @@ function startOfWeekYear(dirtyDate, options) {
 }
 
 var MILLISECONDS_IN_WEEK = 604800000;
+
 /**
  * @name getWeek
  * @category Week Helpers
@@ -13368,10 +11942,11 @@ var MILLISECONDS_IN_WEEK = 604800000;
 function getWeek(dirtyDate, options) {
   requiredArgs(1, arguments);
   var date = toDate(dirtyDate);
-  var diff = startOfWeek(date, options).getTime() - startOfWeekYear(date, options).getTime(); // Round the number of days to the nearest integer
+  var diff = startOfWeek(date, options).getTime() - startOfWeekYear(date, options).getTime();
+
+  // Round the number of days to the nearest integer
   // because the number of milliseconds in a week is not constant
   // (e.g. it's different in the week of the daylight saving time clock shift)
-
   return Math.round(diff / MILLISECONDS_IN_WEEK) + 1;
 }
 
@@ -13393,7 +11968,6 @@ function getWeek(dirtyDate, options) {
  * const result = lastDayOfMonth(new Date(2014, 8, 2, 11, 55, 0))
  * //=> Tue Sep 30 2014 00:00:00
  */
-
 function lastDayOfMonth(dirtyDate) {
   requiredArgs(1, arguments);
   var date = toDate(dirtyDate);
@@ -13453,7 +12027,6 @@ function getWeeksInMonth(date, options) {
  * const result = isAfter(new Date(1989, 6, 10), new Date(1987, 1, 11))
  * //=> true
  */
-
 function isAfter(dirtyDate, dirtyDateToCompare) {
   requiredArgs(2, arguments);
   var date = toDate(dirtyDate);
@@ -13479,3294 +12052,12 @@ function isAfter(dirtyDate, dirtyDateToCompare) {
  * const result = isBefore(new Date(1989, 6, 10), new Date(1987, 1, 11))
  * //=> false
  */
-
 function isBefore(dirtyDate, dirtyDateToCompare) {
   requiredArgs(2, arguments);
   var date = toDate(dirtyDate);
   var dateToCompare = toDate(dirtyDateToCompare);
   return date.getTime() < dateToCompare.getTime();
 }
-
-function _typeof$v(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof$v = function _typeof(obj) { return typeof obj; }; } else { _typeof$v = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof$v(obj); }
-
-function _inherits$v(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf$v(subClass, superClass); }
-
-function _setPrototypeOf$v(o, p) { _setPrototypeOf$v = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf$v(o, p); }
-
-function _createSuper$v(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct$v(); return function _createSuperInternal() { var Super = _getPrototypeOf$v(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf$v(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn$v(this, result); }; }
-
-function _possibleConstructorReturn$v(self, call) { if (call && (_typeof$v(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized$v(self); }
-
-function _assertThisInitialized$v(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _isNativeReflectConstruct$v() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-
-function _getPrototypeOf$v(o) { _getPrototypeOf$v = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf$v(o); }
-
-function _classCallCheck$w(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties$w(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass$w(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties$w(Constructor.prototype, protoProps); if (staticProps) _defineProperties$w(Constructor, staticProps); return Constructor; }
-
-function _defineProperty$v(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-var Setter = /*#__PURE__*/function () {
-  function Setter() {
-    _classCallCheck$w(this, Setter);
-
-    _defineProperty$v(this, "subPriority", 0);
-  }
-
-  _createClass$w(Setter, [{
-    key: "validate",
-    value: function validate(_utcDate, _options) {
-      return true;
-    }
-  }]);
-
-  return Setter;
-}();
-var ValueSetter = /*#__PURE__*/function (_Setter) {
-  _inherits$v(ValueSetter, _Setter);
-
-  var _super = _createSuper$v(ValueSetter);
-
-  function ValueSetter(value, validateValue, setValue, priority, subPriority) {
-    var _this;
-
-    _classCallCheck$w(this, ValueSetter);
-
-    _this = _super.call(this);
-    _this.value = value;
-    _this.validateValue = validateValue;
-    _this.setValue = setValue;
-    _this.priority = priority;
-
-    if (subPriority) {
-      _this.subPriority = subPriority;
-    }
-
-    return _this;
-  }
-
-  _createClass$w(ValueSetter, [{
-    key: "validate",
-    value: function validate(utcDate, options) {
-      return this.validateValue(utcDate, this.value, options);
-    }
-  }, {
-    key: "set",
-    value: function set(utcDate, flags, options) {
-      return this.setValue(utcDate, flags, this.value, options);
-    }
-  }]);
-
-  return ValueSetter;
-}(Setter);
-
-function _classCallCheck$v(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties$v(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass$v(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties$v(Constructor.prototype, protoProps); if (staticProps) _defineProperties$v(Constructor, staticProps); return Constructor; }
-var Parser = /*#__PURE__*/function () {
-  function Parser() {
-    _classCallCheck$v(this, Parser);
-  }
-
-  _createClass$v(Parser, [{
-    key: "run",
-    value: function run(dateString, token, match, options) {
-      var result = this.parse(dateString, token, match, options);
-
-      if (!result) {
-        return null;
-      }
-
-      return {
-        setter: new ValueSetter(result.value, this.validate, this.set, this.priority, this.subPriority),
-        rest: result.rest
-      };
-    }
-  }, {
-    key: "validate",
-    value: function validate(_utcDate, _value, _options) {
-      return true;
-    }
-  }]);
-
-  return Parser;
-}();
-
-function _typeof$u(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof$u = function _typeof(obj) { return typeof obj; }; } else { _typeof$u = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof$u(obj); }
-
-function _classCallCheck$u(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties$u(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass$u(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties$u(Constructor.prototype, protoProps); if (staticProps) _defineProperties$u(Constructor, staticProps); return Constructor; }
-
-function _inherits$u(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf$u(subClass, superClass); }
-
-function _setPrototypeOf$u(o, p) { _setPrototypeOf$u = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf$u(o, p); }
-
-function _createSuper$u(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct$u(); return function _createSuperInternal() { var Super = _getPrototypeOf$u(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf$u(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn$u(this, result); }; }
-
-function _possibleConstructorReturn$u(self, call) { if (call && (_typeof$u(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized$u(self); }
-
-function _assertThisInitialized$u(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _isNativeReflectConstruct$u() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-
-function _getPrototypeOf$u(o) { _getPrototypeOf$u = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf$u(o); }
-
-function _defineProperty$u(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-var EraParser = /*#__PURE__*/function (_Parser) {
-  _inherits$u(EraParser, _Parser);
-
-  var _super = _createSuper$u(EraParser);
-
-  function EraParser() {
-    var _this;
-
-    _classCallCheck$u(this, EraParser);
-
-    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
-
-    _this = _super.call.apply(_super, [this].concat(args));
-
-    _defineProperty$u(_assertThisInitialized$u(_this), "priority", 140);
-
-    _defineProperty$u(_assertThisInitialized$u(_this), "incompatibleTokens", ['R', 'u', 't', 'T']);
-
-    return _this;
-  }
-
-  _createClass$u(EraParser, [{
-    key: "parse",
-    value: function parse(dateString, token, match) {
-      switch (token) {
-        // AD, BC
-        case 'G':
-        case 'GG':
-        case 'GGG':
-          return match.era(dateString, {
-            width: 'abbreviated'
-          }) || match.era(dateString, {
-            width: 'narrow'
-          });
-        // A, B
-
-        case 'GGGGG':
-          return match.era(dateString, {
-            width: 'narrow'
-          });
-        // Anno Domini, Before Christ
-
-        case 'GGGG':
-        default:
-          return match.era(dateString, {
-            width: 'wide'
-          }) || match.era(dateString, {
-            width: 'abbreviated'
-          }) || match.era(dateString, {
-            width: 'narrow'
-          });
-      }
-    }
-  }, {
-    key: "set",
-    value: function set(date, flags, value) {
-      flags.era = value;
-      date.setUTCFullYear(value, 0, 1);
-      date.setUTCHours(0, 0, 0, 0);
-      return date;
-    }
-  }]);
-
-  return EraParser;
-}(Parser);
-
-var numericPatterns = {
-  month: /^(1[0-2]|0?\d)/,
-  // 0 to 12
-  date: /^(3[0-1]|[0-2]?\d)/,
-  // 0 to 31
-  dayOfYear: /^(36[0-6]|3[0-5]\d|[0-2]?\d?\d)/,
-  // 0 to 366
-  week: /^(5[0-3]|[0-4]?\d)/,
-  // 0 to 53
-  hour23h: /^(2[0-3]|[0-1]?\d)/,
-  // 0 to 23
-  hour24h: /^(2[0-4]|[0-1]?\d)/,
-  // 0 to 24
-  hour11h: /^(1[0-1]|0?\d)/,
-  // 0 to 11
-  hour12h: /^(1[0-2]|0?\d)/,
-  // 0 to 12
-  minute: /^[0-5]?\d/,
-  // 0 to 59
-  second: /^[0-5]?\d/,
-  // 0 to 59
-  singleDigit: /^\d/,
-  // 0 to 9
-  twoDigits: /^\d{1,2}/,
-  // 0 to 99
-  threeDigits: /^\d{1,3}/,
-  // 0 to 999
-  fourDigits: /^\d{1,4}/,
-  // 0 to 9999
-  anyDigitsSigned: /^-?\d+/,
-  singleDigitSigned: /^-?\d/,
-  // 0 to 9, -0 to -9
-  twoDigitsSigned: /^-?\d{1,2}/,
-  // 0 to 99, -0 to -99
-  threeDigitsSigned: /^-?\d{1,3}/,
-  // 0 to 999, -0 to -999
-  fourDigitsSigned: /^-?\d{1,4}/ // 0 to 9999, -0 to -9999
-
-};
-var timezonePatterns = {
-  basicOptionalMinutes: /^([+-])(\d{2})(\d{2})?|Z/,
-  basic: /^([+-])(\d{2})(\d{2})|Z/,
-  basicOptionalSeconds: /^([+-])(\d{2})(\d{2})((\d{2}))?|Z/,
-  extended: /^([+-])(\d{2}):(\d{2})|Z/,
-  extendedOptionalSeconds: /^([+-])(\d{2}):(\d{2})(:(\d{2}))?|Z/
-};
-
-function mapValue(parseFnResult, mapFn) {
-  if (!parseFnResult) {
-    return parseFnResult;
-  }
-
-  return {
-    value: mapFn(parseFnResult.value),
-    rest: parseFnResult.rest
-  };
-}
-function parseNumericPattern(pattern, dateString) {
-  var matchResult = dateString.match(pattern);
-
-  if (!matchResult) {
-    return null;
-  }
-
-  return {
-    value: parseInt(matchResult[0], 10),
-    rest: dateString.slice(matchResult[0].length)
-  };
-}
-function parseTimezonePattern(pattern, dateString) {
-  var matchResult = dateString.match(pattern);
-
-  if (!matchResult) {
-    return null;
-  } // Input is 'Z'
-
-
-  if (matchResult[0] === 'Z') {
-    return {
-      value: 0,
-      rest: dateString.slice(1)
-    };
-  }
-
-  var sign = matchResult[1] === '+' ? 1 : -1;
-  var hours = matchResult[2] ? parseInt(matchResult[2], 10) : 0;
-  var minutes = matchResult[3] ? parseInt(matchResult[3], 10) : 0;
-  var seconds = matchResult[5] ? parseInt(matchResult[5], 10) : 0;
-  return {
-    value: sign * (hours * millisecondsInHour + minutes * millisecondsInMinute + seconds * millisecondsInSecond),
-    rest: dateString.slice(matchResult[0].length)
-  };
-}
-function parseAnyDigitsSigned(dateString) {
-  return parseNumericPattern(numericPatterns.anyDigitsSigned, dateString);
-}
-function parseNDigits(n, dateString) {
-  switch (n) {
-    case 1:
-      return parseNumericPattern(numericPatterns.singleDigit, dateString);
-
-    case 2:
-      return parseNumericPattern(numericPatterns.twoDigits, dateString);
-
-    case 3:
-      return parseNumericPattern(numericPatterns.threeDigits, dateString);
-
-    case 4:
-      return parseNumericPattern(numericPatterns.fourDigits, dateString);
-
-    default:
-      return parseNumericPattern(new RegExp('^\\d{1,' + n + '}'), dateString);
-  }
-}
-function parseNDigitsSigned(n, dateString) {
-  switch (n) {
-    case 1:
-      return parseNumericPattern(numericPatterns.singleDigitSigned, dateString);
-
-    case 2:
-      return parseNumericPattern(numericPatterns.twoDigitsSigned, dateString);
-
-    case 3:
-      return parseNumericPattern(numericPatterns.threeDigitsSigned, dateString);
-
-    case 4:
-      return parseNumericPattern(numericPatterns.fourDigitsSigned, dateString);
-
-    default:
-      return parseNumericPattern(new RegExp('^-?\\d{1,' + n + '}'), dateString);
-  }
-}
-function dayPeriodEnumToHours(dayPeriod) {
-  switch (dayPeriod) {
-    case 'morning':
-      return 4;
-
-    case 'evening':
-      return 17;
-
-    case 'pm':
-    case 'noon':
-    case 'afternoon':
-      return 12;
-
-    case 'am':
-    case 'midnight':
-    case 'night':
-    default:
-      return 0;
-  }
-}
-function normalizeTwoDigitYear(twoDigitYear, currentYear) {
-  var isCommonEra = currentYear > 0; // Absolute number of the current year:
-  // 1 -> 1 AC
-  // 0 -> 1 BC
-  // -1 -> 2 BC
-
-  var absCurrentYear = isCommonEra ? currentYear : 1 - currentYear;
-  var result;
-
-  if (absCurrentYear <= 50) {
-    result = twoDigitYear || 100;
-  } else {
-    var rangeEnd = absCurrentYear + 50;
-    var rangeEndCentury = Math.floor(rangeEnd / 100) * 100;
-    var isPreviousCentury = twoDigitYear >= rangeEnd % 100;
-    result = twoDigitYear + rangeEndCentury - (isPreviousCentury ? 100 : 0);
-  }
-
-  return isCommonEra ? result : 1 - result;
-}
-function isLeapYearIndex(year) {
-  return year % 400 === 0 || year % 4 === 0 && year % 100 !== 0;
-}
-
-function _typeof$t(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof$t = function _typeof(obj) { return typeof obj; }; } else { _typeof$t = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof$t(obj); }
-
-function _classCallCheck$t(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties$t(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass$t(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties$t(Constructor.prototype, protoProps); if (staticProps) _defineProperties$t(Constructor, staticProps); return Constructor; }
-
-function _inherits$t(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf$t(subClass, superClass); }
-
-function _setPrototypeOf$t(o, p) { _setPrototypeOf$t = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf$t(o, p); }
-
-function _createSuper$t(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct$t(); return function _createSuperInternal() { var Super = _getPrototypeOf$t(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf$t(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn$t(this, result); }; }
-
-function _possibleConstructorReturn$t(self, call) { if (call && (_typeof$t(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized$t(self); }
-
-function _assertThisInitialized$t(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _isNativeReflectConstruct$t() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-
-function _getPrototypeOf$t(o) { _getPrototypeOf$t = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf$t(o); }
-
-function _defineProperty$t(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-// From http://www.unicode.org/reports/tr35/tr35-31/tr35-dates.html#Date_Format_Patterns
-// | Year     |     y | yy |   yyy |  yyyy | yyyyy |
-// |----------|-------|----|-------|-------|-------|
-// | AD 1     |     1 | 01 |   001 |  0001 | 00001 |
-// | AD 12    |    12 | 12 |   012 |  0012 | 00012 |
-// | AD 123   |   123 | 23 |   123 |  0123 | 00123 |
-// | AD 1234  |  1234 | 34 |  1234 |  1234 | 01234 |
-// | AD 12345 | 12345 | 45 | 12345 | 12345 | 12345 |
-var YearParser = /*#__PURE__*/function (_Parser) {
-  _inherits$t(YearParser, _Parser);
-
-  var _super = _createSuper$t(YearParser);
-
-  function YearParser() {
-    var _this;
-
-    _classCallCheck$t(this, YearParser);
-
-    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
-
-    _this = _super.call.apply(_super, [this].concat(args));
-
-    _defineProperty$t(_assertThisInitialized$t(_this), "priority", 130);
-
-    _defineProperty$t(_assertThisInitialized$t(_this), "incompatibleTokens", ['Y', 'R', 'u', 'w', 'I', 'i', 'e', 'c', 't', 'T']);
-
-    return _this;
-  }
-
-  _createClass$t(YearParser, [{
-    key: "parse",
-    value: function parse(dateString, token, match) {
-      var valueCallback = function valueCallback(year) {
-        return {
-          year: year,
-          isTwoDigitYear: token === 'yy'
-        };
-      };
-
-      switch (token) {
-        case 'y':
-          return mapValue(parseNDigits(4, dateString), valueCallback);
-
-        case 'yo':
-          return mapValue(match.ordinalNumber(dateString, {
-            unit: 'year'
-          }), valueCallback);
-
-        default:
-          return mapValue(parseNDigits(token.length, dateString), valueCallback);
-      }
-    }
-  }, {
-    key: "validate",
-    value: function validate(_date, value) {
-      return value.isTwoDigitYear || value.year > 0;
-    }
-  }, {
-    key: "set",
-    value: function set(date, flags, value) {
-      var currentYear = date.getUTCFullYear();
-
-      if (value.isTwoDigitYear) {
-        var normalizedTwoDigitYear = normalizeTwoDigitYear(value.year, currentYear);
-        date.setUTCFullYear(normalizedTwoDigitYear, 0, 1);
-        date.setUTCHours(0, 0, 0, 0);
-        return date;
-      }
-
-      var year = !('era' in flags) || flags.era === 1 ? value.year : 1 - value.year;
-      date.setUTCFullYear(year, 0, 1);
-      date.setUTCHours(0, 0, 0, 0);
-      return date;
-    }
-  }]);
-
-  return YearParser;
-}(Parser);
-
-function _typeof$s(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof$s = function _typeof(obj) { return typeof obj; }; } else { _typeof$s = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof$s(obj); }
-
-function _classCallCheck$s(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties$s(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass$s(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties$s(Constructor.prototype, protoProps); if (staticProps) _defineProperties$s(Constructor, staticProps); return Constructor; }
-
-function _inherits$s(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf$s(subClass, superClass); }
-
-function _setPrototypeOf$s(o, p) { _setPrototypeOf$s = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf$s(o, p); }
-
-function _createSuper$s(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct$s(); return function _createSuperInternal() { var Super = _getPrototypeOf$s(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf$s(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn$s(this, result); }; }
-
-function _possibleConstructorReturn$s(self, call) { if (call && (_typeof$s(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized$s(self); }
-
-function _assertThisInitialized$s(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _isNativeReflectConstruct$s() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-
-function _getPrototypeOf$s(o) { _getPrototypeOf$s = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf$s(o); }
-
-function _defineProperty$s(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-// Local week-numbering year
-var LocalWeekYearParser = /*#__PURE__*/function (_Parser) {
-  _inherits$s(LocalWeekYearParser, _Parser);
-
-  var _super = _createSuper$s(LocalWeekYearParser);
-
-  function LocalWeekYearParser() {
-    var _this;
-
-    _classCallCheck$s(this, LocalWeekYearParser);
-
-    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
-
-    _this = _super.call.apply(_super, [this].concat(args));
-
-    _defineProperty$s(_assertThisInitialized$s(_this), "priority", 130);
-
-    _defineProperty$s(_assertThisInitialized$s(_this), "incompatibleTokens", ['y', 'R', 'u', 'Q', 'q', 'M', 'L', 'I', 'd', 'D', 'i', 't', 'T']);
-
-    return _this;
-  }
-
-  _createClass$s(LocalWeekYearParser, [{
-    key: "parse",
-    value: function parse(dateString, token, match) {
-      var valueCallback = function valueCallback(year) {
-        return {
-          year: year,
-          isTwoDigitYear: token === 'YY'
-        };
-      };
-
-      switch (token) {
-        case 'Y':
-          return mapValue(parseNDigits(4, dateString), valueCallback);
-
-        case 'Yo':
-          return mapValue(match.ordinalNumber(dateString, {
-            unit: 'year'
-          }), valueCallback);
-
-        default:
-          return mapValue(parseNDigits(token.length, dateString), valueCallback);
-      }
-    }
-  }, {
-    key: "validate",
-    value: function validate(_date, value) {
-      return value.isTwoDigitYear || value.year > 0;
-    }
-  }, {
-    key: "set",
-    value: function set(date, flags, value, options) {
-      var currentYear = getUTCWeekYear(date, options);
-
-      if (value.isTwoDigitYear) {
-        var normalizedTwoDigitYear = normalizeTwoDigitYear(value.year, currentYear);
-        date.setUTCFullYear(normalizedTwoDigitYear, 0, options.firstWeekContainsDate);
-        date.setUTCHours(0, 0, 0, 0);
-        return startOfUTCWeek(date, options);
-      }
-
-      var year = !('era' in flags) || flags.era === 1 ? value.year : 1 - value.year;
-      date.setUTCFullYear(year, 0, options.firstWeekContainsDate);
-      date.setUTCHours(0, 0, 0, 0);
-      return startOfUTCWeek(date, options);
-    }
-  }]);
-
-  return LocalWeekYearParser;
-}(Parser);
-
-function _typeof$r(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof$r = function _typeof(obj) { return typeof obj; }; } else { _typeof$r = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof$r(obj); }
-
-function _classCallCheck$r(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties$r(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass$r(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties$r(Constructor.prototype, protoProps); if (staticProps) _defineProperties$r(Constructor, staticProps); return Constructor; }
-
-function _inherits$r(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf$r(subClass, superClass); }
-
-function _setPrototypeOf$r(o, p) { _setPrototypeOf$r = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf$r(o, p); }
-
-function _createSuper$r(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct$r(); return function _createSuperInternal() { var Super = _getPrototypeOf$r(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf$r(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn$r(this, result); }; }
-
-function _possibleConstructorReturn$r(self, call) { if (call && (_typeof$r(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized$r(self); }
-
-function _assertThisInitialized$r(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _isNativeReflectConstruct$r() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-
-function _getPrototypeOf$r(o) { _getPrototypeOf$r = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf$r(o); }
-
-function _defineProperty$r(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-var ISOWeekYearParser = /*#__PURE__*/function (_Parser) {
-  _inherits$r(ISOWeekYearParser, _Parser);
-
-  var _super = _createSuper$r(ISOWeekYearParser);
-
-  function ISOWeekYearParser() {
-    var _this;
-
-    _classCallCheck$r(this, ISOWeekYearParser);
-
-    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
-
-    _this = _super.call.apply(_super, [this].concat(args));
-
-    _defineProperty$r(_assertThisInitialized$r(_this), "priority", 130);
-
-    _defineProperty$r(_assertThisInitialized$r(_this), "incompatibleTokens", ['G', 'y', 'Y', 'u', 'Q', 'q', 'M', 'L', 'w', 'd', 'D', 'e', 'c', 't', 'T']);
-
-    return _this;
-  }
-
-  _createClass$r(ISOWeekYearParser, [{
-    key: "parse",
-    value: function parse(dateString, token) {
-      if (token === 'R') {
-        return parseNDigitsSigned(4, dateString);
-      }
-
-      return parseNDigitsSigned(token.length, dateString);
-    }
-  }, {
-    key: "set",
-    value: function set(_date, _flags, value) {
-      var firstWeekOfYear = new Date(0);
-      firstWeekOfYear.setUTCFullYear(value, 0, 4);
-      firstWeekOfYear.setUTCHours(0, 0, 0, 0);
-      return startOfUTCISOWeek(firstWeekOfYear);
-    }
-  }]);
-
-  return ISOWeekYearParser;
-}(Parser);
-
-function _typeof$q(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof$q = function _typeof(obj) { return typeof obj; }; } else { _typeof$q = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof$q(obj); }
-
-function _classCallCheck$q(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties$q(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass$q(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties$q(Constructor.prototype, protoProps); if (staticProps) _defineProperties$q(Constructor, staticProps); return Constructor; }
-
-function _inherits$q(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf$q(subClass, superClass); }
-
-function _setPrototypeOf$q(o, p) { _setPrototypeOf$q = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf$q(o, p); }
-
-function _createSuper$q(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct$q(); return function _createSuperInternal() { var Super = _getPrototypeOf$q(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf$q(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn$q(this, result); }; }
-
-function _possibleConstructorReturn$q(self, call) { if (call && (_typeof$q(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized$q(self); }
-
-function _assertThisInitialized$q(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _isNativeReflectConstruct$q() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-
-function _getPrototypeOf$q(o) { _getPrototypeOf$q = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf$q(o); }
-
-function _defineProperty$q(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-var ExtendedYearParser = /*#__PURE__*/function (_Parser) {
-  _inherits$q(ExtendedYearParser, _Parser);
-
-  var _super = _createSuper$q(ExtendedYearParser);
-
-  function ExtendedYearParser() {
-    var _this;
-
-    _classCallCheck$q(this, ExtendedYearParser);
-
-    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
-
-    _this = _super.call.apply(_super, [this].concat(args));
-
-    _defineProperty$q(_assertThisInitialized$q(_this), "priority", 130);
-
-    _defineProperty$q(_assertThisInitialized$q(_this), "incompatibleTokens", ['G', 'y', 'Y', 'R', 'w', 'I', 'i', 'e', 'c', 't', 'T']);
-
-    return _this;
-  }
-
-  _createClass$q(ExtendedYearParser, [{
-    key: "parse",
-    value: function parse(dateString, token) {
-      if (token === 'u') {
-        return parseNDigitsSigned(4, dateString);
-      }
-
-      return parseNDigitsSigned(token.length, dateString);
-    }
-  }, {
-    key: "set",
-    value: function set(date, _flags, value) {
-      date.setUTCFullYear(value, 0, 1);
-      date.setUTCHours(0, 0, 0, 0);
-      return date;
-    }
-  }]);
-
-  return ExtendedYearParser;
-}(Parser);
-
-function _typeof$p(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof$p = function _typeof(obj) { return typeof obj; }; } else { _typeof$p = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof$p(obj); }
-
-function _classCallCheck$p(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties$p(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass$p(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties$p(Constructor.prototype, protoProps); if (staticProps) _defineProperties$p(Constructor, staticProps); return Constructor; }
-
-function _inherits$p(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf$p(subClass, superClass); }
-
-function _setPrototypeOf$p(o, p) { _setPrototypeOf$p = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf$p(o, p); }
-
-function _createSuper$p(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct$p(); return function _createSuperInternal() { var Super = _getPrototypeOf$p(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf$p(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn$p(this, result); }; }
-
-function _possibleConstructorReturn$p(self, call) { if (call && (_typeof$p(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized$p(self); }
-
-function _assertThisInitialized$p(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _isNativeReflectConstruct$p() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-
-function _getPrototypeOf$p(o) { _getPrototypeOf$p = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf$p(o); }
-
-function _defineProperty$p(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-var QuarterParser = /*#__PURE__*/function (_Parser) {
-  _inherits$p(QuarterParser, _Parser);
-
-  var _super = _createSuper$p(QuarterParser);
-
-  function QuarterParser() {
-    var _this;
-
-    _classCallCheck$p(this, QuarterParser);
-
-    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
-
-    _this = _super.call.apply(_super, [this].concat(args));
-
-    _defineProperty$p(_assertThisInitialized$p(_this), "priority", 120);
-
-    _defineProperty$p(_assertThisInitialized$p(_this), "incompatibleTokens", ['Y', 'R', 'q', 'M', 'L', 'w', 'I', 'd', 'D', 'i', 'e', 'c', 't', 'T']);
-
-    return _this;
-  }
-
-  _createClass$p(QuarterParser, [{
-    key: "parse",
-    value: function parse(dateString, token, match) {
-      switch (token) {
-        // 1, 2, 3, 4
-        case 'Q':
-        case 'QQ':
-          // 01, 02, 03, 04
-          return parseNDigits(token.length, dateString);
-        // 1st, 2nd, 3rd, 4th
-
-        case 'Qo':
-          return match.ordinalNumber(dateString, {
-            unit: 'quarter'
-          });
-        // Q1, Q2, Q3, Q4
-
-        case 'QQQ':
-          return match.quarter(dateString, {
-            width: 'abbreviated',
-            context: 'formatting'
-          }) || match.quarter(dateString, {
-            width: 'narrow',
-            context: 'formatting'
-          });
-        // 1, 2, 3, 4 (narrow quarter; could be not numerical)
-
-        case 'QQQQQ':
-          return match.quarter(dateString, {
-            width: 'narrow',
-            context: 'formatting'
-          });
-        // 1st quarter, 2nd quarter, ...
-
-        case 'QQQQ':
-        default:
-          return match.quarter(dateString, {
-            width: 'wide',
-            context: 'formatting'
-          }) || match.quarter(dateString, {
-            width: 'abbreviated',
-            context: 'formatting'
-          }) || match.quarter(dateString, {
-            width: 'narrow',
-            context: 'formatting'
-          });
-      }
-    }
-  }, {
-    key: "validate",
-    value: function validate(_date, value) {
-      return value >= 1 && value <= 4;
-    }
-  }, {
-    key: "set",
-    value: function set(date, _flags, value) {
-      date.setUTCMonth((value - 1) * 3, 1);
-      date.setUTCHours(0, 0, 0, 0);
-      return date;
-    }
-  }]);
-
-  return QuarterParser;
-}(Parser);
-
-function _typeof$o(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof$o = function _typeof(obj) { return typeof obj; }; } else { _typeof$o = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof$o(obj); }
-
-function _classCallCheck$o(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties$o(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass$o(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties$o(Constructor.prototype, protoProps); if (staticProps) _defineProperties$o(Constructor, staticProps); return Constructor; }
-
-function _inherits$o(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf$o(subClass, superClass); }
-
-function _setPrototypeOf$o(o, p) { _setPrototypeOf$o = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf$o(o, p); }
-
-function _createSuper$o(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct$o(); return function _createSuperInternal() { var Super = _getPrototypeOf$o(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf$o(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn$o(this, result); }; }
-
-function _possibleConstructorReturn$o(self, call) { if (call && (_typeof$o(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized$o(self); }
-
-function _assertThisInitialized$o(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _isNativeReflectConstruct$o() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-
-function _getPrototypeOf$o(o) { _getPrototypeOf$o = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf$o(o); }
-
-function _defineProperty$o(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-var StandAloneQuarterParser = /*#__PURE__*/function (_Parser) {
-  _inherits$o(StandAloneQuarterParser, _Parser);
-
-  var _super = _createSuper$o(StandAloneQuarterParser);
-
-  function StandAloneQuarterParser() {
-    var _this;
-
-    _classCallCheck$o(this, StandAloneQuarterParser);
-
-    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
-
-    _this = _super.call.apply(_super, [this].concat(args));
-
-    _defineProperty$o(_assertThisInitialized$o(_this), "priority", 120);
-
-    _defineProperty$o(_assertThisInitialized$o(_this), "incompatibleTokens", ['Y', 'R', 'Q', 'M', 'L', 'w', 'I', 'd', 'D', 'i', 'e', 'c', 't', 'T']);
-
-    return _this;
-  }
-
-  _createClass$o(StandAloneQuarterParser, [{
-    key: "parse",
-    value: function parse(dateString, token, match) {
-      switch (token) {
-        // 1, 2, 3, 4
-        case 'q':
-        case 'qq':
-          // 01, 02, 03, 04
-          return parseNDigits(token.length, dateString);
-        // 1st, 2nd, 3rd, 4th
-
-        case 'qo':
-          return match.ordinalNumber(dateString, {
-            unit: 'quarter'
-          });
-        // Q1, Q2, Q3, Q4
-
-        case 'qqq':
-          return match.quarter(dateString, {
-            width: 'abbreviated',
-            context: 'standalone'
-          }) || match.quarter(dateString, {
-            width: 'narrow',
-            context: 'standalone'
-          });
-        // 1, 2, 3, 4 (narrow quarter; could be not numerical)
-
-        case 'qqqqq':
-          return match.quarter(dateString, {
-            width: 'narrow',
-            context: 'standalone'
-          });
-        // 1st quarter, 2nd quarter, ...
-
-        case 'qqqq':
-        default:
-          return match.quarter(dateString, {
-            width: 'wide',
-            context: 'standalone'
-          }) || match.quarter(dateString, {
-            width: 'abbreviated',
-            context: 'standalone'
-          }) || match.quarter(dateString, {
-            width: 'narrow',
-            context: 'standalone'
-          });
-      }
-    }
-  }, {
-    key: "validate",
-    value: function validate(_date, value) {
-      return value >= 1 && value <= 4;
-    }
-  }, {
-    key: "set",
-    value: function set(date, _flags, value) {
-      date.setUTCMonth((value - 1) * 3, 1);
-      date.setUTCHours(0, 0, 0, 0);
-      return date;
-    }
-  }]);
-
-  return StandAloneQuarterParser;
-}(Parser);
-
-function _typeof$n(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof$n = function _typeof(obj) { return typeof obj; }; } else { _typeof$n = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof$n(obj); }
-
-function _classCallCheck$n(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties$n(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass$n(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties$n(Constructor.prototype, protoProps); if (staticProps) _defineProperties$n(Constructor, staticProps); return Constructor; }
-
-function _inherits$n(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf$n(subClass, superClass); }
-
-function _setPrototypeOf$n(o, p) { _setPrototypeOf$n = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf$n(o, p); }
-
-function _createSuper$n(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct$n(); return function _createSuperInternal() { var Super = _getPrototypeOf$n(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf$n(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn$n(this, result); }; }
-
-function _possibleConstructorReturn$n(self, call) { if (call && (_typeof$n(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized$n(self); }
-
-function _assertThisInitialized$n(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _isNativeReflectConstruct$n() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-
-function _getPrototypeOf$n(o) { _getPrototypeOf$n = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf$n(o); }
-
-function _defineProperty$n(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-var MonthParser = /*#__PURE__*/function (_Parser) {
-  _inherits$n(MonthParser, _Parser);
-
-  var _super = _createSuper$n(MonthParser);
-
-  function MonthParser() {
-    var _this;
-
-    _classCallCheck$n(this, MonthParser);
-
-    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
-
-    _this = _super.call.apply(_super, [this].concat(args));
-
-    _defineProperty$n(_assertThisInitialized$n(_this), "incompatibleTokens", ['Y', 'R', 'q', 'Q', 'L', 'w', 'I', 'D', 'i', 'e', 'c', 't', 'T']);
-
-    _defineProperty$n(_assertThisInitialized$n(_this), "priority", 110);
-
-    return _this;
-  }
-
-  _createClass$n(MonthParser, [{
-    key: "parse",
-    value: function parse(dateString, token, match) {
-      var valueCallback = function valueCallback(value) {
-        return value - 1;
-      };
-
-      switch (token) {
-        // 1, 2, ..., 12
-        case 'M':
-          return mapValue(parseNumericPattern(numericPatterns.month, dateString), valueCallback);
-        // 01, 02, ..., 12
-
-        case 'MM':
-          return mapValue(parseNDigits(2, dateString), valueCallback);
-        // 1st, 2nd, ..., 12th
-
-        case 'Mo':
-          return mapValue(match.ordinalNumber(dateString, {
-            unit: 'month'
-          }), valueCallback);
-        // Jan, Feb, ..., Dec
-
-        case 'MMM':
-          return match.month(dateString, {
-            width: 'abbreviated',
-            context: 'formatting'
-          }) || match.month(dateString, {
-            width: 'narrow',
-            context: 'formatting'
-          });
-        // J, F, ..., D
-
-        case 'MMMMM':
-          return match.month(dateString, {
-            width: 'narrow',
-            context: 'formatting'
-          });
-        // January, February, ..., December
-
-        case 'MMMM':
-        default:
-          return match.month(dateString, {
-            width: 'wide',
-            context: 'formatting'
-          }) || match.month(dateString, {
-            width: 'abbreviated',
-            context: 'formatting'
-          }) || match.month(dateString, {
-            width: 'narrow',
-            context: 'formatting'
-          });
-      }
-    }
-  }, {
-    key: "validate",
-    value: function validate(_date, value) {
-      return value >= 0 && value <= 11;
-    }
-  }, {
-    key: "set",
-    value: function set(date, _flags, value) {
-      date.setUTCMonth(value, 1);
-      date.setUTCHours(0, 0, 0, 0);
-      return date;
-    }
-  }]);
-
-  return MonthParser;
-}(Parser);
-
-function _typeof$m(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof$m = function _typeof(obj) { return typeof obj; }; } else { _typeof$m = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof$m(obj); }
-
-function _classCallCheck$m(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties$m(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass$m(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties$m(Constructor.prototype, protoProps); if (staticProps) _defineProperties$m(Constructor, staticProps); return Constructor; }
-
-function _inherits$m(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf$m(subClass, superClass); }
-
-function _setPrototypeOf$m(o, p) { _setPrototypeOf$m = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf$m(o, p); }
-
-function _createSuper$m(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct$m(); return function _createSuperInternal() { var Super = _getPrototypeOf$m(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf$m(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn$m(this, result); }; }
-
-function _possibleConstructorReturn$m(self, call) { if (call && (_typeof$m(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized$m(self); }
-
-function _assertThisInitialized$m(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _isNativeReflectConstruct$m() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-
-function _getPrototypeOf$m(o) { _getPrototypeOf$m = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf$m(o); }
-
-function _defineProperty$m(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-var StandAloneMonthParser = /*#__PURE__*/function (_Parser) {
-  _inherits$m(StandAloneMonthParser, _Parser);
-
-  var _super = _createSuper$m(StandAloneMonthParser);
-
-  function StandAloneMonthParser() {
-    var _this;
-
-    _classCallCheck$m(this, StandAloneMonthParser);
-
-    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
-
-    _this = _super.call.apply(_super, [this].concat(args));
-
-    _defineProperty$m(_assertThisInitialized$m(_this), "priority", 110);
-
-    _defineProperty$m(_assertThisInitialized$m(_this), "incompatibleTokens", ['Y', 'R', 'q', 'Q', 'M', 'w', 'I', 'D', 'i', 'e', 'c', 't', 'T']);
-
-    return _this;
-  }
-
-  _createClass$m(StandAloneMonthParser, [{
-    key: "parse",
-    value: function parse(dateString, token, match) {
-      var valueCallback = function valueCallback(value) {
-        return value - 1;
-      };
-
-      switch (token) {
-        // 1, 2, ..., 12
-        case 'L':
-          return mapValue(parseNumericPattern(numericPatterns.month, dateString), valueCallback);
-        // 01, 02, ..., 12
-
-        case 'LL':
-          return mapValue(parseNDigits(2, dateString), valueCallback);
-        // 1st, 2nd, ..., 12th
-
-        case 'Lo':
-          return mapValue(match.ordinalNumber(dateString, {
-            unit: 'month'
-          }), valueCallback);
-        // Jan, Feb, ..., Dec
-
-        case 'LLL':
-          return match.month(dateString, {
-            width: 'abbreviated',
-            context: 'standalone'
-          }) || match.month(dateString, {
-            width: 'narrow',
-            context: 'standalone'
-          });
-        // J, F, ..., D
-
-        case 'LLLLL':
-          return match.month(dateString, {
-            width: 'narrow',
-            context: 'standalone'
-          });
-        // January, February, ..., December
-
-        case 'LLLL':
-        default:
-          return match.month(dateString, {
-            width: 'wide',
-            context: 'standalone'
-          }) || match.month(dateString, {
-            width: 'abbreviated',
-            context: 'standalone'
-          }) || match.month(dateString, {
-            width: 'narrow',
-            context: 'standalone'
-          });
-      }
-    }
-  }, {
-    key: "validate",
-    value: function validate(_date, value) {
-      return value >= 0 && value <= 11;
-    }
-  }, {
-    key: "set",
-    value: function set(date, _flags, value) {
-      date.setUTCMonth(value, 1);
-      date.setUTCHours(0, 0, 0, 0);
-      return date;
-    }
-  }]);
-
-  return StandAloneMonthParser;
-}(Parser);
-
-function setUTCWeek(dirtyDate, dirtyWeek, options) {
-  requiredArgs(2, arguments);
-  var date = toDate(dirtyDate);
-  var week = toInteger(dirtyWeek);
-  var diff = getUTCWeek(date, options) - week;
-  date.setUTCDate(date.getUTCDate() - diff * 7);
-  return date;
-}
-
-function _typeof$l(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof$l = function _typeof(obj) { return typeof obj; }; } else { _typeof$l = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof$l(obj); }
-
-function _classCallCheck$l(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties$l(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass$l(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties$l(Constructor.prototype, protoProps); if (staticProps) _defineProperties$l(Constructor, staticProps); return Constructor; }
-
-function _inherits$l(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf$l(subClass, superClass); }
-
-function _setPrototypeOf$l(o, p) { _setPrototypeOf$l = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf$l(o, p); }
-
-function _createSuper$l(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct$l(); return function _createSuperInternal() { var Super = _getPrototypeOf$l(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf$l(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn$l(this, result); }; }
-
-function _possibleConstructorReturn$l(self, call) { if (call && (_typeof$l(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized$l(self); }
-
-function _assertThisInitialized$l(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _isNativeReflectConstruct$l() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-
-function _getPrototypeOf$l(o) { _getPrototypeOf$l = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf$l(o); }
-
-function _defineProperty$l(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-var LocalWeekParser = /*#__PURE__*/function (_Parser) {
-  _inherits$l(LocalWeekParser, _Parser);
-
-  var _super = _createSuper$l(LocalWeekParser);
-
-  function LocalWeekParser() {
-    var _this;
-
-    _classCallCheck$l(this, LocalWeekParser);
-
-    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
-
-    _this = _super.call.apply(_super, [this].concat(args));
-
-    _defineProperty$l(_assertThisInitialized$l(_this), "priority", 100);
-
-    _defineProperty$l(_assertThisInitialized$l(_this), "incompatibleTokens", ['y', 'R', 'u', 'q', 'Q', 'M', 'L', 'I', 'd', 'D', 'i', 't', 'T']);
-
-    return _this;
-  }
-
-  _createClass$l(LocalWeekParser, [{
-    key: "parse",
-    value: function parse(dateString, token, match) {
-      switch (token) {
-        case 'w':
-          return parseNumericPattern(numericPatterns.week, dateString);
-
-        case 'wo':
-          return match.ordinalNumber(dateString, {
-            unit: 'week'
-          });
-
-        default:
-          return parseNDigits(token.length, dateString);
-      }
-    }
-  }, {
-    key: "validate",
-    value: function validate(_date, value) {
-      return value >= 1 && value <= 53;
-    }
-  }, {
-    key: "set",
-    value: function set(date, _flags, value, options) {
-      return startOfUTCWeek(setUTCWeek(date, value, options), options);
-    }
-  }]);
-
-  return LocalWeekParser;
-}(Parser);
-
-function setUTCISOWeek(dirtyDate, dirtyISOWeek) {
-  requiredArgs(2, arguments);
-  var date = toDate(dirtyDate);
-  var isoWeek = toInteger(dirtyISOWeek);
-  var diff = getUTCISOWeek(date) - isoWeek;
-  date.setUTCDate(date.getUTCDate() - diff * 7);
-  return date;
-}
-
-function _typeof$k(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof$k = function _typeof(obj) { return typeof obj; }; } else { _typeof$k = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof$k(obj); }
-
-function _classCallCheck$k(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties$k(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass$k(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties$k(Constructor.prototype, protoProps); if (staticProps) _defineProperties$k(Constructor, staticProps); return Constructor; }
-
-function _inherits$k(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf$k(subClass, superClass); }
-
-function _setPrototypeOf$k(o, p) { _setPrototypeOf$k = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf$k(o, p); }
-
-function _createSuper$k(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct$k(); return function _createSuperInternal() { var Super = _getPrototypeOf$k(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf$k(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn$k(this, result); }; }
-
-function _possibleConstructorReturn$k(self, call) { if (call && (_typeof$k(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized$k(self); }
-
-function _assertThisInitialized$k(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _isNativeReflectConstruct$k() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-
-function _getPrototypeOf$k(o) { _getPrototypeOf$k = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf$k(o); }
-
-function _defineProperty$k(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-var ISOWeekParser = /*#__PURE__*/function (_Parser) {
-  _inherits$k(ISOWeekParser, _Parser);
-
-  var _super = _createSuper$k(ISOWeekParser);
-
-  function ISOWeekParser() {
-    var _this;
-
-    _classCallCheck$k(this, ISOWeekParser);
-
-    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
-
-    _this = _super.call.apply(_super, [this].concat(args));
-
-    _defineProperty$k(_assertThisInitialized$k(_this), "priority", 100);
-
-    _defineProperty$k(_assertThisInitialized$k(_this), "incompatibleTokens", ['y', 'Y', 'u', 'q', 'Q', 'M', 'L', 'w', 'd', 'D', 'e', 'c', 't', 'T']);
-
-    return _this;
-  }
-
-  _createClass$k(ISOWeekParser, [{
-    key: "parse",
-    value: function parse(dateString, token, match) {
-      switch (token) {
-        case 'I':
-          return parseNumericPattern(numericPatterns.week, dateString);
-
-        case 'Io':
-          return match.ordinalNumber(dateString, {
-            unit: 'week'
-          });
-
-        default:
-          return parseNDigits(token.length, dateString);
-      }
-    }
-  }, {
-    key: "validate",
-    value: function validate(_date, value) {
-      return value >= 1 && value <= 53;
-    }
-  }, {
-    key: "set",
-    value: function set(date, _flags, value) {
-      return startOfUTCISOWeek(setUTCISOWeek(date, value));
-    }
-  }]);
-
-  return ISOWeekParser;
-}(Parser);
-
-function _typeof$j(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof$j = function _typeof(obj) { return typeof obj; }; } else { _typeof$j = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof$j(obj); }
-
-function _classCallCheck$j(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties$j(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass$j(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties$j(Constructor.prototype, protoProps); if (staticProps) _defineProperties$j(Constructor, staticProps); return Constructor; }
-
-function _inherits$j(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf$j(subClass, superClass); }
-
-function _setPrototypeOf$j(o, p) { _setPrototypeOf$j = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf$j(o, p); }
-
-function _createSuper$j(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct$j(); return function _createSuperInternal() { var Super = _getPrototypeOf$j(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf$j(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn$j(this, result); }; }
-
-function _possibleConstructorReturn$j(self, call) { if (call && (_typeof$j(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized$j(self); }
-
-function _assertThisInitialized$j(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _isNativeReflectConstruct$j() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-
-function _getPrototypeOf$j(o) { _getPrototypeOf$j = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf$j(o); }
-
-function _defineProperty$j(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-var DAYS_IN_MONTH = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-var DAYS_IN_MONTH_LEAP_YEAR = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]; // Day of the month
-
-var DateParser = /*#__PURE__*/function (_Parser) {
-  _inherits$j(DateParser, _Parser);
-
-  var _super = _createSuper$j(DateParser);
-
-  function DateParser() {
-    var _this;
-
-    _classCallCheck$j(this, DateParser);
-
-    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
-
-    _this = _super.call.apply(_super, [this].concat(args));
-
-    _defineProperty$j(_assertThisInitialized$j(_this), "priority", 90);
-
-    _defineProperty$j(_assertThisInitialized$j(_this), "subPriority", 1);
-
-    _defineProperty$j(_assertThisInitialized$j(_this), "incompatibleTokens", ['Y', 'R', 'q', 'Q', 'w', 'I', 'D', 'i', 'e', 'c', 't', 'T']);
-
-    return _this;
-  }
-
-  _createClass$j(DateParser, [{
-    key: "parse",
-    value: function parse(dateString, token, match) {
-      switch (token) {
-        case 'd':
-          return parseNumericPattern(numericPatterns.date, dateString);
-
-        case 'do':
-          return match.ordinalNumber(dateString, {
-            unit: 'date'
-          });
-
-        default:
-          return parseNDigits(token.length, dateString);
-      }
-    }
-  }, {
-    key: "validate",
-    value: function validate(date, value) {
-      var year = date.getUTCFullYear();
-      var isLeapYear = isLeapYearIndex(year);
-      var month = date.getUTCMonth();
-
-      if (isLeapYear) {
-        return value >= 1 && value <= DAYS_IN_MONTH_LEAP_YEAR[month];
-      } else {
-        return value >= 1 && value <= DAYS_IN_MONTH[month];
-      }
-    }
-  }, {
-    key: "set",
-    value: function set(date, _flags, value) {
-      date.setUTCDate(value);
-      date.setUTCHours(0, 0, 0, 0);
-      return date;
-    }
-  }]);
-
-  return DateParser;
-}(Parser);
-
-function _typeof$i(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof$i = function _typeof(obj) { return typeof obj; }; } else { _typeof$i = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof$i(obj); }
-
-function _classCallCheck$i(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties$i(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass$i(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties$i(Constructor.prototype, protoProps); if (staticProps) _defineProperties$i(Constructor, staticProps); return Constructor; }
-
-function _inherits$i(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf$i(subClass, superClass); }
-
-function _setPrototypeOf$i(o, p) { _setPrototypeOf$i = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf$i(o, p); }
-
-function _createSuper$i(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct$i(); return function _createSuperInternal() { var Super = _getPrototypeOf$i(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf$i(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn$i(this, result); }; }
-
-function _possibleConstructorReturn$i(self, call) { if (call && (_typeof$i(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized$i(self); }
-
-function _assertThisInitialized$i(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _isNativeReflectConstruct$i() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-
-function _getPrototypeOf$i(o) { _getPrototypeOf$i = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf$i(o); }
-
-function _defineProperty$i(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-var DayOfYearParser = /*#__PURE__*/function (_Parser) {
-  _inherits$i(DayOfYearParser, _Parser);
-
-  var _super = _createSuper$i(DayOfYearParser);
-
-  function DayOfYearParser() {
-    var _this;
-
-    _classCallCheck$i(this, DayOfYearParser);
-
-    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
-
-    _this = _super.call.apply(_super, [this].concat(args));
-
-    _defineProperty$i(_assertThisInitialized$i(_this), "priority", 90);
-
-    _defineProperty$i(_assertThisInitialized$i(_this), "subpriority", 1);
-
-    _defineProperty$i(_assertThisInitialized$i(_this), "incompatibleTokens", ['Y', 'R', 'q', 'Q', 'M', 'L', 'w', 'I', 'd', 'E', 'i', 'e', 'c', 't', 'T']);
-
-    return _this;
-  }
-
-  _createClass$i(DayOfYearParser, [{
-    key: "parse",
-    value: function parse(dateString, token, match) {
-      switch (token) {
-        case 'D':
-        case 'DD':
-          return parseNumericPattern(numericPatterns.dayOfYear, dateString);
-
-        case 'Do':
-          return match.ordinalNumber(dateString, {
-            unit: 'date'
-          });
-
-        default:
-          return parseNDigits(token.length, dateString);
-      }
-    }
-  }, {
-    key: "validate",
-    value: function validate(date, value) {
-      var year = date.getUTCFullYear();
-      var isLeapYear = isLeapYearIndex(year);
-
-      if (isLeapYear) {
-        return value >= 1 && value <= 366;
-      } else {
-        return value >= 1 && value <= 365;
-      }
-    }
-  }, {
-    key: "set",
-    value: function set(date, _flags, value) {
-      date.setUTCMonth(0, value);
-      date.setUTCHours(0, 0, 0, 0);
-      return date;
-    }
-  }]);
-
-  return DayOfYearParser;
-}(Parser);
-
-function setUTCDay(dirtyDate, dirtyDay, options) {
-  var _ref, _ref2, _ref3, _options$weekStartsOn, _options$locale, _options$locale$optio, _defaultOptions$local, _defaultOptions$local2;
-
-  requiredArgs(2, arguments);
-  var defaultOptions = getDefaultOptions();
-  var weekStartsOn = toInteger((_ref = (_ref2 = (_ref3 = (_options$weekStartsOn = options === null || options === void 0 ? void 0 : options.weekStartsOn) !== null && _options$weekStartsOn !== void 0 ? _options$weekStartsOn : options === null || options === void 0 ? void 0 : (_options$locale = options.locale) === null || _options$locale === void 0 ? void 0 : (_options$locale$optio = _options$locale.options) === null || _options$locale$optio === void 0 ? void 0 : _options$locale$optio.weekStartsOn) !== null && _ref3 !== void 0 ? _ref3 : defaultOptions.weekStartsOn) !== null && _ref2 !== void 0 ? _ref2 : (_defaultOptions$local = defaultOptions.locale) === null || _defaultOptions$local === void 0 ? void 0 : (_defaultOptions$local2 = _defaultOptions$local.options) === null || _defaultOptions$local2 === void 0 ? void 0 : _defaultOptions$local2.weekStartsOn) !== null && _ref !== void 0 ? _ref : 0); // Test if weekStartsOn is between 0 and 6 _and_ is not NaN
-
-  if (!(weekStartsOn >= 0 && weekStartsOn <= 6)) {
-    throw new RangeError('weekStartsOn must be between 0 and 6 inclusively');
-  }
-
-  var date = toDate(dirtyDate);
-  var day = toInteger(dirtyDay);
-  var currentDay = date.getUTCDay();
-  var remainder = day % 7;
-  var dayIndex = (remainder + 7) % 7;
-  var diff = (dayIndex < weekStartsOn ? 7 : 0) + day - currentDay;
-  date.setUTCDate(date.getUTCDate() + diff);
-  return date;
-}
-
-function _typeof$h(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof$h = function _typeof(obj) { return typeof obj; }; } else { _typeof$h = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof$h(obj); }
-
-function _classCallCheck$h(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties$h(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass$h(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties$h(Constructor.prototype, protoProps); if (staticProps) _defineProperties$h(Constructor, staticProps); return Constructor; }
-
-function _inherits$h(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf$h(subClass, superClass); }
-
-function _setPrototypeOf$h(o, p) { _setPrototypeOf$h = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf$h(o, p); }
-
-function _createSuper$h(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct$h(); return function _createSuperInternal() { var Super = _getPrototypeOf$h(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf$h(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn$h(this, result); }; }
-
-function _possibleConstructorReturn$h(self, call) { if (call && (_typeof$h(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized$h(self); }
-
-function _assertThisInitialized$h(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _isNativeReflectConstruct$h() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-
-function _getPrototypeOf$h(o) { _getPrototypeOf$h = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf$h(o); }
-
-function _defineProperty$h(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-var DayParser = /*#__PURE__*/function (_Parser) {
-  _inherits$h(DayParser, _Parser);
-
-  var _super = _createSuper$h(DayParser);
-
-  function DayParser() {
-    var _this;
-
-    _classCallCheck$h(this, DayParser);
-
-    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
-
-    _this = _super.call.apply(_super, [this].concat(args));
-
-    _defineProperty$h(_assertThisInitialized$h(_this), "priority", 90);
-
-    _defineProperty$h(_assertThisInitialized$h(_this), "incompatibleTokens", ['D', 'i', 'e', 'c', 't', 'T']);
-
-    return _this;
-  }
-
-  _createClass$h(DayParser, [{
-    key: "parse",
-    value: function parse(dateString, token, match) {
-      switch (token) {
-        // Tue
-        case 'E':
-        case 'EE':
-        case 'EEE':
-          return match.day(dateString, {
-            width: 'abbreviated',
-            context: 'formatting'
-          }) || match.day(dateString, {
-            width: 'short',
-            context: 'formatting'
-          }) || match.day(dateString, {
-            width: 'narrow',
-            context: 'formatting'
-          });
-        // T
-
-        case 'EEEEE':
-          return match.day(dateString, {
-            width: 'narrow',
-            context: 'formatting'
-          });
-        // Tu
-
-        case 'EEEEEE':
-          return match.day(dateString, {
-            width: 'short',
-            context: 'formatting'
-          }) || match.day(dateString, {
-            width: 'narrow',
-            context: 'formatting'
-          });
-        // Tuesday
-
-        case 'EEEE':
-        default:
-          return match.day(dateString, {
-            width: 'wide',
-            context: 'formatting'
-          }) || match.day(dateString, {
-            width: 'abbreviated',
-            context: 'formatting'
-          }) || match.day(dateString, {
-            width: 'short',
-            context: 'formatting'
-          }) || match.day(dateString, {
-            width: 'narrow',
-            context: 'formatting'
-          });
-      }
-    }
-  }, {
-    key: "validate",
-    value: function validate(_date, value) {
-      return value >= 0 && value <= 6;
-    }
-  }, {
-    key: "set",
-    value: function set(date, _flags, value, options) {
-      date = setUTCDay(date, value, options);
-      date.setUTCHours(0, 0, 0, 0);
-      return date;
-    }
-  }]);
-
-  return DayParser;
-}(Parser);
-
-function _typeof$g(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof$g = function _typeof(obj) { return typeof obj; }; } else { _typeof$g = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof$g(obj); }
-
-function _classCallCheck$g(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties$g(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass$g(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties$g(Constructor.prototype, protoProps); if (staticProps) _defineProperties$g(Constructor, staticProps); return Constructor; }
-
-function _inherits$g(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf$g(subClass, superClass); }
-
-function _setPrototypeOf$g(o, p) { _setPrototypeOf$g = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf$g(o, p); }
-
-function _createSuper$g(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct$g(); return function _createSuperInternal() { var Super = _getPrototypeOf$g(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf$g(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn$g(this, result); }; }
-
-function _possibleConstructorReturn$g(self, call) { if (call && (_typeof$g(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized$g(self); }
-
-function _assertThisInitialized$g(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _isNativeReflectConstruct$g() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-
-function _getPrototypeOf$g(o) { _getPrototypeOf$g = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf$g(o); }
-
-function _defineProperty$g(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-var LocalDayParser = /*#__PURE__*/function (_Parser) {
-  _inherits$g(LocalDayParser, _Parser);
-
-  var _super = _createSuper$g(LocalDayParser);
-
-  function LocalDayParser() {
-    var _this;
-
-    _classCallCheck$g(this, LocalDayParser);
-
-    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
-
-    _this = _super.call.apply(_super, [this].concat(args));
-
-    _defineProperty$g(_assertThisInitialized$g(_this), "priority", 90);
-
-    _defineProperty$g(_assertThisInitialized$g(_this), "incompatibleTokens", ['y', 'R', 'u', 'q', 'Q', 'M', 'L', 'I', 'd', 'D', 'E', 'i', 'c', 't', 'T']);
-
-    return _this;
-  }
-
-  _createClass$g(LocalDayParser, [{
-    key: "parse",
-    value: function parse(dateString, token, match, options) {
-      var valueCallback = function valueCallback(value) {
-        var wholeWeekDays = Math.floor((value - 1) / 7) * 7;
-        return (value + options.weekStartsOn + 6) % 7 + wholeWeekDays;
-      };
-
-      switch (token) {
-        // 3
-        case 'e':
-        case 'ee':
-          // 03
-          return mapValue(parseNDigits(token.length, dateString), valueCallback);
-        // 3rd
-
-        case 'eo':
-          return mapValue(match.ordinalNumber(dateString, {
-            unit: 'day'
-          }), valueCallback);
-        // Tue
-
-        case 'eee':
-          return match.day(dateString, {
-            width: 'abbreviated',
-            context: 'formatting'
-          }) || match.day(dateString, {
-            width: 'short',
-            context: 'formatting'
-          }) || match.day(dateString, {
-            width: 'narrow',
-            context: 'formatting'
-          });
-        // T
-
-        case 'eeeee':
-          return match.day(dateString, {
-            width: 'narrow',
-            context: 'formatting'
-          });
-        // Tu
-
-        case 'eeeeee':
-          return match.day(dateString, {
-            width: 'short',
-            context: 'formatting'
-          }) || match.day(dateString, {
-            width: 'narrow',
-            context: 'formatting'
-          });
-        // Tuesday
-
-        case 'eeee':
-        default:
-          return match.day(dateString, {
-            width: 'wide',
-            context: 'formatting'
-          }) || match.day(dateString, {
-            width: 'abbreviated',
-            context: 'formatting'
-          }) || match.day(dateString, {
-            width: 'short',
-            context: 'formatting'
-          }) || match.day(dateString, {
-            width: 'narrow',
-            context: 'formatting'
-          });
-      }
-    }
-  }, {
-    key: "validate",
-    value: function validate(_date, value) {
-      return value >= 0 && value <= 6;
-    }
-  }, {
-    key: "set",
-    value: function set(date, _flags, value, options) {
-      date = setUTCDay(date, value, options);
-      date.setUTCHours(0, 0, 0, 0);
-      return date;
-    }
-  }]);
-
-  return LocalDayParser;
-}(Parser);
-
-function _typeof$f(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof$f = function _typeof(obj) { return typeof obj; }; } else { _typeof$f = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof$f(obj); }
-
-function _classCallCheck$f(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties$f(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass$f(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties$f(Constructor.prototype, protoProps); if (staticProps) _defineProperties$f(Constructor, staticProps); return Constructor; }
-
-function _inherits$f(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf$f(subClass, superClass); }
-
-function _setPrototypeOf$f(o, p) { _setPrototypeOf$f = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf$f(o, p); }
-
-function _createSuper$f(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct$f(); return function _createSuperInternal() { var Super = _getPrototypeOf$f(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf$f(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn$f(this, result); }; }
-
-function _possibleConstructorReturn$f(self, call) { if (call && (_typeof$f(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized$f(self); }
-
-function _assertThisInitialized$f(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _isNativeReflectConstruct$f() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-
-function _getPrototypeOf$f(o) { _getPrototypeOf$f = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf$f(o); }
-
-function _defineProperty$f(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-var StandAloneLocalDayParser = /*#__PURE__*/function (_Parser) {
-  _inherits$f(StandAloneLocalDayParser, _Parser);
-
-  var _super = _createSuper$f(StandAloneLocalDayParser);
-
-  function StandAloneLocalDayParser() {
-    var _this;
-
-    _classCallCheck$f(this, StandAloneLocalDayParser);
-
-    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
-
-    _this = _super.call.apply(_super, [this].concat(args));
-
-    _defineProperty$f(_assertThisInitialized$f(_this), "priority", 90);
-
-    _defineProperty$f(_assertThisInitialized$f(_this), "incompatibleTokens", ['y', 'R', 'u', 'q', 'Q', 'M', 'L', 'I', 'd', 'D', 'E', 'i', 'e', 't', 'T']);
-
-    return _this;
-  }
-
-  _createClass$f(StandAloneLocalDayParser, [{
-    key: "parse",
-    value: function parse(dateString, token, match, options) {
-      var valueCallback = function valueCallback(value) {
-        var wholeWeekDays = Math.floor((value - 1) / 7) * 7;
-        return (value + options.weekStartsOn + 6) % 7 + wholeWeekDays;
-      };
-
-      switch (token) {
-        // 3
-        case 'c':
-        case 'cc':
-          // 03
-          return mapValue(parseNDigits(token.length, dateString), valueCallback);
-        // 3rd
-
-        case 'co':
-          return mapValue(match.ordinalNumber(dateString, {
-            unit: 'day'
-          }), valueCallback);
-        // Tue
-
-        case 'ccc':
-          return match.day(dateString, {
-            width: 'abbreviated',
-            context: 'standalone'
-          }) || match.day(dateString, {
-            width: 'short',
-            context: 'standalone'
-          }) || match.day(dateString, {
-            width: 'narrow',
-            context: 'standalone'
-          });
-        // T
-
-        case 'ccccc':
-          return match.day(dateString, {
-            width: 'narrow',
-            context: 'standalone'
-          });
-        // Tu
-
-        case 'cccccc':
-          return match.day(dateString, {
-            width: 'short',
-            context: 'standalone'
-          }) || match.day(dateString, {
-            width: 'narrow',
-            context: 'standalone'
-          });
-        // Tuesday
-
-        case 'cccc':
-        default:
-          return match.day(dateString, {
-            width: 'wide',
-            context: 'standalone'
-          }) || match.day(dateString, {
-            width: 'abbreviated',
-            context: 'standalone'
-          }) || match.day(dateString, {
-            width: 'short',
-            context: 'standalone'
-          }) || match.day(dateString, {
-            width: 'narrow',
-            context: 'standalone'
-          });
-      }
-    }
-  }, {
-    key: "validate",
-    value: function validate(_date, value) {
-      return value >= 0 && value <= 6;
-    }
-  }, {
-    key: "set",
-    value: function set(date, _flags, value, options) {
-      date = setUTCDay(date, value, options);
-      date.setUTCHours(0, 0, 0, 0);
-      return date;
-    }
-  }]);
-
-  return StandAloneLocalDayParser;
-}(Parser);
-
-function setUTCISODay(dirtyDate, dirtyDay) {
-  requiredArgs(2, arguments);
-  var day = toInteger(dirtyDay);
-
-  if (day % 7 === 0) {
-    day = day - 7;
-  }
-
-  var weekStartsOn = 1;
-  var date = toDate(dirtyDate);
-  var currentDay = date.getUTCDay();
-  var remainder = day % 7;
-  var dayIndex = (remainder + 7) % 7;
-  var diff = (dayIndex < weekStartsOn ? 7 : 0) + day - currentDay;
-  date.setUTCDate(date.getUTCDate() + diff);
-  return date;
-}
-
-function _typeof$e(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof$e = function _typeof(obj) { return typeof obj; }; } else { _typeof$e = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof$e(obj); }
-
-function _classCallCheck$e(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties$e(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass$e(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties$e(Constructor.prototype, protoProps); if (staticProps) _defineProperties$e(Constructor, staticProps); return Constructor; }
-
-function _inherits$e(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf$e(subClass, superClass); }
-
-function _setPrototypeOf$e(o, p) { _setPrototypeOf$e = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf$e(o, p); }
-
-function _createSuper$e(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct$e(); return function _createSuperInternal() { var Super = _getPrototypeOf$e(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf$e(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn$e(this, result); }; }
-
-function _possibleConstructorReturn$e(self, call) { if (call && (_typeof$e(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized$e(self); }
-
-function _assertThisInitialized$e(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _isNativeReflectConstruct$e() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-
-function _getPrototypeOf$e(o) { _getPrototypeOf$e = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf$e(o); }
-
-function _defineProperty$e(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-var ISODayParser = /*#__PURE__*/function (_Parser) {
-  _inherits$e(ISODayParser, _Parser);
-
-  var _super = _createSuper$e(ISODayParser);
-
-  function ISODayParser() {
-    var _this;
-
-    _classCallCheck$e(this, ISODayParser);
-
-    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
-
-    _this = _super.call.apply(_super, [this].concat(args));
-
-    _defineProperty$e(_assertThisInitialized$e(_this), "priority", 90);
-
-    _defineProperty$e(_assertThisInitialized$e(_this), "incompatibleTokens", ['y', 'Y', 'u', 'q', 'Q', 'M', 'L', 'w', 'd', 'D', 'E', 'e', 'c', 't', 'T']);
-
-    return _this;
-  }
-
-  _createClass$e(ISODayParser, [{
-    key: "parse",
-    value: function parse(dateString, token, match) {
-      var valueCallback = function valueCallback(value) {
-        if (value === 0) {
-          return 7;
-        }
-
-        return value;
-      };
-
-      switch (token) {
-        // 2
-        case 'i':
-        case 'ii':
-          // 02
-          return parseNDigits(token.length, dateString);
-        // 2nd
-
-        case 'io':
-          return match.ordinalNumber(dateString, {
-            unit: 'day'
-          });
-        // Tue
-
-        case 'iii':
-          return mapValue(match.day(dateString, {
-            width: 'abbreviated',
-            context: 'formatting'
-          }) || match.day(dateString, {
-            width: 'short',
-            context: 'formatting'
-          }) || match.day(dateString, {
-            width: 'narrow',
-            context: 'formatting'
-          }), valueCallback);
-        // T
-
-        case 'iiiii':
-          return mapValue(match.day(dateString, {
-            width: 'narrow',
-            context: 'formatting'
-          }), valueCallback);
-        // Tu
-
-        case 'iiiiii':
-          return mapValue(match.day(dateString, {
-            width: 'short',
-            context: 'formatting'
-          }) || match.day(dateString, {
-            width: 'narrow',
-            context: 'formatting'
-          }), valueCallback);
-        // Tuesday
-
-        case 'iiii':
-        default:
-          return mapValue(match.day(dateString, {
-            width: 'wide',
-            context: 'formatting'
-          }) || match.day(dateString, {
-            width: 'abbreviated',
-            context: 'formatting'
-          }) || match.day(dateString, {
-            width: 'short',
-            context: 'formatting'
-          }) || match.day(dateString, {
-            width: 'narrow',
-            context: 'formatting'
-          }), valueCallback);
-      }
-    }
-  }, {
-    key: "validate",
-    value: function validate(_date, value) {
-      return value >= 1 && value <= 7;
-    }
-  }, {
-    key: "set",
-    value: function set(date, _flags, value) {
-      date = setUTCISODay(date, value);
-      date.setUTCHours(0, 0, 0, 0);
-      return date;
-    }
-  }]);
-
-  return ISODayParser;
-}(Parser);
-
-function _typeof$d(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof$d = function _typeof(obj) { return typeof obj; }; } else { _typeof$d = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof$d(obj); }
-
-function _classCallCheck$d(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties$d(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass$d(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties$d(Constructor.prototype, protoProps); if (staticProps) _defineProperties$d(Constructor, staticProps); return Constructor; }
-
-function _inherits$d(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf$d(subClass, superClass); }
-
-function _setPrototypeOf$d(o, p) { _setPrototypeOf$d = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf$d(o, p); }
-
-function _createSuper$d(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct$d(); return function _createSuperInternal() { var Super = _getPrototypeOf$d(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf$d(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn$d(this, result); }; }
-
-function _possibleConstructorReturn$d(self, call) { if (call && (_typeof$d(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized$d(self); }
-
-function _assertThisInitialized$d(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _isNativeReflectConstruct$d() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-
-function _getPrototypeOf$d(o) { _getPrototypeOf$d = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf$d(o); }
-
-function _defineProperty$d(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-var AMPMParser = /*#__PURE__*/function (_Parser) {
-  _inherits$d(AMPMParser, _Parser);
-
-  var _super = _createSuper$d(AMPMParser);
-
-  function AMPMParser() {
-    var _this;
-
-    _classCallCheck$d(this, AMPMParser);
-
-    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
-
-    _this = _super.call.apply(_super, [this].concat(args));
-
-    _defineProperty$d(_assertThisInitialized$d(_this), "priority", 80);
-
-    _defineProperty$d(_assertThisInitialized$d(_this), "incompatibleTokens", ['b', 'B', 'H', 'k', 't', 'T']);
-
-    return _this;
-  }
-
-  _createClass$d(AMPMParser, [{
-    key: "parse",
-    value: function parse(dateString, token, match) {
-      switch (token) {
-        case 'a':
-        case 'aa':
-        case 'aaa':
-          return match.dayPeriod(dateString, {
-            width: 'abbreviated',
-            context: 'formatting'
-          }) || match.dayPeriod(dateString, {
-            width: 'narrow',
-            context: 'formatting'
-          });
-
-        case 'aaaaa':
-          return match.dayPeriod(dateString, {
-            width: 'narrow',
-            context: 'formatting'
-          });
-
-        case 'aaaa':
-        default:
-          return match.dayPeriod(dateString, {
-            width: 'wide',
-            context: 'formatting'
-          }) || match.dayPeriod(dateString, {
-            width: 'abbreviated',
-            context: 'formatting'
-          }) || match.dayPeriod(dateString, {
-            width: 'narrow',
-            context: 'formatting'
-          });
-      }
-    }
-  }, {
-    key: "set",
-    value: function set(date, _flags, value) {
-      date.setUTCHours(dayPeriodEnumToHours(value), 0, 0, 0);
-      return date;
-    }
-  }]);
-
-  return AMPMParser;
-}(Parser);
-
-function _typeof$c(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof$c = function _typeof(obj) { return typeof obj; }; } else { _typeof$c = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof$c(obj); }
-
-function _classCallCheck$c(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties$c(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass$c(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties$c(Constructor.prototype, protoProps); if (staticProps) _defineProperties$c(Constructor, staticProps); return Constructor; }
-
-function _inherits$c(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf$c(subClass, superClass); }
-
-function _setPrototypeOf$c(o, p) { _setPrototypeOf$c = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf$c(o, p); }
-
-function _createSuper$c(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct$c(); return function _createSuperInternal() { var Super = _getPrototypeOf$c(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf$c(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn$c(this, result); }; }
-
-function _possibleConstructorReturn$c(self, call) { if (call && (_typeof$c(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized$c(self); }
-
-function _assertThisInitialized$c(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _isNativeReflectConstruct$c() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-
-function _getPrototypeOf$c(o) { _getPrototypeOf$c = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf$c(o); }
-
-function _defineProperty$c(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-var AMPMMidnightParser = /*#__PURE__*/function (_Parser) {
-  _inherits$c(AMPMMidnightParser, _Parser);
-
-  var _super = _createSuper$c(AMPMMidnightParser);
-
-  function AMPMMidnightParser() {
-    var _this;
-
-    _classCallCheck$c(this, AMPMMidnightParser);
-
-    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
-
-    _this = _super.call.apply(_super, [this].concat(args));
-
-    _defineProperty$c(_assertThisInitialized$c(_this), "priority", 80);
-
-    _defineProperty$c(_assertThisInitialized$c(_this), "incompatibleTokens", ['a', 'B', 'H', 'k', 't', 'T']);
-
-    return _this;
-  }
-
-  _createClass$c(AMPMMidnightParser, [{
-    key: "parse",
-    value: function parse(dateString, token, match) {
-      switch (token) {
-        case 'b':
-        case 'bb':
-        case 'bbb':
-          return match.dayPeriod(dateString, {
-            width: 'abbreviated',
-            context: 'formatting'
-          }) || match.dayPeriod(dateString, {
-            width: 'narrow',
-            context: 'formatting'
-          });
-
-        case 'bbbbb':
-          return match.dayPeriod(dateString, {
-            width: 'narrow',
-            context: 'formatting'
-          });
-
-        case 'bbbb':
-        default:
-          return match.dayPeriod(dateString, {
-            width: 'wide',
-            context: 'formatting'
-          }) || match.dayPeriod(dateString, {
-            width: 'abbreviated',
-            context: 'formatting'
-          }) || match.dayPeriod(dateString, {
-            width: 'narrow',
-            context: 'formatting'
-          });
-      }
-    }
-  }, {
-    key: "set",
-    value: function set(date, _flags, value) {
-      date.setUTCHours(dayPeriodEnumToHours(value), 0, 0, 0);
-      return date;
-    }
-  }]);
-
-  return AMPMMidnightParser;
-}(Parser);
-
-function _typeof$b(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof$b = function _typeof(obj) { return typeof obj; }; } else { _typeof$b = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof$b(obj); }
-
-function _classCallCheck$b(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties$b(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass$b(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties$b(Constructor.prototype, protoProps); if (staticProps) _defineProperties$b(Constructor, staticProps); return Constructor; }
-
-function _inherits$b(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf$b(subClass, superClass); }
-
-function _setPrototypeOf$b(o, p) { _setPrototypeOf$b = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf$b(o, p); }
-
-function _createSuper$b(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct$b(); return function _createSuperInternal() { var Super = _getPrototypeOf$b(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf$b(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn$b(this, result); }; }
-
-function _possibleConstructorReturn$b(self, call) { if (call && (_typeof$b(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized$b(self); }
-
-function _assertThisInitialized$b(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _isNativeReflectConstruct$b() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-
-function _getPrototypeOf$b(o) { _getPrototypeOf$b = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf$b(o); }
-
-function _defineProperty$b(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-var DayPeriodParser = /*#__PURE__*/function (_Parser) {
-  _inherits$b(DayPeriodParser, _Parser);
-
-  var _super = _createSuper$b(DayPeriodParser);
-
-  function DayPeriodParser() {
-    var _this;
-
-    _classCallCheck$b(this, DayPeriodParser);
-
-    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
-
-    _this = _super.call.apply(_super, [this].concat(args));
-
-    _defineProperty$b(_assertThisInitialized$b(_this), "priority", 80);
-
-    _defineProperty$b(_assertThisInitialized$b(_this), "incompatibleTokens", ['a', 'b', 't', 'T']);
-
-    return _this;
-  }
-
-  _createClass$b(DayPeriodParser, [{
-    key: "parse",
-    value: function parse(dateString, token, match) {
-      switch (token) {
-        case 'B':
-        case 'BB':
-        case 'BBB':
-          return match.dayPeriod(dateString, {
-            width: 'abbreviated',
-            context: 'formatting'
-          }) || match.dayPeriod(dateString, {
-            width: 'narrow',
-            context: 'formatting'
-          });
-
-        case 'BBBBB':
-          return match.dayPeriod(dateString, {
-            width: 'narrow',
-            context: 'formatting'
-          });
-
-        case 'BBBB':
-        default:
-          return match.dayPeriod(dateString, {
-            width: 'wide',
-            context: 'formatting'
-          }) || match.dayPeriod(dateString, {
-            width: 'abbreviated',
-            context: 'formatting'
-          }) || match.dayPeriod(dateString, {
-            width: 'narrow',
-            context: 'formatting'
-          });
-      }
-    }
-  }, {
-    key: "set",
-    value: function set(date, _flags, value) {
-      date.setUTCHours(dayPeriodEnumToHours(value), 0, 0, 0);
-      return date;
-    }
-  }]);
-
-  return DayPeriodParser;
-}(Parser);
-
-function _typeof$a(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof$a = function _typeof(obj) { return typeof obj; }; } else { _typeof$a = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof$a(obj); }
-
-function _classCallCheck$a(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties$a(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass$a(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties$a(Constructor.prototype, protoProps); if (staticProps) _defineProperties$a(Constructor, staticProps); return Constructor; }
-
-function _inherits$a(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf$a(subClass, superClass); }
-
-function _setPrototypeOf$a(o, p) { _setPrototypeOf$a = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf$a(o, p); }
-
-function _createSuper$a(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct$a(); return function _createSuperInternal() { var Super = _getPrototypeOf$a(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf$a(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn$a(this, result); }; }
-
-function _possibleConstructorReturn$a(self, call) { if (call && (_typeof$a(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized$a(self); }
-
-function _assertThisInitialized$a(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _isNativeReflectConstruct$a() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-
-function _getPrototypeOf$a(o) { _getPrototypeOf$a = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf$a(o); }
-
-function _defineProperty$a(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-var Hour1to12Parser = /*#__PURE__*/function (_Parser) {
-  _inherits$a(Hour1to12Parser, _Parser);
-
-  var _super = _createSuper$a(Hour1to12Parser);
-
-  function Hour1to12Parser() {
-    var _this;
-
-    _classCallCheck$a(this, Hour1to12Parser);
-
-    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
-
-    _this = _super.call.apply(_super, [this].concat(args));
-
-    _defineProperty$a(_assertThisInitialized$a(_this), "priority", 70);
-
-    _defineProperty$a(_assertThisInitialized$a(_this), "incompatibleTokens", ['H', 'K', 'k', 't', 'T']);
-
-    return _this;
-  }
-
-  _createClass$a(Hour1to12Parser, [{
-    key: "parse",
-    value: function parse(dateString, token, match) {
-      switch (token) {
-        case 'h':
-          return parseNumericPattern(numericPatterns.hour12h, dateString);
-
-        case 'ho':
-          return match.ordinalNumber(dateString, {
-            unit: 'hour'
-          });
-
-        default:
-          return parseNDigits(token.length, dateString);
-      }
-    }
-  }, {
-    key: "validate",
-    value: function validate(_date, value) {
-      return value >= 1 && value <= 12;
-    }
-  }, {
-    key: "set",
-    value: function set(date, _flags, value) {
-      var isPM = date.getUTCHours() >= 12;
-
-      if (isPM && value < 12) {
-        date.setUTCHours(value + 12, 0, 0, 0);
-      } else if (!isPM && value === 12) {
-        date.setUTCHours(0, 0, 0, 0);
-      } else {
-        date.setUTCHours(value, 0, 0, 0);
-      }
-
-      return date;
-    }
-  }]);
-
-  return Hour1to12Parser;
-}(Parser);
-
-function _typeof$9(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof$9 = function _typeof(obj) { return typeof obj; }; } else { _typeof$9 = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof$9(obj); }
-
-function _classCallCheck$9(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties$9(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass$9(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties$9(Constructor.prototype, protoProps); if (staticProps) _defineProperties$9(Constructor, staticProps); return Constructor; }
-
-function _inherits$9(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf$9(subClass, superClass); }
-
-function _setPrototypeOf$9(o, p) { _setPrototypeOf$9 = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf$9(o, p); }
-
-function _createSuper$9(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct$9(); return function _createSuperInternal() { var Super = _getPrototypeOf$9(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf$9(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn$9(this, result); }; }
-
-function _possibleConstructorReturn$9(self, call) { if (call && (_typeof$9(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized$9(self); }
-
-function _assertThisInitialized$9(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _isNativeReflectConstruct$9() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-
-function _getPrototypeOf$9(o) { _getPrototypeOf$9 = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf$9(o); }
-
-function _defineProperty$9(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-var Hour0to23Parser = /*#__PURE__*/function (_Parser) {
-  _inherits$9(Hour0to23Parser, _Parser);
-
-  var _super = _createSuper$9(Hour0to23Parser);
-
-  function Hour0to23Parser() {
-    var _this;
-
-    _classCallCheck$9(this, Hour0to23Parser);
-
-    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
-
-    _this = _super.call.apply(_super, [this].concat(args));
-
-    _defineProperty$9(_assertThisInitialized$9(_this), "priority", 70);
-
-    _defineProperty$9(_assertThisInitialized$9(_this), "incompatibleTokens", ['a', 'b', 'h', 'K', 'k', 't', 'T']);
-
-    return _this;
-  }
-
-  _createClass$9(Hour0to23Parser, [{
-    key: "parse",
-    value: function parse(dateString, token, match) {
-      switch (token) {
-        case 'H':
-          return parseNumericPattern(numericPatterns.hour23h, dateString);
-
-        case 'Ho':
-          return match.ordinalNumber(dateString, {
-            unit: 'hour'
-          });
-
-        default:
-          return parseNDigits(token.length, dateString);
-      }
-    }
-  }, {
-    key: "validate",
-    value: function validate(_date, value) {
-      return value >= 0 && value <= 23;
-    }
-  }, {
-    key: "set",
-    value: function set(date, _flags, value) {
-      date.setUTCHours(value, 0, 0, 0);
-      return date;
-    }
-  }]);
-
-  return Hour0to23Parser;
-}(Parser);
-
-function _typeof$8(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof$8 = function _typeof(obj) { return typeof obj; }; } else { _typeof$8 = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof$8(obj); }
-
-function _classCallCheck$8(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties$8(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass$8(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties$8(Constructor.prototype, protoProps); if (staticProps) _defineProperties$8(Constructor, staticProps); return Constructor; }
-
-function _inherits$8(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf$8(subClass, superClass); }
-
-function _setPrototypeOf$8(o, p) { _setPrototypeOf$8 = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf$8(o, p); }
-
-function _createSuper$8(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct$8(); return function _createSuperInternal() { var Super = _getPrototypeOf$8(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf$8(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn$8(this, result); }; }
-
-function _possibleConstructorReturn$8(self, call) { if (call && (_typeof$8(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized$8(self); }
-
-function _assertThisInitialized$8(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _isNativeReflectConstruct$8() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-
-function _getPrototypeOf$8(o) { _getPrototypeOf$8 = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf$8(o); }
-
-function _defineProperty$8(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-var Hour0To11Parser = /*#__PURE__*/function (_Parser) {
-  _inherits$8(Hour0To11Parser, _Parser);
-
-  var _super = _createSuper$8(Hour0To11Parser);
-
-  function Hour0To11Parser() {
-    var _this;
-
-    _classCallCheck$8(this, Hour0To11Parser);
-
-    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
-
-    _this = _super.call.apply(_super, [this].concat(args));
-
-    _defineProperty$8(_assertThisInitialized$8(_this), "priority", 70);
-
-    _defineProperty$8(_assertThisInitialized$8(_this), "incompatibleTokens", ['h', 'H', 'k', 't', 'T']);
-
-    return _this;
-  }
-
-  _createClass$8(Hour0To11Parser, [{
-    key: "parse",
-    value: function parse(dateString, token, match) {
-      switch (token) {
-        case 'K':
-          return parseNumericPattern(numericPatterns.hour11h, dateString);
-
-        case 'Ko':
-          return match.ordinalNumber(dateString, {
-            unit: 'hour'
-          });
-
-        default:
-          return parseNDigits(token.length, dateString);
-      }
-    }
-  }, {
-    key: "validate",
-    value: function validate(_date, value) {
-      return value >= 0 && value <= 11;
-    }
-  }, {
-    key: "set",
-    value: function set(date, _flags, value) {
-      var isPM = date.getUTCHours() >= 12;
-
-      if (isPM && value < 12) {
-        date.setUTCHours(value + 12, 0, 0, 0);
-      } else {
-        date.setUTCHours(value, 0, 0, 0);
-      }
-
-      return date;
-    }
-  }]);
-
-  return Hour0To11Parser;
-}(Parser);
-
-function _typeof$7(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof$7 = function _typeof(obj) { return typeof obj; }; } else { _typeof$7 = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof$7(obj); }
-
-function _classCallCheck$7(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties$7(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass$7(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties$7(Constructor.prototype, protoProps); if (staticProps) _defineProperties$7(Constructor, staticProps); return Constructor; }
-
-function _inherits$7(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf$7(subClass, superClass); }
-
-function _setPrototypeOf$7(o, p) { _setPrototypeOf$7 = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf$7(o, p); }
-
-function _createSuper$7(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct$7(); return function _createSuperInternal() { var Super = _getPrototypeOf$7(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf$7(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn$7(this, result); }; }
-
-function _possibleConstructorReturn$7(self, call) { if (call && (_typeof$7(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized$7(self); }
-
-function _assertThisInitialized$7(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _isNativeReflectConstruct$7() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-
-function _getPrototypeOf$7(o) { _getPrototypeOf$7 = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf$7(o); }
-
-function _defineProperty$7(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-var Hour1To24Parser = /*#__PURE__*/function (_Parser) {
-  _inherits$7(Hour1To24Parser, _Parser);
-
-  var _super = _createSuper$7(Hour1To24Parser);
-
-  function Hour1To24Parser() {
-    var _this;
-
-    _classCallCheck$7(this, Hour1To24Parser);
-
-    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
-
-    _this = _super.call.apply(_super, [this].concat(args));
-
-    _defineProperty$7(_assertThisInitialized$7(_this), "priority", 70);
-
-    _defineProperty$7(_assertThisInitialized$7(_this), "incompatibleTokens", ['a', 'b', 'h', 'H', 'K', 't', 'T']);
-
-    return _this;
-  }
-
-  _createClass$7(Hour1To24Parser, [{
-    key: "parse",
-    value: function parse(dateString, token, match) {
-      switch (token) {
-        case 'k':
-          return parseNumericPattern(numericPatterns.hour24h, dateString);
-
-        case 'ko':
-          return match.ordinalNumber(dateString, {
-            unit: 'hour'
-          });
-
-        default:
-          return parseNDigits(token.length, dateString);
-      }
-    }
-  }, {
-    key: "validate",
-    value: function validate(_date, value) {
-      return value >= 1 && value <= 24;
-    }
-  }, {
-    key: "set",
-    value: function set(date, _flags, value) {
-      var hours = value <= 24 ? value % 24 : value;
-      date.setUTCHours(hours, 0, 0, 0);
-      return date;
-    }
-  }]);
-
-  return Hour1To24Parser;
-}(Parser);
-
-function _typeof$6(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof$6 = function _typeof(obj) { return typeof obj; }; } else { _typeof$6 = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof$6(obj); }
-
-function _classCallCheck$6(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties$6(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass$6(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties$6(Constructor.prototype, protoProps); if (staticProps) _defineProperties$6(Constructor, staticProps); return Constructor; }
-
-function _inherits$6(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf$6(subClass, superClass); }
-
-function _setPrototypeOf$6(o, p) { _setPrototypeOf$6 = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf$6(o, p); }
-
-function _createSuper$6(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct$6(); return function _createSuperInternal() { var Super = _getPrototypeOf$6(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf$6(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn$6(this, result); }; }
-
-function _possibleConstructorReturn$6(self, call) { if (call && (_typeof$6(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized$6(self); }
-
-function _assertThisInitialized$6(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _isNativeReflectConstruct$6() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-
-function _getPrototypeOf$6(o) { _getPrototypeOf$6 = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf$6(o); }
-
-function _defineProperty$6(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-var MinuteParser = /*#__PURE__*/function (_Parser) {
-  _inherits$6(MinuteParser, _Parser);
-
-  var _super = _createSuper$6(MinuteParser);
-
-  function MinuteParser() {
-    var _this;
-
-    _classCallCheck$6(this, MinuteParser);
-
-    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
-
-    _this = _super.call.apply(_super, [this].concat(args));
-
-    _defineProperty$6(_assertThisInitialized$6(_this), "priority", 60);
-
-    _defineProperty$6(_assertThisInitialized$6(_this), "incompatibleTokens", ['t', 'T']);
-
-    return _this;
-  }
-
-  _createClass$6(MinuteParser, [{
-    key: "parse",
-    value: function parse(dateString, token, match) {
-      switch (token) {
-        case 'm':
-          return parseNumericPattern(numericPatterns.minute, dateString);
-
-        case 'mo':
-          return match.ordinalNumber(dateString, {
-            unit: 'minute'
-          });
-
-        default:
-          return parseNDigits(token.length, dateString);
-      }
-    }
-  }, {
-    key: "validate",
-    value: function validate(_date, value) {
-      return value >= 0 && value <= 59;
-    }
-  }, {
-    key: "set",
-    value: function set(date, _flags, value) {
-      date.setUTCMinutes(value, 0, 0);
-      return date;
-    }
-  }]);
-
-  return MinuteParser;
-}(Parser);
-
-function _typeof$5(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof$5 = function _typeof(obj) { return typeof obj; }; } else { _typeof$5 = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof$5(obj); }
-
-function _classCallCheck$5(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties$5(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass$5(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties$5(Constructor.prototype, protoProps); if (staticProps) _defineProperties$5(Constructor, staticProps); return Constructor; }
-
-function _inherits$5(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf$5(subClass, superClass); }
-
-function _setPrototypeOf$5(o, p) { _setPrototypeOf$5 = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf$5(o, p); }
-
-function _createSuper$5(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct$5(); return function _createSuperInternal() { var Super = _getPrototypeOf$5(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf$5(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn$5(this, result); }; }
-
-function _possibleConstructorReturn$5(self, call) { if (call && (_typeof$5(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized$5(self); }
-
-function _assertThisInitialized$5(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _isNativeReflectConstruct$5() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-
-function _getPrototypeOf$5(o) { _getPrototypeOf$5 = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf$5(o); }
-
-function _defineProperty$5(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-var SecondParser = /*#__PURE__*/function (_Parser) {
-  _inherits$5(SecondParser, _Parser);
-
-  var _super = _createSuper$5(SecondParser);
-
-  function SecondParser() {
-    var _this;
-
-    _classCallCheck$5(this, SecondParser);
-
-    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
-
-    _this = _super.call.apply(_super, [this].concat(args));
-
-    _defineProperty$5(_assertThisInitialized$5(_this), "priority", 50);
-
-    _defineProperty$5(_assertThisInitialized$5(_this), "incompatibleTokens", ['t', 'T']);
-
-    return _this;
-  }
-
-  _createClass$5(SecondParser, [{
-    key: "parse",
-    value: function parse(dateString, token, match) {
-      switch (token) {
-        case 's':
-          return parseNumericPattern(numericPatterns.second, dateString);
-
-        case 'so':
-          return match.ordinalNumber(dateString, {
-            unit: 'second'
-          });
-
-        default:
-          return parseNDigits(token.length, dateString);
-      }
-    }
-  }, {
-    key: "validate",
-    value: function validate(_date, value) {
-      return value >= 0 && value <= 59;
-    }
-  }, {
-    key: "set",
-    value: function set(date, _flags, value) {
-      date.setUTCSeconds(value, 0);
-      return date;
-    }
-  }]);
-
-  return SecondParser;
-}(Parser);
-
-function _typeof$4(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof$4 = function _typeof(obj) { return typeof obj; }; } else { _typeof$4 = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof$4(obj); }
-
-function _classCallCheck$4(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties$4(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass$4(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties$4(Constructor.prototype, protoProps); if (staticProps) _defineProperties$4(Constructor, staticProps); return Constructor; }
-
-function _inherits$4(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf$4(subClass, superClass); }
-
-function _setPrototypeOf$4(o, p) { _setPrototypeOf$4 = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf$4(o, p); }
-
-function _createSuper$4(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct$4(); return function _createSuperInternal() { var Super = _getPrototypeOf$4(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf$4(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn$4(this, result); }; }
-
-function _possibleConstructorReturn$4(self, call) { if (call && (_typeof$4(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized$4(self); }
-
-function _assertThisInitialized$4(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _isNativeReflectConstruct$4() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-
-function _getPrototypeOf$4(o) { _getPrototypeOf$4 = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf$4(o); }
-
-function _defineProperty$4(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-var FractionOfSecondParser = /*#__PURE__*/function (_Parser) {
-  _inherits$4(FractionOfSecondParser, _Parser);
-
-  var _super = _createSuper$4(FractionOfSecondParser);
-
-  function FractionOfSecondParser() {
-    var _this;
-
-    _classCallCheck$4(this, FractionOfSecondParser);
-
-    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
-
-    _this = _super.call.apply(_super, [this].concat(args));
-
-    _defineProperty$4(_assertThisInitialized$4(_this), "priority", 30);
-
-    _defineProperty$4(_assertThisInitialized$4(_this), "incompatibleTokens", ['t', 'T']);
-
-    return _this;
-  }
-
-  _createClass$4(FractionOfSecondParser, [{
-    key: "parse",
-    value: function parse(dateString, token) {
-      var valueCallback = function valueCallback(value) {
-        return Math.floor(value * Math.pow(10, -token.length + 3));
-      };
-
-      return mapValue(parseNDigits(token.length, dateString), valueCallback);
-    }
-  }, {
-    key: "set",
-    value: function set(date, _flags, value) {
-      date.setUTCMilliseconds(value);
-      return date;
-    }
-  }]);
-
-  return FractionOfSecondParser;
-}(Parser);
-
-function _typeof$3(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof$3 = function _typeof(obj) { return typeof obj; }; } else { _typeof$3 = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof$3(obj); }
-
-function _classCallCheck$3(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties$3(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass$3(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties$3(Constructor.prototype, protoProps); if (staticProps) _defineProperties$3(Constructor, staticProps); return Constructor; }
-
-function _inherits$3(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf$3(subClass, superClass); }
-
-function _setPrototypeOf$3(o, p) { _setPrototypeOf$3 = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf$3(o, p); }
-
-function _createSuper$3(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct$3(); return function _createSuperInternal() { var Super = _getPrototypeOf$3(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf$3(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn$3(this, result); }; }
-
-function _possibleConstructorReturn$3(self, call) { if (call && (_typeof$3(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized$3(self); }
-
-function _assertThisInitialized$3(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _isNativeReflectConstruct$3() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-
-function _getPrototypeOf$3(o) { _getPrototypeOf$3 = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf$3(o); }
-
-function _defineProperty$3(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-var ISOTimezoneWithZParser = /*#__PURE__*/function (_Parser) {
-  _inherits$3(ISOTimezoneWithZParser, _Parser);
-
-  var _super = _createSuper$3(ISOTimezoneWithZParser);
-
-  function ISOTimezoneWithZParser() {
-    var _this;
-
-    _classCallCheck$3(this, ISOTimezoneWithZParser);
-
-    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
-
-    _this = _super.call.apply(_super, [this].concat(args));
-
-    _defineProperty$3(_assertThisInitialized$3(_this), "priority", 10);
-
-    _defineProperty$3(_assertThisInitialized$3(_this), "incompatibleTokens", ['t', 'T', 'x']);
-
-    return _this;
-  }
-
-  _createClass$3(ISOTimezoneWithZParser, [{
-    key: "parse",
-    value: function parse(dateString, token) {
-      switch (token) {
-        case 'X':
-          return parseTimezonePattern(timezonePatterns.basicOptionalMinutes, dateString);
-
-        case 'XX':
-          return parseTimezonePattern(timezonePatterns.basic, dateString);
-
-        case 'XXXX':
-          return parseTimezonePattern(timezonePatterns.basicOptionalSeconds, dateString);
-
-        case 'XXXXX':
-          return parseTimezonePattern(timezonePatterns.extendedOptionalSeconds, dateString);
-
-        case 'XXX':
-        default:
-          return parseTimezonePattern(timezonePatterns.extended, dateString);
-      }
-    }
-  }, {
-    key: "set",
-    value: function set(date, flags, value) {
-      if (flags.timestampIsSet) {
-        return date;
-      }
-
-      return new Date(date.getTime() - value);
-    }
-  }]);
-
-  return ISOTimezoneWithZParser;
-}(Parser);
-
-function _typeof$2(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof$2 = function _typeof(obj) { return typeof obj; }; } else { _typeof$2 = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof$2(obj); }
-
-function _classCallCheck$2(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties$2(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass$2(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties$2(Constructor.prototype, protoProps); if (staticProps) _defineProperties$2(Constructor, staticProps); return Constructor; }
-
-function _inherits$2(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf$2(subClass, superClass); }
-
-function _setPrototypeOf$2(o, p) { _setPrototypeOf$2 = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf$2(o, p); }
-
-function _createSuper$2(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct$2(); return function _createSuperInternal() { var Super = _getPrototypeOf$2(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf$2(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn$2(this, result); }; }
-
-function _possibleConstructorReturn$2(self, call) { if (call && (_typeof$2(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized$2(self); }
-
-function _assertThisInitialized$2(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _isNativeReflectConstruct$2() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-
-function _getPrototypeOf$2(o) { _getPrototypeOf$2 = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf$2(o); }
-
-function _defineProperty$2(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-var ISOTimezoneParser = /*#__PURE__*/function (_Parser) {
-  _inherits$2(ISOTimezoneParser, _Parser);
-
-  var _super = _createSuper$2(ISOTimezoneParser);
-
-  function ISOTimezoneParser() {
-    var _this;
-
-    _classCallCheck$2(this, ISOTimezoneParser);
-
-    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
-
-    _this = _super.call.apply(_super, [this].concat(args));
-
-    _defineProperty$2(_assertThisInitialized$2(_this), "priority", 10);
-
-    _defineProperty$2(_assertThisInitialized$2(_this), "incompatibleTokens", ['t', 'T', 'X']);
-
-    return _this;
-  }
-
-  _createClass$2(ISOTimezoneParser, [{
-    key: "parse",
-    value: function parse(dateString, token) {
-      switch (token) {
-        case 'x':
-          return parseTimezonePattern(timezonePatterns.basicOptionalMinutes, dateString);
-
-        case 'xx':
-          return parseTimezonePattern(timezonePatterns.basic, dateString);
-
-        case 'xxxx':
-          return parseTimezonePattern(timezonePatterns.basicOptionalSeconds, dateString);
-
-        case 'xxxxx':
-          return parseTimezonePattern(timezonePatterns.extendedOptionalSeconds, dateString);
-
-        case 'xxx':
-        default:
-          return parseTimezonePattern(timezonePatterns.extended, dateString);
-      }
-    }
-  }, {
-    key: "set",
-    value: function set(date, flags, value) {
-      if (flags.timestampIsSet) {
-        return date;
-      }
-
-      return new Date(date.getTime() - value);
-    }
-  }]);
-
-  return ISOTimezoneParser;
-}(Parser);
-
-function _typeof$1(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof$1 = function _typeof(obj) { return typeof obj; }; } else { _typeof$1 = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof$1(obj); }
-
-function _classCallCheck$1(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties$1(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass$1(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties$1(Constructor.prototype, protoProps); if (staticProps) _defineProperties$1(Constructor, staticProps); return Constructor; }
-
-function _inherits$1(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf$1(subClass, superClass); }
-
-function _setPrototypeOf$1(o, p) { _setPrototypeOf$1 = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf$1(o, p); }
-
-function _createSuper$1(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct$1(); return function _createSuperInternal() { var Super = _getPrototypeOf$1(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf$1(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn$1(this, result); }; }
-
-function _possibleConstructorReturn$1(self, call) { if (call && (_typeof$1(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized$1(self); }
-
-function _assertThisInitialized$1(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _isNativeReflectConstruct$1() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-
-function _getPrototypeOf$1(o) { _getPrototypeOf$1 = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf$1(o); }
-
-function _defineProperty$1(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-var TimestampSecondsParser = /*#__PURE__*/function (_Parser) {
-  _inherits$1(TimestampSecondsParser, _Parser);
-
-  var _super = _createSuper$1(TimestampSecondsParser);
-
-  function TimestampSecondsParser() {
-    var _this;
-
-    _classCallCheck$1(this, TimestampSecondsParser);
-
-    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
-
-    _this = _super.call.apply(_super, [this].concat(args));
-
-    _defineProperty$1(_assertThisInitialized$1(_this), "priority", 40);
-
-    _defineProperty$1(_assertThisInitialized$1(_this), "incompatibleTokens", '*');
-
-    return _this;
-  }
-
-  _createClass$1(TimestampSecondsParser, [{
-    key: "parse",
-    value: function parse(dateString) {
-      return parseAnyDigitsSigned(dateString);
-    }
-  }, {
-    key: "set",
-    value: function set(_date, _flags, value) {
-      return [new Date(value * 1000), {
-        timestampIsSet: true
-      }];
-    }
-  }]);
-
-  return TimestampSecondsParser;
-}(Parser);
-
-function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
-function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
-
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-var TimestampMillisecondsParser = /*#__PURE__*/function (_Parser) {
-  _inherits(TimestampMillisecondsParser, _Parser);
-
-  var _super = _createSuper(TimestampMillisecondsParser);
-
-  function TimestampMillisecondsParser() {
-    var _this;
-
-    _classCallCheck(this, TimestampMillisecondsParser);
-
-    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
-
-    _this = _super.call.apply(_super, [this].concat(args));
-
-    _defineProperty(_assertThisInitialized(_this), "priority", 20);
-
-    _defineProperty(_assertThisInitialized(_this), "incompatibleTokens", '*');
-
-    return _this;
-  }
-
-  _createClass(TimestampMillisecondsParser, [{
-    key: "parse",
-    value: function parse(dateString) {
-      return parseAnyDigitsSigned(dateString);
-    }
-  }, {
-    key: "set",
-    value: function set(_date, _flags, value) {
-      return [new Date(value), {
-        timestampIsSet: true
-      }];
-    }
-  }]);
-
-  return TimestampMillisecondsParser;
-}(Parser);
-
-/*
- * |     | Unit                           |     | Unit                           |
- * |-----|--------------------------------|-----|--------------------------------|
- * |  a  | AM, PM                         |  A* | Milliseconds in day            |
- * |  b  | AM, PM, noon, midnight         |  B  | Flexible day period            |
- * |  c  | Stand-alone local day of week  |  C* | Localized hour w/ day period   |
- * |  d  | Day of month                   |  D  | Day of year                    |
- * |  e  | Local day of week              |  E  | Day of week                    |
- * |  f  |                                |  F* | Day of week in month           |
- * |  g* | Modified Julian day            |  G  | Era                            |
- * |  h  | Hour [1-12]                    |  H  | Hour [0-23]                    |
- * |  i! | ISO day of week                |  I! | ISO week of year               |
- * |  j* | Localized hour w/ day period   |  J* | Localized hour w/o day period  |
- * |  k  | Hour [1-24]                    |  K  | Hour [0-11]                    |
- * |  l* | (deprecated)                   |  L  | Stand-alone month              |
- * |  m  | Minute                         |  M  | Month                          |
- * |  n  |                                |  N  |                                |
- * |  o! | Ordinal number modifier        |  O* | Timezone (GMT)                 |
- * |  p  |                                |  P  |                                |
- * |  q  | Stand-alone quarter            |  Q  | Quarter                        |
- * |  r* | Related Gregorian year         |  R! | ISO week-numbering year        |
- * |  s  | Second                         |  S  | Fraction of second             |
- * |  t! | Seconds timestamp              |  T! | Milliseconds timestamp         |
- * |  u  | Extended year                  |  U* | Cyclic year                    |
- * |  v* | Timezone (generic non-locat.)  |  V* | Timezone (location)            |
- * |  w  | Local week of year             |  W* | Week of month                  |
- * |  x  | Timezone (ISO-8601 w/o Z)      |  X  | Timezone (ISO-8601)            |
- * |  y  | Year (abs)                     |  Y  | Local week-numbering year      |
- * |  z* | Timezone (specific non-locat.) |  Z* | Timezone (aliases)             |
- *
- * Letters marked by * are not implemented but reserved by Unicode standard.
- *
- * Letters marked by ! are non-standard, but implemented by date-fns:
- * - `o` modifies the previous token to turn it into an ordinal (see `parse` docs)
- * - `i` is ISO day of week. For `i` and `ii` is returns numeric ISO week days,
- *   i.e. 7 for Sunday, 1 for Monday, etc.
- * - `I` is ISO week of year, as opposed to `w` which is local week of year.
- * - `R` is ISO week-numbering year, as opposed to `Y` which is local week-numbering year.
- *   `R` is supposed to be used in conjunction with `I` and `i`
- *   for universal ISO week-numbering date, whereas
- *   `Y` is supposed to be used in conjunction with `w` and `e`
- *   for week-numbering date specific to the locale.
- */
-
-({
-  G: new EraParser(),
-  y: new YearParser(),
-  Y: new LocalWeekYearParser(),
-  R: new ISOWeekYearParser(),
-  u: new ExtendedYearParser(),
-  Q: new QuarterParser(),
-  q: new StandAloneQuarterParser(),
-  M: new MonthParser(),
-  L: new StandAloneMonthParser(),
-  w: new LocalWeekParser(),
-  I: new ISOWeekParser(),
-  d: new DateParser(),
-  D: new DayOfYearParser(),
-  E: new DayParser(),
-  e: new LocalDayParser(),
-  c: new StandAloneLocalDayParser(),
-  i: new ISODayParser(),
-  a: new AMPMParser(),
-  b: new AMPMMidnightParser(),
-  B: new DayPeriodParser(),
-  h: new Hour1to12Parser(),
-  H: new Hour0to23Parser(),
-  K: new Hour0To11Parser(),
-  k: new Hour1To24Parser(),
-  m: new MinuteParser(),
-  s: new SecondParser(),
-  S: new FractionOfSecondParser(),
-  X: new ISOTimezoneWithZParser(),
-  x: new ISOTimezoneParser(),
-  t: new TimestampSecondsParser(),
-  T: new TimestampMillisecondsParser()
-});
 
 /**
  * @name isSameWeek
@@ -16833,7 +12124,6 @@ function isSameWeek(dirtyDateLeft, dirtyDateRight, options) {
  * const result = isSameMonth(new Date(2014, 8, 2), new Date(2015, 8, 25))
  * //=> false
  */
-
 function isSameMonth(dirtyDateLeft, dirtyDateRight) {
   requiredArgs(2, arguments);
   var dateLeft = toDate(dirtyDateLeft);
@@ -16859,7 +12149,6 @@ function isSameMonth(dirtyDateLeft, dirtyDateRight) {
  * const result = isSameYear(new Date(2014, 8, 2), new Date(2014, 8, 25))
  * //=> true
  */
-
 function isSameYear(dirtyDateLeft, dirtyDateRight) {
   requiredArgs(2, arguments);
   var dateLeft = toDate(dirtyDateLeft);
@@ -16885,7 +12174,6 @@ function isSameYear(dirtyDateLeft, dirtyDateRight) {
  * const result = subDays(new Date(2014, 8, 1), 10)
  * //=> Fri Aug 22 2014 00:00:00
  */
-
 function subDays(dirtyDate, dirtyAmount) {
   requiredArgs(2, arguments);
   var amount = toInteger(dirtyAmount);
@@ -16913,7 +12201,6 @@ function subDays(dirtyDate, dirtyAmount) {
  * const result = isYesterday(new Date(2014, 9, 5, 14, 0))
  * //=> true
  */
-
 function isYesterday(dirtyDate) {
   requiredArgs(1, arguments);
   return isSameDay(dirtyDate, subDays(Date.now(), 1));
@@ -16937,7 +12224,6 @@ function isYesterday(dirtyDate) {
  * const result = setMonth(new Date(2014, 8, 1), 1)
  * //=> Sat Feb 01 2014 00:00:00
  */
-
 function setMonth(dirtyDate, dirtyMonth) {
   requiredArgs(2, arguments);
   var date = toDate(dirtyDate);
@@ -16947,9 +12233,9 @@ function setMonth(dirtyDate, dirtyMonth) {
   var dateWithDesiredMonth = new Date(0);
   dateWithDesiredMonth.setFullYear(year, month, 15);
   dateWithDesiredMonth.setHours(0, 0, 0, 0);
-  var daysInMonth = getDaysInMonth(dateWithDesiredMonth); // Set the last day of the new month
+  var daysInMonth = getDaysInMonth(dateWithDesiredMonth);
+  // Set the last day of the new month
   // if the original date was the last day of the longer month
-
   date.setMonth(month, Math.min(day, daysInMonth));
   return date;
 }
@@ -16972,74 +12258,18 @@ function setMonth(dirtyDate, dirtyMonth) {
  * const result = setYear(new Date(2014, 8, 1), 2013)
  * //=> Sun Sep 01 2013 00:00:00
  */
-
 function setYear(dirtyDate, dirtyYear) {
   requiredArgs(2, arguments);
   var date = toDate(dirtyDate);
-  var year = toInteger(dirtyYear); // Check if date is Invalid Date because Date.prototype.setFullYear ignores the value of Invalid Date
+  var year = toInteger(dirtyYear);
 
+  // Check if date is Invalid Date because Date.prototype.setFullYear ignores the value of Invalid Date
   if (isNaN(date.getTime())) {
     return new Date(NaN);
   }
-
   date.setFullYear(year);
   return date;
 }
-
-// If you are making a new locale based on this one, check if the same is true for the language you're working on.
-// Generally, formatted dates should look like they are in the middle of a sentence,
-// e.g. in Spanish language the weekdays and months should be in the lowercase.
-
-var monthValues$3 = {
-  narrow: ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'],
-  abbreviated: ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'],
-  wide: ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember']
-}; // https://st.unicode.org/cldr-apps/v#/de/Gregorian/
-
-({
-  narrow: monthValues$3.narrow,
-  abbreviated: ['Jan.', 'Feb.', 'März', 'Apr.', 'Mai', 'Juni', 'Juli', 'Aug.', 'Sep.', 'Okt.', 'Nov.', 'Dez.'],
-  wide: monthValues$3.wide
-});
-
-// If you are making a new locale based on this one, check if the same is true for the language you're working on.
-// Generally, formatted dates should look like they are in the middle of a sentence,
-// e.g. in Spanish language the weekdays and months should be in the lowercase.
-
-var monthValues$2 = {
-  narrow: ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'],
-  abbreviated: ['Jän', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'],
-  wide: ['Jänner', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember']
-}; // https://st.unicode.org/cldr-apps/v#/de_AT/Gregorian/
-
-({
-  narrow: monthValues$2.narrow,
-  abbreviated: ['Jän.', 'Feb.', 'März', 'Apr.', 'Mai', 'Juni', 'Juli', 'Aug.', 'Sep.', 'Okt.', 'Nov.', 'Dez.'],
-  wide: monthValues$2.wide
-});
-
-var monthValues$1 = {
-  narrow: ['T', 'H', 'M', 'H', 'T', 'K', 'H', 'E', 'S', 'L', 'M', 'J'],
-  abbreviated: ['tammi', 'helmi', 'maalis', 'huhti', 'touko', 'kesä', 'heinä', 'elo', 'syys', 'loka', 'marras', 'joulu'],
-  wide: ['tammikuu', 'helmikuu', 'maaliskuu', 'huhtikuu', 'toukokuu', 'kesäkuu', 'heinäkuu', 'elokuu', 'syyskuu', 'lokakuu', 'marraskuu', 'joulukuu']
-};
-({
-  narrow: monthValues$1.narrow,
-  abbreviated: monthValues$1.abbreviated,
-  wide: ['tammikuuta', 'helmikuuta', 'maaliskuuta', 'huhtikuuta', 'toukokuuta', 'kesäkuuta', 'heinäkuuta', 'elokuuta', 'syyskuuta', 'lokakuuta', 'marraskuuta', 'joulukuuta']
-});
-var dayValues$1 = {
-  narrow: ['S', 'M', 'T', 'K', 'T', 'P', 'L'],
-  short: ['su', 'ma', 'ti', 'ke', 'to', 'pe', 'la'],
-  abbreviated: ['sunn.', 'maan.', 'tiis.', 'kesk.', 'torst.', 'perj.', 'la'],
-  wide: ['sunnuntai', 'maanantai', 'tiistai', 'keskiviikko', 'torstai', 'perjantai', 'lauantai']
-};
-({
-  narrow: dayValues$1.narrow,
-  short: dayValues$1.short,
-  abbreviated: dayValues$1.abbreviated,
-  wide: ['sunnuntaina', 'maanantaina', 'tiistaina', 'keskiviikkona', 'torstaina', 'perjantaina', 'lauantaina']
-});
 
 var formatDistanceLocale = {
   lessThanXSeconds: {
@@ -17108,12 +12338,10 @@ var formatDistanceLocale = {
     other: '{{count}}年近く'
   }
 };
-
 var formatDistance = function formatDistance(token, count, options) {
   options = options || {};
   var result;
   var tokenValue = formatDistanceLocale[token];
-
   if (typeof tokenValue === 'string') {
     result = tokenValue;
   } else if (count === 1) {
@@ -17129,7 +12357,6 @@ var formatDistance = function formatDistance(token, count, options) {
       result = tokenValue.other.replace('{{count}}', String(count));
     }
   }
-
   if (options.addSuffix) {
     if (options.comparison && options.comparison > 0) {
       return result + '後';
@@ -17137,9 +12364,9 @@ var formatDistance = function formatDistance(token, count, options) {
       return result + '前';
     }
   }
-
   return result;
 };
+var formatDistance$1 = formatDistance;
 
 var dateFormats = {
   full: 'y年M月d日EEEE',
@@ -17173,6 +12400,7 @@ var formatLong = {
     defaultWidth: 'full'
   })
 };
+var formatLong$1 = formatLong;
 
 var formatRelativeLocale = {
   lastWeek: '先週のeeeeのp',
@@ -17182,10 +12410,10 @@ var formatRelativeLocale = {
   nextWeek: '翌週のeeeeのp',
   other: 'P'
 };
-
 var formatRelative = function formatRelative(token, _date, _baseDate, _options) {
   return formatRelativeLocale[token];
 };
+var formatRelative$1 = formatRelative;
 
 var eraValues = {
   narrow: ['BC', 'AC'],
@@ -17272,41 +12500,30 @@ var formattingDayPeriodValues = {
     night: '深夜'
   }
 };
-
 var ordinalNumber = function ordinalNumber(dirtyNumber, options) {
   var number = Number(dirtyNumber);
   var unit = String(options === null || options === void 0 ? void 0 : options.unit);
-
   switch (unit) {
     case 'year':
       return "".concat(number, "\u5E74");
-
     case 'quarter':
       return "\u7B2C".concat(number, "\u56DB\u534A\u671F");
-
     case 'month':
       return "".concat(number, "\u6708");
-
     case 'week':
       return "\u7B2C".concat(number, "\u9031");
-
     case 'date':
       return "".concat(number, "\u65E5");
-
     case 'hour':
       return "".concat(number, "\u6642");
-
     case 'minute':
       return "".concat(number, "\u5206");
-
     case 'second':
       return "".concat(number, "\u79D2");
-
     default:
       return "".concat(number);
   }
 };
-
 var localize = {
   ordinalNumber: ordinalNumber,
   era: buildLocalizeFn({
@@ -17335,6 +12552,7 @@ var localize = {
     defaultFormattingWidth: 'wide'
   })
 };
+var localize$1 = localize;
 
 var matchOrdinalNumberPattern = /^第?\d+(年|四半期|月|週|日|時|分|秒)?/i;
 var parseOrdinalNumberPattern = /\d+/i;
@@ -17429,6 +12647,7 @@ var match = {
     defaultParseWidth: 'any'
   })
 };
+var match$1 = match;
 
 /**
  * @type {Locale}
@@ -17444,18 +12663,17 @@ var match = {
  */
 var locale = {
   code: 'ja',
-  formatDistance: formatDistance,
-  formatLong: formatLong,
-  formatRelative: formatRelative,
-  localize: localize,
-  match: match,
+  formatDistance: formatDistance$1,
+  formatLong: formatLong$1,
+  formatRelative: formatRelative$1,
+  localize: localize$1,
+  match: match$1,
   options: {
-    weekStartsOn: 0
-    /* Sunday */
-    ,
+    weekStartsOn: 0 /* Sunday */,
     firstWeekContainsDate: 1
   }
 };
+var ja = locale;
 
 /******************************************************************************
 Copyright (c) Microsoft Corporation.
@@ -17599,7 +12817,7 @@ function formatWeekNumber(weekNumber) {
  * The default formatter for the name of the weekday.
  */
 function formatWeekdayName(weekday, options) {
-    return format(weekday, 'cccccc', options).toUpperCase();
+    return format(weekday, 'cccccc', options);
 }
 
 /**
@@ -17686,7 +12904,7 @@ var labels = /*#__PURE__*/Object.freeze({
 function getDefaultContextValues() {
     var captionLayout = 'buttons';
     var classNames = defaultClassNames;
-    var locale = locale$1;
+    var locale = enUS;
     var modifiersClassNames = {};
     var modifiers = {};
     var numberOfMonths = 1;
@@ -17758,7 +12976,7 @@ function DayPickerProvider(props) {
         onSelect = initialProps.onSelect;
     }
     var value = __assign$w(__assign$w(__assign$w({}, defaultContextValues), initialProps), { captionLayout: captionLayout, classNames: __assign$w(__assign$w({}, defaultContextValues.classNames), initialProps.classNames), components: __assign$w({}, initialProps.components), formatters: __assign$w(__assign$w({}, defaultContextValues.formatters), initialProps.formatters), fromDate: fromDate, labels: __assign$w(__assign$w({}, defaultContextValues.labels), initialProps.labels), mode: initialProps.mode || defaultContextValues.mode, modifiers: __assign$w(__assign$w({}, defaultContextValues.modifiers), initialProps.modifiers), modifiersClassNames: __assign$w(__assign$w({}, defaultContextValues.modifiersClassNames), initialProps.modifiersClassNames), onSelect: onSelect, styles: __assign$w(__assign$w({}, defaultContextValues.styles), initialProps.styles), toDate: toDate });
-    return (React__default["default"].createElement(DayPickerContext.Provider, { value: value }, props.children));
+    return (React.createElement(DayPickerContext.Provider, { value: value }, props.children));
 }
 /**
  * Hook to access the {@link DayPickerContextValue}.
@@ -17777,15 +12995,15 @@ function useDayPicker() {
 /** Render the caption for the displayed month. This component is used when `captionLayout="buttons"`. */
 function CaptionLabel(props) {
     var _a = useDayPicker(), locale = _a.locale, classNames = _a.classNames, styles = _a.styles, formatCaption = _a.formatters.formatCaption;
-    return (React__default["default"].createElement("div", { className: classNames.caption_label, style: styles.caption_label, "aria-live": "polite", role: "presentation", id: props.id }, formatCaption(props.displayMonth, { locale: locale })));
+    return (React.createElement("div", { className: classNames.caption_label, style: styles.caption_label, "aria-live": "polite", role: "presentation", id: props.id }, formatCaption(props.displayMonth, { locale: locale })));
 }
 
 /**
  * Render the icon in the styled drop-down.
  */
 function IconDropdown(props) {
-    return (React__default["default"].createElement("svg", __assign$w({ width: "8px", height: "8px", viewBox: "0 0 120 120", "data-testid": "iconDropdown" }, props),
-        React__default["default"].createElement("path", { d: "M4.22182541,48.2218254 C8.44222828,44.0014225 15.2388494,43.9273804 19.5496459,47.9996989 L19.7781746,48.2218254 L60,88.443 L100.221825,48.2218254 C104.442228,44.0014225 111.238849,43.9273804 115.549646,47.9996989 L115.778175,48.2218254 C119.998577,52.4422283 120.07262,59.2388494 116.000301,63.5496459 L115.778175,63.7781746 L67.7781746,111.778175 C63.5577717,115.998577 56.7611506,116.07262 52.4503541,112.000301 L52.2218254,111.778175 L4.22182541,63.7781746 C-0.0739418023,59.4824074 -0.0739418023,52.5175926 4.22182541,48.2218254 Z", fill: "currentColor", fillRule: "nonzero" })));
+    return (React.createElement("svg", __assign$w({ width: "8px", height: "8px", viewBox: "0 0 120 120", "data-testid": "iconDropdown" }, props),
+        React.createElement("path", { d: "M4.22182541,48.2218254 C8.44222828,44.0014225 15.2388494,43.9273804 19.5496459,47.9996989 L19.7781746,48.2218254 L60,88.443 L100.221825,48.2218254 C104.442228,44.0014225 111.238849,43.9273804 115.549646,47.9996989 L115.778175,48.2218254 C119.998577,52.4422283 120.07262,59.2388494 116.000301,63.5496459 L115.778175,63.7781746 L67.7781746,111.778175 C63.5577717,115.998577 56.7611506,116.07262 52.4503541,112.000301 L52.2218254,111.778175 L4.22182541,63.7781746 C-0.0739418023,59.4824074 -0.0739418023,52.5175926 4.22182541,48.2218254 Z", fill: "currentColor", fillRule: "nonzero" })));
 }
 
 /**
@@ -17797,12 +13015,12 @@ function Dropdown(props) {
     var onChange = props.onChange, value = props.value, children = props.children, caption = props.caption, className = props.className, style = props.style;
     var dayPicker = useDayPicker();
     var IconDropdownComponent = (_b = (_a = dayPicker.components) === null || _a === void 0 ? void 0 : _a.IconDropdown) !== null && _b !== void 0 ? _b : IconDropdown;
-    return (React__default["default"].createElement("div", { className: className, style: style },
-        React__default["default"].createElement("span", { className: dayPicker.classNames.vhidden }, props['aria-label']),
-        React__default["default"].createElement("select", { name: props.name, "aria-label": props['aria-label'], className: dayPicker.classNames.dropdown, style: dayPicker.styles.dropdown, value: value, onChange: onChange }, children),
-        React__default["default"].createElement("div", { className: dayPicker.classNames.caption_label, style: dayPicker.styles.caption_label, "aria-hidden": "true" },
+    return (React.createElement("div", { className: className, style: style },
+        React.createElement("span", { className: dayPicker.classNames.vhidden }, props['aria-label']),
+        React.createElement("select", { name: props.name, "aria-label": props['aria-label'], className: dayPicker.classNames.dropdown, style: dayPicker.styles.dropdown, value: value, onChange: onChange }, children),
+        React.createElement("div", { className: dayPicker.classNames.caption_label, style: dayPicker.styles.caption_label, "aria-hidden": "true" },
             caption,
-            React__default["default"].createElement(IconDropdownComponent, { className: dayPicker.classNames.dropdown_icon, style: dayPicker.styles.dropdown_icon }))));
+            React.createElement(IconDropdownComponent, { className: dayPicker.classNames.dropdown_icon, style: dayPicker.styles.dropdown_icon }))));
 }
 
 /** Render the dropdown to navigate between months. */
@@ -17811,9 +13029,9 @@ function MonthsDropdown(props) {
     var _b = useDayPicker(), fromDate = _b.fromDate, toDate = _b.toDate, styles = _b.styles, locale = _b.locale, formatMonthCaption = _b.formatters.formatMonthCaption, classNames = _b.classNames, components = _b.components, labelMonthDropdown = _b.labels.labelMonthDropdown;
     // Dropdown should appear only when both from/toDate is set
     if (!fromDate)
-        return React__default["default"].createElement(React__default["default"].Fragment, null);
+        return React.createElement(React.Fragment, null);
     if (!toDate)
-        return React__default["default"].createElement(React__default["default"].Fragment, null);
+        return React.createElement(React.Fragment, null);
     var dropdownMonths = [];
     if (isSameYear(fromDate, toDate)) {
         // only display the months included in the range
@@ -17835,7 +13053,7 @@ function MonthsDropdown(props) {
         props.onChange(newMonth);
     };
     var DropdownComponent = (_a = components === null || components === void 0 ? void 0 : components.Dropdown) !== null && _a !== void 0 ? _a : Dropdown;
-    return (React__default["default"].createElement(DropdownComponent, { name: "months", "aria-label": labelMonthDropdown(), className: classNames.dropdown_month, style: styles.dropdown_month, onChange: handleChange, value: props.displayMonth.getMonth(), caption: formatMonthCaption(props.displayMonth, { locale: locale }) }, dropdownMonths.map(function (m) { return (React__default["default"].createElement("option", { key: m.getMonth(), value: m.getMonth() }, formatMonthCaption(m, { locale: locale }))); })));
+    return (React.createElement(DropdownComponent, { name: "months", "aria-label": labelMonthDropdown(), className: classNames.dropdown_month, style: styles.dropdown_month, onChange: handleChange, value: props.displayMonth.getMonth(), caption: formatMonthCaption(props.displayMonth, { locale: locale }) }, dropdownMonths.map(function (m) { return (React.createElement("option", { key: m.getMonth(), value: m.getMonth() }, formatMonthCaption(m, { locale: locale }))); })));
 }
 
 /**
@@ -17849,9 +13067,9 @@ function YearsDropdown(props) {
     var years = [];
     // Dropdown should appear only when both from/toDate is set
     if (!fromDate)
-        return React__default["default"].createElement(React__default["default"].Fragment, null);
+        return React.createElement(React.Fragment, null);
     if (!toDate)
-        return React__default["default"].createElement(React__default["default"].Fragment, null);
+        return React.createElement(React.Fragment, null);
     var fromYear = fromDate.getFullYear();
     var toYear = toDate.getFullYear();
     for (var year = fromYear; year <= toYear; year++) {
@@ -17862,7 +13080,7 @@ function YearsDropdown(props) {
         props.onChange(newMonth);
     };
     var DropdownComponent = (_a = components === null || components === void 0 ? void 0 : components.Dropdown) !== null && _a !== void 0 ? _a : Dropdown;
-    return (React__default["default"].createElement(DropdownComponent, { name: "years", "aria-label": labelYearDropdown(), className: classNames.dropdown_year, style: styles.dropdown_year, onChange: handleChange, value: displayMonth.getFullYear(), caption: formatYearCaption(displayMonth, { locale: locale }) }, years.map(function (year) { return (React__default["default"].createElement("option", { key: year.getFullYear(), value: year.getFullYear() }, formatYearCaption(year, { locale: locale }))); })));
+    return (React.createElement(DropdownComponent, { name: "years", "aria-label": labelYearDropdown(), className: classNames.dropdown_year, style: styles.dropdown_year, onChange: handleChange, value: displayMonth.getFullYear(), caption: formatYearCaption(displayMonth, { locale: locale }) }, years.map(function (year) { return (React.createElement("option", { key: year.getFullYear(), value: year.getFullYear() }, formatYearCaption(year, { locale: locale }))); })));
 }
 
 /**
@@ -18026,7 +13244,7 @@ function NavigationProvider(props) {
         nextMonth: nextMonth,
         isDateDisplayed: isDateDisplayed
     };
-    return (React__default["default"].createElement(NavigationContext.Provider, { value: value }, props.children));
+    return (React.createElement(NavigationContext.Provider, { value: value }, props.children));
 }
 /**
  * Hook to access the {@link NavigationContextValue}. Use this hook to navigate
@@ -18053,27 +13271,27 @@ function CaptionDropdowns(props) {
         goToMonth(newMonth);
     };
     var CaptionLabelComponent = (_a = components === null || components === void 0 ? void 0 : components.CaptionLabel) !== null && _a !== void 0 ? _a : CaptionLabel;
-    var captionLabel = (React__default["default"].createElement(CaptionLabelComponent, { id: props.id, displayMonth: props.displayMonth }));
-    return (React__default["default"].createElement("div", { className: classNames.caption_dropdowns, style: styles.caption_dropdowns },
-        React__default["default"].createElement("div", { className: classNames.vhidden }, captionLabel),
-        React__default["default"].createElement(MonthsDropdown, { onChange: handleMonthChange, displayMonth: props.displayMonth }),
-        React__default["default"].createElement(YearsDropdown, { onChange: handleMonthChange, displayMonth: props.displayMonth })));
+    var captionLabel = (React.createElement(CaptionLabelComponent, { id: props.id, displayMonth: props.displayMonth }));
+    return (React.createElement("div", { className: classNames.caption_dropdowns, style: styles.caption_dropdowns },
+        React.createElement("div", { className: classNames.vhidden }, captionLabel),
+        React.createElement(MonthsDropdown, { onChange: handleMonthChange, displayMonth: props.displayMonth }),
+        React.createElement(YearsDropdown, { onChange: handleMonthChange, displayMonth: props.displayMonth })));
 }
 
 /**
  * Render the "previous month" button in the navigation.
  */
 function IconLeft(props) {
-    return (React__default["default"].createElement("svg", __assign$w({ width: "16px", height: "16px", viewBox: "0 0 120 120" }, props),
-        React__default["default"].createElement("path", { d: "M69.490332,3.34314575 C72.6145263,0.218951416 77.6798462,0.218951416 80.8040405,3.34314575 C83.8617626,6.40086786 83.9268205,11.3179931 80.9992143,14.4548388 L80.8040405,14.6568542 L35.461,60 L80.8040405,105.343146 C83.8617626,108.400868 83.9268205,113.317993 80.9992143,116.454839 L80.8040405,116.656854 C77.7463184,119.714576 72.8291931,119.779634 69.6923475,116.852028 L69.490332,116.656854 L18.490332,65.6568542 C15.4326099,62.5991321 15.367552,57.6820069 18.2951583,54.5451612 L18.490332,54.3431458 L69.490332,3.34314575 Z", fill: "currentColor", fillRule: "nonzero" })));
+    return (React.createElement("svg", __assign$w({ width: "16px", height: "16px", viewBox: "0 0 120 120" }, props),
+        React.createElement("path", { d: "M69.490332,3.34314575 C72.6145263,0.218951416 77.6798462,0.218951416 80.8040405,3.34314575 C83.8617626,6.40086786 83.9268205,11.3179931 80.9992143,14.4548388 L80.8040405,14.6568542 L35.461,60 L80.8040405,105.343146 C83.8617626,108.400868 83.9268205,113.317993 80.9992143,116.454839 L80.8040405,116.656854 C77.7463184,119.714576 72.8291931,119.779634 69.6923475,116.852028 L69.490332,116.656854 L18.490332,65.6568542 C15.4326099,62.5991321 15.367552,57.6820069 18.2951583,54.5451612 L18.490332,54.3431458 L69.490332,3.34314575 Z", fill: "currentColor", fillRule: "nonzero" })));
 }
 
 /**
  * Render the "next month" button in the navigation.
  */
 function IconRight(props) {
-    return (React__default["default"].createElement("svg", __assign$w({ width: "16px", height: "16px", viewBox: "0 0 120 120" }, props),
-        React__default["default"].createElement("path", { d: "M49.8040405,3.34314575 C46.6798462,0.218951416 41.6145263,0.218951416 38.490332,3.34314575 C35.4326099,6.40086786 35.367552,11.3179931 38.2951583,14.4548388 L38.490332,14.6568542 L83.8333725,60 L38.490332,105.343146 C35.4326099,108.400868 35.367552,113.317993 38.2951583,116.454839 L38.490332,116.656854 C41.5480541,119.714576 46.4651794,119.779634 49.602025,116.852028 L49.8040405,116.656854 L100.804041,65.6568542 C103.861763,62.5991321 103.926821,57.6820069 100.999214,54.5451612 L100.804041,54.3431458 L49.8040405,3.34314575 Z", fill: "currentColor" })));
+    return (React.createElement("svg", __assign$w({ width: "16px", height: "16px", viewBox: "0 0 120 120" }, props),
+        React.createElement("path", { d: "M49.8040405,3.34314575 C46.6798462,0.218951416 41.6145263,0.218951416 38.490332,3.34314575 C35.4326099,6.40086786 35.367552,11.3179931 38.2951583,14.4548388 L38.490332,14.6568542 L83.8333725,60 L38.490332,105.343146 C35.4326099,108.400868 35.367552,113.317993 38.2951583,116.454839 L38.490332,116.656854 C41.5480541,119.714576 46.4651794,119.779634 49.602025,116.852028 L49.8040405,116.656854 L100.804041,65.6568542 C103.861763,62.5991321 103.926821,57.6820069 100.999214,54.5451612 L100.804041,54.3431458 L49.8040405,3.34314575 Z", fill: "currentColor" })));
 }
 
 /** Render a button HTML element applying the reset class name. */
@@ -18088,7 +13306,7 @@ var Button$2 = React.forwardRef(function (props, ref) {
     if (props.style) {
         Object.assign(style, props.style);
     }
-    return (React__default["default"].createElement("button", __assign$w({}, props, { ref: ref, type: "button", className: className, style: style })));
+    return (React.createElement("button", __assign$w({}, props, { ref: ref, type: "button", className: className, style: style })));
 });
 
 /** A component rendering the navigation buttons or the drop-downs. */
@@ -18096,7 +13314,7 @@ function Navigation(props) {
     var _a, _b;
     var _c = useDayPicker(), dir = _c.dir, locale = _c.locale, classNames = _c.classNames, styles = _c.styles, _d = _c.labels, labelPrevious = _d.labelPrevious, labelNext = _d.labelNext, components = _c.components;
     if (!props.nextMonth && !props.previousMonth) {
-        return React__default["default"].createElement(React__default["default"].Fragment, null);
+        return React.createElement(React.Fragment, null);
     }
     var previousLabel = labelPrevious(props.previousMonth, { locale: locale });
     var previousClassName = [
@@ -18110,26 +13328,22 @@ function Navigation(props) {
     ].join(' ');
     var IconRightComponent = (_a = components === null || components === void 0 ? void 0 : components.IconRight) !== null && _a !== void 0 ? _a : IconRight;
     var IconLeftComponent = (_b = components === null || components === void 0 ? void 0 : components.IconLeft) !== null && _b !== void 0 ? _b : IconLeft;
-    return (React__default["default"].createElement("div", { className: classNames.nav, style: styles.nav },
-        !props.hidePrevious && (React__default["default"].createElement(Button$2, { name: "previous-month", "aria-label": previousLabel, className: previousClassName, style: styles.nav_button_previous, disabled: !props.previousMonth, onClick: props.onPreviousClick }, dir === 'rtl' ? (React__default["default"].createElement(IconRightComponent, { className: classNames.nav_icon, style: styles.nav_icon })) : (React__default["default"].createElement(IconLeftComponent, { className: classNames.nav_icon, style: styles.nav_icon })))),
-        !props.hideNext && (React__default["default"].createElement(Button$2, { name: "next-month", "aria-label": nextLabel, className: nextClassName, style: styles.nav_button_next, disabled: !props.nextMonth, onClick: props.onNextClick }, dir === 'rtl' ? (React__default["default"].createElement(IconLeftComponent, { className: classNames.nav_icon, style: styles.nav_icon })) : (React__default["default"].createElement(IconRightComponent, { className: classNames.nav_icon, style: styles.nav_icon }))))));
+    return (React.createElement("div", { className: classNames.nav, style: styles.nav },
+        !props.hidePrevious && (React.createElement(Button$2, { name: "previous-month", "aria-label": previousLabel, className: previousClassName, style: styles.nav_button_previous, disabled: !props.previousMonth, onClick: props.onPreviousClick }, dir === 'rtl' ? (React.createElement(IconRightComponent, { className: classNames.nav_icon, style: styles.nav_icon })) : (React.createElement(IconLeftComponent, { className: classNames.nav_icon, style: styles.nav_icon })))),
+        !props.hideNext && (React.createElement(Button$2, { name: "next-month", "aria-label": nextLabel, className: nextClassName, style: styles.nav_button_next, disabled: !props.nextMonth, onClick: props.onNextClick }, dir === 'rtl' ? (React.createElement(IconLeftComponent, { className: classNames.nav_icon, style: styles.nav_icon })) : (React.createElement(IconRightComponent, { className: classNames.nav_icon, style: styles.nav_icon }))))));
 }
 
 /**
  * Render a caption with a button-based navigation.
  */
 function CaptionNavigation(props) {
-    var _a;
-    var _b = useDayPicker(), numberOfMonths = _b.numberOfMonths, dir = _b.dir;
-    var _c = useNavigation(), previousMonth = _c.previousMonth, nextMonth = _c.nextMonth, goToMonth = _c.goToMonth, displayMonths = _c.displayMonths;
+    var numberOfMonths = useDayPicker().numberOfMonths;
+    var _a = useNavigation(), previousMonth = _a.previousMonth, nextMonth = _a.nextMonth, goToMonth = _a.goToMonth, displayMonths = _a.displayMonths;
     var displayIndex = displayMonths.findIndex(function (month) {
         return isSameMonth(props.displayMonth, month);
     });
     var isFirst = displayIndex === 0;
     var isLast = displayIndex === displayMonths.length - 1;
-    if (dir === 'rtl') {
-        _a = [isFirst, isLast], isLast = _a[0], isFirst = _a[1];
-    }
     var hideNext = numberOfMonths > 1 && (isFirst || !isLast);
     var hidePrevious = numberOfMonths > 1 && (isLast || !isFirst);
     var handlePreviousClick = function () {
@@ -18142,7 +13356,7 @@ function CaptionNavigation(props) {
             return;
         goToMonth(nextMonth);
     };
-    return (React__default["default"].createElement(Navigation, { displayMonth: props.displayMonth, hideNext: hideNext, hidePrevious: hidePrevious, nextMonth: nextMonth, previousMonth: previousMonth, onPreviousClick: handlePreviousClick, onNextClick: handleNextClick }));
+    return (React.createElement(Navigation, { displayMonth: props.displayMonth, hideNext: hideNext, hidePrevious: hidePrevious, nextMonth: nextMonth, previousMonth: previousMonth, onPreviousClick: handlePreviousClick, onNextClick: handleNextClick }));
 }
 
 /**
@@ -18155,22 +13369,22 @@ function Caption(props) {
     var CaptionLabelComponent = (_a = components === null || components === void 0 ? void 0 : components.CaptionLabel) !== null && _a !== void 0 ? _a : CaptionLabel;
     var caption;
     if (disableNavigation) {
-        caption = (React__default["default"].createElement(CaptionLabelComponent, { id: props.id, displayMonth: props.displayMonth }));
+        caption = (React.createElement(CaptionLabelComponent, { id: props.id, displayMonth: props.displayMonth }));
     }
     else if (captionLayout === 'dropdown') {
-        caption = (React__default["default"].createElement(CaptionDropdowns, { displayMonth: props.displayMonth, id: props.id }));
+        caption = (React.createElement(CaptionDropdowns, { displayMonth: props.displayMonth, id: props.id }));
     }
     else if (captionLayout === 'dropdown-buttons') {
-        caption = (React__default["default"].createElement(React__default["default"].Fragment, null,
-            React__default["default"].createElement(CaptionDropdowns, { displayMonth: props.displayMonth, id: props.id }),
-            React__default["default"].createElement(CaptionNavigation, { displayMonth: props.displayMonth, id: props.id })));
+        caption = (React.createElement(React.Fragment, null,
+            React.createElement(CaptionDropdowns, { displayMonth: props.displayMonth, id: props.id }),
+            React.createElement(CaptionNavigation, { displayMonth: props.displayMonth, id: props.id })));
     }
     else {
-        caption = (React__default["default"].createElement(React__default["default"].Fragment, null,
-            React__default["default"].createElement(CaptionLabelComponent, { id: props.id, displayMonth: props.displayMonth }),
-            React__default["default"].createElement(CaptionNavigation, { displayMonth: props.displayMonth, id: props.id })));
+        caption = (React.createElement(React.Fragment, null,
+            React.createElement(CaptionLabelComponent, { id: props.id, displayMonth: props.displayMonth }),
+            React.createElement(CaptionNavigation, { displayMonth: props.displayMonth, id: props.id })));
     }
-    return (React__default["default"].createElement("div", { className: classNames.caption, style: styles.caption }, caption));
+    return (React.createElement("div", { className: classNames.caption, style: styles.caption }, caption));
 }
 
 /** Render the Footer component (empty as default).*/
@@ -18178,10 +13392,10 @@ function Caption(props) {
 function Footer(props) {
     var _a = useDayPicker(), footer = _a.footer, styles = _a.styles, tfoot = _a.classNames.tfoot;
     if (!footer)
-        return React__default["default"].createElement(React__default["default"].Fragment, null);
-    return (React__default["default"].createElement("tfoot", { className: tfoot, style: styles.tfoot },
-        React__default["default"].createElement("tr", null,
-            React__default["default"].createElement("td", { colSpan: 8 }, footer))));
+        return React.createElement(React.Fragment, null);
+    return (React.createElement("tfoot", { className: tfoot, style: styles.tfoot },
+        React.createElement("tr", null,
+            React.createElement("td", { colSpan: 8 }, footer))));
 }
 
 /**
@@ -18210,9 +13424,9 @@ ISOWeek) {
 function HeadRow() {
     var _a = useDayPicker(), classNames = _a.classNames, styles = _a.styles, showWeekNumber = _a.showWeekNumber, locale = _a.locale, weekStartsOn = _a.weekStartsOn, ISOWeek = _a.ISOWeek, formatWeekdayName = _a.formatters.formatWeekdayName, labelWeekday = _a.labels.labelWeekday;
     var weekdays = getWeekdays(locale, weekStartsOn, ISOWeek);
-    return (React__default["default"].createElement("tr", { style: styles.head_row, className: classNames.head_row },
-        showWeekNumber && (React__default["default"].createElement("th", { scope: "col", style: styles.head_cell, className: classNames.head_cell })),
-        weekdays.map(function (weekday, i) { return (React__default["default"].createElement("th", { key: i, scope: "col", className: classNames.head_cell, style: styles.head_cell, "aria-label": labelWeekday(weekday, { locale: locale }) }, formatWeekdayName(weekday, { locale: locale }))); })));
+    return (React.createElement("tr", { style: styles.head_row, className: classNames.head_row },
+        showWeekNumber && (React.createElement("td", { style: styles.head_cell, className: classNames.head_cell })),
+        weekdays.map(function (weekday, i) { return (React.createElement("th", { key: i, scope: "col", className: classNames.head_cell, style: styles.head_cell, "aria-label": labelWeekday(weekday, { locale: locale }) }, formatWeekdayName(weekday, { locale: locale }))); })));
 }
 
 /** Render the table head. */
@@ -18220,14 +13434,14 @@ function Head() {
     var _a;
     var _b = useDayPicker(), classNames = _b.classNames, styles = _b.styles, components = _b.components;
     var HeadRowComponent = (_a = components === null || components === void 0 ? void 0 : components.HeadRow) !== null && _a !== void 0 ? _a : HeadRow;
-    return (React__default["default"].createElement("thead", { style: styles.head, className: classNames.head },
-        React__default["default"].createElement(HeadRowComponent, null)));
+    return (React.createElement("thead", { style: styles.head, className: classNames.head },
+        React.createElement(HeadRowComponent, null)));
 }
 
 /** Render the content of the day cell. */
 function DayContent(props) {
     var _a = useDayPicker(), locale = _a.locale, formatDay = _a.formatters.formatDay;
-    return React__default["default"].createElement(React__default["default"].Fragment, null, formatDay(props.date, { locale: locale }));
+    return React.createElement(React.Fragment, null, formatDay(props.date, { locale: locale }));
 }
 
 /**
@@ -18246,9 +13460,9 @@ function SelectMultipleProvider(props) {
                 disabled: []
             }
         };
-        return (React__default["default"].createElement(SelectMultipleContext.Provider, { value: emptyContextValue }, props.children));
+        return (React.createElement(SelectMultipleContext.Provider, { value: emptyContextValue }, props.children));
     }
-    return (React__default["default"].createElement(SelectMultipleProviderInternal, { initialProps: props.initialProps, children: props.children }));
+    return (React.createElement(SelectMultipleProviderInternal, { initialProps: props.initialProps, children: props.children }));
 }
 function SelectMultipleProviderInternal(_a) {
     var initialProps = _a.initialProps, children = _a.children;
@@ -18293,7 +13507,7 @@ function SelectMultipleProviderInternal(_a) {
         onDayClick: onDayClick,
         modifiers: modifiers
     };
-    return (React__default["default"].createElement(SelectMultipleContext.Provider, { value: contextValue }, children));
+    return (React.createElement(SelectMultipleContext.Provider, { value: contextValue }, children));
 }
 /**
  * Hook to access the {@link SelectMultipleContextValue}.
@@ -18362,9 +13576,9 @@ function SelectRangeProvider(props) {
                 disabled: []
             }
         };
-        return (React__default["default"].createElement(SelectRangeContext.Provider, { value: emptyContextValue }, props.children));
+        return (React.createElement(SelectRangeContext.Provider, { value: emptyContextValue }, props.children));
     }
-    return (React__default["default"].createElement(SelectRangeProviderInternal, { initialProps: props.initialProps, children: props.children }));
+    return (React.createElement(SelectRangeProviderInternal, { initialProps: props.initialProps, children: props.children }));
 }
 function SelectRangeProviderInternal(_a) {
     var initialProps = _a.initialProps, children = _a.children;
@@ -18435,7 +13649,7 @@ function SelectRangeProviderInternal(_a) {
             });
         }
     }
-    return (React__default["default"].createElement(SelectRangeContext.Provider, { value: { selected: selected, onDayClick: onDayClick, modifiers: modifiers } }, children));
+    return (React.createElement(SelectRangeContext.Provider, { value: { selected: selected, onDayClick: onDayClick, modifiers: modifiers } }, children));
 }
 /**
  * Hook to access the {@link SelectRangeContextValue}.
@@ -18535,7 +13749,7 @@ function ModifiersProvider(props) {
     var internalModifiers = getInternalModifiers(dayPicker, selectMultiple, selectRange);
     var customModifiers = getCustomModifiers(dayPicker.modifiers);
     var modifiers = __assign$w(__assign$w({}, internalModifiers), customModifiers);
-    return (React__default["default"].createElement(ModifiersContext.Provider, { value: modifiers }, props.children));
+    return (React.createElement(ModifiersContext.Provider, { value: modifiers }, props.children));
 }
 /**
  * Return the modifiers used by DayPicker.
@@ -18833,7 +14047,7 @@ function FocusProvider(props) {
         focusStartOfWeek: function () { return moveFocus('startOfWeek', 'before'); },
         focusEndOfWeek: function () { return moveFocus('endOfWeek', 'after'); }
     };
-    return (React__default["default"].createElement(FocusContext.Provider, { value: value }, props.children));
+    return (React.createElement(FocusContext.Provider, { value: value }, props.children));
 }
 /**
  * Hook to access the {@link FocusContextValue}. Use this hook to handle the
@@ -18881,9 +14095,9 @@ function SelectSingleProvider(props) {
         var emptyContextValue = {
             selected: undefined
         };
-        return (React__default["default"].createElement(SelectSingleContext.Provider, { value: emptyContextValue }, props.children));
+        return (React.createElement(SelectSingleContext.Provider, { value: emptyContextValue }, props.children));
     }
-    return (React__default["default"].createElement(SelectSingleProviderInternal, { initialProps: props.initialProps, children: props.children }));
+    return (React.createElement(SelectSingleProviderInternal, { initialProps: props.initialProps, children: props.children }));
 }
 function SelectSingleProviderInternal(_a) {
     var initialProps = _a.initialProps, children = _a.children;
@@ -18900,7 +14114,7 @@ function SelectSingleProviderInternal(_a) {
         selected: initialProps.selected,
         onDayClick: onDayClick
     };
-    return (React__default["default"].createElement(SelectSingleContext.Provider, { value: contextValue }, children));
+    return (React.createElement(SelectSingleContext.Provider, { value: contextValue }, children));
 }
 /**
  * Hook to access the {@link SelectSingleContextValue}.
@@ -19170,7 +14384,7 @@ buttonRef) {
     var isHidden = Boolean((activeModifiers.outside && !dayPicker.showOutsideDays) ||
         activeModifiers.hidden);
     var DayContentComponent = (_c = (_b = dayPicker.components) === null || _b === void 0 ? void 0 : _b.DayContent) !== null && _c !== void 0 ? _c : DayContent;
-    var children = (React__default["default"].createElement(DayContentComponent, { date: day, displayMonth: displayMonth, activeModifiers: activeModifiers }));
+    var children = (React.createElement(DayContentComponent, { date: day, displayMonth: displayMonth, activeModifiers: activeModifiers }));
     var divProps = {
         style: style,
         className: className,
@@ -19201,12 +14415,12 @@ function Day(props) {
     var buttonRef = React.useRef(null);
     var dayRender = useDayRender(props.date, props.displayMonth, buttonRef);
     if (dayRender.isHidden) {
-        return React__default["default"].createElement("div", { role: "gridcell" });
+        return React.createElement("div", { role: "gridcell" });
     }
     if (!dayRender.isButton) {
-        return React__default["default"].createElement("div", __assign$w({}, dayRender.divProps));
+        return React.createElement("div", __assign$w({}, dayRender.divProps));
     }
-    return React__default["default"].createElement(Button$2, __assign$w({ name: "day", ref: buttonRef }, dayRender.buttonProps));
+    return React.createElement(Button$2, __assign$w({ name: "day", ref: buttonRef }, dayRender.buttonProps));
 }
 
 /**
@@ -19218,13 +14432,13 @@ function WeekNumber(props) {
     var _a = useDayPicker(), onWeekNumberClick = _a.onWeekNumberClick, styles = _a.styles, classNames = _a.classNames, locale = _a.locale, labelWeekNumber = _a.labels.labelWeekNumber, formatWeekNumber = _a.formatters.formatWeekNumber;
     var content = formatWeekNumber(Number(weekNumber), { locale: locale });
     if (!onWeekNumberClick) {
-        return (React__default["default"].createElement("span", { className: classNames.weeknumber, style: styles.weeknumber }, content));
+        return (React.createElement("span", { className: classNames.weeknumber, style: styles.weeknumber }, content));
     }
     var label = labelWeekNumber(Number(weekNumber), { locale: locale });
     var handleClick = function (e) {
         onWeekNumberClick(weekNumber, dates, e);
     };
-    return (React__default["default"].createElement(Button$2, { name: "week-number", "aria-label": label, className: classNames.weeknumber, style: styles.weeknumber, onClick: handleClick }, content));
+    return (React.createElement(Button$2, { name: "week-number", "aria-label": label, className: classNames.weeknumber, style: styles.weeknumber, onClick: handleClick }, content));
 }
 
 /** Render a row in the calendar, with the days and the week number. */
@@ -19235,13 +14449,13 @@ function Row(props) {
     var WeeknumberComponent = (_b = components === null || components === void 0 ? void 0 : components.WeekNumber) !== null && _b !== void 0 ? _b : WeekNumber;
     var weekNumberCell;
     if (showWeekNumber) {
-        weekNumberCell = (React__default["default"].createElement("td", { className: classNames.cell, style: styles.cell },
-            React__default["default"].createElement(WeeknumberComponent, { number: props.weekNumber, dates: props.dates })));
+        weekNumberCell = (React.createElement("td", { className: classNames.cell, style: styles.cell },
+            React.createElement(WeeknumberComponent, { number: props.weekNumber, dates: props.dates })));
     }
-    return (React__default["default"].createElement("tr", { className: classNames.row, style: styles.row },
+    return (React.createElement("tr", { className: classNames.row, style: styles.row },
         weekNumberCell,
-        props.dates.map(function (date) { return (React__default["default"].createElement("td", { className: classNames.cell, style: styles.cell, key: getUnixTime(date), role: "presentation" },
-            React__default["default"].createElement(DayComponent, { displayMonth: props.displayMonth, date: date }))); })));
+        props.dates.map(function (date) { return (React.createElement("td", { className: classNames.cell, style: styles.cell, key: getUnixTime(date), role: "presentation" },
+            React.createElement(DayComponent, { displayMonth: props.displayMonth, date: date }))); })));
 }
 
 /** Return the weeks between two dates.  */
@@ -19309,10 +14523,10 @@ function Table(props) {
     var HeadComponent = (_a = components === null || components === void 0 ? void 0 : components.Head) !== null && _a !== void 0 ? _a : Head;
     var RowComponent = (_b = components === null || components === void 0 ? void 0 : components.Row) !== null && _b !== void 0 ? _b : Row;
     var FooterComponent = (_c = components === null || components === void 0 ? void 0 : components.Footer) !== null && _c !== void 0 ? _c : Footer;
-    return (React__default["default"].createElement("table", { className: classNames.table, style: styles.table, role: "grid", "aria-labelledby": props['aria-labelledby'] },
-        !hideHead && React__default["default"].createElement(HeadComponent, null),
-        React__default["default"].createElement("tbody", { className: classNames.tbody, style: styles.tbody, role: "rowgroup" }, weeks.map(function (week) { return (React__default["default"].createElement(RowComponent, { displayMonth: props.displayMonth, key: week.weekNumber, dates: week.dates, weekNumber: week.weekNumber })); })),
-        React__default["default"].createElement(FooterComponent, { displayMonth: props.displayMonth })));
+    return (React.createElement("table", { className: classNames.table, style: styles.table, role: "grid", "aria-labelledby": props['aria-labelledby'] },
+        !hideHead && React.createElement(HeadComponent, null),
+        React.createElement("tbody", { className: classNames.tbody, style: styles.tbody, role: "rowgroup" }, weeks.map(function (week) { return (React.createElement(RowComponent, { displayMonth: props.displayMonth, key: week.weekNumber, dates: week.dates, weekNumber: week.weekNumber })); })),
+        React.createElement(FooterComponent, { displayMonth: props.displayMonth })));
 }
 
 /*
@@ -19421,17 +14635,18 @@ function Month(props) {
         style = __assign$w(__assign$w({}, style), styles.caption_between);
     }
     var CaptionComponent = (_b = components === null || components === void 0 ? void 0 : components.Caption) !== null && _b !== void 0 ? _b : Caption;
-    return (React__default["default"].createElement("div", { key: props.displayIndex, className: className.join(' '), style: style },
-        React__default["default"].createElement(CaptionComponent, { id: captionId, displayMonth: props.displayMonth }),
-        React__default["default"].createElement(Table, { "aria-labelledby": captionId, displayMonth: props.displayMonth })));
+    return (React.createElement("div", { key: props.displayIndex, className: className.join(' '), style: style },
+        React.createElement(CaptionComponent, { id: captionId, displayMonth: props.displayMonth }),
+        React.createElement(Table, { "aria-labelledby": captionId, displayMonth: props.displayMonth })));
 }
 
 /** Render the container with the months according to the number of months to display. */
-function Root() {
+function Root(_a) {
+    var initialProps = _a.initialProps;
     var dayPicker = useDayPicker();
     var focusContext = useFocusContext();
     var navigation = useNavigation();
-    var _a = React.useState(false), hasInitialFocus = _a[0], setHasInitialFocus = _a[1];
+    var _b = React.useState(false), hasInitialFocus = _b[0], setHasInitialFocus = _b[1];
     // Focus the focus target when initialFocus is passed in
     React.useEffect(function () {
         if (!dayPicker.initialFocus)
@@ -19458,20 +14673,26 @@ function Root() {
         classNames.push(dayPicker.classNames.with_weeknumber);
     }
     var style = __assign$w(__assign$w({}, dayPicker.styles.root), dayPicker.style);
-    return (React__default["default"].createElement("div", { className: classNames.join(' '), style: style, dir: dayPicker.dir },
-        React__default["default"].createElement("div", { className: dayPicker.classNames.months, style: dayPicker.styles.months }, navigation.displayMonths.map(function (month, i) { return (React__default["default"].createElement(Month, { key: i, displayIndex: i, displayMonth: month })); }))));
+    var dataAttributes = Object.keys(initialProps)
+        .filter(function (key) { return key.startsWith('data-'); })
+        .reduce(function (attrs, key) {
+        var _a;
+        return __assign$w(__assign$w({}, attrs), (_a = {}, _a[key] = initialProps[key], _a));
+    }, {});
+    return (React.createElement("div", __assign$w({ className: classNames.join(' '), style: style, dir: dayPicker.dir, id: dayPicker.id }, dataAttributes),
+        React.createElement("div", { className: dayPicker.classNames.months, style: dayPicker.styles.months }, navigation.displayMonths.map(function (month, i) { return (React.createElement(Month, { key: i, displayIndex: i, displayMonth: month })); }))));
 }
 
 /** Provide the value for all the context providers. */
 function RootProvider(props) {
     var children = props.children, initialProps = __rest(props, ["children"]);
-    return (React__default["default"].createElement(DayPickerProvider, { initialProps: initialProps },
-        React__default["default"].createElement(NavigationProvider, null,
-            React__default["default"].createElement(SelectSingleProvider, { initialProps: initialProps },
-                React__default["default"].createElement(SelectMultipleProvider, { initialProps: initialProps },
-                    React__default["default"].createElement(SelectRangeProvider, { initialProps: initialProps },
-                        React__default["default"].createElement(ModifiersProvider, null,
-                            React__default["default"].createElement(FocusProvider, null, children))))))));
+    return (React.createElement(DayPickerProvider, { initialProps: initialProps },
+        React.createElement(NavigationProvider, null,
+            React.createElement(SelectSingleProvider, { initialProps: initialProps },
+                React.createElement(SelectMultipleProvider, { initialProps: initialProps },
+                    React.createElement(SelectRangeProvider, { initialProps: initialProps },
+                        React.createElement(ModifiersProvider, null,
+                            React.createElement(FocusProvider, null, children))))))));
 }
 
 /**
@@ -19562,8 +14783,8 @@ function RootProvider(props) {
  * ```
  */
 function DayPicker(props) {
-    return (React__default["default"].createElement(RootProvider, __assign$w({}, props),
-        React__default["default"].createElement(Root, null)));
+    return (React.createElement(RootProvider, __assign$w({}, props),
+        React.createElement(Root, { initialProps: props })));
 }
 
 function styleInject(css, ref) {
@@ -19593,10 +14814,10 @@ function styleInject(css, ref) {
   }
 }
 
-var css_248z = ".rdp{--rdp-cell-size:40px;--rdp-accent-color:#00f;--rdp-background-color:#e7edff;--rdp-accent-color-dark:#3003e1;--rdp-background-color-dark:#180270;--rdp-outline:2px solid var(--rdp-accent-color);--rdp-outline-selected:3px solid var(--rdp-accent-color);margin:1em}.rdp-vhidden{clip:rect(1px,1px,1px,1px)!important;-moz-appearance:none;-webkit-appearance:none;appearance:none;background:#0000;border:0;border:0!important;box-sizing:border-box;height:1px!important;margin:0;overflow:hidden!important;padding:0;padding:0!important;position:absolute!important;top:0;width:1px!important}.rdp-button_reset{appearance:none;-moz-appearance:none;-webkit-appearance:none;background:none;color:inherit;cursor:default;font:inherit;margin:0;padding:0;position:relative}.rdp-button_reset:focus-visible{outline:none}.rdp-button{border:2px solid #0000}.rdp-button[disabled]:not(.rdp-day_selected){opacity:.25}.rdp-button:not([disabled]){cursor:pointer}.rdp-button:focus-visible:not([disabled]){border:var(--rdp-outline);color:inherit}.rdp-button:focus-visible:not([disabled]),.rdp-button:hover:not([disabled]):not(.rdp-day_selected){background-color:var(--rdp-background-color)}.rdp-months{display:flex}.rdp-month{margin:0 1em}.rdp-month:first-child{margin-left:0}.rdp-month:last-child{margin-right:0}.rdp-table{border-collapse:collapse;margin:0;max-width:calc(var(--rdp-cell-size)*7)}.rdp-with_weeknumber .rdp-table{border-collapse:collapse;max-width:calc(var(--rdp-cell-size)*8)}.rdp-caption{align-items:center;display:flex;justify-content:space-between;padding:0;text-align:left}.rdp-multiple_months .rdp-caption{display:block;position:relative;text-align:center}.rdp-caption_dropdowns,.rdp-caption_label{display:inline-flex;position:relative}.rdp-caption_label{align-items:center;border:2px solid #0000;color:currentColor;font-family:inherit;font-size:140%;font-weight:700;margin:0;padding:0 .25em;white-space:nowrap;z-index:1}.rdp-nav{white-space:nowrap}.rdp-multiple_months .rdp-caption_start .rdp-nav{left:0;position:absolute;top:50%;transform:translateY(-50%)}.rdp-multiple_months .rdp-caption_end .rdp-nav{position:absolute;right:0;top:50%;transform:translateY(-50%)}.rdp-nav_button{align-items:center;border-radius:100%;display:inline-flex;height:var(--rdp-cell-size);justify-content:center;padding:.25em;width:var(--rdp-cell-size)}.rdp-dropdown_month,.rdp-dropdown_year{align-items:center;display:inline-flex;position:relative}.rdp-dropdown{appearance:none;background-color:initial;border:none;bottom:0;cursor:inherit;font-family:inherit;font-size:inherit;left:0;line-height:inherit;margin:0;opacity:0;padding:0;position:absolute;top:0;width:100%;z-index:2}.rdp-dropdown[disabled]{color:unset;opacity:unset}.rdp-dropdown:focus-visible:not([disabled])+.rdp-caption_label{background-color:var(--rdp-background-color);border:var(--rdp-outline);border-radius:6px}.rdp-dropdown_icon{margin:0 0 0 5px}.rdp-head{border:0}.rdp-head_row,.rdp-row{height:100%}.rdp-head_cell{font-size:.75em;font-weight:700;height:100%;height:var(--rdp-cell-size);padding:0;text-align:center;vertical-align:middle}.rdp-tbody{border:0}.rdp-tfoot{margin:.5em}.rdp-cell{height:100%;height:var(--rdp-cell-size);padding:0;text-align:center;width:var(--rdp-cell-size)}.rdp-weeknumber{font-size:.75em}.rdp-day,.rdp-weeknumber{align-items:center;border:2px solid #0000;border-radius:100%;box-sizing:border-box;display:flex;height:var(--rdp-cell-size);justify-content:center;margin:0;max-width:var(--rdp-cell-size);overflow:hidden;width:var(--rdp-cell-size)}.rdp-day_today:not(.rdp-day_outside){font-weight:700}.rdp-day_selected,.rdp-day_selected:focus-visible,.rdp-day_selected:hover{background-color:var(--rdp-accent-color);color:#fff;opacity:1}.rdp-day_outside{opacity:.5}.rdp-day_selected:focus-visible{outline:var(--rdp-outline);outline-offset:2px;z-index:1}.rdp:not([dir=rtl]) .rdp-day_range_start:not(.rdp-day_range_end){border-bottom-right-radius:0;border-top-right-radius:0}.rdp:not([dir=rtl]) .rdp-day_range_end:not(.rdp-day_range_start),.rdp[dir=rtl] .rdp-day_range_start:not(.rdp-day_range_end){border-bottom-left-radius:0;border-top-left-radius:0}.rdp[dir=rtl] .rdp-day_range_end:not(.rdp-day_range_start){border-bottom-right-radius:0;border-top-right-radius:0}.rdp-day_range_end.rdp-day_range_start{border-radius:100%}.rdp-day_range_middle{border-radius:0}";
+var css_248z = ".rdp{--rdp-cell-size:40px;--rdp-caption-font-size:18px;--rdp-accent-color:#00f;--rdp-background-color:#e7edff;--rdp-accent-color-dark:#3003e1;--rdp-background-color-dark:#180270;--rdp-outline:2px solid var(--rdp-accent-color);--rdp-outline-selected:3px solid var(--rdp-accent-color);margin:1em}.rdp-vhidden{clip:rect(1px,1px,1px,1px)!important;-moz-appearance:none;-webkit-appearance:none;appearance:none;background:#0000;border:0;border:0!important;box-sizing:border-box;height:1px!important;margin:0;overflow:hidden!important;padding:0;padding:0!important;position:absolute!important;top:0;width:1px!important}.rdp-button_reset{appearance:none;-moz-appearance:none;-webkit-appearance:none;background:none;color:inherit;cursor:default;font:inherit;margin:0;padding:0;position:relative}.rdp-button_reset:focus-visible{outline:none}.rdp-button{border:2px solid #0000}.rdp-button[disabled]:not(.rdp-day_selected){opacity:.25}.rdp-button:not([disabled]){cursor:pointer}.rdp-button:focus-visible:not([disabled]){border:var(--rdp-outline);color:inherit}.rdp-button:focus-visible:not([disabled]),.rdp-button:hover:not([disabled]):not(.rdp-day_selected){background-color:var(--rdp-background-color)}.rdp-months{display:flex}.rdp-month{margin:0 1em}.rdp-month:first-child{margin-left:0}.rdp-month:last-child{margin-right:0}.rdp-table{border-collapse:collapse;margin:0;max-width:calc(var(--rdp-cell-size)*7)}.rdp-with_weeknumber .rdp-table{border-collapse:collapse;max-width:calc(var(--rdp-cell-size)*8)}.rdp-caption{align-items:center;display:flex;justify-content:space-between;padding:0;text-align:left}.rdp-multiple_months .rdp-caption{display:block;position:relative;text-align:center}.rdp-caption_dropdowns,.rdp-caption_label{display:inline-flex;position:relative}.rdp-caption_label{align-items:center;border:2px solid #0000;color:currentColor;font-family:inherit;font-size:var(--rdp-caption-font-size);font-weight:700;margin:0;padding:0 .25em;white-space:nowrap;z-index:1}.rdp-nav{white-space:nowrap}.rdp-multiple_months .rdp-caption_start .rdp-nav{left:0;position:absolute;top:50%;transform:translateY(-50%)}.rdp-multiple_months .rdp-caption_end .rdp-nav{position:absolute;right:0;top:50%;transform:translateY(-50%)}.rdp-nav_button{align-items:center;border-radius:100%;display:inline-flex;height:var(--rdp-cell-size);justify-content:center;padding:.25em;width:var(--rdp-cell-size)}.rdp-dropdown_month,.rdp-dropdown_year{align-items:center;display:inline-flex;position:relative}.rdp-dropdown{appearance:none;background-color:initial;border:none;bottom:0;cursor:inherit;font-family:inherit;font-size:inherit;left:0;line-height:inherit;margin:0;opacity:0;padding:0;position:absolute;top:0;width:100%;z-index:2}.rdp-dropdown[disabled]{color:unset;opacity:unset}.rdp-dropdown:focus-visible:not([disabled])+.rdp-caption_label{background-color:var(--rdp-background-color);border:var(--rdp-outline);border-radius:6px}.rdp-dropdown_icon{margin:0 0 0 5px}.rdp-head{border:0}.rdp-head_row,.rdp-row{height:100%}.rdp-head_cell{font-size:.75em;font-weight:700;height:100%;height:var(--rdp-cell-size);padding:0;text-align:center;text-transform:uppercase;vertical-align:middle}.rdp-tbody{border:0}.rdp-tfoot{margin:.5em}.rdp-cell{height:100%;height:var(--rdp-cell-size);padding:0;text-align:center;width:var(--rdp-cell-size)}.rdp-weeknumber{font-size:.75em}.rdp-day,.rdp-weeknumber{align-items:center;border:2px solid #0000;border-radius:100%;box-sizing:border-box;display:flex;height:var(--rdp-cell-size);justify-content:center;margin:0;max-width:var(--rdp-cell-size);overflow:hidden;width:var(--rdp-cell-size)}.rdp-day_today:not(.rdp-day_outside){font-weight:700}.rdp-day_selected,.rdp-day_selected:focus-visible,.rdp-day_selected:hover{background-color:var(--rdp-accent-color);color:#fff;opacity:1}.rdp-day_outside{opacity:.5}.rdp-day_selected:focus-visible{outline:var(--rdp-outline);outline-offset:2px;z-index:1}.rdp:not([dir=rtl]) .rdp-day_range_start:not(.rdp-day_range_end){border-bottom-right-radius:0;border-top-right-radius:0}.rdp:not([dir=rtl]) .rdp-day_range_end:not(.rdp-day_range_start),.rdp[dir=rtl] .rdp-day_range_start:not(.rdp-day_range_end){border-bottom-left-radius:0;border-top-left-radius:0}.rdp[dir=rtl] .rdp-day_range_end:not(.rdp-day_range_start){border-bottom-right-radius:0;border-top-right-radius:0}.rdp-day_range_end.rdp-day_range_start{border-radius:100%}.rdp-day_range_middle{border-radius:0}";
 styleInject(css_248z);
 
-const DatePickerWrapper = He.div `
+const DatePickerWrapper = styled$1.div `
   position: absolute;
   top: 24px;
   right: 0;
@@ -19607,13 +14828,13 @@ const DatePickerWrapper = He.div `
   box-shadow: 0px 0px 5px #ddd;
   background-color: #fff;
 `;
-const Header = He.div `
+const Header = styled$1.div `
   display: flex;
   justify-content: end;
   padding: 4px 8px;
   border-bottom: 1px solid #eee;
 `;
-const ResetButton = He.a `
+const ResetButton = styled$1.a `
   cursor: pointer;
   color: #a1a1aa;
   margin-right: 8px;
@@ -19646,10 +14867,10 @@ const DatePicker = React__namespace.memo((_a) => {
             document.removeEventListener('click', handleClose, true);
         };
     }, [onClose]);
-    return ReactDOM__default["default"].createPortal(jsxRuntime.exports.jsxs(DatePickerWrapper, Object.assign({ ref: modalRef, style: { top, left } }, { children: [selected && (jsxRuntime.exports.jsx(Header, { children: jsxRuntime.exports.jsx(ResetButton, Object.assign({ onClick: handleReset }, { children: "\u7DE0\u3081\u5207\u308A\u65E5\u3092\u30EA\u30BB\u30C3\u30C8" })) })), jsxRuntime.exports.jsx(DayPicker, { mode: "single", required: true, locale: locale, defaultMonth: selected, selected: selected, onSelect: handleSelectDate })] })), (_b = getHtmlElement(scrollContainer)) !== null && _b !== void 0 ? _b : document.body);
+    return ReactDOM.createPortal(jsxRuntimeExports.jsxs(DatePickerWrapper, Object.assign({ ref: modalRef, style: { top, left } }, { children: [selected && (jsxRuntimeExports.jsx(Header, { children: jsxRuntimeExports.jsx(ResetButton, Object.assign({ onClick: handleReset }, { children: "\u7DE0\u3081\u5207\u308A\u65E5\u3092\u30EA\u30BB\u30C3\u30C8" })) })), jsxRuntimeExports.jsx(DayPicker, { mode: "single", required: true, locale: ja, defaultMonth: selected, selected: selected, onSelect: handleSelectDate })] })), (_b = getHtmlElement(scrollContainer)) !== null && _b !== void 0 ? _b : document.body);
 });
 
-const Wrapper$1 = He.div `
+const Wrapper$1 = styled$1.div `
   position: absolute;
   top: 24px;
   right: 0;
@@ -19664,7 +14885,7 @@ const Wrapper$1 = He.div `
   display: flex;
   flex-direction: column;
 `;
-const Search = He.div `
+const Search = styled$1.div `
   width: 100%;
   height: 44px;
   box-sizing: border-box;
@@ -19682,14 +14903,14 @@ const Search = He.div `
     font-size: 16px;
   }
 `;
-const Members = He.div `
+const Members = styled$1.div `
   width: 100%;
   height: 100%;
   flex-grow: 0;
   overflow-x: hidden;
   overflow-y: auto;
 `;
-const MemberInfo = He.div `
+const MemberInfo = styled$1.div `
   display: flex;
   align-items: center;
   flex-direction: row;
@@ -19704,7 +14925,7 @@ const MemberInfo = He.div `
     background-color: #2c2c31;
   }
 `;
-const MemberIcon$1 = He.div `
+const MemberIcon$1 = styled$1.div `
   width: 32px;
   height: 32px;
   display: flex;
@@ -19722,11 +14943,11 @@ const MemberIcon$1 = He.div `
     object-fit: cover;
   }
 `;
-const MemberName = He.div `
+const MemberName = styled$1.div `
   max-height: 48px;
   margin-left: 8px;
 `;
-const Text$5 = He.div `
+const Text$5 = styled$1.div `
   font-size: 16px;
   width: 100%;
   height: 100%;
@@ -19736,7 +14957,7 @@ const Text$5 = He.div `
   background-color: #f7f7f7;
   color: #000;
 `;
-const RemoveButton = He.a `
+const RemoveButton = styled$1.a `
   width: 20px;
   height: 20px;
   background: #ffffff;
@@ -19807,18 +15028,18 @@ const AssigneePicker = React__namespace.memo((_a) => {
             return Object.assign(Object.assign({}, v), { selected: selectedMembers.some((m) => m.id === v.id) });
         });
     }, [members, searchValue, selectedMembers]);
-    return ReactDOM__default["default"].createPortal(jsxRuntime.exports.jsxs(Wrapper$1, Object.assign({ ref: modalRef, style: { top, left } }, { children: [jsxRuntime.exports.jsx(Search, { children: jsxRuntime.exports.jsx("input", { type: "text", placeholder: "\u30E6\u30FC\u30B6\u30FC\u3092\u7D5E\u308A\u8FBC\u3080", value: searchValue, onKeyDown: handleKeyDown, onChange: handleChangeSearchValue }) }), jsxRuntime.exports.jsx(Members, { children: memoMembers.map((member) => {
+    return ReactDOM.createPortal(jsxRuntimeExports.jsxs(Wrapper$1, Object.assign({ ref: modalRef, style: { top, left } }, { children: [jsxRuntimeExports.jsx(Search, { children: jsxRuntimeExports.jsx("input", { type: "text", placeholder: "\u30E6\u30FC\u30B6\u30FC\u3092\u7D5E\u308A\u8FBC\u3080", value: searchValue, onKeyDown: handleKeyDown, onChange: handleChangeSearchValue }) }), jsxRuntimeExports.jsx(Members, { children: memoMembers.map((member) => {
                     var _a;
-                    return (jsxRuntime.exports.jsxs(MemberInfo, Object.assign({ onClick: handleSelectMember(member), selected: (_a = member.selected) !== null && _a !== void 0 ? _a : false }, { children: [jsxRuntime.exports.jsx(MemberIcon$1, { children: (member === null || member === void 0 ? void 0 : member.imageUrl) ? (jsxRuntime.exports.jsx("img", { draggable: "false", src: member === null || member === void 0 ? void 0 : member.imageUrl })) : (jsxRuntime.exports.jsx(Text$5, { children: member.name.slice(0, 1) })) }), jsxRuntime.exports.jsx(MemberName, { children: member.name }), member.selected && (jsxRuntime.exports.jsx(RemoveButton, Object.assign({ href: "#", onClick: handleRemove(member) }, { children: jsxRuntime.exports.jsx(Close, {}) })))] }), member.id));
+                    return (jsxRuntimeExports.jsxs(MemberInfo, Object.assign({ onClick: handleSelectMember(member), selected: (_a = member.selected) !== null && _a !== void 0 ? _a : false }, { children: [jsxRuntimeExports.jsx(MemberIcon$1, { children: (member === null || member === void 0 ? void 0 : member.imageUrl) ? (jsxRuntimeExports.jsx("img", { draggable: "false", src: member === null || member === void 0 ? void 0 : member.imageUrl })) : (jsxRuntimeExports.jsx(Text$5, { children: member.name.slice(0, 1) })) }), jsxRuntimeExports.jsx(MemberName, { children: member.name }), member.selected && (jsxRuntimeExports.jsx(RemoveButton, Object.assign({ href: "#", onClick: handleRemove(member) }, { children: jsxRuntimeExports.jsx(Close, {}) })))] }), member.id));
                 }) })] })), (_b = getHtmlElement(scrollContainer)) !== null && _b !== void 0 ? _b : document.body);
 });
 
-const Container$7 = He.div `
+const Container$7 = styled$1.div `
   display: flex;
   position: relative;
   user-select: none;
 `;
-const XFadeIn = Ue `
+const XFadeIn = Ue$1 `
   0% {
     opacity: 0.7;
     transform: translateX(-50%) scale(0.5);
@@ -19828,7 +15049,7 @@ const XFadeIn = Ue `
     transform: translateX(-50%) scale(1);
   }
 `;
-const XFadeOut = Ue `
+const XFadeOut = Ue$1 `
   0% {
     opacity: 1;
     transform: translateX(-50%) scale(1);
@@ -19842,7 +15063,7 @@ const XFadeOut = Ue `
     transform: translateX(-50%) scale(0.5);
   }
 `;
-const YFadeIn = Ue `
+const YFadeIn = Ue$1 `
   0% {
     opacity: 0.7;
     transform: translateY(-50%) scale(0.5);
@@ -19852,7 +15073,7 @@ const YFadeIn = Ue `
     transform: translateY(-50%) scale(1);
   }
 `;
-const YFadeOut = Ue `
+const YFadeOut = Ue$1 `
   0% {
     opacity: 1;
     transform: translateY(-50%) scale(1);
@@ -19866,7 +15087,7 @@ const YFadeOut = Ue `
     transform: translateY(-50%) scale(0.5);
   }
 `;
-const TooltipContainer = He.div `
+const TooltipContainer = styled$1.div `
   position: absolute;
   border-radius: 4px;
   z-index: 1;
@@ -19892,7 +15113,7 @@ const TooltipContainer = He.div `
         return;
     switch (position) {
         case 'top':
-            return Ce `
+            return Ce$1 `
           bottom: ${containerRect.height + 8}px;
           transform: ${isDisplay ? `translateX(-50%) scale(1)` : `translateX(-50%) scale(0.5)`};
           animation: ${isDisplay ? XFadeIn : XFadeOut} 0.25s;
@@ -19900,7 +15121,7 @@ const TooltipContainer = He.div `
           padding: 10px;
         `;
         case 'right':
-            return Ce `
+            return Ce$1 `
           left: ${containerRect.width + 16}px;
           top: 50%;
           animation: ${isDisplay ? YFadeIn : YFadeOut} 0.25s;
@@ -19923,7 +15144,7 @@ const TooltipContainer = He.div `
           }
         `;
         case 'bottom':
-            return Ce `
+            return Ce$1 `
           top: ${containerRect.height + 16}px;
           transform: ${isDisplay ? `translateX(-50%) scale(1)` : `translateX(-50%) scale(0.5)`};
           left: 50%;
@@ -19961,7 +15182,7 @@ const Tooltip = (_a) => {
             setDisplay(true);
         }
     }, [_isDisplay]);
-    return (jsxRuntime.exports.jsxs(Container$7, Object.assign({ ref: containerRef, onMouseOver: handleMouseOver, onMouseOut: handleMouseOut }, props, { children: [targetElement, isDisplay && (jsxRuntime.exports.jsx(TooltipContainer, Object.assign({ containerRect: containerRect, maxWidth: maxWidth, position: position, border: border, fontWeight: fontWeight, fontSize: fontSize, isDisplay: _isDisplay }, { children: children })))] })));
+    return (jsxRuntimeExports.jsxs(Container$7, Object.assign({ ref: containerRef, onMouseOver: handleMouseOver, onMouseOut: handleMouseOut }, props, { children: [targetElement, isDisplay && (jsxRuntimeExports.jsx(TooltipContainer, Object.assign({ containerRect: containerRect, maxWidth: maxWidth, position: position, border: border, fontWeight: fontWeight, fontSize: fontSize, isDisplay: _isDisplay }, { children: children })))] })));
 };
 
 function formatDate(date) {
@@ -19969,8 +15190,8 @@ function formatDate(date) {
     const dayBeforeYesterday = addDays(today, -2);
     const tomorrow = addDays(today, 1);
     const dayAfterTomorrow = addDays(today, 2);
-    const nextWeekStart = startOfWeek(addWeeks(today, 1), { locale: locale });
-    const currentWeekStart = startOfWeek(today, { locale: locale });
+    const nextWeekStart = startOfWeek(addWeeks(today, 1), { locale: ja });
+    const currentWeekStart = startOfWeek(today, { locale: ja });
     if (isYesterday(date)) {
         return '昨日';
     }
@@ -19987,10 +15208,10 @@ function formatDate(date) {
         return '明後日';
     }
     else if (isSameWeek(date, currentWeekStart)) {
-        return `今週の${format(date, 'E曜日', { locale: locale })}`;
+        return `今週の${format(date, 'E曜日', { locale: ja })}`;
     }
     else if (isSameWeek(date, nextWeekStart)) {
-        return `来週の${format(date, 'E曜日', { locale: locale })}`;
+        return `来週の${format(date, 'E曜日', { locale: ja })}`;
     }
     else if (date.getFullYear() === today.getFullYear()) {
         return format(date, 'M月d日');
@@ -20000,17 +15221,17 @@ function formatDate(date) {
     }
 }
 
-const Wrapper = He.div `
+const Wrapper = styled$1.div `
   display: flex;
   justify-content: space-between;
 `;
-const Buttons = He.div `
+const Buttons = styled$1.div `
   flex-shrink: 0;
   display: flex;
   justify-content: center;
   align-items: center;
 `;
-const IconButton = He.div `
+const IconButton = styled$1.div `
   cursor: pointer;
   margin: 4px;
   display: flex;
@@ -20019,7 +15240,7 @@ const IconButton = He.div `
   color: #a1a1aa;
   flex-direction: row-reverse;
 `;
-const Container$6 = He.div `
+const Container$6 = styled$1.div `
   font-size: 1rem;
   outline: 0;
   margin: 0;
@@ -20030,7 +15251,7 @@ const Container$6 = He.div `
   width: 100%;
   ${({ placeholder }) => {
     return (placeholder &&
-        Ce `
+        Ce$1 `
         ::after {
           opacity: 0.3;
           content: attr(placeholder);
@@ -20038,7 +15259,7 @@ const Container$6 = He.div `
       `);
 }}
 `;
-const CheckBoxOuter = He.div `
+const CheckBoxOuter = styled$1.div `
   position: absolute;
   left: 4px;
   top: -3px;
@@ -20051,7 +15272,7 @@ const CheckBoxOuter = He.div `
   cursor: pointer;
   user-select: none;
 `;
-const MemberIcon = He.div `
+const MemberIcon = styled$1.div `
   width: 20px;
   height: 20px;
   position: absolute;
@@ -20067,7 +15288,7 @@ const MemberIcon = He.div `
     object-fit: cover;
   }
 `;
-const Text$4 = He.div `
+const Text$4 = styled$1.div `
   font-size: 12px;
   width: 100%;
   height: 100%;
@@ -20178,13 +15399,13 @@ const Task = React__namespace.memo((_a) => {
         modalPosition.top = ((_l = scrollEl === null || scrollEl === void 0 ? void 0 : scrollEl.scrollTop) !== null && _l !== void 0 ? _l : 0) + ((_m = blockRect === null || blockRect === void 0 ? void 0 : blockRect.top) !== null && _m !== void 0 ? _m : 0) - 60;
         modalPosition.left = ((_o = editorRect === null || editorRect === void 0 ? void 0 : editorRect.left) !== null && _o !== void 0 ? _o : 0) + ((_p = editorRect === null || editorRect === void 0 ? void 0 : editorRect.width) !== null && _p !== void 0 ? _p : 0) - 400;
     }
-    return (jsxRuntime.exports.jsxs(jsxRuntime.exports.Fragment, { children: [jsxRuntime.exports.jsxs(Wrapper, Object.assign({ onMouseOver: handleMouseOver, onMouseOut: handleMouseOut, style: isHover ? { backgroundColor: '#f7f9fa' } : {} }, { children: [jsxRuntime.exports.jsxs(Container$6, Object.assign({ ref: headerRef, spellCheck: false, placeholder: showPlaceholder ? placeholder : '', style: {
+    return (jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [jsxRuntimeExports.jsxs(Wrapper, Object.assign({ onMouseOver: handleMouseOver, onMouseOut: handleMouseOut, style: isHover ? { backgroundColor: '#f7f9fa' } : {} }, { children: [jsxRuntimeExports.jsxs(Container$6, Object.assign({ ref: headerRef, spellCheck: false, placeholder: showPlaceholder ? placeholder : '', style: {
                             textDecoration: checked ? 'line-through' : 'none',
-                        } }, props, { children: [jsxRuntime.exports.jsx(CheckBoxOuter, Object.assign({ onClick: handleClickCheckBox }, { children: jsxRuntime.exports.jsx(CheckSquare, { size: "20px", checked: checked }) })), contents] })), jsxRuntime.exports.jsxs(Buttons, { children: [((_q = attributes === null || attributes === void 0 ? void 0 : attributes.assignees) !== null && _q !== void 0 ? _q : []).length > 0 ? (jsxRuntime.exports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntime.exports.jsxs(IconButton, Object.assign({ onClick: handleClickAssigneePicker }, { children: [attributes.assignees.slice(0, 2).map((assignee, i) => {
-                                            return (jsxRuntime.exports.jsx(MemberIcon, Object.assign({ style: { right: `${12 * i}px` } }, { children: assignee.imageUrl ? (jsxRuntime.exports.jsx("img", { draggable: "false", src: assignee.imageUrl })) : (jsxRuntime.exports.jsx(Text$4, { children: assignee.name.slice(0, 1) })) }), assignee.id));
-                                        }), attributes.assignees.length > 2 && (jsxRuntime.exports.jsx(MemberIcon, Object.assign({ style: { right: `${12 * 2}px` } }, { children: jsxRuntime.exports.jsxs(Text$4, { children: ["+", attributes.assignees.length - 2] }) })))] })), maxWidth: 200, position: 'bottom' }, { children: attributes.assignees.map((v) => {
-                                    return (jsxRuntime.exports.jsxs(React__namespace.Fragment, { children: [v.name, jsxRuntime.exports.jsx("br", {})] }, v.id));
-                                }) }))) : (jsxRuntime.exports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntime.exports.jsx(IconButton, Object.assign({ onClick: handleClickAssigneePicker, style: { visibility: isHover ? 'visible' : 'hidden' } }, { children: jsxRuntime.exports.jsx(Assignment, { size: "20px", fill: "#A1A1AA" }) })), maxWidth: 200, position: 'bottom' }, { children: "\u62C5\u5F53\u8005\u3092\u5272\u308A\u5F53\u3066\u308B" }))), (attributes === null || attributes === void 0 ? void 0 : attributes.deadline) ? (jsxRuntime.exports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntime.exports.jsx(IconButton, Object.assign({ onClick: handleClickDatePicker }, { children: formatDate(new Date(attributes.deadline)) })), position: 'bottom' }, { children: "\u7DE0\u3081\u5207\u308A\u3092\u5909\u66F4\u3059\u308B" }))) : (jsxRuntime.exports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntime.exports.jsx(IconButton, Object.assign({ onClick: handleClickDatePicker, style: { visibility: isHover ? 'visible' : 'hidden' } }, { children: jsxRuntime.exports.jsx(Schedule, { size: "20px", fill: "#A1A1AA" }) })), position: 'bottom' }, { children: "\u7DE0\u3081\u5207\u308A\u3092\u8A2D\u5B9A\u3059\u308B" })))] })] })), showDatePicker && (jsxRuntime.exports.jsx(DatePicker, { editor: editor, scrollContainer: scrollContainer, top: modalPosition.top, left: modalPosition.left, selected: (attributes === null || attributes === void 0 ? void 0 : attributes.deadline) ? new Date(attributes.deadline) : undefined, onSelect: handleSelectDatePicker, onClose: handleCloseDatePicker })), showAssigneePicker && (jsxRuntime.exports.jsx(AssigneePicker, { editor: editor, scrollContainer: scrollContainer, top: modalPosition.top, left: modalPosition.left + 70, selectedMembers: selectedMembers, onSelect: handleSelectAssigneePicker, onRemove: handleRemoveAssigneePicker, onClose: handleCloseAssigneePicker }))] }));
+                        } }, props, { children: [jsxRuntimeExports.jsx(CheckBoxOuter, Object.assign({ onClick: handleClickCheckBox }, { children: jsxRuntimeExports.jsx(CheckSquare, { size: "20px", checked: checked }) })), contents] })), jsxRuntimeExports.jsxs(Buttons, { children: [((_q = attributes === null || attributes === void 0 ? void 0 : attributes.assignees) !== null && _q !== void 0 ? _q : []).length > 0 ? (jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsxs(IconButton, Object.assign({ onClick: handleClickAssigneePicker }, { children: [attributes.assignees.slice(0, 2).map((assignee, i) => {
+                                            return (jsxRuntimeExports.jsx(MemberIcon, Object.assign({ style: { right: `${12 * i}px` } }, { children: assignee.imageUrl ? (jsxRuntimeExports.jsx("img", { draggable: "false", src: assignee.imageUrl })) : (jsxRuntimeExports.jsx(Text$4, { children: assignee.name.slice(0, 1) })) }), assignee.id));
+                                        }), attributes.assignees.length > 2 && (jsxRuntimeExports.jsx(MemberIcon, Object.assign({ style: { right: `${12 * 2}px` } }, { children: jsxRuntimeExports.jsxs(Text$4, { children: ["+", attributes.assignees.length - 2] }) })))] })), maxWidth: 200, position: 'bottom' }, { children: attributes.assignees.map((v) => {
+                                    return (jsxRuntimeExports.jsxs(React__namespace.Fragment, { children: [v.name, jsxRuntimeExports.jsx("br", {})] }, v.id));
+                                }) }))) : (jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(IconButton, Object.assign({ onClick: handleClickAssigneePicker, style: { visibility: isHover ? 'visible' : 'hidden' } }, { children: jsxRuntimeExports.jsx(Assignment, { size: "20px", fill: "#A1A1AA" }) })), maxWidth: 200, position: 'bottom' }, { children: "\u62C5\u5F53\u8005\u3092\u5272\u308A\u5F53\u3066\u308B" }))), (attributes === null || attributes === void 0 ? void 0 : attributes.deadline) ? (jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(IconButton, Object.assign({ onClick: handleClickDatePicker }, { children: formatDate(new Date(attributes.deadline)) })), position: 'bottom' }, { children: "\u7DE0\u3081\u5207\u308A\u3092\u5909\u66F4\u3059\u308B" }))) : (jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(IconButton, Object.assign({ onClick: handleClickDatePicker, style: { visibility: isHover ? 'visible' : 'hidden' } }, { children: jsxRuntimeExports.jsx(Schedule, { size: "20px", fill: "#A1A1AA" }) })), position: 'bottom' }, { children: "\u7DE0\u3081\u5207\u308A\u3092\u8A2D\u5B9A\u3059\u308B" })))] })] })), showDatePicker && (jsxRuntimeExports.jsx(DatePicker, { editor: editor, scrollContainer: scrollContainer, top: modalPosition.top, left: modalPosition.left, selected: (attributes === null || attributes === void 0 ? void 0 : attributes.deadline) ? new Date(attributes.deadline) : undefined, onSelect: handleSelectDatePicker, onClose: handleCloseDatePicker })), showAssigneePicker && (jsxRuntimeExports.jsx(AssigneePicker, { editor: editor, scrollContainer: scrollContainer, top: modalPosition.top, left: modalPosition.left + 70, selectedMembers: selectedMembers, onSelect: handleSelectAssigneePicker, onRemove: handleRemoveAssigneePicker, onClose: handleCloseAssigneePicker }))] }));
 });
 
 var getDefaultStyle = function (visible) { return ({
@@ -20281,6 +15502,272 @@ var __assign$p = (undefined && undefined.__assign) || function () {
     return __assign$p.apply(this, arguments);
 };
 
+var reactIs = {exports: {}};
+
+var reactIs_production_min = {};
+
+/**
+ * @license React
+ * react-is.production.min.js
+ *
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+var hasRequiredReactIs_production_min;
+
+function requireReactIs_production_min () {
+	if (hasRequiredReactIs_production_min) return reactIs_production_min;
+	hasRequiredReactIs_production_min = 1;
+var b=Symbol.for("react.element"),c=Symbol.for("react.portal"),d=Symbol.for("react.fragment"),e=Symbol.for("react.strict_mode"),f=Symbol.for("react.profiler"),g=Symbol.for("react.provider"),h=Symbol.for("react.context"),k=Symbol.for("react.server_context"),l=Symbol.for("react.forward_ref"),m=Symbol.for("react.suspense"),n=Symbol.for("react.suspense_list"),p=Symbol.for("react.memo"),q=Symbol.for("react.lazy"),t=Symbol.for("react.offscreen"),u;u=Symbol.for("react.module.reference");
+	function v(a){if("object"===typeof a&&null!==a){var r=a.$$typeof;switch(r){case b:switch(a=a.type,a){case d:case f:case e:case m:case n:return a;default:switch(a=a&&a.$$typeof,a){case k:case h:case l:case q:case p:case g:return a;default:return r}}case c:return r}}}reactIs_production_min.ContextConsumer=h;reactIs_production_min.ContextProvider=g;reactIs_production_min.Element=b;reactIs_production_min.ForwardRef=l;reactIs_production_min.Fragment=d;reactIs_production_min.Lazy=q;reactIs_production_min.Memo=p;reactIs_production_min.Portal=c;reactIs_production_min.Profiler=f;reactIs_production_min.StrictMode=e;reactIs_production_min.Suspense=m;
+	reactIs_production_min.SuspenseList=n;reactIs_production_min.isAsyncMode=function(){return !1};reactIs_production_min.isConcurrentMode=function(){return !1};reactIs_production_min.isContextConsumer=function(a){return v(a)===h};reactIs_production_min.isContextProvider=function(a){return v(a)===g};reactIs_production_min.isElement=function(a){return "object"===typeof a&&null!==a&&a.$$typeof===b};reactIs_production_min.isForwardRef=function(a){return v(a)===l};reactIs_production_min.isFragment=function(a){return v(a)===d};reactIs_production_min.isLazy=function(a){return v(a)===q};reactIs_production_min.isMemo=function(a){return v(a)===p};
+	reactIs_production_min.isPortal=function(a){return v(a)===c};reactIs_production_min.isProfiler=function(a){return v(a)===f};reactIs_production_min.isStrictMode=function(a){return v(a)===e};reactIs_production_min.isSuspense=function(a){return v(a)===m};reactIs_production_min.isSuspenseList=function(a){return v(a)===n};
+	reactIs_production_min.isValidElementType=function(a){return "string"===typeof a||"function"===typeof a||a===d||a===f||a===e||a===m||a===n||a===t||"object"===typeof a&&null!==a&&(a.$$typeof===q||a.$$typeof===p||a.$$typeof===g||a.$$typeof===h||a.$$typeof===l||a.$$typeof===u||void 0!==a.getModuleId)?!0:!1};reactIs_production_min.typeOf=v;
+	return reactIs_production_min;
+}
+
+var reactIs_development = {};
+
+/**
+ * @license React
+ * react-is.development.js
+ *
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+var hasRequiredReactIs_development;
+
+function requireReactIs_development () {
+	if (hasRequiredReactIs_development) return reactIs_development;
+	hasRequiredReactIs_development = 1;
+
+	if (process.env.NODE_ENV !== "production") {
+	  (function() {
+
+	// ATTENTION
+	// When adding new symbols to this file,
+	// Please consider also adding to 'react-devtools-shared/src/backend/ReactSymbols'
+	// The Symbol used to tag the ReactElement-like types.
+	var REACT_ELEMENT_TYPE = Symbol.for('react.element');
+	var REACT_PORTAL_TYPE = Symbol.for('react.portal');
+	var REACT_FRAGMENT_TYPE = Symbol.for('react.fragment');
+	var REACT_STRICT_MODE_TYPE = Symbol.for('react.strict_mode');
+	var REACT_PROFILER_TYPE = Symbol.for('react.profiler');
+	var REACT_PROVIDER_TYPE = Symbol.for('react.provider');
+	var REACT_CONTEXT_TYPE = Symbol.for('react.context');
+	var REACT_SERVER_CONTEXT_TYPE = Symbol.for('react.server_context');
+	var REACT_FORWARD_REF_TYPE = Symbol.for('react.forward_ref');
+	var REACT_SUSPENSE_TYPE = Symbol.for('react.suspense');
+	var REACT_SUSPENSE_LIST_TYPE = Symbol.for('react.suspense_list');
+	var REACT_MEMO_TYPE = Symbol.for('react.memo');
+	var REACT_LAZY_TYPE = Symbol.for('react.lazy');
+	var REACT_OFFSCREEN_TYPE = Symbol.for('react.offscreen');
+
+	// -----------------------------------------------------------------------------
+
+	var enableScopeAPI = false; // Experimental Create Event Handle API.
+	var enableCacheElement = false;
+	var enableTransitionTracing = false; // No known bugs, but needs performance testing
+
+	var enableLegacyHidden = false; // Enables unstable_avoidThisFallback feature in Fiber
+	// stuff. Intended to enable React core members to more easily debug scheduling
+	// issues in DEV builds.
+
+	var enableDebugTracing = false; // Track which Fiber(s) schedule render work.
+
+	var REACT_MODULE_REFERENCE;
+
+	{
+	  REACT_MODULE_REFERENCE = Symbol.for('react.module.reference');
+	}
+
+	function isValidElementType(type) {
+	  if (typeof type === 'string' || typeof type === 'function') {
+	    return true;
+	  } // Note: typeof might be other than 'symbol' or 'number' (e.g. if it's a polyfill).
+
+
+	  if (type === REACT_FRAGMENT_TYPE || type === REACT_PROFILER_TYPE || enableDebugTracing  || type === REACT_STRICT_MODE_TYPE || type === REACT_SUSPENSE_TYPE || type === REACT_SUSPENSE_LIST_TYPE || enableLegacyHidden  || type === REACT_OFFSCREEN_TYPE || enableScopeAPI  || enableCacheElement  || enableTransitionTracing ) {
+	    return true;
+	  }
+
+	  if (typeof type === 'object' && type !== null) {
+	    if (type.$$typeof === REACT_LAZY_TYPE || type.$$typeof === REACT_MEMO_TYPE || type.$$typeof === REACT_PROVIDER_TYPE || type.$$typeof === REACT_CONTEXT_TYPE || type.$$typeof === REACT_FORWARD_REF_TYPE || // This needs to include all possible module reference object
+	    // types supported by any Flight configuration anywhere since
+	    // we don't know which Flight build this will end up being used
+	    // with.
+	    type.$$typeof === REACT_MODULE_REFERENCE || type.getModuleId !== undefined) {
+	      return true;
+	    }
+	  }
+
+	  return false;
+	}
+
+	function typeOf(object) {
+	  if (typeof object === 'object' && object !== null) {
+	    var $$typeof = object.$$typeof;
+
+	    switch ($$typeof) {
+	      case REACT_ELEMENT_TYPE:
+	        var type = object.type;
+
+	        switch (type) {
+	          case REACT_FRAGMENT_TYPE:
+	          case REACT_PROFILER_TYPE:
+	          case REACT_STRICT_MODE_TYPE:
+	          case REACT_SUSPENSE_TYPE:
+	          case REACT_SUSPENSE_LIST_TYPE:
+	            return type;
+
+	          default:
+	            var $$typeofType = type && type.$$typeof;
+
+	            switch ($$typeofType) {
+	              case REACT_SERVER_CONTEXT_TYPE:
+	              case REACT_CONTEXT_TYPE:
+	              case REACT_FORWARD_REF_TYPE:
+	              case REACT_LAZY_TYPE:
+	              case REACT_MEMO_TYPE:
+	              case REACT_PROVIDER_TYPE:
+	                return $$typeofType;
+
+	              default:
+	                return $$typeof;
+	            }
+
+	        }
+
+	      case REACT_PORTAL_TYPE:
+	        return $$typeof;
+	    }
+	  }
+
+	  return undefined;
+	}
+	var ContextConsumer = REACT_CONTEXT_TYPE;
+	var ContextProvider = REACT_PROVIDER_TYPE;
+	var Element = REACT_ELEMENT_TYPE;
+	var ForwardRef = REACT_FORWARD_REF_TYPE;
+	var Fragment = REACT_FRAGMENT_TYPE;
+	var Lazy = REACT_LAZY_TYPE;
+	var Memo = REACT_MEMO_TYPE;
+	var Portal = REACT_PORTAL_TYPE;
+	var Profiler = REACT_PROFILER_TYPE;
+	var StrictMode = REACT_STRICT_MODE_TYPE;
+	var Suspense = REACT_SUSPENSE_TYPE;
+	var SuspenseList = REACT_SUSPENSE_LIST_TYPE;
+	var hasWarnedAboutDeprecatedIsAsyncMode = false;
+	var hasWarnedAboutDeprecatedIsConcurrentMode = false; // AsyncMode should be deprecated
+
+	function isAsyncMode(object) {
+	  {
+	    if (!hasWarnedAboutDeprecatedIsAsyncMode) {
+	      hasWarnedAboutDeprecatedIsAsyncMode = true; // Using console['warn'] to evade Babel and ESLint
+
+	      console['warn']('The ReactIs.isAsyncMode() alias has been deprecated, ' + 'and will be removed in React 18+.');
+	    }
+	  }
+
+	  return false;
+	}
+	function isConcurrentMode(object) {
+	  {
+	    if (!hasWarnedAboutDeprecatedIsConcurrentMode) {
+	      hasWarnedAboutDeprecatedIsConcurrentMode = true; // Using console['warn'] to evade Babel and ESLint
+
+	      console['warn']('The ReactIs.isConcurrentMode() alias has been deprecated, ' + 'and will be removed in React 18+.');
+	    }
+	  }
+
+	  return false;
+	}
+	function isContextConsumer(object) {
+	  return typeOf(object) === REACT_CONTEXT_TYPE;
+	}
+	function isContextProvider(object) {
+	  return typeOf(object) === REACT_PROVIDER_TYPE;
+	}
+	function isElement(object) {
+	  return typeof object === 'object' && object !== null && object.$$typeof === REACT_ELEMENT_TYPE;
+	}
+	function isForwardRef(object) {
+	  return typeOf(object) === REACT_FORWARD_REF_TYPE;
+	}
+	function isFragment(object) {
+	  return typeOf(object) === REACT_FRAGMENT_TYPE;
+	}
+	function isLazy(object) {
+	  return typeOf(object) === REACT_LAZY_TYPE;
+	}
+	function isMemo(object) {
+	  return typeOf(object) === REACT_MEMO_TYPE;
+	}
+	function isPortal(object) {
+	  return typeOf(object) === REACT_PORTAL_TYPE;
+	}
+	function isProfiler(object) {
+	  return typeOf(object) === REACT_PROFILER_TYPE;
+	}
+	function isStrictMode(object) {
+	  return typeOf(object) === REACT_STRICT_MODE_TYPE;
+	}
+	function isSuspense(object) {
+	  return typeOf(object) === REACT_SUSPENSE_TYPE;
+	}
+	function isSuspenseList(object) {
+	  return typeOf(object) === REACT_SUSPENSE_LIST_TYPE;
+	}
+
+	reactIs_development.ContextConsumer = ContextConsumer;
+	reactIs_development.ContextProvider = ContextProvider;
+	reactIs_development.Element = Element;
+	reactIs_development.ForwardRef = ForwardRef;
+	reactIs_development.Fragment = Fragment;
+	reactIs_development.Lazy = Lazy;
+	reactIs_development.Memo = Memo;
+	reactIs_development.Portal = Portal;
+	reactIs_development.Profiler = Profiler;
+	reactIs_development.StrictMode = StrictMode;
+	reactIs_development.Suspense = Suspense;
+	reactIs_development.SuspenseList = SuspenseList;
+	reactIs_development.isAsyncMode = isAsyncMode;
+	reactIs_development.isConcurrentMode = isConcurrentMode;
+	reactIs_development.isContextConsumer = isContextConsumer;
+	reactIs_development.isContextProvider = isContextProvider;
+	reactIs_development.isElement = isElement;
+	reactIs_development.isForwardRef = isForwardRef;
+	reactIs_development.isFragment = isFragment;
+	reactIs_development.isLazy = isLazy;
+	reactIs_development.isMemo = isMemo;
+	reactIs_development.isPortal = isPortal;
+	reactIs_development.isProfiler = isProfiler;
+	reactIs_development.isStrictMode = isStrictMode;
+	reactIs_development.isSuspense = isSuspense;
+	reactIs_development.isSuspenseList = isSuspenseList;
+	reactIs_development.isValidElementType = isValidElementType;
+	reactIs_development.typeOf = typeOf;
+	  })();
+	}
+	return reactIs_development;
+}
+
+if (process.env.NODE_ENV === 'production') {
+  reactIs.exports = requireReactIs_production_min();
+} else {
+  reactIs.exports = requireReactIs_development();
+}
+
+var reactIsExports = reactIs.exports;
+
+function v(){return (v=Object.assign||function(e){for(var t=1;t<arguments.length;t++){var n=arguments[t];for(var r in n)Object.prototype.hasOwnProperty.call(n,r)&&(e[r]=n[r]);}return e}).apply(this,arguments)}var g=function(e,t){for(var n=[e[0]],r=0,o=t.length;r<o;r+=1)n.push(t[r],e[r+1]);return n},S=function(t){return null!==t&&"object"==typeof t&&"[object Object]"===(t.toString?t.toString():Object.prototype.toString.call(t))&&!reactIsExports.typeOf(t)},w=Object.freeze([]),E=Object.freeze({});function b(e){return "function"==typeof e}function _(e){return "production"!==process.env.NODE_ENV&&"string"==typeof e&&e||e.displayName||e.name||"Component"}function N(e){return e&&"string"==typeof e.styledComponentId}var A="undefined"!=typeof process&&(process.env.REACT_APP_SC_ATTR||process.env.SC_ATTR)||"data-styled",I="undefined"!=typeof window&&"HTMLElement"in window,P=Boolean("boolean"==typeof SC_DISABLE_SPEEDY?SC_DISABLE_SPEEDY:"undefined"!=typeof process&&void 0!==process.env.REACT_APP_SC_DISABLE_SPEEDY&&""!==process.env.REACT_APP_SC_DISABLE_SPEEDY?"false"!==process.env.REACT_APP_SC_DISABLE_SPEEDY&&process.env.REACT_APP_SC_DISABLE_SPEEDY:"undefined"!=typeof process&&void 0!==process.env.SC_DISABLE_SPEEDY&&""!==process.env.SC_DISABLE_SPEEDY?"false"!==process.env.SC_DISABLE_SPEEDY&&process.env.SC_DISABLE_SPEEDY:"production"!==process.env.NODE_ENV),R="production"!==process.env.NODE_ENV?{1:"Cannot create styled-component for component: %s.\n\n",2:"Can't collect styles once you've consumed a `ServerStyleSheet`'s styles! `ServerStyleSheet` is a one off instance for each server-side render cycle.\n\n- Are you trying to reuse it across renders?\n- Are you accidentally calling collectStyles twice?\n\n",3:"Streaming SSR is only supported in a Node.js environment; Please do not try to call this method in the browser.\n\n",4:"The `StyleSheetManager` expects a valid target or sheet prop!\n\n- Does this error occur on the client and is your target falsy?\n- Does this error occur on the server and is the sheet falsy?\n\n",5:"The clone method cannot be used on the client!\n\n- Are you running in a client-like environment on the server?\n- Are you trying to run SSR on the client?\n\n",6:"Trying to insert a new style tag, but the given Node is unmounted!\n\n- Are you using a custom target that isn't mounted?\n- Does your document not have a valid head element?\n- Have you accidentally removed a style tag manually?\n\n",7:'ThemeProvider: Please return an object from your "theme" prop function, e.g.\n\n```js\ntheme={() => ({})}\n```\n\n',8:'ThemeProvider: Please make your "theme" prop an object.\n\n',9:"Missing document `<head>`\n\n",10:"Cannot find a StyleSheet instance. Usually this happens if there are multiple copies of styled-components loaded at once. Check out this issue for how to troubleshoot and fix the common cases where this situation can happen: https://github.com/styled-components/styled-components/issues/1941#issuecomment-417862021\n\n",11:"_This error was replaced with a dev-time warning, it will be deleted for v4 final._ [createGlobalStyle] received children which will not be rendered. Please use the component without passing children elements.\n\n",12:"It seems you are interpolating a keyframe declaration (%s) into an untagged string. This was supported in styled-components v3, but is not longer supported in v4 as keyframes are now injected on-demand. Please wrap your string in the css\\`\\` helper which ensures the styles are injected correctly. See https://www.styled-components.com/docs/api#css\n\n",13:"%s is not a styled component and cannot be referred to via component selector. See https://www.styled-components.com/docs/advanced#referring-to-other-components for more details.\n\n",14:'ThemeProvider: "theme" prop is required.\n\n',15:"A stylis plugin has been supplied that is not named. We need a name for each plugin to be able to prevent styling collisions between different stylis configurations within the same app. Before you pass your plugin to `<StyleSheetManager stylisPlugins={[]}>`, please make sure each plugin is uniquely-named, e.g.\n\n```js\nObject.defineProperty(importedPlugin, 'name', { value: 'some-unique-name' });\n```\n\n",16:"Reached the limit of how many styled components may be created at group %s.\nYou may only create up to 1,073,741,824 components. If you're creating components dynamically,\nas for instance in your render method then you may be running into this limitation.\n\n",17:"CSSStyleSheet could not be found on HTMLStyleElement.\nHas styled-components' style tag been unmounted or altered by another script?\n"}:{};function D(){for(var e=arguments.length<=0?void 0:arguments[0],t=[],n=1,r=arguments.length;n<r;n+=1)t.push(n<0||arguments.length<=n?void 0:arguments[n]);return t.forEach((function(t){e=e.replace(/%[a-z]/,t);})),e}function j(e){for(var t=arguments.length,n=new Array(t>1?t-1:0),r=1;r<t;r++)n[r-1]=arguments[r];throw "production"===process.env.NODE_ENV?new Error("An error occurred. See https://git.io/JUIaE#"+e+" for more information."+(n.length>0?" Args: "+n.join(", "):"")):new Error(D.apply(void 0,[R[e]].concat(n)).trim())}var T=function(){function e(e){this.groupSizes=new Uint32Array(512),this.length=512,this.tag=e;}var t=e.prototype;return t.indexOfGroup=function(e){for(var t=0,n=0;n<e;n++)t+=this.groupSizes[n];return t},t.insertRules=function(e,t){if(e>=this.groupSizes.length){for(var n=this.groupSizes,r=n.length,o=r;e>=o;)(o<<=1)<0&&j(16,""+e);this.groupSizes=new Uint32Array(o),this.groupSizes.set(n),this.length=o;for(var s=r;s<o;s++)this.groupSizes[s]=0;}for(var i=this.indexOfGroup(e+1),a=0,c=t.length;a<c;a++)this.tag.insertRule(i,t[a])&&(this.groupSizes[e]++,i++);},t.clearGroup=function(e){if(e<this.length){var t=this.groupSizes[e],n=this.indexOfGroup(e),r=n+t;this.groupSizes[e]=0;for(var o=n;o<r;o++)this.tag.deleteRule(n);}},t.getGroup=function(e){var t="";if(e>=this.length||0===this.groupSizes[e])return t;for(var n=this.groupSizes[e],r=this.indexOfGroup(e),o=r+n,s=r;s<o;s++)t+=this.tag.getRule(s)+"/*!sc*/\n";return t},e}(),x=new Map,k=new Map,V=1,B=function(e){if(x.has(e))return x.get(e);for(;k.has(V);)V++;var t=V++;return "production"!==process.env.NODE_ENV&&((0|t)<0||t>1<<30)&&j(16,""+t),x.set(e,t),k.set(t,e),t},z=function(e){return k.get(e)},M=function(e,t){t>=V&&(V=t+1),x.set(e,t),k.set(t,e);},G="style["+A+'][data-styled-version="5.3.5"]',L=new RegExp("^"+A+'\\.g(\\d+)\\[id="([\\w\\d-]+)"\\].*?"([^"]*)'),F=function(e,t,n){for(var r,o=n.split(","),s=0,i=o.length;s<i;s++)(r=o[s])&&e.registerName(t,r);},Y=function(e,t){for(var n=(t.textContent||"").split("/*!sc*/\n"),r=[],o=0,s=n.length;o<s;o++){var i=n[o].trim();if(i){var a=i.match(L);if(a){var c=0|parseInt(a[1],10),u=a[2];0!==c&&(M(u,c),F(e,u,a[3]),e.getTag().insertRules(c,r)),r.length=0;}else r.push(i);}}},q=function(){return "undefined"!=typeof window&&void 0!==window.__webpack_nonce__?window.__webpack_nonce__:null},H=function(e){var t=document.head,n=e||t,r=document.createElement("style"),o=function(e){for(var t=e.childNodes,n=t.length;n>=0;n--){var r=t[n];if(r&&1===r.nodeType&&r.hasAttribute(A))return r}}(n),s=void 0!==o?o.nextSibling:null;r.setAttribute(A,"active"),r.setAttribute("data-styled-version","5.3.5");var i=q();return i&&r.setAttribute("nonce",i),n.insertBefore(r,s),r},$=function(){function e(e){var t=this.element=H(e);t.appendChild(document.createTextNode("")),this.sheet=function(e){if(e.sheet)return e.sheet;for(var t=document.styleSheets,n=0,r=t.length;n<r;n++){var o=t[n];if(o.ownerNode===e)return o}j(17);}(t),this.length=0;}var t=e.prototype;return t.insertRule=function(e,t){try{return this.sheet.insertRule(t,e),this.length++,!0}catch(e){return !1}},t.deleteRule=function(e){this.sheet.deleteRule(e),this.length--;},t.getRule=function(e){var t=this.sheet.cssRules[e];return void 0!==t&&"string"==typeof t.cssText?t.cssText:""},e}(),W=function(){function e(e){var t=this.element=H(e);this.nodes=t.childNodes,this.length=0;}var t=e.prototype;return t.insertRule=function(e,t){if(e<=this.length&&e>=0){var n=document.createTextNode(t),r=this.nodes[e];return this.element.insertBefore(n,r||null),this.length++,!0}return !1},t.deleteRule=function(e){this.element.removeChild(this.nodes[e]),this.length--;},t.getRule=function(e){return e<this.length?this.nodes[e].textContent:""},e}(),U=function(){function e(e){this.rules=[],this.length=0;}var t=e.prototype;return t.insertRule=function(e,t){return e<=this.length&&(this.rules.splice(e,0,t),this.length++,!0)},t.deleteRule=function(e){this.rules.splice(e,1),this.length--;},t.getRule=function(e){return e<this.length?this.rules[e]:""},e}(),J=I,X={isServer:!I,useCSSOMInjection:!P},Z=function(){function e(e,t,n){void 0===e&&(e=E),void 0===t&&(t={}),this.options=v({},X,{},e),this.gs=t,this.names=new Map(n),this.server=!!e.isServer,!this.server&&I&&J&&(J=!1,function(e){for(var t=document.querySelectorAll(G),n=0,r=t.length;n<r;n++){var o=t[n];o&&"active"!==o.getAttribute(A)&&(Y(e,o),o.parentNode&&o.parentNode.removeChild(o));}}(this));}e.registerId=function(e){return B(e)};var t=e.prototype;return t.reconstructWithOptions=function(t,n){return void 0===n&&(n=!0),new e(v({},this.options,{},t),this.gs,n&&this.names||void 0)},t.allocateGSInstance=function(e){return this.gs[e]=(this.gs[e]||0)+1},t.getTag=function(){return this.tag||(this.tag=(n=(t=this.options).isServer,r=t.useCSSOMInjection,o=t.target,e=n?new U(o):r?new $(o):new W(o),new T(e)));var e,t,n,r,o;},t.hasNameForId=function(e,t){return this.names.has(e)&&this.names.get(e).has(t)},t.registerName=function(e,t){if(B(e),this.names.has(e))this.names.get(e).add(t);else {var n=new Set;n.add(t),this.names.set(e,n);}},t.insertRules=function(e,t,n){this.registerName(e,t),this.getTag().insertRules(B(e),n);},t.clearNames=function(e){this.names.has(e)&&this.names.get(e).clear();},t.clearRules=function(e){this.getTag().clearGroup(B(e)),this.clearNames(e);},t.clearTag=function(){this.tag=void 0;},t.toString=function(){return function(e){for(var t=e.getTag(),n=t.length,r="",o=0;o<n;o++){var s=z(o);if(void 0!==s){var i=e.names.get(s),a=t.getGroup(o);if(i&&a&&i.size){var c=A+".g"+o+'[id="'+s+'"]',u="";void 0!==i&&i.forEach((function(e){e.length>0&&(u+=e+",");})),r+=""+a+c+'{content:"'+u+'"}/*!sc*/\n';}}}return r}(this)},e}(),K=/(a)(d)/gi,Q=function(e){return String.fromCharCode(e+(e>25?39:97))};function ee(e){var t,n="";for(t=Math.abs(e);t>52;t=t/52|0)n=Q(t%52)+n;return (Q(t%52)+n).replace(K,"$1-$2")}var te=function(e,t){for(var n=t.length;n;)e=33*e^t.charCodeAt(--n);return e},ne=function(e){return te(5381,e)};function re(e){for(var t=0;t<e.length;t+=1){var n=e[t];if(b(n)&&!N(n))return !1}return !0}var oe=ne("5.3.5"),se=function(){function e(e,t,n){this.rules=e,this.staticRulesId="",this.isStatic="production"===process.env.NODE_ENV&&(void 0===n||n.isStatic)&&re(e),this.componentId=t,this.baseHash=te(oe,t),this.baseStyle=n,Z.registerId(t);}return e.prototype.generateAndInjectStyles=function(e,t,n){var r=this.componentId,o=[];if(this.baseStyle&&o.push(this.baseStyle.generateAndInjectStyles(e,t,n)),this.isStatic&&!n.hash)if(this.staticRulesId&&t.hasNameForId(r,this.staticRulesId))o.push(this.staticRulesId);else {var s=Ne(this.rules,e,t,n).join(""),i=ee(te(this.baseHash,s)>>>0);if(!t.hasNameForId(r,i)){var a=n(s,"."+i,void 0,r);t.insertRules(r,i,a);}o.push(i),this.staticRulesId=i;}else {for(var c=this.rules.length,u=te(this.baseHash,n.hash),l="",d=0;d<c;d++){var h=this.rules[d];if("string"==typeof h)l+=h,"production"!==process.env.NODE_ENV&&(u=te(u,h+d));else if(h){var p=Ne(h,e,t,n),f=Array.isArray(p)?p.join(""):p;u=te(u,f+d),l+=f;}}if(l){var m=ee(u>>>0);if(!t.hasNameForId(r,m)){var y=n(l,"."+m,void 0,r);t.insertRules(r,m,y);}o.push(m);}}return o.join(" ")},e}(),ie=/^\s*\/\/.*$/gm,ae=[":","[",".","#"];function ce(e){var t,n,r,o,s=void 0===e?E:e,i=s.options,a=void 0===i?E:i,c=s.plugins,u=void 0===c?w:c,l=new stylis_min(a),d=[],h=function(e){function t(t){if(t)try{e(t+"}");}catch(e){}}return function(n,r,o,s,i,a,c,u,l,d){switch(n){case 1:if(0===l&&64===r.charCodeAt(0))return e(r+";"),"";break;case 2:if(0===u)return r+"/*|*/";break;case 3:switch(u){case 102:case 112:return e(o[0]+r),"";default:return r+(0===d?"/*|*/":"")}case-2:r.split("/*|*/}").forEach(t);}}}((function(e){d.push(e);})),f=function(e,r,s){return 0===r&&-1!==ae.indexOf(s[n.length])||s.match(o)?e:"."+t};function m(e,s,i,a){void 0===a&&(a="&");var c=e.replace(ie,""),u=s&&i?i+" "+s+" { "+c+" }":c;return t=a,n=s,r=new RegExp("\\"+n+"\\b","g"),o=new RegExp("(\\"+n+"\\b){2,}"),l(i||!s?"":s,u)}return l.use([].concat(u,[function(e,t,o){2===e&&o.length&&o[0].lastIndexOf(n)>0&&(o[0]=o[0].replace(r,f));},h,function(e){if(-2===e){var t=d;return d=[],t}}])),m.hash=u.length?u.reduce((function(e,t){return t.name||j(15),te(e,t.name)}),5381).toString():"",m}var ue=React.createContext();ue.Consumer;var de=React.createContext(),he=(de.Consumer,new Z),pe=ce();function fe(){return React.useContext(ue)||he}function me(){return React.useContext(de)||pe}var ve=function(){function e(e,t){var n=this;this.inject=function(e,t){void 0===t&&(t=pe);var r=n.name+t.hash;e.hasNameForId(n.id,r)||e.insertRules(n.id,r,t(n.rules,r,"@keyframes"));},this.toString=function(){return j(12,String(n.name))},this.name=e,this.id="sc-keyframes-"+e,this.rules=t;}return e.prototype.getName=function(e){return void 0===e&&(e=pe),this.name+e.hash},e}(),ge=/([A-Z])/,Se=/([A-Z])/g,we=/^ms-/,Ee=function(e){return "-"+e.toLowerCase()};function be(e){return ge.test(e)?e.replace(Se,Ee).replace(we,"-ms-"):e}var _e=function(e){return null==e||!1===e||""===e};function Ne(e,n,r,o){if(Array.isArray(e)){for(var s,i=[],a=0,c=e.length;a<c;a+=1)""!==(s=Ne(e[a],n,r,o))&&(Array.isArray(s)?i.push.apply(i,s):i.push(s));return i}if(_e(e))return "";if(N(e))return "."+e.styledComponentId;if(b(e)){if("function"!=typeof(l=e)||l.prototype&&l.prototype.isReactComponent||!n)return e;var u=e(n);return "production"!==process.env.NODE_ENV&&reactIsExports.isElement(u)&&console.warn(_(e)+" is not a styled component and cannot be referred to via component selector. See https://www.styled-components.com/docs/advanced#referring-to-other-components for more details."),Ne(u,n,r,o)}var l;return e instanceof ve?r?(e.inject(r,o),e.getName(o)):e:S(e)?function e(t,n){var r,o,s=[];for(var i in t)t.hasOwnProperty(i)&&!_e(t[i])&&(Array.isArray(t[i])&&t[i].isCss||b(t[i])?s.push(be(i)+":",t[i],";"):S(t[i])?s.push.apply(s,e(t[i],i)):s.push(be(i)+": "+(r=i,null==(o=t[i])||"boolean"==typeof o||""===o?"":"number"!=typeof o||0===o||r in unitlessKeys?String(o).trim():o+"px")+";"));return n?[n+" {"].concat(s,["}"]):s}(e):e.toString()}var Ae=function(e){return Array.isArray(e)&&(e.isCss=!0),e};function Ce(e){for(var t=arguments.length,n=new Array(t>1?t-1:0),r=1;r<t;r++)n[r-1]=arguments[r];return b(e)||S(e)?Ae(Ne(g(w,[e].concat(n)))):0===n.length&&1===e.length&&"string"==typeof e[0]?e:Ae(Ne(g(e,n)))}var Ie=/invalid hook call/i,Pe=new Set,Oe=function(e,t){if("production"!==process.env.NODE_ENV){var n="The component "+e+(t?' with the id of "'+t+'"':"")+" has been created dynamically.\nYou may see this warning because you've called styled inside another component.\nTo resolve this only create new StyledComponents outside of any render method and function component.",r=console.error;try{var o=!0;console.error=function(e){if(Ie.test(e))o=!1,Pe.delete(n);else {for(var t=arguments.length,s=new Array(t>1?t-1:0),i=1;i<t;i++)s[i-1]=arguments[i];r.apply(void 0,[e].concat(s));}},React.useRef(),o&&!Pe.has(n)&&(console.warn(n),Pe.add(n));}catch(e){Ie.test(e.message)&&Pe.delete(n);}finally{console.error=r;}}},Re=function(e,t,n){return void 0===n&&(n=E),e.theme!==n.theme&&e.theme||t||n.theme},De=/[!"#$%&'()*+,./:;<=>?@[\\\]^`{|}~-]+/g,je=/(^-|-$)/g;function Te(e){return e.replace(De,"-").replace(je,"")}var xe=function(e){return ee(ne(e)>>>0)};function ke(e){return "string"==typeof e&&("production"===process.env.NODE_ENV||e.charAt(0)===e.charAt(0).toLowerCase())}var Ve=function(e){return "function"==typeof e||"object"==typeof e&&null!==e&&!Array.isArray(e)},Be=function(e){return "__proto__"!==e&&"constructor"!==e&&"prototype"!==e};function ze(e,t,n){var r=e[n];Ve(t)&&Ve(r)?Me(r,t):e[n]=t;}function Me(e){for(var t=arguments.length,n=new Array(t>1?t-1:0),r=1;r<t;r++)n[r-1]=arguments[r];for(var o=0,s=n;o<s.length;o++){var i=s[o];if(Ve(i))for(var a in i)Be(a)&&ze(e,i[a],a);}return e}var Ge=React.createContext();Ge.Consumer;var Ye={};function qe(e,t,n){var o=N(e),i=!ke(e),a=t.attrs,c=void 0===a?w:a,d=t.componentId,h=void 0===d?function(e,t){var n="string"!=typeof e?"sc":Te(e);Ye[n]=(Ye[n]||0)+1;var r=n+"-"+xe("5.3.5"+n+Ye[n]);return t?t+"-"+r:r}(t.displayName,t.parentComponentId):d,p=t.displayName,f=void 0===p?function(e){return ke(e)?"styled."+e:"Styled("+_(e)+")"}(e):p,g=t.displayName&&t.componentId?Te(t.displayName)+"-"+t.componentId:t.componentId||h,S=o&&e.attrs?Array.prototype.concat(e.attrs,c).filter(Boolean):c,A=t.shouldForwardProp;o&&e.shouldForwardProp&&(A=t.shouldForwardProp?function(n,r,o){return e.shouldForwardProp(n,r,o)&&t.shouldForwardProp(n,r,o)}:e.shouldForwardProp);var C,I=new se(n,g,o?e.componentStyle:void 0),P=I.isStatic&&0===c.length,O=function(e,t){return function(e,t,n,r){var o=e.attrs,i=e.componentStyle,a=e.defaultProps,c=e.foldedComponentIds,d=e.shouldForwardProp,h=e.styledComponentId,p=e.target;"production"!==process.env.NODE_ENV&&React.useDebugValue(h);var f=function(e,t,n){void 0===e&&(e=E);var r=v({},t,{theme:e}),o={};return n.forEach((function(e){var t,n,s,i=e;for(t in b(i)&&(i=i(r)),i)r[t]=o[t]="className"===t?(n=o[t],s=i[t],n&&s?n+" "+s:n||s):i[t];})),[r,o]}(Re(t,React.useContext(Ge),a)||E,t,o),y=f[0],g=f[1],S=function(e,t,n,r){var o=fe(),s=me(),i=t?e.generateAndInjectStyles(E,o,s):e.generateAndInjectStyles(n,o,s);return "production"!==process.env.NODE_ENV&&React.useDebugValue(i),"production"!==process.env.NODE_ENV&&!t&&r&&r(i),i}(i,r,y,"production"!==process.env.NODE_ENV?e.warnTooManyClasses:void 0),w=n,_=g.$as||t.$as||g.as||t.as||p,N=ke(_),A=g!==t?v({},t,{},g):t,C={};for(var I in A)"$"!==I[0]&&"as"!==I&&("forwardedAs"===I?C.as=A[I]:(d?d(I,isPropValid,_):!N||isPropValid(I))&&(C[I]=A[I]));return t.style&&g.style!==t.style&&(C.style=v({},t.style,{},g.style)),C.className=Array.prototype.concat(c,h,S!==h?S:null,t.className,g.className).filter(Boolean).join(" "),C.ref=w,React.createElement(_,C)}(C,e,t,P)};return O.displayName=f,(C=React.forwardRef(O)).attrs=S,C.componentStyle=I,C.displayName=f,C.shouldForwardProp=A,C.foldedComponentIds=o?Array.prototype.concat(e.foldedComponentIds,e.styledComponentId):w,C.styledComponentId=g,C.target=o?e.target:e,C.withComponent=function(e){var r=t.componentId,o=function(e,t){if(null==e)return {};var n,r,o={},s=Object.keys(e);for(r=0;r<s.length;r++)n=s[r],t.indexOf(n)>=0||(o[n]=e[n]);return o}(t,["componentId"]),s=r&&r+"-"+(ke(e)?e:Te(_(e)));return qe(e,v({},o,{attrs:S,componentId:s}),n)},Object.defineProperty(C,"defaultProps",{get:function(){return this._foldedDefaultProps},set:function(t){this._foldedDefaultProps=o?Me({},e.defaultProps,t):t;}}),"production"!==process.env.NODE_ENV&&(Oe(f,g),C.warnTooManyClasses=function(e,t){var n={},r=!1;return function(o){if(!r&&(n[o]=!0,Object.keys(n).length>=200)){var s=t?' with the id of "'+t+'"':"";console.warn("Over 200 classes were generated for component "+e+s+".\nConsider using the attrs method, together with a style object for frequently changed styles.\nExample:\n  const Component = styled.div.attrs(props => ({\n    style: {\n      background: props.background,\n    },\n  }))`width: 100%;`\n\n  <Component />"),r=!0,n={};}}}(f,g)),C.toString=function(){return "."+C.styledComponentId},i&&y(C,e,{attrs:!0,componentStyle:!0,displayName:!0,foldedComponentIds:!0,shouldForwardProp:!0,styledComponentId:!0,target:!0,withComponent:!0}),C}var He=function(e){return function e(t,r,o){if(void 0===o&&(o=E),!reactIsExports.isValidElementType(r))return j(1,String(r));var s=function(){return t(r,o,Ce.apply(void 0,arguments))};return s.withConfig=function(n){return e(t,r,v({},o,{},n))},s.attrs=function(n){return e(t,r,v({},o,{attrs:Array.prototype.concat(o.attrs,n).filter(Boolean)}))},s}(qe,e)};["a","abbr","address","area","article","aside","audio","b","base","bdi","bdo","big","blockquote","body","br","button","canvas","caption","cite","code","col","colgroup","data","datalist","dd","del","details","dfn","dialog","div","dl","dt","em","embed","fieldset","figcaption","figure","footer","form","h1","h2","h3","h4","h5","h6","head","header","hgroup","hr","html","i","iframe","img","input","ins","kbd","keygen","label","legend","li","link","main","map","mark","marquee","menu","menuitem","meta","meter","nav","noscript","object","ol","optgroup","option","output","p","param","picture","pre","progress","q","rp","rt","ruby","s","samp","script","section","select","small","source","span","strong","style","sub","summary","sup","table","tbody","td","textarea","tfoot","th","thead","time","title","tr","track","u","ul","var","video","wbr","circle","clipPath","defs","ellipse","foreignObject","g","image","line","linearGradient","marker","mask","path","pattern","polygon","polyline","radialGradient","rect","stop","svg","text","textPath","tspan"].forEach((function(e){He[e]=He(e);}));function Ue(e){"production"!==process.env.NODE_ENV&&"undefined"!=typeof navigator&&"ReactNative"===navigator.product&&console.warn("`keyframes` cannot be used on ReactNative, only on the web. To do animation in ReactNative please use Animated.");for(var t=arguments.length,n=new Array(t>1?t-1:0),r=1;r<t;r++)n[r-1]=arguments[r];var o=Ce.apply(void 0,[e].concat(n)).join(""),s=xe(o);return new ve(s,o)}"production"!==process.env.NODE_ENV&&"undefined"!=typeof navigator&&"ReactNative"===navigator.product&&console.warn("It looks like you've imported 'styled-components' on React Native.\nPerhaps you're looking to import 'styled-components/native'?\nRead more about this at https://www.styled-components.com/docs/basics#react-native"),"production"!==process.env.NODE_ENV&&"test"!==process.env.NODE_ENV&&"undefined"!=typeof window&&(window["__styled-components-init__"]=window["__styled-components-init__"]||0,1===window["__styled-components-init__"]&&console.warn("It looks like there are several instances of 'styled-components' initialized in this application. This may cause dynamic styles to not render properly, errors during the rehydration process, a missing theme prop, and makes your application bigger without good reason.\n\nSee https://s-c.sh/2BAXzed for more info."),window["__styled-components-init__"]+=1);var styled = He;
+
 var __makeTemplateObject$2 = (undefined && undefined.__makeTemplateObject) || function (cooked, raw) {
     if (Object.defineProperty) { Object.defineProperty(cooked, "raw", { value: raw }); } else { cooked.raw = raw; }
     return cooked;
@@ -20288,7 +15775,7 @@ var __makeTemplateObject$2 = (undefined && undefined.__makeTemplateObject) || fu
 var len = 242.776657104492;
 var time = 1.6;
 var anim = Ue(templateObject_1$2 || (templateObject_1$2 = __makeTemplateObject$2(["\n  12.5% {\n    stroke-dasharray: ", "px, ", "px;\n    stroke-dashoffset: -", "px;\n  }\n  43.75% {\n    stroke-dasharray: ", "px, ", "px;\n    stroke-dashoffset: -", "px;\n  }\n  100% {\n    stroke-dasharray: ", "px, ", "px;\n    stroke-dashoffset: -", "px;\n  }\n"], ["\n  12.5% {\n    stroke-dasharray: ", "px, ", "px;\n    stroke-dashoffset: -", "px;\n  }\n  43.75% {\n    stroke-dasharray: ", "px, ", "px;\n    stroke-dashoffset: -", "px;\n  }\n  100% {\n    stroke-dasharray: ", "px, ", "px;\n    stroke-dashoffset: -", "px;\n  }\n"])), len * 0.14, len, len * 0.11, len * 0.35, len, len * 0.35, len * 0.01, len, len * 0.99);
-He.path(templateObject_2$2 || (templateObject_2$2 = __makeTemplateObject$2(["\n  stroke-dasharray: ", "px, ", ";\n  stroke-dashoffset: 0;\n  animation: ", " ", "s linear infinite;\n"], ["\n  stroke-dasharray: ", "px, ", ";\n  stroke-dashoffset: 0;\n  animation: ", " ", "s linear infinite;\n"])), len * 0.01, len, anim, time);
+styled.path(templateObject_2$2 || (templateObject_2$2 = __makeTemplateObject$2(["\n  stroke-dasharray: ", "px, ", ";\n  stroke-dashoffset: 0;\n  animation: ", " ", "s linear infinite;\n"], ["\n  stroke-dasharray: ", "px, ", ";\n  stroke-dashoffset: 0;\n  animation: ", " ", "s linear infinite;\n"])), len * 0.01, len, anim, time);
 var templateObject_1$2, templateObject_2$2;
 
 var __assign$o = (undefined && undefined.__assign) || function () {
@@ -20316,18 +15803,18 @@ var __assign$n = (undefined && undefined.__assign) || function () {
 };
 var MutatingDots = function (_a) {
     var _b = _a.height, height = _b === void 0 ? 90 : _b, _c = _a.width, width = _c === void 0 ? 80 : _c, _d = _a.radius, radius = _d === void 0 ? 12.5 : _d, _e = _a.color, color = _e === void 0 ? DEFAULT_COLOR : _e, _f = _a.secondaryColor, secondaryColor = _f === void 0 ? DEFAULT_COLOR : _f, _g = _a.ariaLabel, ariaLabel = _g === void 0 ? 'mutating-dots-loading' : _g, wrapperStyle = _a.wrapperStyle, wrapperClass = _a.wrapperClass, _h = _a.visible, visible = _h === void 0 ? true : _h;
-    return (React__default["default"].createElement("div", __assign$n({ style: __assign$n(__assign$n({}, getDefaultStyle(visible)), wrapperStyle), className: wrapperClass, "data-testid": "mutating-dots-loading", "aria-label": ariaLabel }, DEFAULT_WAI_ARIA_ATTRIBUTE),
-        React__default["default"].createElement("svg", { id: "goo-loader", width: width, height: height, "data-testid": "mutating-dots-svg" },
-            React__default["default"].createElement("filter", { id: "fancy-goo" },
-                React__default["default"].createElement("feGaussianBlur", { in: "SourceGraphic", stdDeviation: "6", result: "blur" }),
-                React__default["default"].createElement("feColorMatrix", { in: "blur", mode: "matrix", values: "1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9", result: "goo" }),
-                React__default["default"].createElement("feComposite", { in: "SourceGraphic", in2: "goo", operator: "atop" })),
-            React__default["default"].createElement("g", { filter: "url(#fancy-goo)" },
-                React__default["default"].createElement("animateTransform", { id: "mainAnim", attributeName: "transform", attributeType: "XML", type: "rotate", from: "0 50 50", to: "359 50 50", dur: "1.2s", repeatCount: "indefinite" }),
-                React__default["default"].createElement("circle", { cx: "50%", cy: "40", r: radius, fill: color },
-                    React__default["default"].createElement("animate", { id: "cAnim1", attributeType: "XML", attributeName: "cy", dur: "0.6s", begin: "0;cAnim1.end+0.2s", calcMode: "spline", values: "40;20;40", keyTimes: "0;0.3;1", keySplines: "0.09, 0.45, 0.16, 1;0.09, 0.45, 0.16, 1" })),
-                React__default["default"].createElement("circle", { cx: "50%", cy: "60", r: radius, fill: secondaryColor },
-                    React__default["default"].createElement("animate", { id: "cAnim2", attributeType: "XML", attributeName: "cy", dur: "0.6s", begin: "0.4s;cAnim2.end+0.2s", calcMode: "spline", values: "60;80;60", keyTimes: "0;0.3;1", keySplines: "0.09, 0.45, 0.16, 1;0.09, 0.45, 0.16, 1" }))))));
+    return (React.createElement("div", __assign$n({ style: __assign$n(__assign$n({}, getDefaultStyle(visible)), wrapperStyle), className: wrapperClass, "data-testid": "mutating-dots-loading", "aria-label": ariaLabel }, DEFAULT_WAI_ARIA_ATTRIBUTE),
+        React.createElement("svg", { id: "goo-loader", width: width, height: height, "data-testid": "mutating-dots-svg" },
+            React.createElement("filter", { id: "fancy-goo" },
+                React.createElement("feGaussianBlur", { in: "SourceGraphic", stdDeviation: "6", result: "blur" }),
+                React.createElement("feColorMatrix", { in: "blur", mode: "matrix", values: "1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9", result: "goo" }),
+                React.createElement("feComposite", { in: "SourceGraphic", in2: "goo", operator: "atop" })),
+            React.createElement("g", { filter: "url(#fancy-goo)" },
+                React.createElement("animateTransform", { id: "mainAnim", attributeName: "transform", attributeType: "XML", type: "rotate", from: "0 50 50", to: "359 50 50", dur: "1.2s", repeatCount: "indefinite" }),
+                React.createElement("circle", { cx: "50%", cy: "40", r: radius, fill: color },
+                    React.createElement("animate", { id: "cAnim1", attributeType: "XML", attributeName: "cy", dur: "0.6s", begin: "0;cAnim1.end+0.2s", calcMode: "spline", values: "40;20;40", keyTimes: "0;0.3;1", keySplines: "0.09, 0.45, 0.16, 1;0.09, 0.45, 0.16, 1" })),
+                React.createElement("circle", { cx: "50%", cy: "60", r: radius, fill: secondaryColor },
+                    React.createElement("animate", { id: "cAnim2", attributeType: "XML", attributeName: "cy", dur: "0.6s", begin: "0.4s;cAnim2.end+0.2s", calcMode: "spline", values: "60;80;60", keyTimes: "0;0.3;1", keySplines: "0.09, 0.45, 0.16, 1;0.09, 0.45, 0.16, 1" }))))));
 };
 
 var __assign$m = (undefined && undefined.__assign) || function () {
@@ -20445,14 +15932,14 @@ var __assign$h = (undefined && undefined.__assign) || function () {
 };
 var spin = Ue(templateObject_1$1 || (templateObject_1$1 = __makeTemplateObject$1(["\n to {\n    transform: rotate(360deg);\n  }\n"], ["\n to {\n    transform: rotate(360deg);\n  }\n"])));
 var POINTS = [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330];
-var Svg = He.svg(templateObject_2$1 || (templateObject_2$1 = __makeTemplateObject$1(["\n  animation: ", " 0.75s steps(12, end) infinite;\n  animation-duration: ", "s;\n"], ["\n  animation: ", " 0.75s steps(12, end) infinite;\n  animation-duration: ", "s;\n"])), spin, prop('speed', '0.75'));
-var Polyline = He.polyline(templateObject_3$1 || (templateObject_3$1 = __makeTemplateObject$1(["\n  stroke-width: ", "px;\n  stroke-linecap: round;\n\n  &:nth-child(12n + 0) {\n    stroke-opacity: 0.08;\n  }\n\n  &:nth-child(12n + 1) {\n    stroke-opacity: 0.17;\n  }\n\n  &:nth-child(12n + 2) {\n    stroke-opacity: 0.25;\n  }\n\n  &:nth-child(12n + 3) {\n    stroke-opacity: 0.33;\n  }\n\n  &:nth-child(12n + 4) {\n    stroke-opacity: 0.42;\n  }\n\n  &:nth-child(12n + 5) {\n    stroke-opacity: 0.5;\n  }\n\n  &:nth-child(12n + 6) {\n    stroke-opacity: 0.58;\n  }\n\n  &:nth-child(12n + 7) {\n    stroke-opacity: 0.66;\n  }\n\n  &:nth-child(12n + 8) {\n    stroke-opacity: 0.75;\n  }\n\n  &:nth-child(12n + 9) {\n    stroke-opacity: 0.83;\n  }\n\n  &:nth-child(12n + 11) {\n    stroke-opacity: 0.92;\n  }\n"], ["\n  stroke-width: ", "px;\n  stroke-linecap: round;\n\n  &:nth-child(12n + 0) {\n    stroke-opacity: 0.08;\n  }\n\n  &:nth-child(12n + 1) {\n    stroke-opacity: 0.17;\n  }\n\n  &:nth-child(12n + 2) {\n    stroke-opacity: 0.25;\n  }\n\n  &:nth-child(12n + 3) {\n    stroke-opacity: 0.33;\n  }\n\n  &:nth-child(12n + 4) {\n    stroke-opacity: 0.42;\n  }\n\n  &:nth-child(12n + 5) {\n    stroke-opacity: 0.5;\n  }\n\n  &:nth-child(12n + 6) {\n    stroke-opacity: 0.58;\n  }\n\n  &:nth-child(12n + 7) {\n    stroke-opacity: 0.66;\n  }\n\n  &:nth-child(12n + 8) {\n    stroke-opacity: 0.75;\n  }\n\n  &:nth-child(12n + 9) {\n    stroke-opacity: 0.83;\n  }\n\n  &:nth-child(12n + 11) {\n    stroke-opacity: 0.92;\n  }\n"])), function (props) { return props.width; });
+var Svg = styled.svg(templateObject_2$1 || (templateObject_2$1 = __makeTemplateObject$1(["\n  animation: ", " 0.75s steps(12, end) infinite;\n  animation-duration: ", "s;\n"], ["\n  animation: ", " 0.75s steps(12, end) infinite;\n  animation-duration: ", "s;\n"])), spin, prop('speed', '0.75'));
+var Polyline = styled.polyline(templateObject_3$1 || (templateObject_3$1 = __makeTemplateObject$1(["\n  stroke-width: ", "px;\n  stroke-linecap: round;\n\n  &:nth-child(12n + 0) {\n    stroke-opacity: 0.08;\n  }\n\n  &:nth-child(12n + 1) {\n    stroke-opacity: 0.17;\n  }\n\n  &:nth-child(12n + 2) {\n    stroke-opacity: 0.25;\n  }\n\n  &:nth-child(12n + 3) {\n    stroke-opacity: 0.33;\n  }\n\n  &:nth-child(12n + 4) {\n    stroke-opacity: 0.42;\n  }\n\n  &:nth-child(12n + 5) {\n    stroke-opacity: 0.5;\n  }\n\n  &:nth-child(12n + 6) {\n    stroke-opacity: 0.58;\n  }\n\n  &:nth-child(12n + 7) {\n    stroke-opacity: 0.66;\n  }\n\n  &:nth-child(12n + 8) {\n    stroke-opacity: 0.75;\n  }\n\n  &:nth-child(12n + 9) {\n    stroke-opacity: 0.83;\n  }\n\n  &:nth-child(12n + 11) {\n    stroke-opacity: 0.92;\n  }\n"], ["\n  stroke-width: ", "px;\n  stroke-linecap: round;\n\n  &:nth-child(12n + 0) {\n    stroke-opacity: 0.08;\n  }\n\n  &:nth-child(12n + 1) {\n    stroke-opacity: 0.17;\n  }\n\n  &:nth-child(12n + 2) {\n    stroke-opacity: 0.25;\n  }\n\n  &:nth-child(12n + 3) {\n    stroke-opacity: 0.33;\n  }\n\n  &:nth-child(12n + 4) {\n    stroke-opacity: 0.42;\n  }\n\n  &:nth-child(12n + 5) {\n    stroke-opacity: 0.5;\n  }\n\n  &:nth-child(12n + 6) {\n    stroke-opacity: 0.58;\n  }\n\n  &:nth-child(12n + 7) {\n    stroke-opacity: 0.66;\n  }\n\n  &:nth-child(12n + 8) {\n    stroke-opacity: 0.75;\n  }\n\n  &:nth-child(12n + 9) {\n    stroke-opacity: 0.83;\n  }\n\n  &:nth-child(12n + 11) {\n    stroke-opacity: 0.92;\n  }\n"])), function (props) { return props.width; });
 function RotatingLines(_a) {
     var _b = _a.strokeColor, strokeColor = _b === void 0 ? DEFAULT_COLOR : _b, _c = _a.strokeWidth, strokeWidth = _c === void 0 ? '5' : _c, _d = _a.animationDuration, animationDuration = _d === void 0 ? '0.75' : _d, _e = _a.width, width = _e === void 0 ? '96' : _e, _f = _a.visible, visible = _f === void 0 ? true : _f, _g = _a.ariaLabel, ariaLabel = _g === void 0 ? 'rotating-lines-loading' : _g;
     var lines = React.useCallback(function () {
-        return POINTS.map(function (point) { return (React__default["default"].createElement(Polyline, { key: point, points: "24,12 24,4", width: strokeWidth, transform: "rotate(".concat(point, ", 24, 24)") })); });
+        return POINTS.map(function (point) { return (React.createElement(Polyline, { key: point, points: "24,12 24,4", width: strokeWidth, transform: "rotate(".concat(point, ", 24, 24)") })); });
     }, [strokeWidth]);
-    return !visible ? null : (React__default["default"].createElement(Svg, __assign$h({ xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 48 48", width: width, stroke: strokeColor, speed: animationDuration, "data-testid": "rotating-lines-svg", "aria-label": ariaLabel }, DEFAULT_WAI_ARIA_ATTRIBUTE), lines()));
+    return !visible ? null : (React.createElement(Svg, __assign$h({ xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 48 48", width: width, stroke: strokeColor, speed: animationDuration, "data-testid": "rotating-lines-svg", "aria-label": ariaLabel }, DEFAULT_WAI_ARIA_ATTRIBUTE), lines()));
 }
 var templateObject_1$1, templateObject_2$1, templateObject_3$1;
 
@@ -20508,8 +15995,8 @@ var __assign$d = (undefined && undefined.__assign) || function () {
     return __assign$d.apply(this, arguments);
 };
 var dash = Ue(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n to {\n    stroke-dashoffset: 136;\n  }\n"], ["\n to {\n    stroke-dashoffset: 136;\n  }\n"])));
-He.polygon(templateObject_2 || (templateObject_2 = __makeTemplateObject(["\n  stroke-dasharray: 17;\n  animation: ", " 2.5s cubic-bezier(0.35, 0.04, 0.63, 0.95) infinite;\n"], ["\n  stroke-dasharray: 17;\n  animation: ", " 2.5s cubic-bezier(0.35, 0.04, 0.63, 0.95) infinite;\n"])), dash);
-He.svg(templateObject_3 || (templateObject_3 = __makeTemplateObject(["\n  transform-origin: 50% 65%;\n"], ["\n  transform-origin: 50% 65%;\n"])));
+styled.polygon(templateObject_2 || (templateObject_2 = __makeTemplateObject(["\n  stroke-dasharray: 17;\n  animation: ", " 2.5s cubic-bezier(0.35, 0.04, 0.63, 0.95) infinite;\n"], ["\n  stroke-dasharray: 17;\n  animation: ", " 2.5s cubic-bezier(0.35, 0.04, 0.63, 0.95) infinite;\n"])), dash);
+styled.svg(templateObject_3 || (templateObject_3 = __makeTemplateObject(["\n  transform-origin: 50% 65%;\n"], ["\n  transform-origin: 50% 65%;\n"])));
 var templateObject_1, templateObject_2, templateObject_3;
 
 var __assign$c = (undefined && undefined.__assign) || function () {
@@ -20668,7 +16155,7 @@ var __assign = (undefined && undefined.__assign) || function () {
     return __assign.apply(this, arguments);
 };
 
-const Container$5 = He.div `
+const Container$5 = styled$1.div `
   outline: none;
   display: flex;
   margin: 0;
@@ -20680,10 +16167,10 @@ const Container$5 = He.div `
     vertical-align: bottom;
   }
 `;
-const Inner$2 = He.div `
+const Inner$2 = styled$1.div `
   position: relative;
 `;
-const Loading$1 = He.div `
+const Loading$1 = styled$1.div `
   position: absolute;
   top: 0;
   left: 0;
@@ -20695,7 +16182,7 @@ const Loading$1 = He.div `
   justify-content: center;
   align-items: center;
 `;
-const ImageResizer = He.div `
+const ImageResizer = styled$1.div `
   position: absolute;
   top: 0;
   bottom: 0;
@@ -20706,13 +16193,13 @@ const ImageResizer = He.div `
   justify-content: center;
   align-items: center;
 `;
-const LeftImageResizer = He(ImageResizer) `
+const LeftImageResizer = styled$1(ImageResizer) `
   left: 0;
 `;
-const RightImageResizer = He(ImageResizer) `
+const RightImageResizer = styled$1(ImageResizer) `
   right: 0;
 `;
-const ResizeHandler = He.div `
+const ResizeHandler = styled$1.div `
   pointer-events: none;
   transition: opacity 0.3s;
   opacity: ${({ opacity }) => opacity};
@@ -20799,7 +16286,7 @@ const Image$1 = React__namespace.memo((_a) => {
             window.removeEventListener('mouseup', handleMouseUp, true);
         };
     }, [dragParams]);
-    return (jsxRuntime.exports.jsx(Container$5, Object.assign({}, props, { contentEditable: false, draggable: "false" }, { children: jsxRuntime.exports.jsxs(Inner$2, Object.assign({ onMouseEnter: handleMouseEnter, onMouseLeave: handleMouseLeave }, { children: [jsxRuntime.exports.jsx("img", { src: thumbnail, onClick: handleClick, ref: imageRef, width: imageWidth, draggable: "false" }), isUploading ? (jsxRuntime.exports.jsx(Loading$1, { children: jsxRuntime.exports.jsx(MutatingDots, { height: "100", width: "100", color: "#4fa94d", secondaryColor: "#4fa94d", radius: "12.5", ariaLabel: "mutating-dots-loading", visible: true }) })) : (jsxRuntime.exports.jsxs(jsxRuntime.exports.Fragment, { children: [jsxRuntime.exports.jsx(LeftImageResizer, Object.assign({ onMouseDown: handleMouseDown('left') }, { children: jsxRuntime.exports.jsx(ResizeHandler, { opacity: displayResizer ? 1 : 0 }) })), jsxRuntime.exports.jsx(RightImageResizer, Object.assign({ onMouseDown: handleMouseDown('right') }, { children: jsxRuntime.exports.jsx(ResizeHandler, { opacity: displayResizer ? 1 : 0 }) }))] }))] })) })));
+    return (jsxRuntimeExports.jsx(Container$5, Object.assign({}, props, { contentEditable: false, draggable: "false" }, { children: jsxRuntimeExports.jsxs(Inner$2, Object.assign({ onMouseEnter: handleMouseEnter, onMouseLeave: handleMouseLeave }, { children: [jsxRuntimeExports.jsx("img", { src: thumbnail, onClick: handleClick, ref: imageRef, width: imageWidth, draggable: "false" }), isUploading ? (jsxRuntimeExports.jsx(Loading$1, { children: jsxRuntimeExports.jsx(MutatingDots, { height: "100", width: "100", color: "#4fa94d", secondaryColor: "#4fa94d", radius: "12.5", ariaLabel: "mutating-dots-loading", visible: true }) })) : (jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [jsxRuntimeExports.jsx(LeftImageResizer, Object.assign({ onMouseDown: handleMouseDown('left') }, { children: jsxRuntimeExports.jsx(ResizeHandler, { opacity: displayResizer ? 1 : 0 }) })), jsxRuntimeExports.jsx(RightImageResizer, Object.assign({ onMouseDown: handleMouseDown('right') }, { children: jsxRuntimeExports.jsx(ResizeHandler, { opacity: displayResizer ? 1 : 0 }) }))] }))] })) })));
 });
 
 const BYTE_UNITS = [
@@ -20875,6 +16362,7 @@ function prettyBytes(number, options) {
 	options = {
 		bits: false,
 		binary: false,
+		space: true,
 		...options,
 	};
 
@@ -20882,8 +16370,10 @@ function prettyBytes(number, options) {
 		? (options.binary ? BIBIT_UNITS : BIT_UNITS)
 		: (options.binary ? BIBYTE_UNITS : BYTE_UNITS);
 
+	const separator = options.space ? ' ' : '';
+
 	if (options.signed && number === 0) {
-		return ` 0 ${UNITS[0]}`;
+		return ` 0${separator}${UNITS[0]}`;
 	}
 
 	const isNegative = number < 0;
@@ -20905,7 +16395,7 @@ function prettyBytes(number, options) {
 
 	if (number < 1) {
 		const numberString = toLocaleString(number, options.locale, localeOptions);
-		return prefix + numberString + ' ' + UNITS[0];
+		return prefix + numberString + separator + UNITS[0];
 	}
 
 	const exponent = Math.min(Math.floor(options.binary ? Math.log(number) / Math.log(1024) : Math.log10(number) / 3), UNITS.length - 1);
@@ -20919,10 +16409,10 @@ function prettyBytes(number, options) {
 
 	const unit = UNITS[exponent];
 
-	return prefix + numberString + ' ' + unit;
+	return prefix + numberString + separator + unit;
 }
 
-const Container$4 = He.div `
+const Container$4 = styled$1.div `
   outline: none;
   display: flex;
   padding: 0 12px;
@@ -20930,35 +16420,35 @@ const Container$4 = He.div `
   border-radius: 8px;
   margin: 4px 12px;
 `;
-const IconContainer = He.div `
+const IconContainer = styled$1.div `
   display: flex;
   flex-shrink: 0;
   width: 50px;
   justify-content: center;
   align-items: center;
 `;
-const Inner$1 = He.div `
+const Inner$1 = styled$1.div `
   flex-shrink: 1;
   width: 100%;
   padding: 12px;
   box-sizing: border-box;
 `;
-He.div `
+styled$1.div `
   display: flex;
   flex-shrink: 0;
   width: 50px;
 `;
-const FileName = He.div `
+const FileName = styled$1.div `
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 `;
-const Size = He.div `
+const Size = styled$1.div `
   font-size: 12px;
   color: #999;
   display: flex;
 `;
-const Loading = He.div `
+const Loading = styled$1.div `
   margin-left: 8px;
 `;
 const File = React__namespace.memo((_a) => {
@@ -20969,13 +16459,13 @@ const File = React__namespace.memo((_a) => {
         e.preventDefault();
         e.stopPropagation();
     }, []);
-    return (jsxRuntime.exports.jsxs(Container$4, Object.assign({ ref: imageRef }, props, { contentEditable: false }, { children: [jsxRuntime.exports.jsx(IconContainer, { children: jsxRuntime.exports.jsxs("svg", Object.assign({ width: "32", height: "32", viewBox: "0 0 24 24", fill: "none", xmlns: "http://www.w3.org/2000/svg" }, { children: [jsxRuntime.exports.jsx("path", { d: "M14 3V7C14 7.26522 14.1054 7.51957 14.2929 7.70711C14.4804 7.89464 14.7348 8 15 8H19", stroke: "#666666", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round" }), jsxRuntime.exports.jsx("path", { d: "M12 11V17M17 21H7C6.46957 21 5.96086 20.7893 5.58579 20.4142C5.21071 20.0391 5 19.5304 5 19V5C5 4.46957 5.21071 3.96086 5.58579 3.58579C5.96086 3.21071 6.46957 3 7 3H14L19 8V19C19 19.5304 18.7893 20.0391 18.4142 20.4142C18.0391 20.7893 17.5304 21 17 21Z", stroke: "#666666", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round" }), jsxRuntime.exports.jsx("path", { d: "M9.5 13.5L12 11L14.5 13.5", stroke: "#666666", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round" })] })) }), jsxRuntime.exports.jsxs(Inner$1, { children: [jsxRuntime.exports.jsx(FileName, { children: fileName }), jsxRuntime.exports.jsxs(Size, { children: [prettyBytes(size), isUploading && (jsxRuntime.exports.jsx(Loading, { children: jsxRuntime.exports.jsx(RotatingLines, { strokeColor: "grey", strokeWidth: "5", animationDuration: "0.75", width: "18", visible: true }) }))] })] }), jsxRuntime.exports.jsx(IconContainer, {})] })));
+    return (jsxRuntimeExports.jsxs(Container$4, Object.assign({ ref: imageRef }, props, { contentEditable: false }, { children: [jsxRuntimeExports.jsx(IconContainer, { children: jsxRuntimeExports.jsxs("svg", Object.assign({ width: "32", height: "32", viewBox: "0 0 24 24", fill: "none", xmlns: "http://www.w3.org/2000/svg" }, { children: [jsxRuntimeExports.jsx("path", { d: "M14 3V7C14 7.26522 14.1054 7.51957 14.2929 7.70711C14.4804 7.89464 14.7348 8 15 8H19", stroke: "#666666", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round" }), jsxRuntimeExports.jsx("path", { d: "M12 11V17M17 21H7C6.46957 21 5.96086 20.7893 5.58579 20.4142C5.21071 20.0391 5 19.5304 5 19V5C5 4.46957 5.21071 3.96086 5.58579 3.58579C5.96086 3.21071 6.46957 3 7 3H14L19 8V19C19 19.5304 18.7893 20.0391 18.4142 20.4142C18.0391 20.7893 17.5304 21 17 21Z", stroke: "#666666", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round" }), jsxRuntimeExports.jsx("path", { d: "M9.5 13.5L12 11L14.5 13.5", stroke: "#666666", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round" })] })) }), jsxRuntimeExports.jsxs(Inner$1, { children: [jsxRuntimeExports.jsx(FileName, { children: fileName }), jsxRuntimeExports.jsxs(Size, { children: [prettyBytes(size), isUploading && (jsxRuntimeExports.jsx(Loading, { children: jsxRuntimeExports.jsx(RotatingLines, { strokeColor: "grey", strokeWidth: "5", animationDuration: "0.75", width: "18", visible: true }) }))] })] }), jsxRuntimeExports.jsx(IconContainer, {})] })));
 });
 
 /*! Copyright Twitter Inc. and other contributors. Licensed under MIT */
 var twemoji=function(){var twemoji={base:"https://twemoji.maxcdn.com/v/14.0.2/",ext:".png",size:"72x72",className:"emoji",convert:{fromCodePoint:fromCodePoint,toCodePoint:toCodePoint},onerror:function onerror(){if(this.parentNode){this.parentNode.replaceChild(createText(this.alt,false),this);}},parse:parse,replace:replace,test:test},escaper={"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"},re=/(?:\ud83d\udc68\ud83c\udffb\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc68\ud83c\udffc\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc68\ud83c\udffd\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc68\ud83c\udffe\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc68\ud83c\udfff\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffb\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffb\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc69\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffc\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffc\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc69\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffd\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffd\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc69\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffe\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffe\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc69\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udfff\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udfff\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc69\ud83c[\udffb-\udfff]|\ud83e\uddd1\ud83c\udffb\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83e\uddd1\ud83c[\udffc-\udfff]|\ud83e\uddd1\ud83c\udffc\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83e\uddd1\ud83c[\udffb\udffd-\udfff]|\ud83e\uddd1\ud83c\udffd\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83e\uddd1\ud83c[\udffb\udffc\udffe\udfff]|\ud83e\uddd1\ud83c\udffe\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83e\uddd1\ud83c[\udffb-\udffd\udfff]|\ud83e\uddd1\ud83c\udfff\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83e\uddd1\ud83c[\udffb-\udffe]|\ud83d\udc68\ud83c\udffb\u200d\u2764\ufe0f\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc68\ud83c\udffb\u200d\ud83e\udd1d\u200d\ud83d\udc68\ud83c[\udffc-\udfff]|\ud83d\udc68\ud83c\udffc\u200d\u2764\ufe0f\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc68\ud83c\udffc\u200d\ud83e\udd1d\u200d\ud83d\udc68\ud83c[\udffb\udffd-\udfff]|\ud83d\udc68\ud83c\udffd\u200d\u2764\ufe0f\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc68\ud83c\udffd\u200d\ud83e\udd1d\u200d\ud83d\udc68\ud83c[\udffb\udffc\udffe\udfff]|\ud83d\udc68\ud83c\udffe\u200d\u2764\ufe0f\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc68\ud83c\udffe\u200d\ud83e\udd1d\u200d\ud83d\udc68\ud83c[\udffb-\udffd\udfff]|\ud83d\udc68\ud83c\udfff\u200d\u2764\ufe0f\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc68\ud83c\udfff\u200d\ud83e\udd1d\u200d\ud83d\udc68\ud83c[\udffb-\udffe]|\ud83d\udc69\ud83c\udffb\u200d\u2764\ufe0f\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffb\u200d\u2764\ufe0f\u200d\ud83d\udc69\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffb\u200d\ud83e\udd1d\u200d\ud83d\udc68\ud83c[\udffc-\udfff]|\ud83d\udc69\ud83c\udffb\u200d\ud83e\udd1d\u200d\ud83d\udc69\ud83c[\udffc-\udfff]|\ud83d\udc69\ud83c\udffc\u200d\u2764\ufe0f\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffc\u200d\u2764\ufe0f\u200d\ud83d\udc69\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffc\u200d\ud83e\udd1d\u200d\ud83d\udc68\ud83c[\udffb\udffd-\udfff]|\ud83d\udc69\ud83c\udffc\u200d\ud83e\udd1d\u200d\ud83d\udc69\ud83c[\udffb\udffd-\udfff]|\ud83d\udc69\ud83c\udffd\u200d\u2764\ufe0f\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffd\u200d\u2764\ufe0f\u200d\ud83d\udc69\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffd\u200d\ud83e\udd1d\u200d\ud83d\udc68\ud83c[\udffb\udffc\udffe\udfff]|\ud83d\udc69\ud83c\udffd\u200d\ud83e\udd1d\u200d\ud83d\udc69\ud83c[\udffb\udffc\udffe\udfff]|\ud83d\udc69\ud83c\udffe\u200d\u2764\ufe0f\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffe\u200d\u2764\ufe0f\u200d\ud83d\udc69\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffe\u200d\ud83e\udd1d\u200d\ud83d\udc68\ud83c[\udffb-\udffd\udfff]|\ud83d\udc69\ud83c\udffe\u200d\ud83e\udd1d\u200d\ud83d\udc69\ud83c[\udffb-\udffd\udfff]|\ud83d\udc69\ud83c\udfff\u200d\u2764\ufe0f\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udfff\u200d\u2764\ufe0f\u200d\ud83d\udc69\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udfff\u200d\ud83e\udd1d\u200d\ud83d\udc68\ud83c[\udffb-\udffe]|\ud83d\udc69\ud83c\udfff\u200d\ud83e\udd1d\u200d\ud83d\udc69\ud83c[\udffb-\udffe]|\ud83e\uddd1\ud83c\udffb\u200d\u2764\ufe0f\u200d\ud83e\uddd1\ud83c[\udffc-\udfff]|\ud83e\uddd1\ud83c\udffb\u200d\ud83e\udd1d\u200d\ud83e\uddd1\ud83c[\udffb-\udfff]|\ud83e\uddd1\ud83c\udffc\u200d\u2764\ufe0f\u200d\ud83e\uddd1\ud83c[\udffb\udffd-\udfff]|\ud83e\uddd1\ud83c\udffc\u200d\ud83e\udd1d\u200d\ud83e\uddd1\ud83c[\udffb-\udfff]|\ud83e\uddd1\ud83c\udffd\u200d\u2764\ufe0f\u200d\ud83e\uddd1\ud83c[\udffb\udffc\udffe\udfff]|\ud83e\uddd1\ud83c\udffd\u200d\ud83e\udd1d\u200d\ud83e\uddd1\ud83c[\udffb-\udfff]|\ud83e\uddd1\ud83c\udffe\u200d\u2764\ufe0f\u200d\ud83e\uddd1\ud83c[\udffb-\udffd\udfff]|\ud83e\uddd1\ud83c\udffe\u200d\ud83e\udd1d\u200d\ud83e\uddd1\ud83c[\udffb-\udfff]|\ud83e\uddd1\ud83c\udfff\u200d\u2764\ufe0f\u200d\ud83e\uddd1\ud83c[\udffb-\udffe]|\ud83e\uddd1\ud83c\udfff\u200d\ud83e\udd1d\u200d\ud83e\uddd1\ud83c[\udffb-\udfff]|\ud83d\udc68\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68|\ud83d\udc69\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d[\udc68\udc69]|\ud83e\udef1\ud83c\udffb\u200d\ud83e\udef2\ud83c[\udffc-\udfff]|\ud83e\udef1\ud83c\udffc\u200d\ud83e\udef2\ud83c[\udffb\udffd-\udfff]|\ud83e\udef1\ud83c\udffd\u200d\ud83e\udef2\ud83c[\udffb\udffc\udffe\udfff]|\ud83e\udef1\ud83c\udffe\u200d\ud83e\udef2\ud83c[\udffb-\udffd\udfff]|\ud83e\udef1\ud83c\udfff\u200d\ud83e\udef2\ud83c[\udffb-\udffe]|\ud83d\udc68\u200d\u2764\ufe0f\u200d\ud83d\udc68|\ud83d\udc69\u200d\u2764\ufe0f\u200d\ud83d[\udc68\udc69]|\ud83e\uddd1\u200d\ud83e\udd1d\u200d\ud83e\uddd1|\ud83d\udc6b\ud83c[\udffb-\udfff]|\ud83d\udc6c\ud83c[\udffb-\udfff]|\ud83d\udc6d\ud83c[\udffb-\udfff]|\ud83d\udc8f\ud83c[\udffb-\udfff]|\ud83d\udc91\ud83c[\udffb-\udfff]|\ud83e\udd1d\ud83c[\udffb-\udfff]|\ud83d[\udc6b-\udc6d\udc8f\udc91]|\ud83e\udd1d)|(?:\ud83d[\udc68\udc69]|\ud83e\uddd1)(?:\ud83c[\udffb-\udfff])?\u200d(?:\u2695\ufe0f|\u2696\ufe0f|\u2708\ufe0f|\ud83c[\udf3e\udf73\udf7c\udf84\udf93\udfa4\udfa8\udfeb\udfed]|\ud83d[\udcbb\udcbc\udd27\udd2c\ude80\ude92]|\ud83e[\uddaf-\uddb3\uddbc\uddbd])|(?:\ud83c[\udfcb\udfcc]|\ud83d[\udd74\udd75]|\u26f9)((?:\ud83c[\udffb-\udfff]|\ufe0f)\u200d[\u2640\u2642]\ufe0f)|(?:\ud83c[\udfc3\udfc4\udfca]|\ud83d[\udc6e\udc70\udc71\udc73\udc77\udc81\udc82\udc86\udc87\ude45-\ude47\ude4b\ude4d\ude4e\udea3\udeb4-\udeb6]|\ud83e[\udd26\udd35\udd37-\udd39\udd3d\udd3e\uddb8\uddb9\uddcd-\uddcf\uddd4\uddd6-\udddd])(?:\ud83c[\udffb-\udfff])?\u200d[\u2640\u2642]\ufe0f|(?:\ud83d\udc68\u200d\ud83d\udc68\u200d\ud83d\udc66\u200d\ud83d\udc66|\ud83d\udc68\u200d\ud83d\udc68\u200d\ud83d\udc67\u200d\ud83d[\udc66\udc67]|\ud83d\udc68\u200d\ud83d\udc69\u200d\ud83d\udc66\u200d\ud83d\udc66|\ud83d\udc68\u200d\ud83d\udc69\u200d\ud83d\udc67\u200d\ud83d[\udc66\udc67]|\ud83d\udc69\u200d\ud83d\udc69\u200d\ud83d\udc66\u200d\ud83d\udc66|\ud83d\udc69\u200d\ud83d\udc69\u200d\ud83d\udc67\u200d\ud83d[\udc66\udc67]|\ud83d\udc68\u200d\ud83d\udc66\u200d\ud83d\udc66|\ud83d\udc68\u200d\ud83d\udc67\u200d\ud83d[\udc66\udc67]|\ud83d\udc68\u200d\ud83d\udc68\u200d\ud83d[\udc66\udc67]|\ud83d\udc68\u200d\ud83d\udc69\u200d\ud83d[\udc66\udc67]|\ud83d\udc69\u200d\ud83d\udc66\u200d\ud83d\udc66|\ud83d\udc69\u200d\ud83d\udc67\u200d\ud83d[\udc66\udc67]|\ud83d\udc69\u200d\ud83d\udc69\u200d\ud83d[\udc66\udc67]|\ud83c\udff3\ufe0f\u200d\u26a7\ufe0f|\ud83c\udff3\ufe0f\u200d\ud83c\udf08|\ud83d\ude36\u200d\ud83c\udf2b\ufe0f|\u2764\ufe0f\u200d\ud83d\udd25|\u2764\ufe0f\u200d\ud83e\ude79|\ud83c\udff4\u200d\u2620\ufe0f|\ud83d\udc15\u200d\ud83e\uddba|\ud83d\udc3b\u200d\u2744\ufe0f|\ud83d\udc41\u200d\ud83d\udde8|\ud83d\udc68\u200d\ud83d[\udc66\udc67]|\ud83d\udc69\u200d\ud83d[\udc66\udc67]|\ud83d\udc6f\u200d\u2640\ufe0f|\ud83d\udc6f\u200d\u2642\ufe0f|\ud83d\ude2e\u200d\ud83d\udca8|\ud83d\ude35\u200d\ud83d\udcab|\ud83e\udd3c\u200d\u2640\ufe0f|\ud83e\udd3c\u200d\u2642\ufe0f|\ud83e\uddde\u200d\u2640\ufe0f|\ud83e\uddde\u200d\u2642\ufe0f|\ud83e\udddf\u200d\u2640\ufe0f|\ud83e\udddf\u200d\u2642\ufe0f|\ud83d\udc08\u200d\u2b1b)|[#*0-9]\ufe0f?\u20e3|(?:[©®\u2122\u265f]\ufe0f)|(?:\ud83c[\udc04\udd70\udd71\udd7e\udd7f\ude02\ude1a\ude2f\ude37\udf21\udf24-\udf2c\udf36\udf7d\udf96\udf97\udf99-\udf9b\udf9e\udf9f\udfcd\udfce\udfd4-\udfdf\udff3\udff5\udff7]|\ud83d[\udc3f\udc41\udcfd\udd49\udd4a\udd6f\udd70\udd73\udd76-\udd79\udd87\udd8a-\udd8d\udda5\udda8\uddb1\uddb2\uddbc\uddc2-\uddc4\uddd1-\uddd3\udddc-\uddde\udde1\udde3\udde8\uddef\uddf3\uddfa\udecb\udecd-\udecf\udee0-\udee5\udee9\udef0\udef3]|[\u203c\u2049\u2139\u2194-\u2199\u21a9\u21aa\u231a\u231b\u2328\u23cf\u23ed-\u23ef\u23f1\u23f2\u23f8-\u23fa\u24c2\u25aa\u25ab\u25b6\u25c0\u25fb-\u25fe\u2600-\u2604\u260e\u2611\u2614\u2615\u2618\u2620\u2622\u2623\u2626\u262a\u262e\u262f\u2638-\u263a\u2640\u2642\u2648-\u2653\u2660\u2663\u2665\u2666\u2668\u267b\u267f\u2692-\u2697\u2699\u269b\u269c\u26a0\u26a1\u26a7\u26aa\u26ab\u26b0\u26b1\u26bd\u26be\u26c4\u26c5\u26c8\u26cf\u26d1\u26d3\u26d4\u26e9\u26ea\u26f0-\u26f5\u26f8\u26fa\u26fd\u2702\u2708\u2709\u270f\u2712\u2714\u2716\u271d\u2721\u2733\u2734\u2744\u2747\u2757\u2763\u2764\u27a1\u2934\u2935\u2b05-\u2b07\u2b1b\u2b1c\u2b50\u2b55\u3030\u303d\u3297\u3299])(?:\ufe0f|(?!\ufe0e))|(?:(?:\ud83c[\udfcb\udfcc]|\ud83d[\udd74\udd75\udd90]|[\u261d\u26f7\u26f9\u270c\u270d])(?:\ufe0f|(?!\ufe0e))|(?:\ud83c[\udf85\udfc2-\udfc4\udfc7\udfca]|\ud83d[\udc42\udc43\udc46-\udc50\udc66-\udc69\udc6e\udc70-\udc78\udc7c\udc81-\udc83\udc85-\udc87\udcaa\udd7a\udd95\udd96\ude45-\ude47\ude4b-\ude4f\udea3\udeb4-\udeb6\udec0\udecc]|\ud83e[\udd0c\udd0f\udd18-\udd1c\udd1e\udd1f\udd26\udd30-\udd39\udd3d\udd3e\udd77\uddb5\uddb6\uddb8\uddb9\uddbb\uddcd-\uddcf\uddd1-\udddd\udec3-\udec5\udef0-\udef6]|[\u270a\u270b]))(?:\ud83c[\udffb-\udfff])?|(?:\ud83c\udff4\udb40\udc67\udb40\udc62\udb40\udc65\udb40\udc6e\udb40\udc67\udb40\udc7f|\ud83c\udff4\udb40\udc67\udb40\udc62\udb40\udc73\udb40\udc63\udb40\udc74\udb40\udc7f|\ud83c\udff4\udb40\udc67\udb40\udc62\udb40\udc77\udb40\udc6c\udb40\udc73\udb40\udc7f|\ud83c\udde6\ud83c[\udde8-\uddec\uddee\uddf1\uddf2\uddf4\uddf6-\uddfa\uddfc\uddfd\uddff]|\ud83c\udde7\ud83c[\udde6\udde7\udde9-\uddef\uddf1-\uddf4\uddf6-\uddf9\uddfb\uddfc\uddfe\uddff]|\ud83c\udde8\ud83c[\udde6\udde8\udde9\uddeb-\uddee\uddf0-\uddf5\uddf7\uddfa-\uddff]|\ud83c\udde9\ud83c[\uddea\uddec\uddef\uddf0\uddf2\uddf4\uddff]|\ud83c\uddea\ud83c[\udde6\udde8\uddea\uddec\udded\uddf7-\uddfa]|\ud83c\uddeb\ud83c[\uddee-\uddf0\uddf2\uddf4\uddf7]|\ud83c\uddec\ud83c[\udde6\udde7\udde9-\uddee\uddf1-\uddf3\uddf5-\uddfa\uddfc\uddfe]|\ud83c\udded\ud83c[\uddf0\uddf2\uddf3\uddf7\uddf9\uddfa]|\ud83c\uddee\ud83c[\udde8-\uddea\uddf1-\uddf4\uddf6-\uddf9]|\ud83c\uddef\ud83c[\uddea\uddf2\uddf4\uddf5]|\ud83c\uddf0\ud83c[\uddea\uddec-\uddee\uddf2\uddf3\uddf5\uddf7\uddfc\uddfe\uddff]|\ud83c\uddf1\ud83c[\udde6-\udde8\uddee\uddf0\uddf7-\uddfb\uddfe]|\ud83c\uddf2\ud83c[\udde6\udde8-\udded\uddf0-\uddff]|\ud83c\uddf3\ud83c[\udde6\udde8\uddea-\uddec\uddee\uddf1\uddf4\uddf5\uddf7\uddfa\uddff]|\ud83c\uddf4\ud83c\uddf2|\ud83c\uddf5\ud83c[\udde6\uddea-\udded\uddf0-\uddf3\uddf7-\uddf9\uddfc\uddfe]|\ud83c\uddf6\ud83c\udde6|\ud83c\uddf7\ud83c[\uddea\uddf4\uddf8\uddfa\uddfc]|\ud83c\uddf8\ud83c[\udde6-\uddea\uddec-\uddf4\uddf7-\uddf9\uddfb\uddfd-\uddff]|\ud83c\uddf9\ud83c[\udde6\udde8\udde9\uddeb-\udded\uddef-\uddf4\uddf7\uddf9\uddfb\uddfc\uddff]|\ud83c\uddfa\ud83c[\udde6\uddec\uddf2\uddf3\uddf8\uddfe\uddff]|\ud83c\uddfb\ud83c[\udde6\udde8\uddea\uddec\uddee\uddf3\uddfa]|\ud83c\uddfc\ud83c[\uddeb\uddf8]|\ud83c\uddfd\ud83c\uddf0|\ud83c\uddfe\ud83c[\uddea\uddf9]|\ud83c\uddff\ud83c[\udde6\uddf2\uddfc]|\ud83c[\udccf\udd8e\udd91-\udd9a\udde6-\uddff\ude01\ude32-\ude36\ude38-\ude3a\ude50\ude51\udf00-\udf20\udf2d-\udf35\udf37-\udf7c\udf7e-\udf84\udf86-\udf93\udfa0-\udfc1\udfc5\udfc6\udfc8\udfc9\udfcf-\udfd3\udfe0-\udff0\udff4\udff8-\udfff]|\ud83d[\udc00-\udc3e\udc40\udc44\udc45\udc51-\udc65\udc6a\udc6f\udc79-\udc7b\udc7d-\udc80\udc84\udc88-\udc8e\udc90\udc92-\udca9\udcab-\udcfc\udcff-\udd3d\udd4b-\udd4e\udd50-\udd67\udda4\uddfb-\ude44\ude48-\ude4a\ude80-\udea2\udea4-\udeb3\udeb7-\udebf\udec1-\udec5\uded0-\uded2\uded5-\uded7\udedd-\udedf\udeeb\udeec\udef4-\udefc\udfe0-\udfeb\udff0]|\ud83e[\udd0d\udd0e\udd10-\udd17\udd20-\udd25\udd27-\udd2f\udd3a\udd3c\udd3f-\udd45\udd47-\udd76\udd78-\uddb4\uddb7\uddba\uddbc-\uddcc\uddd0\uddde-\uddff\ude70-\ude74\ude78-\ude7c\ude80-\ude86\ude90-\udeac\udeb0-\udeba\udec0-\udec2\uded0-\uded9\udee0-\udee7]|[\u23e9-\u23ec\u23f0\u23f3\u267e\u26ce\u2705\u2728\u274c\u274e\u2753-\u2755\u2795-\u2797\u27b0\u27bf\ue50a])|\ufe0f/g,UFE0Fg=/\uFE0F/g,U200D=String.fromCharCode(8205),rescaper=/[&<>'"]/g,shouldntBeParsed=/^(?:iframe|noframes|noscript|script|select|style|textarea)$/,fromCharCode=String.fromCharCode;return twemoji;function createText(text,clean){return document.createTextNode(clean?text.replace(UFE0Fg,""):text)}function escapeHTML(s){return s.replace(rescaper,replacer)}function defaultImageSrcGenerator(icon,options){return "".concat(options.base,options.size,"/",icon,options.ext)}function grabAllTextNodes(node,allText){var childNodes=node.childNodes,length=childNodes.length,subnode,nodeType;while(length--){subnode=childNodes[length];nodeType=subnode.nodeType;if(nodeType===3){allText.push(subnode);}else if(nodeType===1&&!("ownerSVGElement"in subnode)&&!shouldntBeParsed.test(subnode.nodeName.toLowerCase())){grabAllTextNodes(subnode,allText);}}return allText}function grabTheRightIcon(rawText){return toCodePoint(rawText.indexOf(U200D)<0?rawText.replace(UFE0Fg,""):rawText)}function parseNode(node,options){var allText=grabAllTextNodes(node,[]),length=allText.length,attrib,attrname,modified,fragment,subnode,text,match,i,index,img,rawText,iconId,src;while(length--){modified=false;fragment=document.createDocumentFragment();subnode=allText[length];text=subnode.nodeValue;i=0;while(match=re.exec(text)){index=match.index;if(index!==i){fragment.appendChild(createText(text.slice(i,index),true));}rawText=match[0];iconId=grabTheRightIcon(rawText);i=index+rawText.length;src=options.callback(iconId,options);if(iconId&&src){img=new Image;img.onerror=options.onerror;img.setAttribute("draggable","false");attrib=options.attributes(rawText,iconId);for(attrname in attrib){if(attrib.hasOwnProperty(attrname)&&attrname.indexOf("on")!==0&&!img.hasAttribute(attrname)){img.setAttribute(attrname,attrib[attrname]);}}img.className=options.className;img.alt=rawText;img.src=src;modified=true;fragment.appendChild(img);}if(!img)fragment.appendChild(createText(rawText,false));img=null;}if(modified){if(i<text.length){fragment.appendChild(createText(text.slice(i),true));}subnode.parentNode.replaceChild(fragment,subnode);}}return node}function parseString(str,options){return replace(str,function(rawText){var ret=rawText,iconId=grabTheRightIcon(rawText),src=options.callback(iconId,options),attrib,attrname;if(iconId&&src){ret="<img ".concat('class="',options.className,'" ','draggable="false" ','alt="',rawText,'"',' src="',src,'"');attrib=options.attributes(rawText,iconId);for(attrname in attrib){if(attrib.hasOwnProperty(attrname)&&attrname.indexOf("on")!==0&&ret.indexOf(" "+attrname+"=")===-1){ret=ret.concat(" ",attrname,'="',escapeHTML(attrib[attrname]),'"');}}ret=ret.concat("/>");}return ret})}function replacer(m){return escaper[m]}function returnNull(){return null}function toSizeSquaredAsset(value){return typeof value==="number"?value+"x"+value:value}function fromCodePoint(codepoint){var code=typeof codepoint==="string"?parseInt(codepoint,16):codepoint;if(code<65536){return fromCharCode(code)}code-=65536;return fromCharCode(55296+(code>>10),56320+(code&1023))}function parse(what,how){if(!how||typeof how==="function"){how={callback:how};}return (typeof what==="string"?parseString:parseNode)(what,{callback:how.callback||defaultImageSrcGenerator,attributes:typeof how.attributes==="function"?how.attributes:returnNull,base:typeof how.base==="string"?how.base:twemoji.base,ext:how.ext||twemoji.ext,size:how.folder||toSizeSquaredAsset(how.size||twemoji.size),className:how.className||twemoji.className,onerror:how.onerror||twemoji.onerror})}function replace(text,callback){return String(text).replace(re,callback)}function test(text){re.lastIndex=0;var result=re.test(text);re.lastIndex=0;return result}function toCodePoint(unicodeSurrogates,sep){var r=[],c=0,p=0,i=0;while(i<unicodeSurrogates.length){c=unicodeSurrogates.charCodeAt(i++);if(p){r.push((65536+(p-55296<<10)+(c-56320)).toString(16));p=0;}else if(55296<=c&&c<=56319){p=c;}else {r.push(c.toString(16));}}return r.join(sep||"-")}}();
 
-const Text$3 = He.span `
+const Text$3 = styled$1.span `
   &::selection {
     background: rgba(46, 170, 220, 0.2);
   }
@@ -20998,7 +16488,7 @@ const Text$3 = He.span `
     });
 }}
 `;
-const Link$1 = He.a `
+const Link$1 = styled$1.a `
   &::selection {
     background: rgba(46, 170, 220, 0.2);
   }
@@ -21036,10 +16526,10 @@ const InlineText = (_a) => {
     const handleClickLink = React__namespace.useCallback(() => {
         window.open(inline.attributes['link'], '_blank', 'noreferrer');
     }, [inline]);
-    return (jsxRuntime.exports.jsx(jsxRuntime.exports.Fragment, { children: inline.attributes['link'] ? (jsxRuntime.exports.jsx(jsxRuntime.exports.Fragment, { children: jsxRuntime.exports.jsx(Link$1, Object.assign({ href: inline.attributes['link'], target: "_blank", dangerouslySetInnerHTML: memoInnerHTML, formats: formats, attributes: inline.attributes, onClick: handleClickLink }, props)) })) : (jsxRuntime.exports.jsx(Text$3, Object.assign({ dangerouslySetInnerHTML: memoInnerHTML, formats: formats, attributes: inline.attributes }, props))) }));
+    return (jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: inline.attributes['link'] ? (jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: jsxRuntimeExports.jsx(Link$1, Object.assign({ href: inline.attributes['link'], target: "_blank", dangerouslySetInnerHTML: memoInnerHTML, formats: formats, attributes: inline.attributes, onClick: handleClickLink }, props)) })) : (jsxRuntimeExports.jsx(Text$3, Object.assign({ dangerouslySetInnerHTML: memoInnerHTML, formats: formats, attributes: inline.attributes }, props))) }));
 };
 
-const Text$2 = He.span `
+const Text$2 = styled$1.span `
   &::selection {
     background: rgba(46, 170, 220, 0.2);
   }
@@ -21120,22 +16610,22 @@ const Text$2 = He.span `
 `;
 const CodeToken = (_a) => {
     var { inline, formats, editor, scrollContainer, attributes } = _a, props = __rest$1(_a, ["inline", "formats", "editor", "scrollContainer", "attributes"]);
-    return (jsxRuntime.exports.jsx(Text$2, Object.assign({ className: `token ${attributes.tokenType}` }, props, { children: inline.text })));
+    return (jsxRuntimeExports.jsx(Text$2, Object.assign({ className: `token ${attributes.tokenType}` }, props, { children: inline.text })));
 };
 
-const Bold = () => Ce `
+const Bold = () => Ce$1 `
   font-weight: bold;
 `;
 
-const Underline = () => Ce `
+const Underline = () => Ce$1 `
   border-bottom: 0.05em solid;
 `;
 
-const Strike = () => Ce `
+const Strike = () => Ce$1 `
   text-decoration: line-through;
 `;
 
-const InlineCode = () => Ce `
+const InlineCode = () => Ce$1 `
   background: rgba(135, 131, 120, 0.15);
   color: #eb5757;
   border-radius: 3px;
@@ -21143,20 +16633,20 @@ const InlineCode = () => Ce `
   padding: 0.2em 0.4em;
 `;
 
-const Italic = () => Ce `
+const Italic = () => Ce$1 `
   transform: skewX(-20deg);
   display: inline-block;
 `;
 
-const Color = (color) => Ce `
+const Color = (color) => Ce$1 `
   ${color && `color: ${color};`}
 `;
 
-const Link = () => Ce `
+const Link = () => Ce$1 `
   cursor: pointer;
 `;
 
-const Container$3 = He.div `
+const Container$3 = styled$1.div `
   position: fixed;
   bottom: 12px;
   left: 50%;
@@ -21169,7 +16659,7 @@ const Container$3 = He.div `
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
   z-index: 1;
 `;
-const Button$1 = He.a `
+const Button$1 = styled$1.a `
   display: flex;
   padding: 7px;
   ${({ active }) => active && 'background: rgba(255, 255, 255, 0.15)'};
@@ -21177,7 +16667,7 @@ const Button$1 = He.a `
     background-color: rgba(255, 255, 255, 0.4);
   }
 `;
-const Divider = He.div `
+const Divider = styled$1.div `
   width: 1px;
   height: 100%;
   background: #fff;
@@ -21256,11 +16746,11 @@ const GlobalToolbar = React__namespace.memo((_a) => {
             subs.unsubscribe();
         };
     }, []);
-    return ReactDOM__default["default"].createPortal(jsxRuntime.exports.jsx(jsxRuntime.exports.Fragment, { children: isDisplay && (jsxRuntime.exports.jsxs(Container$3, Object.assign({}, props, { children: [jsxRuntime.exports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntime.exports.jsx(Button$1, Object.assign({ href: "#", onClick: handleHeader1, active: blockType === 'HEADER1' }, { children: jsxRuntime.exports.jsx(FormatHeader1, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u898B\u51FA\u3057(\u5927)\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntime.exports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntime.exports.jsx(Button$1, Object.assign({ href: "#", onClick: handleHeader2, active: blockType === 'HEADER2' }, { children: jsxRuntime.exports.jsx(FormatHeader2, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u898B\u51FA\u3057(\u4E2D)\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntime.exports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntime.exports.jsx(Button$1, Object.assign({ href: "#", onClick: handleHeader3, active: blockType === 'HEADER3' }, { children: jsxRuntime.exports.jsx(FormatHeader3, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u898B\u51FA\u3057(\u5C0F)\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntime.exports.jsx(Divider, {}), jsxRuntime.exports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntime.exports.jsx(Button$1, Object.assign({ href: "#", active: blockType === 'CODE-BLOCK', onClick: handleCodeBlock }, { children: jsxRuntime.exports.jsx(FormatCodeBlock, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u30B3\u30FC\u30C9\u30D6\u30ED\u30C3\u30AF\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntime.exports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntime.exports.jsx(Button$1, Object.assign({ href: "#", active: blockType === 'BLOCKQUOTE', onClick: handleBlockquote }, { children: jsxRuntime.exports.jsx(FormatBlockQuote, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u5F15\u7528\u30D6\u30ED\u30C3\u30AF\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntime.exports.jsx(Divider, {}), jsxRuntime.exports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntime.exports.jsx(Button$1, Object.assign({ href: "#", active: blockType === 'BULLET-LIST', onClick: handleBulletList }, { children: jsxRuntime.exports.jsx(FormatBulletList, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u7B87\u6761\u66F8\u304D\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntime.exports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntime.exports.jsx(Button$1, Object.assign({ href: "#", active: blockType === 'ORDERED-LIST', onClick: handleOrderedList }, { children: jsxRuntime.exports.jsx(FormatNumberList, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u756A\u53F7\u4ED8\u304D\u30EA\u30B9\u30C8\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntime.exports.jsx(Divider, {}), jsxRuntime.exports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntime.exports.jsx(Button$1, Object.assign({ href: "#", active: blockType === 'TASK', onClick: handleTask }, { children: jsxRuntime.exports.jsx(FormatTask, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u30BF\u30B9\u30AF\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntime.exports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntime.exports.jsx(Button$1, Object.assign({ href: "#", active: blockType === 'DECISION', onClick: handleDecision }, { children: jsxRuntime.exports.jsx(FormatDecision, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u6C7A\u5B9A\u4E8B\u9805\u306B\u5207\u308A\u66FF\u3048\u308B" }))] }))) }), document.body);
+    return ReactDOM.createPortal(jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: isDisplay && (jsxRuntimeExports.jsxs(Container$3, Object.assign({}, props, { children: [jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$1, Object.assign({ href: "#", onClick: handleHeader1, active: blockType === 'HEADER1' }, { children: jsxRuntimeExports.jsx(FormatHeader1, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u898B\u51FA\u3057(\u5927)\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$1, Object.assign({ href: "#", onClick: handleHeader2, active: blockType === 'HEADER2' }, { children: jsxRuntimeExports.jsx(FormatHeader2, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u898B\u51FA\u3057(\u4E2D)\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$1, Object.assign({ href: "#", onClick: handleHeader3, active: blockType === 'HEADER3' }, { children: jsxRuntimeExports.jsx(FormatHeader3, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u898B\u51FA\u3057(\u5C0F)\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Divider, {}), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$1, Object.assign({ href: "#", active: blockType === 'CODE-BLOCK', onClick: handleCodeBlock }, { children: jsxRuntimeExports.jsx(FormatCodeBlock, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u30B3\u30FC\u30C9\u30D6\u30ED\u30C3\u30AF\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$1, Object.assign({ href: "#", active: blockType === 'BLOCKQUOTE', onClick: handleBlockquote }, { children: jsxRuntimeExports.jsx(FormatBlockQuote, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u5F15\u7528\u30D6\u30ED\u30C3\u30AF\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Divider, {}), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$1, Object.assign({ href: "#", active: blockType === 'BULLET-LIST', onClick: handleBulletList }, { children: jsxRuntimeExports.jsx(FormatBulletList, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u7B87\u6761\u66F8\u304D\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$1, Object.assign({ href: "#", active: blockType === 'ORDERED-LIST', onClick: handleOrderedList }, { children: jsxRuntimeExports.jsx(FormatNumberList, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u756A\u53F7\u4ED8\u304D\u30EA\u30B9\u30C8\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Divider, {}), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$1, Object.assign({ href: "#", active: blockType === 'TASK', onClick: handleTask }, { children: jsxRuntimeExports.jsx(FormatTask, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u30BF\u30B9\u30AF\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$1, Object.assign({ href: "#", active: blockType === 'DECISION', onClick: handleDecision }, { children: jsxRuntimeExports.jsx(FormatDecision, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u6C7A\u5B9A\u4E8B\u9805\u306B\u5207\u308A\u66FF\u3048\u308B" }))] }))) }), document.body);
 });
 
 const TOOLBAR_CHILD_WIDTH = 34;
-const Container$2 = He.div `
+const Container$2 = styled$1.div `
   height: 34px;
   align-items: center;
   position: absolute;
@@ -21270,7 +16760,7 @@ const Container$2 = He.div `
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
   z-index: 1;
 `;
-const Button = He.a `
+const Button = styled$1.a `
   display: flex;
   padding: 7px;
   ${({ active }) => active && 'background: rgba(255, 255, 255, 0.15)'};
@@ -21278,7 +16768,7 @@ const Button = He.a `
     background-color: rgba(255, 255, 255, 0.4);
   }
 `;
-He.div `
+styled$1.div `
   width: 1px;
   height: 100%;
   background: #fff;
@@ -21422,10 +16912,10 @@ const BubbleToolbar = React__namespace.memo((_a) => {
             setToolbarWidth((containerRef.current.children.length - 1) * TOOLBAR_CHILD_WIDTH);
         });
     }, [editor]);
-    return ReactDOM__default["default"].createPortal(jsxRuntime.exports.jsx(jsxRuntime.exports.Fragment, { children: jsxRuntime.exports.jsxs(Container$2, Object.assign({ id: "bubble-toolbar", style: {
+    return ReactDOM.createPortal(jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: jsxRuntimeExports.jsxs(Container$2, Object.assign({ id: "bubble-toolbar", style: {
                 top: (_b = position === null || position === void 0 ? void 0 : position.top) !== null && _b !== void 0 ? _b : 0,
                 left: (_c = position === null || position === void 0 ? void 0 : position.left) !== null && _c !== void 0 ? _c : 0,
-            }, isDisplay: isDisplay, ref: containerRef, onMouseDown: handleMouseDown }, props, { children: [jsxRuntime.exports.jsxs(Tooltip, Object.assign({ targetElement: jsxRuntime.exports.jsx(Button, Object.assign({ href: "#", onClick: handleBold, active: !!(formats === null || formats === void 0 ? void 0 : formats.bold) }, { children: jsxRuntime.exports.jsx(FormatBold, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: ["\u592A\u5B57", jsxRuntime.exports.jsx("br", {}), jsxRuntime.exports.jsx("div", Object.assign({ className: "description" }, { children: "Ctrl + B" }))] })), jsxRuntime.exports.jsxs(Tooltip, Object.assign({ targetElement: jsxRuntime.exports.jsx(Button, Object.assign({ href: "#", onClick: handleItalic, active: !!(formats === null || formats === void 0 ? void 0 : formats.italic) }, { children: jsxRuntime.exports.jsx(FormatItalic, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: ["\u659C\u4F53", jsxRuntime.exports.jsx("br", {}), jsxRuntime.exports.jsx("div", Object.assign({ className: "description" }, { children: "Ctrl + I" }))] })), jsxRuntime.exports.jsxs(Tooltip, Object.assign({ targetElement: jsxRuntime.exports.jsx(Button, Object.assign({ href: "#", onClick: handleUnderline, active: !!(formats === null || formats === void 0 ? void 0 : formats.underline) }, { children: jsxRuntime.exports.jsx(FormatUnderLine, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: ["\u4E0B\u7DDA", jsxRuntime.exports.jsx("br", {}), jsxRuntime.exports.jsx("div", Object.assign({ className: "description" }, { children: "Ctrl + U" }))] })), jsxRuntime.exports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntime.exports.jsx(Button, Object.assign({ href: "#", onClick: handleStrike, active: !!(formats === null || formats === void 0 ? void 0 : formats.strike) }, { children: jsxRuntime.exports.jsx(FormatStrike, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u6253\u6D88\u3057\u7DDA" })), jsxRuntime.exports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntime.exports.jsx(Button, Object.assign({ id: "toolbar-palette", href: "#", onClick: handleColor, active: !!(formats === null || formats === void 0 ? void 0 : formats.color) }, { children: jsxRuntime.exports.jsx(FormatColor, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u6587\u5B57\u8272\u3092\u5909\u66F4" })), jsxRuntime.exports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntime.exports.jsx(Button, Object.assign({ id: "toolbar-link", href: "#", onClick: handleLink, active: !!(formats === null || formats === void 0 ? void 0 : formats.link) }, { children: jsxRuntime.exports.jsx(FormatLink, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u30EA\u30F3\u30AF\u3092\u8FFD\u52A0" })), jsxRuntime.exports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntime.exports.jsx(Button, Object.assign({ href: "#", onClick: handleInlineCode, active: !!(formats === null || formats === void 0 ? void 0 : formats.code) }, { children: jsxRuntime.exports.jsx(FormatCode, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u30A4\u30F3\u30E9\u30A4\u30F3\u30B3\u30FC\u30C9" }))] })) }), (_d = getHtmlElement(scrollContainer)) !== null && _d !== void 0 ? _d : document.body);
+            }, isDisplay: isDisplay, ref: containerRef, onMouseDown: handleMouseDown }, props, { children: [jsxRuntimeExports.jsxs(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button, Object.assign({ href: "#", onClick: handleBold, active: !!(formats === null || formats === void 0 ? void 0 : formats.bold) }, { children: jsxRuntimeExports.jsx(FormatBold, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: ["\u592A\u5B57", jsxRuntimeExports.jsx("br", {}), jsxRuntimeExports.jsx("div", Object.assign({ className: "description" }, { children: "Ctrl + B" }))] })), jsxRuntimeExports.jsxs(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button, Object.assign({ href: "#", onClick: handleItalic, active: !!(formats === null || formats === void 0 ? void 0 : formats.italic) }, { children: jsxRuntimeExports.jsx(FormatItalic, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: ["\u659C\u4F53", jsxRuntimeExports.jsx("br", {}), jsxRuntimeExports.jsx("div", Object.assign({ className: "description" }, { children: "Ctrl + I" }))] })), jsxRuntimeExports.jsxs(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button, Object.assign({ href: "#", onClick: handleUnderline, active: !!(formats === null || formats === void 0 ? void 0 : formats.underline) }, { children: jsxRuntimeExports.jsx(FormatUnderLine, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: ["\u4E0B\u7DDA", jsxRuntimeExports.jsx("br", {}), jsxRuntimeExports.jsx("div", Object.assign({ className: "description" }, { children: "Ctrl + U" }))] })), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button, Object.assign({ href: "#", onClick: handleStrike, active: !!(formats === null || formats === void 0 ? void 0 : formats.strike) }, { children: jsxRuntimeExports.jsx(FormatStrike, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u6253\u6D88\u3057\u7DDA" })), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button, Object.assign({ id: "toolbar-palette", href: "#", onClick: handleColor, active: !!(formats === null || formats === void 0 ? void 0 : formats.color) }, { children: jsxRuntimeExports.jsx(FormatColor, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u6587\u5B57\u8272\u3092\u5909\u66F4" })), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button, Object.assign({ id: "toolbar-link", href: "#", onClick: handleLink, active: !!(formats === null || formats === void 0 ? void 0 : formats.link) }, { children: jsxRuntimeExports.jsx(FormatLink, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u30EA\u30F3\u30AF\u3092\u8FFD\u52A0" })), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button, Object.assign({ href: "#", onClick: handleInlineCode, active: !!(formats === null || formats === void 0 ? void 0 : formats.code) }, { children: jsxRuntimeExports.jsx(FormatCode, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u30A4\u30F3\u30E9\u30A4\u30F3\u30B3\u30FC\u30C9" }))] })) }), (_d = getHtmlElement(scrollContainer)) !== null && _d !== void 0 ? _d : document.body);
 });
 
 var lodash_isequal = {exports: {}};
@@ -21438,6 +16928,7 @@ var lodash_isequal = {exports: {}};
  * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
  * Copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
  */
+lodash_isequal.exports;
 
 (function (module, exports) {
 	/** Used as the size to enable large array optimizations. */
@@ -23278,10 +18769,11 @@ var lodash_isequal = {exports: {}};
 	  return false;
 	}
 
-	module.exports = isEqual;
+	module.exports = isEqual; 
 } (lodash_isequal, lodash_isequal.exports));
 
-var isEqual = lodash_isequal.exports;
+var lodash_isequalExports = lodash_isequal.exports;
+var isEqual = /*@__PURE__*/getDefaultExportFromCjs(lodash_isequalExports);
 
 /* eslint-disable no-undefined,no-param-reassign,no-shadow */
 
@@ -25671,10 +21163,11 @@ var diffMatchPatch = {exports: {}};
 	module.exports['diff_match_patch'] = diff_match_patch;
 	module.exports['DIFF_DELETE'] = DIFF_DELETE;
 	module.exports['DIFF_INSERT'] = DIFF_INSERT;
-	module.exports['DIFF_EQUAL'] = DIFF_EQUAL;
+	module.exports['DIFF_EQUAL'] = DIFF_EQUAL; 
 } (diffMatchPatch));
 
-var DiffMatchPatch = diffMatchPatch.exports;
+var diffMatchPatchExports = diffMatchPatch.exports;
+var DiffMatchPatch = /*@__PURE__*/getDefaultExportFromCjs(diffMatchPatchExports);
 
 function ansiRegex({onlyFirst = false} = {}) {
 	const pattern = [
@@ -26246,7 +21739,7 @@ var type = {};
 	        isNoop: (op) => op.length === 0
 	    };
 	}
-	exports.default = makeType;
+	exports.default = makeType; 
 } (type));
 
 var api$1 = {};
@@ -26379,7 +21872,7 @@ api.provides = { text: true };
 	    ? []
 	    : pos === 0 ? [{ d: textOrLen }] : [pos, { d: textOrLen }]);
 	var type_2 = type;
-	Object.defineProperty(exports, "makeType", { enumerable: true, get: function () { return type_2.default; } });
+	Object.defineProperty(exports, "makeType", { enumerable: true, get: function () { return type_2.default; } }); 
 } (dist));
 
 function createBlock(type, contents = [], attributes, meta) {
@@ -29620,6 +25113,8 @@ text$1.invert = function(op) {
 
 bootstrapTransform_1(text$1, transformComponent, checkValidOp, append);
 
+var text0Exports = text0.exports;
+
 /*
  This is the implementation of the JSON OT type.
 
@@ -30272,7 +25767,7 @@ bootstrapTransform_1(json, json.transformComponent, json.checkValidOp, json.appe
 /**
  * Register a subtype for string operations, using the text0 type.
  */
-var text = text0.exports;
+var text = text0Exports;
 
 json.registerSubtype(text);
 var json0 = json;
@@ -31270,7 +26765,7 @@ class UploaderModule {
             const isImage = !!file.type.match(/^image\/(gif|jpe?g|a?png|svg|webp|bmp)/i);
             if (isImage) {
                 const fileReader = new FileReader();
-                fileReader.onload = (event) => __awaiter$1(this, void 0, void 0, function* () {
+                fileReader.onload = (event) => __awaiter(this, void 0, void 0, function* () {
                     const previewBlock = this.editor.getModule('editor').createBlock({
                         prevId: blockId,
                         type: 'IMAGE',
@@ -31322,7 +26817,7 @@ class UploaderModule {
             }
             else {
                 const fileReader = new FileReader();
-                fileReader.onload = (event) => __awaiter$1(this, void 0, void 0, function* () {
+                fileReader.onload = (event) => __awaiter(this, void 0, void 0, function* () {
                     const previewBlock = this.editor.getModule('editor').createBlock({
                         prevId: blockId,
                         type: 'FILE',
@@ -31428,7 +26923,7 @@ class CollaboratorModule {
     }
 }
 
-const Container$1 = He.div `
+const Container$1 = styled$1.div `
   position: absolute;
   top: 8px;
   left: -30px;
@@ -31449,7 +26944,7 @@ const Container$1 = He.div `
     object-fit: cover;
   }
 `;
-const Text$1 = He.div `
+const Text$1 = styled$1.div `
   font-size: 22px;
   width: 100%;
   height: 100%;
@@ -31498,13 +26993,13 @@ const Collaborators = React__namespace.memo(({ editor }) => {
             return Object.assign(Object.assign({}, v), { top: containerScrollTop + rect.top - ((_a = containerRect === null || containerRect === void 0 ? void 0 : containerRect.top) !== null && _a !== void 0 ? _a : 0) - ((_b = options.marginTop) !== null && _b !== void 0 ? _b : 0) });
         });
     }, [collaborators]);
-    return (jsxRuntime.exports.jsx(jsxRuntime.exports.Fragment, { children: memoCollaborators.map((collaborator) => {
+    return (jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: memoCollaborators.map((collaborator) => {
             var _a;
-            return (jsxRuntime.exports.jsx(Container$1, Object.assign({ draggable: "false", style: { top: `${(_a = collaborator === null || collaborator === void 0 ? void 0 : collaborator.top) !== null && _a !== void 0 ? _a : 0}px` } }, { children: (collaborator === null || collaborator === void 0 ? void 0 : collaborator.imageUrl) ? (jsxRuntime.exports.jsx("img", { draggable: "false", src: collaborator === null || collaborator === void 0 ? void 0 : collaborator.imageUrl })) : (jsxRuntime.exports.jsx(Text$1, { children: collaborator.name.slice(0, 1) })) }), collaborator.id));
+            return (jsxRuntimeExports.jsx(Container$1, Object.assign({ draggable: "false", style: { top: `${(_a = collaborator === null || collaborator === void 0 ? void 0 : collaborator.top) !== null && _a !== void 0 ? _a : 0}px` } }, { children: (collaborator === null || collaborator === void 0 ? void 0 : collaborator.imageUrl) ? (jsxRuntimeExports.jsx("img", { draggable: "false", src: collaborator === null || collaborator === void 0 ? void 0 : collaborator.imageUrl })) : (jsxRuntimeExports.jsx(Text$1, { children: collaborator.name.slice(0, 1) })) }), collaborator.id));
         }) }));
 });
 
-const Container = He.div `
+const Container = styled$1.div `
   border: 1px solid #ccc;
   border-radius: 12px;
   margin: 12px;
@@ -31518,13 +27013,13 @@ const Container = He.div `
     display: none;
   }
 `;
-const Inner = He.div `
+const Inner = styled$1.div `
   flex-shrink: 0;
   flex-grow: 0;
   position: relative;
   ${({ placeholder }) => {
     return (placeholder &&
-        Ce `
+        Ce$1 `
         ::after {
           position: absolute;
           top: 4px;
@@ -31536,12 +27031,12 @@ const Inner = He.div `
       `);
 }}
 `;
-const MarginBottom = He.div `
+const MarginBottom = styled$1.div `
   flex-shrink: 0;
   flex-grow: 1;
   user-select: none;
 `;
-const Selector = He.div `
+const Selector = styled$1.div `
   left: -100000px;
   height: 1px;
   overflow-y: hidden;
@@ -31808,9 +27303,9 @@ const Editor = React__namespace.memo(React__namespace.forwardRef((_a, forwardRef
     }, [blockFormats]);
     React__namespace.useImperativeHandle(forwardRef, () => editor, [editor]);
     const BlockItem = blockFormats['block/container'];
-    return (jsxRuntime.exports.jsxs(Container, Object.assign({ ref: containerRef }, props, { children: [jsxRuntime.exports.jsx(Inner, Object.assign({ ref: editorRef, onClick: handleClick, onKeyDown: handleKeyDown, onPaste: handlePaste, onCopy: handleCopy, onCut: handleCut, onDrop: handleDrop, onDrag: handleDrag, onDragOver: handleDragOver, placeholder: showPlaceholder ? placeholder : '' }, { children: memoBlocks.map((block, index) => {
-                    return (jsxRuntime.exports.jsx(BlockItem, { formats: blockFormats, editor: memoEditor, blockId: block.id, readOnly: readOnly, selected: block.selected, scrollContainer: settings.scrollContainer, onBeforeInput: handleInput, onCompositionStart: handleCompositionStart, onCompositionEnd: handleCompositionEnd }, block.id));
-                }) })), jsxRuntime.exports.jsx(MarginBottom, { onClick: handleContainerClick }), jsxRuntime.exports.jsx(MemoGlobalToolbar, { editor: memoEditor }), jsxRuntime.exports.jsx(MemoBubbleToolbar, { editor: memoEditor, scrollContainer: settings.scrollContainer }), jsxRuntime.exports.jsx(Collaborators, { editor: memoEditor }), jsxRuntime.exports.jsx(MemoLinkPopup, { editor: memoEditor, scrollContainer: settings.scrollContainer }), jsxRuntime.exports.jsx(MemoPalettePopup, { editor: memoEditor, scrollContainer: settings.scrollContainer }), jsxRuntime.exports.jsx(Selector, { contentEditable: true, className: "clipboard", onKeyDown: handleSelectorKeyDown, onBeforeInput: handleSelectorInput, onCopy: handleCopy, onCut: handleCut })] })));
+    return (jsxRuntimeExports.jsxs(Container, Object.assign({ ref: containerRef }, props, { children: [jsxRuntimeExports.jsx(Inner, Object.assign({ ref: editorRef, onClick: handleClick, onKeyDown: handleKeyDown, onPaste: handlePaste, onCopy: handleCopy, onCut: handleCut, onDrop: handleDrop, onDrag: handleDrag, onDragOver: handleDragOver, placeholder: showPlaceholder ? placeholder : '' }, { children: memoBlocks.map((block, index) => {
+                    return (jsxRuntimeExports.jsx(BlockItem, { formats: blockFormats, editor: memoEditor, blockId: block.id, readOnly: readOnly, selected: block.selected, scrollContainer: settings.scrollContainer, onBeforeInput: handleInput, onCompositionStart: handleCompositionStart, onCompositionEnd: handleCompositionEnd }, block.id));
+                }) })), jsxRuntimeExports.jsx(MarginBottom, { onClick: handleContainerClick }), jsxRuntimeExports.jsx(MemoGlobalToolbar, { editor: memoEditor }), jsxRuntimeExports.jsx(MemoBubbleToolbar, { editor: memoEditor, scrollContainer: settings.scrollContainer }), jsxRuntimeExports.jsx(Collaborators, { editor: memoEditor }), jsxRuntimeExports.jsx(MemoLinkPopup, { editor: memoEditor, scrollContainer: settings.scrollContainer }), jsxRuntimeExports.jsx(MemoPalettePopup, { editor: memoEditor, scrollContainer: settings.scrollContainer }), jsxRuntimeExports.jsx(Selector, { contentEditable: true, className: "clipboard", onKeyDown: handleSelectorKeyDown, onBeforeInput: handleSelectorInput, onCopy: handleCopy, onCut: handleCut })] })));
 }));
 
 exports.BlockContainer = BlockContainer;

@@ -173,16 +173,13 @@ export const Tooltip: React.FC<Props> = ({
 
   React.useEffect(() => {
     if (!containerRef.current) return;
-    setContainerRect(containerRef.current.getBoundingClientRect());
-  }, [containerRef]);
-
-  React.useEffect(() => {
     if (displayTimer) {
       clearTimeout(displayTimer);
     }
     if (!_isDisplay) {
       setDisplayTimer(window.setTimeout(() => setDisplay(false), 300));
     } else {
+      setContainerRect(containerRef.current.getBoundingClientRect());
       setDisplay(true);
     }
   }, [_isDisplay]);

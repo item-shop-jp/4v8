@@ -87,8 +87,7 @@ export const Container: React.FC = React.memo(() => {
     setTimeout(() => {
       editorRef2.current?.setBlocks(
         JSON.parse(
-          // '[{"id":"OodywE2HkiW1KeTBPCa96","contents":[{"id":"OYbvu_ZB9QppDCeIOSfbZ","attributes":{"bold":true},"text":"今日はいい天気ですね!!🤗","type":"TEXT","isEmbed":false}],"attributes":{"assignees":[{"id":"aaa2","name":"笹川裕也","selected":false},{"id":"aaa1","name":"田中 健太郎","imageUrl":"https://lh3.googleusercontent.com/a-/AAuE7mDqNcnkUNpr7-X6WOAp4QaSI399ToQaP38tSD5x=s100","selected":false}]},"type":"TASK","meta":{"listNumber":0}}]',
-          '[{"id":"a12e5f5b-9981-4543-ad74-20b10454057d","contents":[{"id":"366b4502-a42a-4612-b5ef-3235fa5a9cd8","text":"﻿","type":"TEXT","attributes":{},"isEmbed":false}],"attributes":{},"meta":{"listNumber":0},"type":"PARAGRAPH"}]',
+          '[{"id":"OodywE2HkiW1KeTBPCa96","contents":[{"id":"OYbvu_ZB9QppDCeIOSfbZ","attributes":{"bold":true},"text":"今日はいい天気ですね!!🤗","type":"TEXT","isEmbed":false}],"attributes":{"assignees":[{"id":"aaa2","name":"笹川裕也","selected":false},{"id":"aaa1","name":"田中 健太郎","imageUrl":"https://lh3.googleusercontent.com/a-/AAuE7mDqNcnkUNpr7-X6WOAp4QaSI399ToQaP38tSD5x=s100","selected":false}]},"type":"TASK","meta":{"listNumber":0}}]',
         ),
       );
     }, 20);

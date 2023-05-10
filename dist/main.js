@@ -19950,9 +19950,6 @@ const Tooltip = (_a) => {
     React__namespace.useEffect(() => {
         if (!containerRef.current)
             return;
-        setContainerRect(containerRef.current.getBoundingClientRect());
-    }, [containerRef]);
-    React__namespace.useEffect(() => {
         if (displayTimer) {
             clearTimeout(displayTimer);
         }
@@ -19960,6 +19957,7 @@ const Tooltip = (_a) => {
             setDisplayTimer(window.setTimeout(() => setDisplay(false), 300));
         }
         else {
+            setContainerRect(containerRef.current.getBoundingClientRect());
             setDisplay(true);
         }
     }, [_isDisplay]);

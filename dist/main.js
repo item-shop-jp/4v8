@@ -15156,9 +15156,10 @@ const TooltipContainer = styled$1.div `
 }}
 `;
 const Tooltip = (_a) => {
-    var { targetElement, children, maxWidth = 160, border = 0, fontSize = 13, fontWeight = 'normal', position = 'top' } = _a, props = __rest$1(_a, ["targetElement", "children", "maxWidth", "border", "fontSize", "fontWeight", "position"]);
+    var { targetElement, children, delay = 500, maxWidth = 160, border = 0, fontSize = 13, fontWeight = 'normal', position = 'top' } = _a, props = __rest$1(_a, ["targetElement", "children", "delay", "maxWidth", "border", "fontSize", "fontWeight", "position"]);
     const [isDisplay, setDisplay] = React__namespace.useState(false);
     const [_isDisplay, _setDisplay] = React__namespace.useState(false);
+    const [delayTimer, setDelayTimer] = React__namespace.useState(); // Tooltipの表示時のdelay処理
     const [displayTimer, setDisplayTimer] = React__namespace.useState(); // Tooltipの消滅時のアニメーション用
     const [containerRect, setContainerRect] = React__namespace.useState();
     const containerRef = React__namespace.useRef(null);
@@ -15174,14 +15175,17 @@ const Tooltip = (_a) => {
         if (displayTimer) {
             clearTimeout(displayTimer);
         }
+        if (delayTimer) {
+            clearTimeout(delayTimer);
+        }
         if (!_isDisplay) {
             setDisplayTimer(window.setTimeout(() => setDisplay(false), 300));
         }
         else {
             setContainerRect(containerRef.current.getBoundingClientRect());
-            setDisplay(true);
+            setDelayTimer(window.setTimeout(() => setDisplay(true), delay));
         }
-    }, [_isDisplay]);
+    }, [_isDisplay, delay]);
     return (jsxRuntimeExports.jsxs(Container$7, Object.assign({ ref: containerRef, onMouseOver: handleMouseOver, onMouseOut: handleMouseOut }, props, { children: [targetElement, isDisplay && (jsxRuntimeExports.jsx(TooltipContainer, Object.assign({ containerRect: containerRect, maxWidth: maxWidth, position: position, border: border, fontWeight: fontWeight, fontSize: fontSize, isDisplay: _isDisplay }, { children: children })))] })));
 };
 

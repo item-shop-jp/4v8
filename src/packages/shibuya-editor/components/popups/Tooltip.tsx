@@ -4,6 +4,7 @@ import styled, { css, keyframes } from 'styled-components';
 interface Props {
   children: React.ReactNode;
   targetElement: React.ReactElement;
+  delay?: number; // 表示までの遅延
   maxWidth?: number;
   border?: number;
   position?: 'top' | 'top-left' | 'top-right' | 'left' | 'right' | 'bottom';
@@ -150,6 +151,7 @@ const TooltipContainer = styled.div<TooltipProps>`
 export const Tooltip: React.FC<Props> = ({
   targetElement,
   children,
+  delay = 500,
   maxWidth = 160,
   border = 0,
   fontSize = 13,
@@ -159,6 +161,7 @@ export const Tooltip: React.FC<Props> = ({
 }) => {
   const [isDisplay, setDisplay] = React.useState(false);
   const [_isDisplay, _setDisplay] = React.useState(false);
+  const [delayTimer, setDelayTimer] = React.useState<number>(); // Tooltipの表示時のdelay処理
   const [displayTimer, setDisplayTimer] = React.useState<number>(); // Tooltipの消滅時のアニメーション用
   const [containerRect, setContainerRect] = React.useState<DOMRect>();
   const containerRef = React.useRef<HTMLDivElement>(null);
@@ -176,13 +179,16 @@ export const Tooltip: React.FC<Props> = ({
     if (displayTimer) {
       clearTimeout(displayTimer);
     }
+    if (delayTimer) {
+      clearTimeout(delayTimer);
+    }
     if (!_isDisplay) {
       setDisplayTimer(window.setTimeout(() => setDisplay(false), 300));
     } else {
       setContainerRect(containerRef.current.getBoundingClientRect());
-      setDisplay(true);
+      setDelayTimer(window.setTimeout(() => setDisplay(true), delay));
     }
-  }, [_isDisplay]);
+  }, [_isDisplay, delay]);
 
   return (
     <Container

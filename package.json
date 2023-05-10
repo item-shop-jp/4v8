@@ -32,7 +32,7 @@
     "ot-json0": "1.1.0",
     "ot-json1": "1.0.2",
     "ot-text-unicode": "4.0.0",
-    "pretty-bytes": "6.0.0",
+    "pretty-bytes": "6.1.0",
     "prismjs": "^1.29.0",
     "react": "18.2.0",
     "react-day-picker": "^8.6.0",

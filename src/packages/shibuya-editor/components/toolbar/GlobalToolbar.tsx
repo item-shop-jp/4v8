@@ -143,6 +143,14 @@ export const GlobalToolbar = React.memo(({ editor, ...props }: GlobalToolbarProp
     [formats, blockType],
   );
 
+  const handleTable = React.useCallback(
+    (event: React.MouseEvent) => {
+      event.preventDefault();
+      formatBlock('TABLE');
+    },
+    [formats, blockType],
+  );
+
   React.useEffect(() => {
     const subs = new Subscription();
     const eventEmitter = editor.getEventEmitter();
@@ -278,6 +286,17 @@ export const GlobalToolbar = React.memo(({ editor, ...props }: GlobalToolbarProp
             position={'top'}
           >
             決定事項に切り替える
+          </Tooltip>
+          <Tooltip
+            targetElement={
+              <Button href="#" active={blockType === 'TABLE'} onClick={handleTable}>
+                <FormatDecision size="20" />
+              </Button>
+            }
+            maxWidth={200}
+            position={'top'}
+          >
+            テーブルに切り替える
           </Tooltip>
         </Container>
       )}

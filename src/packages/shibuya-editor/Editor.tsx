@@ -16,6 +16,7 @@ import {
   Paragraph,
   Image,
   File,
+  Table,
 } from './components/blocks';
 import { InlineText, CodeToken } from './components/inlines';
 import { Bold, Strike, Underline, InlineCode, Italic, Color, Link } from './components/styles';
@@ -141,6 +142,7 @@ export const Editor = React.memo(
         'block/task': Task,
         'block/image': Image,
         'block/file': File,
+        'block/table': Table,
         'inline/text': InlineText,
         'inline/code-token': CodeToken,
         'inline/style/bold': Bold,
@@ -227,6 +229,7 @@ export const Editor = React.memo(
 
       const handleInput = React.useCallback((e: React.FormEvent) => {
         const keyboard = editor.getModule('keyboard');
+        console.log('input', e.target);
         if (keyboard) {
           keyboard.onInput(e);
         }
@@ -447,6 +450,9 @@ export const Editor = React.memo(
             onDrop={handleDrop}
             onDrag={handleDrag}
             onDragOver={handleDragOver}
+            onCompositionStart={handleCompositionStart}
+            onCompositionEnd={handleCompositionEnd}
+            onBeforeInput={handleInput}
             placeholder={showPlaceholder ? placeholder : ''}
           >
             {memoBlocks.map((block, index) => {
@@ -459,9 +465,6 @@ export const Editor = React.memo(
                   readOnly={readOnly}
                   selected={block.selected}
                   scrollContainer={settings.scrollContainer}
-                  onBeforeInput={handleInput}
-                  onCompositionStart={handleCompositionStart}
-                  onCompositionEnd={handleCompositionEnd}
                 />
               );
             })}

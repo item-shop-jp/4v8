@@ -87,7 +87,7 @@ export const Container: React.FC = React.memo(() => {
     setTimeout(() => {
       editorRef2.current?.setBlocks(
         JSON.parse(
-          '[{"id":"OodywE2HkiW1KeTBPCa96","contents":[{"id":"OYbvu_ZB9QppDCeIOSfbZ","attributes":{"bold":true},"text":"今日はいい天気ですね!!🤗","type":"TEXT","isEmbed":false}],"attributes":{"assignees":[{"id":"aaa2","name":"笹川裕也","selected":false},{"id":"aaa1","name":"田中 健太郎","imageUrl":"https://lh3.googleusercontent.com/a-/AAuE7mDqNcnkUNpr7-X6WOAp4QaSI399ToQaP38tSD5x=s100","selected":false}]},"type":"TASK","meta":{"listNumber":0}}]',
+          '[{"id":"OodywE2HkiW1KeTBPCa96","contents":[{"id":"OYbvu_ZB9QppDCeIOSfbZ","attributes":{"bold":true},"text":"今日はいい天気ですね!!🤗","type":"TEXT","isEmbed":false}],"attributes":{"assignees":[{"id":"aaa2","name":"笹川裕也","selected":false},{"id":"aaa1","name":"田中 健太郎","imageUrl":"https://lh3.googleusercontent.com/a-/AAuE7mDqNcnkUNpr7-X6WOAp4QaSI399ToQaP38tSD5x=s100","selected":false}]},"type":"TASK","meta":{"listNumber":0}},{"id":"3ceed0ef-e871-4ee6-82e4-eb7ce2b3d26a","contents":[{"id":"2308104a-025f-4be8-bdb7-a777e3cf8e9a","text":"﻿","type":"TEXT","attributes":{},"isEmbed":false}],"attributes":{"tableR":2,"tableC":2},"meta":{"listNumber":0},"type":"TABLE"}]',
         ),
       );
     }, 20);

@@ -44,11 +44,6 @@ export const BlockContainer: React.FC<BlockProps> = React.memo(
       }
       if (block?.type === 'CODE-BLOCK') {
         const text = block.contents.map((content) => content.text).join('');
-        const contents = textToPrismaToken(text, block.attributes?.language ?? 'typescript').map(
-          (v, i) => {
-            return { ...v, id: i };
-          },
-        );
         return InlineContainer({
           contents: textToPrismaToken(text, block.attributes?.language ?? 'typescript'),
           formats,
@@ -79,6 +74,7 @@ export const BlockContainer: React.FC<BlockProps> = React.memo(
           data-format={blockFormat}
           formats={formats}
           attributes={block?.attributes}
+          childBlocks={block?.childBlocks}
           meta={block?.meta ?? {}}
           contents={memoContents}
           editor={editor}

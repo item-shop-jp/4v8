@@ -7,11 +7,12 @@ import { EditorController } from '../types/editor';
 import {
   deleteInlineContents,
   getBlockId,
+  getChildBlockId,
   insertTextInlineContents,
   createBlock as utilCreateBlock,
 } from '../utils/block';
 import { CaretPosition } from '../types/caret';
-import { BlockType } from '../types';
+import { Block, BlockType } from '../types';
 import { createInline } from '../utils/inline';
 import stringLength from 'string-length';
 
@@ -261,6 +262,22 @@ export class KeyBoardModule implements Module {
         return;
       }
       this.sync(blockId, blockElement);
+    });
+  }
+
+  onInputChildBlock(parentBlockId: string, e: React.FormEvent) {
+    setTimeout(() => {
+      const parentBlock = this.editor.getBlock(parentBlockId);
+
+      if (!parentBlock) return;
+      const nativeRange = this.editor.getNativeRange();
+      const [blockId, blockElement] = getChildBlockId(nativeRange?.startContainer as HTMLElement);
+      console.log(nativeRange, blockId, blockElement);
+      if (this.composing || !blockId || !blockElement) {
+        return;
+      }
+
+      console.log(blockId);
     });
   }
 

@@ -31,6 +31,16 @@ export function getBlockId(node: HTMLElement): [string, HTMLElement] | [] {
   return getBlockId(node.parentElement);
 }
 
+export function getChildBlockId(node: HTMLElement): [string, HTMLElement] | [] {
+  if (node.dataset?.childBlockId) {
+    return [node.dataset.childBlockId, node];
+  }
+  if (!node.parentElement) {
+    return [];
+  }
+  return getChildBlockId(node.parentElement);
+}
+
 export function getBlockElementById(blockId: string): HTMLElement | null {
   const element = document.querySelector<HTMLElement>('[data-block-id="' + blockId + '"]');
   if (!element) return null;

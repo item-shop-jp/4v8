@@ -24,6 +24,7 @@ export interface Block {
   attributes: BlockAttributes;
   type: BlockType;
   meta?: BlockAttributes;
+  childBlocks?: Block[];
 }
 
 export interface BlockAttributes {

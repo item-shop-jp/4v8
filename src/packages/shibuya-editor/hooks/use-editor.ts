@@ -352,12 +352,45 @@ export function useEditor({
   const setCaretPosition = React.useCallback(
     ({
       blockId = '',
+      childBlockId = null,
       index = 0,
       length = 0,
       nextElementDirection = 'down',
     }: Partial<CaretPosition> & { nextElementDirection?: 'up' | 'down' }) => {
       const element = blockUtils.getBlockElementById(blockId);
       if (!element) return;
+
+      // ネストされた要素の場合
+      if (childBlockId) {
+        const selection = document.getSelection();
+        if (!selection) return;
+        const element = blockUtils.getBlockElementById(childBlockId, true);
+        if (!element) return null;
+        const blockLength = blockUtils.getBlockLength(element) ?? 0;
+
+        if (index < 0) {
+          index = 0;
+        }
+        if (index > blockLength) {
+          index = blockLength;
+        }
+        try {
+          const range = document.createRange();
+          const start = blockUtils.getNativeIndexFromBlockIndex(element, index);
+          const end = blockUtils.getNativeIndexFromBlockIndex(element, index + length);
+          if (!start || !end) return;
+          range.setStart(start.node, start.index);
+          range.setEnd(end.node, end.index);
+
+          selection.removeAllRanges();
+          selection.addRange(range);
+
+          updateCaretPositionRef();
+        } catch (e) {
+          eventEmitter.warning('Invalid Range', e);
+        }
+        return;
+      }
 
       // for embedded elements
       if (element.contentEditable === 'false') {
@@ -447,22 +480,38 @@ export function useEditor({
       nativeRange.startContainer as HTMLElement,
     );
     const [endInlineId, endInlineElement] = getInlineId(nativeRange.endContainer as HTMLElement);
-    const [blockId, blockElement] = blockUtils.getBlockId(
+    const [childBlockId, childBlockKey, childBlockElement] = blockUtils.getChildBlockId(
       nativeRange.startContainer as HTMLElement,
     );
 
+    const [blockId, blockElement] = blockUtils.getBlockId(
+      nativeRange.startContainer as HTMLElement,
+    );
     if (!editorRef.current || !startInlineId || !endInlineId || !blockId || !blockElement) {
       return null;
     }
 
-    const start = blockUtils.getBlockIndexFromNativeIndex(
-      nativeRange.startContainer as HTMLElement,
-      nativeRange.startOffset,
-    );
-    const end = blockUtils.getBlockIndexFromNativeIndex(
-      nativeRange.endContainer as HTMLElement,
-      nativeRange.endOffset,
-    );
+    // ネストされた要素の場合
+    let start, end;
+    if (childBlockId) {
+      start = blockUtils.getChildBlockIndexFromNativeIndex(
+        nativeRange.startContainer as HTMLElement,
+        nativeRange.startOffset,
+      );
+      end = blockUtils.getChildBlockIndexFromNativeIndex(
+        nativeRange.endContainer as HTMLElement,
+        nativeRange.endOffset,
+      );
+    } else {
+      start = blockUtils.getBlockIndexFromNativeIndex(
+        nativeRange.startContainer as HTMLElement,
+        nativeRange.startOffset,
+      );
+      end = blockUtils.getBlockIndexFromNativeIndex(
+        nativeRange.endContainer as HTMLElement,
+        nativeRange.endOffset,
+      );
+    }
 
     const caretRect = getRectByRange(nativeRange);
     if (!caretRect) return null;
@@ -473,6 +522,7 @@ export function useEditor({
     const scrollbarHeight = blockRect.height - blockElement.clientHeight;
     const range: CaretPosition = {
       blockId,
+      childBlockId: childBlockId ?? null,
       blockFormat: blockElement?.dataset.format ?? '',
       index: start.index,
       length: end.index - start.index,
@@ -580,14 +630,82 @@ export function useEditor({
       let { contents, affected, affectedLength } = blockUtils.convertHTMLtoInlines(blockElement);
       updateCaretPositionRef();
       if (isEqual(block.contents, contents)) return;
-      const blockText = contents.map((v) => v.text).join('');
+
       // code-block対応(差分を1つにまとめる)
       if (block.type === 'CODE-BLOCK') {
+        const blockText = contents.map((v) => v.text).join('');
         contents = [createInline('TEXT', blockText)];
       }
       updateBlock({ ...block, contents });
       if (affected || forceUpdate) {
         render([blockId]);
+        let newCaretPosition = lastCaretPositionRef.current;
+        if (!newCaretPosition) {
+          if (!lastCaretRectRef.current) return;
+          const range = caretRangeFromPoint(lastCaretRectRef.current.x, lastCaretRectRef.current.y);
+          const selection = document.getSelection();
+          if (!selection || !range) return;
+          selection.setBaseAndExtent(
+            range.startContainer,
+            range.startOffset,
+            range.startContainer,
+            range.startOffset,
+          );
+          const nativeRange = getNativeRange();
+          if (!nativeRange) return;
+          newCaretPosition = normalizeRange(nativeRange);
+        }
+        const blockLength = blockUtils.getBlockLength(blockElement) ?? 0;
+        let caretIndex = newCaretPosition?.index ?? 0;
+        caretIndex += affectedLength;
+        if (blockLength < caretIndex) {
+          caretIndex = blockLength;
+        }
+        blur();
+
+        setTimeout(() => {
+          setCaretPosition({
+            ...newCaretPosition,
+            index: caretIndex >= 0 ? caretIndex : 0,
+          });
+          updateCaretRect();
+        }, 10);
+      } else {
+        updateCaretRect();
+      }
+    },
+    [],
+  );
+
+  const syncChildBlock = React.useCallback(
+    (
+      parentBlockId: string,
+      blockId: string,
+      blockKey: string,
+      blockElement: HTMLElement,
+      forceUpdate = false,
+    ) => {
+      const parentBlock = blocksRef.current.find((v) => v.id === parentBlockId);
+      const composing = getModule('keyboard').composing;
+      if (!parentBlock || !blockId || !blockElement || composing) return;
+      let { contents, affected, affectedLength } = blockUtils.convertHTMLtoInlines(blockElement);
+      const childBlocks = copyObject(parentBlock.childBlocks ?? {});
+      if (Object.prototype.hasOwnProperty.call(childBlocks, blockKey)) {
+        if (isEqual(childBlocks[blockKey].contents, contents)) return;
+        childBlocks[blockKey] = { ...childBlocks[blockKey], contents };
+      } else {
+        childBlocks[blockKey] = { ...blockUtils.createBlock('PARAGRAPH', contents), id: blockId };
+      }
+
+      updateCaretPositionRef();
+
+      updateBlock({
+        ...parentBlock,
+        childBlocks: { ...childBlocks },
+      });
+
+      if (affected || forceUpdate) {
+        render([parentBlockId]);
         let newCaretPosition = lastCaretPositionRef.current;
         if (!newCaretPosition) {
           if (!lastCaretRectRef.current) return;
@@ -720,7 +838,6 @@ export function useEditor({
 
       const redo = json0diff(prevBlock, currentBlock, DiffMatchPatch);
       const undo = json0diff(currentBlock, prevBlock, DiffMatchPatch);
-
       if (redo && undo) {
         eventEmitter.emit(EditorEvents.EVENT_EDITOR_HISTORY_PUSH, {
           payload: {
@@ -854,6 +971,7 @@ export function useEditor({
       deleteBlock,
       deleteBlocks,
       sync,
+      syncChildBlock,
       getCaretPosition,
       setCaretPosition,
       updateCaretPositionRef,

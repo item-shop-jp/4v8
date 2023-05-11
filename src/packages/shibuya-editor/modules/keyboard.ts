@@ -49,6 +49,12 @@ export class KeyBoardModule implements Module {
   private sync = throttle(200, (blockId?: string, blockElement?: HTMLElement) => {
     this.editor.sync(blockId, blockElement, false);
   });
+  private syncChildBlock = throttle(
+    200,
+    (parentBlockId: string, blockId: string, blockKey: string, blockElement: HTMLElement) => {
+      this.editor.syncChildBlock(parentBlockId, blockId, blockKey, blockElement, false);
+    },
+  );
   private syncCodeBlock = debounce(300, (blockId?: string, blockElement?: HTMLElement) => {
     this.editor.sync(blockId, blockElement, true);
   });
@@ -271,13 +277,15 @@ export class KeyBoardModule implements Module {
 
       if (!parentBlock) return;
       const nativeRange = this.editor.getNativeRange();
-      const [blockId, blockElement] = getChildBlockId(nativeRange?.startContainer as HTMLElement);
-      console.log(nativeRange, blockId, blockElement);
-      if (this.composing || !blockId || !blockElement) {
+      const [blockId, blockKey, blockElement] = getChildBlockId(
+        nativeRange?.startContainer as HTMLElement,
+      );
+
+      if (this.composing || !blockId || !blockKey || !blockElement) {
         return;
       }
 
-      console.log(blockId);
+      this.syncChildBlock(parentBlockId, blockId, blockKey, blockElement);
     });
   }
 

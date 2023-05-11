@@ -229,7 +229,6 @@ export const Editor = React.memo(
 
       const handleInput = React.useCallback((e: React.FormEvent) => {
         const keyboard = editor.getModule('keyboard');
-        console.log('input', e.target);
         if (keyboard) {
           keyboard.onInput(e);
         }

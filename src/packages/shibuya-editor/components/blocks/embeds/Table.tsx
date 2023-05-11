@@ -68,7 +68,6 @@ export const Table = React.memo(
 
     const handleInput = React.useCallback(
       (e: React.FormEvent) => {
-        e.preventDefault();
         e.stopPropagation();
         const keyboard = editor.getModule('keyboard');
         if (keyboard) {
@@ -121,6 +120,7 @@ export const Table = React.memo(
                         suppressContentEditableWarning
                         contentEditable={true}
                         data-child-block-id={memoTableRows[rIndex][cIndex].id}
+                        data-child-block-key={`r${rIndex}-c${cIndex}`}
                       >
                         {InlineContainer({
                           contents: memoTableRows[rIndex][cIndex].contents ?? [],

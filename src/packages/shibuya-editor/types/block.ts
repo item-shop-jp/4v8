@@ -23,8 +23,10 @@ export interface Block {
   contents: Inline[];
   attributes: BlockAttributes;
   type: BlockType;
+  childBlocks: {
+    [key: string]: Block;
+  };
   meta?: BlockAttributes;
-  childBlocks?: Block[];
 }
 
 export interface BlockAttributes {

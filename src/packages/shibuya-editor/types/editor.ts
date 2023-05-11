@@ -64,6 +64,13 @@ export interface EditorController {
   deleteBlocks(blockIds: string[]): void;
   deleteBlocks(blockIds: string[], source: Source): void;
   sync(blockId?: string, blockElement?: HTMLElement, forceUpdate?: boolean): void;
+  syncChildBlock(
+    parentBlockId: string,
+    blockId?: string,
+    blockKey?: string,
+    blockElement?: HTMLElement,
+    forceUpdate?: boolean,
+  ): void;
   setCaretPosition(
     caretPosition: Partial<CaretPosition> & { nextElementDirection?: 'up' | 'down' },
   ): void;

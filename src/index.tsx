@@ -87,7 +87,7 @@ export const Container: React.FC = React.memo(() => {
     setTimeout(() => {
       editorRef2.current?.setBlocks(
         JSON.parse(
-          '[{"id":"OodywE2HkiW1KeTBPCa96","contents":[{"id":"OYbvu_ZB9QppDCeIOSfbZ","attributes":{"bold":true},"text":"今日はいい天気ですね!!🤗","type":"TEXT","isEmbed":false}],"attributes":{"assignees":[{"id":"aaa2","name":"笹川裕也","selected":false},{"id":"aaa1","name":"田中 健太郎","imageUrl":"https://lh3.googleusercontent.com/a-/AAuE7mDqNcnkUNpr7-X6WOAp4QaSI399ToQaP38tSD5x=s100","selected":false}]},"type":"TASK","meta":{"listNumber":0}},{"id":"3ceed0ef-e871-4ee6-82e4-eb7ce2b3d26a","contents":[{"id":"2308104a-025f-4be8-bdb7-a777e3cf8e9a","text":"﻿","type":"TEXT","attributes":{},"isEmbed":false}],"attributes":{"tableR":2,"tableC":2},"meta":{"listNumber":0},"type":"TABLE"}]',
+          '[{"id":"OodywE2HkiW1KeTBPCa96","contents":[{"id":"OYbvu_ZB9QppDCeIOSfbZ","attributes":{"bold":true},"text":"今日はいい天気ですね!!🤗","type":"TEXT","isEmbed":false}],"attributes":{"assignees":[{"id":"aaa2","name":"笹川裕也","selected":false},{"id":"aaa1","name":"田中 健太郎","imageUrl":"https://lh3.googleusercontent.com/a-/AAuE7mDqNcnkUNpr7-X6WOAp4QaSI399ToQaP38tSD5x=s100","selected":false}]},"type":"TASK","meta":{"listNumber":0}},{"id":"3ceed0ef-e871-4ee6-82e4-eb7ce2b3d26a","contents":[{"id":"acfc3988-a912-4f3e-b137-47be1a251275","text":"﻿","type":"TEXT","attributes":{},"isEmbed":false}],"attributes":{"tableR":2,"tableC":2},"meta":{"listNumber":0},"type":"TABLE","childBlocks":{"r0-c0":{"id":"2087fd84-0cd7-46bc-ba3f-217bd3370605","contents":[{"id":"3ac9fbe3-e36b-4437-a091-af12250056b7","attributes":{},"text":"﻿","type":"TEXT","isEmbed":false}],"attributes":{},"meta":{},"childBlocks":{},"type":"PARAGRAPH"},"r0-c1":{"id":"32172d94-452c-4d0f-82b0-1a1462be93fd","contents":[{"id":"cde55a28-88f9-499a-9623-15bea8e53c4d","attributes":{},"text":"2","type":"TEXT","isEmbed":false}],"attributes":{},"meta":{},"childBlocks":{},"type":"PARAGRAPH"},"r1-c0":{"id":"20661994-bd40-45d8-aad8-9d15947826c3","contents":[{"id":"07807ab0-ca07-40c2-b38f-fc7a0230664f","attributes":{},"text":"3","type":"TEXT","isEmbed":false}],"attributes":{},"meta":{},"childBlocks":{},"type":"PARAGRAPH"},"r1-c1":{"id":"e9f7a64b-1a59-45a4-bcfc-fe4015e3bcf5","contents":[{"id":"d663153c-e65c-4858-b3b4-dfef5d664ceb","attributes":{},"text":"4","type":"TEXT","isEmbed":false}],"attributes":{},"meta":{},"childBlocks":{},"type":"PARAGRAPH"}}}]',
         ),
       );
     }, 20);
@@ -116,10 +116,10 @@ export const Container: React.FC = React.memo(() => {
     const eventEmitter = editorRef2.current.getEventEmitter();
     subs.add(
       eventEmitter.select(EditorEvents.EVENT_EDITOR_CHANGED).subscribe((payload) => {
-        payload.forEach((v: any) => {
-          const block = editorRef2.current?.getBlock(v.blockId);
-          console.log(JSON.stringify(block));
-        });
+        // payload.forEach((v: any) => {
+        //   const block = editorRef2.current?.getBlock(v.blockId);
+        //   console.log(JSON.stringify(block));
+        // });
       }),
     );
     return () => {

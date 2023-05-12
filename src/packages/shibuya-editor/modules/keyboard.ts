@@ -52,7 +52,7 @@ export class KeyBoardModule implements Module {
   private syncChildBlock = throttle(
     200,
     (parentBlockId: string, blockId: string, blockKey: string, blockElement: HTMLElement) => {
-      this.editor.syncChildBlock(parentBlockId, blockId, blockKey, blockElement, false);
+      this.editor.syncChildBlock(parentBlockId, blockId, blockKey, blockElement, true);
     },
   );
   private syncCodeBlock = debounce(300, (blockId?: string, blockElement?: HTMLElement) => {

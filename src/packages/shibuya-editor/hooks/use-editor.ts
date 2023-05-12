@@ -378,6 +378,7 @@ export function useEditor({
           const range = document.createRange();
           const start = blockUtils.getNativeIndexFromBlockIndex(element, index);
           const end = blockUtils.getNativeIndexFromBlockIndex(element, index + length);
+
           if (!start || !end) return;
           range.setStart(start.node, start.index);
           range.setEnd(end.node, end.index);

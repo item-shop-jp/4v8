@@ -116,7 +116,7 @@ export const Editor = React.memo(
           scrollMarginTop: settings.scrollMarginTop ?? 100,
           scrollMarginBottom: settings.scrollMarginBottom ?? 250,
           allowFormats: settings.allowFormats ?? [],
-          embeddedBlocks: settings.embeddedBlocks ?? ['IMAGE', 'FILE'],
+          embeddedBlocks: settings.embeddedBlocks ?? ['IMAGE', 'FILE', 'TABLE'],
           collaborationLevel: settings.collaborationLevel ?? 'block',
           indentableFormats: settings.indentableFormats ?? ['ORDERED-LIST', 'BULLET-LIST'],
           disableDecorationFormats: settings.disableDecorationFormats ?? ['CODE-BLOCK'],

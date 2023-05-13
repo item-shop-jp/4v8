@@ -897,6 +897,18 @@ export function useEditor({
   );
 
   const render = React.useCallback((affectedIds: string[] = [], isForce = false) => {
+    // 埋め込み要素が最後だったら空行を追加
+    const lastIndex = blocksRef.current.length - 1;
+    const { embeddedBlocks } = getSettings();
+    if (embeddedBlocks.includes(blocksRef.current[lastIndex].type)) {
+      const createdBlock = getModule('editor').createBlock({
+        prevId: blocksRef.current[lastIndex].id,
+        type: 'PARAGRAPH',
+      });
+      render([...affectedIds, createdBlock.id]);
+      return;
+    }
+
     if (isForce) {
       eventEmitter.emit(EditorEvents.EVENT_BLOCK_RERENDER_FORCE, affectedIds);
     } else {

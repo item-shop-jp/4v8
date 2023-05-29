@@ -429,8 +429,10 @@ export class HistoryModule implements Module {
       if (positionIndex + positionLength > blockLength) {
         positionLength = 0;
       }
+
       this.editor.setCaretPosition({
         blockId: position.blockId,
+        childBlockId: position.childBlockId,
         index: positionIndex + affectedLength,
         length: positionLength,
       });

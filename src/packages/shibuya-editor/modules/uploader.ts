@@ -86,7 +86,7 @@ export class UploaderModule implements Module {
             const addIndex = blocks.findIndex((block) => block.id === addBlock.id);
             const { embeddedBlocks } = this.editor.getSettings();
             if (blocks[addIndex + 1] && embeddedBlocks.includes(blocks[addIndex + 1].type)) {
-              const empty = this.editor.getModule('editor').createBlock({
+              this.editor.getModule('editor').createBlock({
                 prevId: addBlock.id,
                 type: 'PARAGRAPH',
                 focus: false,

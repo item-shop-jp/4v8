@@ -46,6 +46,13 @@ export interface EditorController {
   hasFocus(): boolean;
   getFormats(blockId: string, index: number, length?: number): InlineAttributes;
   formatText(blockId: string, index: number, length: number, attributes: InlineAttributes): void;
+  formatChildBlockText(
+    blockId: string,
+    childBlockId: string,
+    index: number,
+    length: number,
+    attributes: InlineAttributes,
+  ): void;
   setBlocks(blocks: Block[]): void;
   getBlocks(): Block[];
   getBlock(blockId: string): Block | null;

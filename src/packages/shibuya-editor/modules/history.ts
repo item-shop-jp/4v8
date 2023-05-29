@@ -10,6 +10,7 @@ import { EditorController, Source } from '../types/editor';
 import { Op, JSON0, UpdateOp, AddOp, RemoveOp } from '../types/history';
 import { EditorEvents, EventSources, HistoryType } from '../constants';
 import { copyObject } from '../utils/object';
+import { getBlockLength } from '../utils/block';
 import { CaretPosition } from '../types/caret';
 
 interface Props {
@@ -97,6 +98,7 @@ export class HistoryModule implements Module {
   record(op: Op, force = false) {
     this.stack.redo = [];
     const position = this.editor.getCaretPosition();
+
     if (position) {
       op.position = position;
     }
@@ -405,6 +407,7 @@ export class HistoryModule implements Module {
   moveCaret(op: UpdateOp, position?: CaretPosition, type: 'undo' | 'redo' = 'undo') {
     if (!position) {
       const blockLength = this.editor.getBlockLength(op.blockId) ?? 0;
+
       setTimeout(() => {
         this.editor.setCaretPosition({
           blockId: op.blockId,
@@ -421,21 +424,39 @@ export class HistoryModule implements Module {
     let positionLength = position.length ?? 0;
 
     setTimeout(() => {
-      const blockLength = this.editor.getBlockLength(position.blockId) ?? 0;
+      const block = this.editor.getBlock(position.blockId);
+      if (!block) return;
+      if (position.childBlockId) {
+        const childBlockLength = getBlockLength(position.childBlockId, true) ?? 0;
+        if (positionIndex + affectedLength + positionLength > childBlockLength) {
+          affectedLength = 0;
+        }
+        if (positionIndex + positionLength > childBlockLength) {
+          positionLength = 0;
+        }
+        this.editor.setCaretPosition({
+          blockId: position.blockId,
+          childBlockId: position.childBlockId,
+          index: positionIndex + affectedLength,
+          length: positionLength,
+        });
+      } else {
+        const blockLength = this.editor.getBlockLength(position.blockId) ?? 0;
 
-      if (positionIndex + affectedLength + positionLength > blockLength) {
-        affectedLength = 0;
-      }
-      if (positionIndex + positionLength > blockLength) {
-        positionLength = 0;
+        if (positionIndex + affectedLength + positionLength > blockLength) {
+          affectedLength = 0;
+        }
+        if (positionIndex + positionLength > blockLength) {
+          positionLength = 0;
+        }
+
+        this.editor.setCaretPosition({
+          blockId: position.blockId,
+          index: positionIndex + affectedLength,
+          length: positionLength,
+        });
       }
 
-      this.editor.setCaretPosition({
-        blockId: position.blockId,
-        childBlockId: position.childBlockId,
-        index: positionIndex + affectedLength,
-        length: positionLength,
-      });
       this.editor.updateCaretRect();
     }, 20);
   }

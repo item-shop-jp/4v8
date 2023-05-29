@@ -44,13 +44,27 @@ export class ToolbarModule implements Module {
     if (!caretPosition) return;
     const block = this.editor.getBlock(caretPosition.blockId);
     if (!block) return;
-    this.editor.formatText(block.id, caretPosition.index, caretPosition.length, attributes);
+
+    // 子ブロックの場合
+    if (caretPosition.childBlockId) {
+      this.editor.formatChildBlockText(
+        block.id,
+        caretPosition.childBlockId,
+        caretPosition.index,
+        caretPosition.length,
+        attributes,
+      );
+    } else {
+      this.editor.formatText(block.id, caretPosition.index, caretPosition.length, attributes);
+    }
+
     this.editor.blur();
     this.editor.render([block.id]);
     setTimeout(
       () =>
         this.editor.setCaretPosition({
           blockId: block.id,
+          childBlockId: caretPosition?.childBlockId,
           index: caretPosition?.index,
           length: caretPosition?.length,
         }),

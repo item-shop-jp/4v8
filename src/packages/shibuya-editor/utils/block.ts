@@ -71,8 +71,13 @@ export function getBlockOuterElementById(blockId: string): HTMLElement | null {
   return outerEl;
 }
 
-export function getBlockLength(block: string | HTMLElement): number | null {
-  const element = block instanceof HTMLElement ? block : getBlockElementById(block);
+export function getBlockLength(block: string | HTMLElement, isChild = false): number | null {
+  let element;
+  if (isChild) {
+    element = block instanceof HTMLElement ? block : getBlockElementById(block, true);
+  } else {
+    element = block instanceof HTMLElement ? block : getBlockElementById(block);
+  }
   if (!element) return null;
   let cumulativeLength = 0;
   for (let i = 0; i < element.children.length; i++) {

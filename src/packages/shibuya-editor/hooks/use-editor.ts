@@ -288,6 +288,37 @@ export function useEditor({
     [],
   );
 
+  const formatChildBlockText = React.useCallback(
+    (
+      blockId: string,
+      childBlockId: string,
+      index: number,
+      length: number,
+      attributes: InlineAttributes = {},
+    ) => {
+      const block = blocksRef.current.find((v) => v.id === blockId);
+      if (!block) return null;
+      const childBlock = Object.entries(block.childBlocks).find(
+        ([key, v]) => v.id === childBlockId,
+      );
+      if (!childBlock) return null;
+      const childBlocks = copyObject(block.childBlocks);
+      const contents = blockUtils.setAttributesForInlineContents(
+        copyObject(childBlock[1].contents),
+        attributes,
+        index,
+        length,
+      );
+
+      childBlocks[childBlock[0]] = { ...childBlock[1], contents };
+      updateBlock({
+        ...block,
+        childBlocks,
+      });
+    },
+    [],
+  );
+
   const setBlocks = React.useCallback((blocks: Block[]) => {
     blocksRef.current = blocks.map((block) => {
       return { ...block, contents: blockUtils.optimizeInlineContents(block.contents) };
@@ -839,6 +870,7 @@ export function useEditor({
 
       const redo = json0diff(prevBlock, currentBlock, DiffMatchPatch);
       const undo = json0diff(currentBlock, prevBlock, DiffMatchPatch);
+
       if (redo && undo) {
         eventEmitter.emit(EditorEvents.EVENT_EDITOR_HISTORY_PUSH, {
           payload: {
@@ -974,6 +1006,7 @@ export function useEditor({
       hasFocus,
       getFormats,
       formatText,
+      formatChildBlockText,
       setBlocks,
       getBlocks,
       getBlock,

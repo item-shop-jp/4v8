@@ -16,8 +16,9 @@ import {
   FormatNumberList,
   FormatTask,
 } from '../icons';
-import { BlockType } from '../../types';
+import { Block, BlockAttributes, BlockType } from '../../types';
 import { Tooltip } from '../popups';
+import { createBlock } from '../../utils/block';
 
 export interface GlobalToolbarProps {
   editor: EditorController;
@@ -63,9 +64,11 @@ export const GlobalToolbar = React.memo(({ editor, ...props }: GlobalToolbarProp
   const [isDisplay, setDisplay] = React.useState(false);
 
   const formatBlock = React.useCallback(
-    (type: BlockType) => {
+    (type: BlockType, attributes: BlockAttributes = {}, childBlocks: Block[] = []) => {
       editor.getModule('toolbar').setUpdating(true);
-      editor.getModule('toolbar').formatBlock(blockType !== type ? type : 'PARAGRAPH');
+      editor
+        .getModule('toolbar')
+        .formatBlock(blockType !== type ? type : 'PARAGRAPH', attributes, childBlocks);
       setTimeout(() => {
         editor.getModule('toolbar').setUpdating(false);
       }, 100);
@@ -146,7 +149,12 @@ export const GlobalToolbar = React.memo(({ editor, ...props }: GlobalToolbarProp
   const handleTable = React.useCallback(
     (event: React.MouseEvent) => {
       event.preventDefault();
-      formatBlock('TABLE');
+      formatBlock('TABLE', { tableC: 2, tableR: 2 }, [
+        { ...createBlock('PARAGRAPH'), name: 'r0-c0' },
+        { ...createBlock('PARAGRAPH'), name: 'r0-c1' },
+        { ...createBlock('PARAGRAPH'), name: 'r1-c0' },
+        { ...createBlock('PARAGRAPH'), name: 'r1-c1' },
+      ]);
     },
     [formats, blockType],
   );

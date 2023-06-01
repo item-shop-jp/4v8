@@ -298,22 +298,27 @@ export function useEditor({
     ) => {
       const block = blocksRef.current.find((v) => v.id === blockId);
       if (!block) return null;
-      const childBlock = Object.entries(block.childBlocks).find(
-        ([key, v]) => v.id === childBlockId,
-      );
-      if (!childBlock) return null;
       const childBlocks = copyObject(block.childBlocks);
+      const childBlockIndex = childBlocks.findIndex((v) => v.id === childBlockId);
+      if (childBlockIndex === -1) return null;
+
       const contents = blockUtils.setAttributesForInlineContents(
-        copyObject(childBlock[1].contents),
+        copyObject(childBlocks[childBlockIndex].contents),
         attributes,
         index,
         length,
       );
 
-      childBlocks[childBlock[0]] = { ...childBlock[1], contents };
       updateBlock({
         ...block,
-        childBlocks,
+        childBlocks: [
+          ...childBlocks.slice(0, childBlockIndex),
+          {
+            ...childBlocks[childBlockIndex],
+            contents,
+          },
+          ...childBlocks.slice(childBlockIndex + 1),
+        ],
       });
     },
     [],
@@ -721,19 +726,30 @@ export function useEditor({
       const composing = getModule('keyboard').composing;
       if (!parentBlock || !blockId || !blockElement || composing) return;
       let { contents, affected, affectedLength } = blockUtils.convertHTMLtoInlines(blockElement);
-      const childBlocks = copyObject(parentBlock.childBlocks ?? {});
-      if (Object.prototype.hasOwnProperty.call(childBlocks, blockKey)) {
-        if (isEqual(childBlocks[blockKey].contents, contents)) return;
-        childBlocks[blockKey] = { ...childBlocks[blockKey], contents };
+      let childBlocks = copyObject(parentBlock.childBlocks ?? []);
+      let childBlockIndex = childBlocks.findIndex((v) => v.id === blockId);
+      if (childBlockIndex === -1) {
+        childBlocks = [
+          ...childBlocks,
+          { ...blockUtils.createBlock('PARAGRAPH', contents), id: blockId, name: blockKey },
+        ];
       } else {
-        childBlocks[blockKey] = { ...blockUtils.createBlock('PARAGRAPH', contents), id: blockId };
+        if (isEqual(childBlocks[childBlockIndex]?.contents, contents)) return;
+        childBlocks = [
+          ...childBlocks.slice(0, childBlockIndex),
+          {
+            ...childBlocks[childBlockIndex],
+            contents,
+          },
+          ...childBlocks.slice(childBlockIndex + 1),
+        ];
       }
 
       updateCaretPositionRef();
 
       updateBlock({
         ...parentBlock,
-        childBlocks: { ...childBlocks },
+        childBlocks,
       });
 
       if (affected || forceUpdate) {

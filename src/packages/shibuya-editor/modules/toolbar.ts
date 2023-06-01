@@ -1,7 +1,7 @@
 import { Module } from '../types/module';
 import { EventEmitter } from '../utils/event-emitter';
 import { EditorController } from '../types/editor';
-import { BlockType, BlockAttributes } from '../types/block';
+import { BlockType, BlockAttributes, Block } from '../types/block';
 import { InlineAttributes } from '../types/inline';
 import { CaretPosition } from '../types/caret';
 
@@ -82,12 +82,12 @@ export class ToolbarModule implements Module {
     this.editor.render(blockIds);
   }
 
-  formatBlock(type: BlockType, attributes: BlockAttributes = {}) {
+  formatBlock(type: BlockType, attributes: BlockAttributes = {}, childBlocks: Block[] = []) {
     const caretPosition = this.editor.getCaretPosition();
     if (!caretPosition) return;
     const block = this.editor.getBlock(caretPosition.blockId);
     if (!block) return;
-    this.editor.updateBlock({ ...block, type, attributes });
+    this.editor.updateBlock({ ...block, type, attributes, childBlocks });
     this.editor.numberingList();
     this.editor.render([block.id]);
     this.editor.blur();

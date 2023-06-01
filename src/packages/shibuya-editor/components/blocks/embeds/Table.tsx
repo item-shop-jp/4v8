@@ -18,9 +18,7 @@ export interface TableProps {
       [key: string]: any;
     };
   };
-  childBlocks: {
-    [key: string]: Block;
-  };
+  childBlocks: Block[];
   editor: EditorController;
 }
 
@@ -59,7 +57,7 @@ export const Table = React.memo(
     contents,
     formats,
     attributes: { tableR, tableC, tableSettings = {} },
-    childBlocks = {},
+    childBlocks = [],
     scrollContainer,
     editor,
     ...props
@@ -83,9 +81,8 @@ export const Table = React.memo(
       for (let r = 0; r < tableR; r++) {
         margedRows[r] = [];
         for (let c = 0; c < tableC; c++) {
-          margedRows[r][c] = Object.prototype.hasOwnProperty.call(childBlocks, `r${r}-c${c}`)
-            ? childBlocks[`r${r}-c${c}`]
-            : createBlock('PARAGRAPH');
+          const cellBlock = childBlocks.find((v) => v?.name === `r${r}-c${c}`);
+          margedRows[r][c] = cellBlock ?? createBlock('PARAGRAPH');
         }
       }
       return margedRows;

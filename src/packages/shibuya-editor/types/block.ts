@@ -23,10 +23,9 @@ export interface Block {
   contents: Inline[];
   attributes: BlockAttributes;
   type: BlockType;
-  childBlocks: {
-    [key: string]: Block;
-  };
+  childBlocks: Block[];
   meta?: BlockAttributes;
+  name?: string;
 }
 
 export interface BlockAttributes {

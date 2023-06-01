@@ -206,9 +206,7 @@ export const BubbleToolbar = React.memo(
             return;
           }
           if (caret.childBlockId) {
-            const childBlock = Object.values(block.childBlocks).find(
-              (v) => v.id === caret.childBlockId,
-            );
+            const childBlock = block.childBlocks.find((v) => v.id === caret.childBlockId);
             // 子要素の場合
             if (childBlock) {
               updatePosition(caret);

@@ -17,7 +17,7 @@ export function createBlock(
     contents: contents.length < 1 ? [createInline('TEXT')] : contents,
     attributes: attributes ?? {},
     meta: meta ?? {},
-    childBlocks: {},
+    childBlocks: [],
     type,
   };
 }

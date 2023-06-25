@@ -44,14 +44,9 @@ export class ClipboardModule implements Module {
       this.eventEmitter
         .select(EditorEvents.EVENT_BLOCK_SELECTED)
         .subscribe((blockIds: string[]) => {
-          if (!this.clipboardEl || blockIds.length < 1) return;
-          const range = new Range();
-          const selection = document.getSelection();
-          if (!selection) return;
-          range.setStart(this.clipboardEl, 0);
-          range.setEnd(this.clipboardEl, 0);
-          selection.removeAllRanges();
-          selection.addRange(range);
+          console.log(blockIds);
+          if (blockIds.length < 1) return;
+          this.focus();
         }),
     );
   }
@@ -328,6 +323,17 @@ export class ClipboardModule implements Module {
         }, 10);
       }
     }
+  }
+
+  focus() {
+    if (!this.clipboardEl) return;
+    const range = new Range();
+    const selection = document.getSelection();
+    if (!selection) return;
+    range.setStart(this.clipboardEl, 0);
+    range.setEnd(this.clipboardEl, 0);
+    selection.removeAllRanges();
+    selection.addRange(range);
   }
 
   private _saveBlocks(event: ClipboardEvent, blocks: Block[]) {

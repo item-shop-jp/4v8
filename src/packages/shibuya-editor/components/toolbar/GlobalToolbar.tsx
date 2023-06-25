@@ -66,9 +66,26 @@ export const GlobalToolbar = React.memo(({ editor, ...props }: GlobalToolbarProp
   const formatBlock = React.useCallback(
     (type: BlockType, attributes: BlockAttributes = {}, childBlocks: Block[] = []) => {
       editor.getModule('toolbar').setUpdating(true);
-      editor
-        .getModule('toolbar')
-        .formatBlock(blockType !== type ? type : 'PARAGRAPH', attributes, childBlocks);
+      const selectedBlocks = editor.getModule('selector').getSelectedBlocks();
+      if (selectedBlocks.length > 0) {
+        const updateIds = selectedBlocks.map((v) => {
+          return v.id;
+        });
+        editor
+          .getModule('toolbar')
+          .formatMultiBlocks(
+            updateIds,
+            blockType !== type ? type : 'PARAGRAPH',
+            attributes,
+            childBlocks,
+          );
+        editor.getModule('clipboard').focus();
+      } else {
+        editor
+          .getModule('toolbar')
+          .formatBlock(blockType !== type ? type : 'PARAGRAPH', attributes, childBlocks);
+      }
+
       setTimeout(() => {
         editor.getModule('toolbar').setUpdating(false);
       }, 100);
@@ -170,14 +187,14 @@ export const GlobalToolbar = React.memo(({ editor, ...props }: GlobalToolbarProp
         .subscribe((v) => {
           if (editor.getModule('toolbar').getUpdating()) return;
           const caret = editor.getCaretPosition();
-          if (!caret || !editor.hasFocus()) {
-            if (editor.getModule('selector').getSelectedBlocks().length > 0) return;
+          const selectedBlocks = editor.getModule('selector').getSelectedBlocks();
+          if (selectedBlocks.length < 1 && (!caret || !editor.hasFocus())) {
             setDisplay(false);
             return;
           }
           setDisplay(true);
-          setFormats(editor.getFormats(caret.blockId, caret.index, caret.length));
-          setBlockType(editor.getBlock(caret.blockId)?.type);
+          // setFormats(editor.getFormats(caret.blockId, caret.index, caret.length));
+          // setBlockType(editor.getBlock(caret.blockId)?.type);
         }),
     );
     return () => {

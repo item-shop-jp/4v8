@@ -87,7 +87,12 @@ export class ToolbarModule implements Module {
     if (!caretPosition) return;
     const block = this.editor.getBlock(caretPosition.blockId);
     if (!block) return;
-    this.editor.updateBlock({ ...block, type, attributes, childBlocks });
+    this.editor.updateBlock({
+      ...block,
+      type,
+      attributes: { ...block.attributes, ...attributes },
+      childBlocks,
+    });
     this.editor.numberingList();
     this.editor.render([block.id]);
     this.editor.blur();
@@ -100,6 +105,26 @@ export class ToolbarModule implements Module {
         }),
       10,
     );
+  }
+
+  formatMultiBlocks(
+    blockIds: string[],
+    type: BlockType,
+    attributes: InlineAttributes = {},
+    childBlocks: Block[] = [],
+  ) {
+    blockIds.forEach((blockId) => {
+      const block = this.editor.getBlock(blockId);
+      if (!block) return;
+      this.editor.updateBlock({
+        ...block,
+        type,
+        attributes: { ...block.attributes, ...attributes },
+        childBlocks,
+      });
+    });
+    this.editor.numberingList();
+    this.editor.render(blockIds);
   }
 
   setUpdating(isUpdating: boolean) {

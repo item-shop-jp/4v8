@@ -60,7 +60,6 @@ const Container = styled.div`
   flex-direction: column;
   cursor: text;
   position: relative;
-  font-family: 'Arial', 'メイリオ';
   deepl-inline-translate {
     display: none;
   }

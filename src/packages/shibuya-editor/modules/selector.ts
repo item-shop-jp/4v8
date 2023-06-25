@@ -468,6 +468,7 @@ export class SelectorModule implements Module {
   }
 
   reset(e?: MouseEvent) {
+    if (this.editor.getModule('toolbar').getUpdating()) return;
     if (this.changed) return;
     if (this.areaSelecting && e && this.area.start) {
       const movedX = e.clientX - this.area.start.left;

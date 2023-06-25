@@ -250,6 +250,7 @@ export class SelectorModule implements Module {
           (endIndex > startIndex ? endIndex : startIndex) + 1,
         ),
       );
+      this.setStart(this.startBlockId);
       return;
     }
     this.reset();

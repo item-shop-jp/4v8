@@ -16684,7 +16684,19 @@ const GlobalToolbar = React__namespace.memo((_a) => {
     const [isDisplay, setDisplay] = React__namespace.useState(false);
     const formatBlock = React__namespace.useCallback((type) => {
         editor.getModule('toolbar').setUpdating(true);
-        editor.getModule('toolbar').formatBlock(blockType !== type ? type : 'PARAGRAPH');
+        const selectedBlocks = editor.getModule('selector').getSelectedBlocks();
+        if (selectedBlocks.length > 0) {
+            const updateIds = selectedBlocks.map((v) => {
+                return v.id;
+            });
+            editor
+                .getModule('toolbar')
+                .formatMultiBlocks(updateIds, blockType !== type ? type : 'PARAGRAPH');
+            editor.getModule('clipboard').focus();
+        }
+        else {
+            editor.getModule('toolbar').formatBlock(blockType !== type ? type : 'PARAGRAPH');
+        }
         setTimeout(() => {
             editor.getModule('toolbar').setUpdating(false);
         }, 100);
@@ -16732,19 +16744,17 @@ const GlobalToolbar = React__namespace.memo((_a) => {
             .select(EditorEvents.EVENT_SELECTION_CHANGE)
             .pipe(combineLatestWith(eventEmitter.select(EditorEvents.EVENT_BLOCK_SELECTED)))
             .subscribe((v) => {
-            var _a;
             if (editor.getModule('toolbar').getUpdating())
                 return;
             const caret = editor.getCaretPosition();
-            if (!caret || !editor.hasFocus()) {
-                if (editor.getModule('selector').getSelectedBlocks().length > 0)
-                    return;
+            const selectedBlocks = editor.getModule('selector').getSelectedBlocks();
+            if (selectedBlocks.length < 1 && (!caret || !editor.hasFocus())) {
                 setDisplay(false);
                 return;
             }
             setDisplay(true);
-            setFormats(editor.getFormats(caret.blockId, caret.index, caret.length));
-            setBlockType((_a = editor.getBlock(caret.blockId)) === null || _a === void 0 ? void 0 : _a.type);
+            // setFormats(editor.getFormats(caret.blockId, caret.index, caret.length));
+            // setBlockType(editor.getBlock(caret.blockId)?.type);
         }));
         return () => {
             subs.unsubscribe();
@@ -24142,7 +24152,7 @@ class ToolbarModule {
         const block = this.editor.getBlock(caretPosition.blockId);
         if (!block)
             return;
-        this.editor.updateBlock(Object.assign(Object.assign({}, block), { type, attributes }));
+        this.editor.updateBlock(Object.assign(Object.assign({}, block), { type, attributes: Object.assign(Object.assign({}, block.attributes), attributes) }));
         this.editor.numberingList();
         this.editor.render([block.id]);
         this.editor.blur();
@@ -24151,6 +24161,16 @@ class ToolbarModule {
             index: caretPosition.index,
             length: caretPosition.length,
         }), 10);
+    }
+    formatMultiBlocks(blockIds, type, attributes = {}) {
+        blockIds.forEach((blockId) => {
+            const block = this.editor.getBlock(blockId);
+            if (!block)
+                return;
+            this.editor.updateBlock(Object.assign(Object.assign({}, block), { type, attributes: Object.assign(Object.assign({}, block.attributes), attributes) }));
+        });
+        this.editor.numberingList();
+        this.editor.render(blockIds);
     }
     setUpdating(isUpdating) {
         this.isUpdating = isUpdating;
@@ -24348,6 +24368,7 @@ class SelectorModule {
             if (startIndex === -1 || endIndex === -1)
                 return;
             this.selectBlocks(blocks.slice(startIndex < endIndex ? startIndex : endIndex, (endIndex > startIndex ? endIndex : startIndex) + 1));
+            this.setStart(this.startBlockId);
             return;
         }
         this.reset();
@@ -24539,6 +24560,8 @@ class SelectorModule {
         });
     }
     reset(e) {
+        if (this.editor.getModule('toolbar').getUpdating())
+            return;
         if (this.changed)
             return;
         if (this.areaSelecting && e && this.area.start) {
@@ -26213,16 +26236,9 @@ class ClipboardModule {
         this.subs.add(this.eventEmitter
             .select(EditorEvents.EVENT_BLOCK_SELECTED)
             .subscribe((blockIds) => {
-            if (!this.clipboardEl || blockIds.length < 1)
+            if (blockIds.length < 1)
                 return;
-            const range = new Range();
-            const selection = document.getSelection();
-            if (!selection)
-                return;
-            range.setStart(this.clipboardEl, 0);
-            range.setEnd(this.clipboardEl, 0);
-            selection.removeAllRanges();
-            selection.addRange(range);
+            this.focus();
         }));
     }
     onDestroy() {
@@ -26469,6 +26485,18 @@ class ClipboardModule {
                 }, 10);
             }
         }
+    }
+    focus() {
+        if (!this.clipboardEl)
+            return;
+        const range = new Range();
+        const selection = document.getSelection();
+        if (!selection)
+            return;
+        range.setStart(this.clipboardEl, 0);
+        range.setEnd(this.clipboardEl, 0);
+        selection.removeAllRanges();
+        selection.addRange(range);
     }
     _saveBlocks(event, blocks) {
         if (event.clipboardData) {

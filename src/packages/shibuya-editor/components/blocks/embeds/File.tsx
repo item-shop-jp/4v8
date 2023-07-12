@@ -4,6 +4,8 @@ import prettyBytes from 'pretty-bytes';
 import { RotatingLines } from 'react-loader-spinner';
 import { EditorController } from '../../../types/editor';
 import { Formats } from '../../../types/format';
+import { Download } from '../../icons';
+import { Tooltip } from '../../popups';
 
 export interface FileProps {
   blockId: string;
@@ -29,16 +31,24 @@ const IconContainer = styled.div`
   justify-content: center;
   align-items: center;
 `;
+const Button = styled.div`
+  width: 32px;
+  height: 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #eee;
+  border-radius: 8px;
+  cursor: pointer;
+  &:hover svg {
+    fill: #666;
+  }
+`;
 const Inner = styled.div`
   flex-shrink: 1;
   width: 100%;
   padding: 12px;
   box-sizing: border-box;
-`;
-const ButtonContainer = styled.div`
-  display: flex;
-  flex-shrink: 0;
-  width: 50px;
 `;
 
 const FileName = styled.div`
@@ -66,6 +76,7 @@ export const File = React.memo(
   }: FileProps) => {
     const imageRef = React.useRef(null);
     const handleClick = React.useCallback((e: React.MouseEvent) => {}, []);
+    const handleDownload = React.useCallback((e: React.MouseEvent) => {}, []);
     const handleMouseDown = React.useCallback((e: React.MouseEvent) => {
       e.preventDefault();
       e.stopPropagation();
@@ -120,7 +131,19 @@ export const File = React.memo(
             )}
           </Size>
         </Inner>
-        <IconContainer></IconContainer>
+        <IconContainer>
+          <Tooltip
+            targetElement={
+              <Button onClick={handleDownload}>
+                <Download />
+              </Button>
+            }
+            maxWidth={200}
+            position={'bottom'}
+          >
+            ファイルをダウンロードする
+          </Tooltip>
+        </IconContainer>
       </Container>
     );
   },

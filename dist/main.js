@@ -6667,6 +6667,11 @@ const Close = React__namespace.memo((_a) => {
     return (jsxRuntimeExports.jsx(Icon, Object.assign({ width: size, height: size, fill: fill, viewBox: "0 0 24 24", xmlns: "http://www.w3.org/2000/svg" }, props, { children: jsxRuntimeExports.jsx("path", { d: "M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12L19 6.41Z", fill: fill }) })));
 });
 
+const Download = React__namespace.memo((_a) => {
+    var { size = baseIconProps.size, fill = baseIconProps.fill } = _a, props = __rest$1(_a, ["size", "fill"]);
+    return (jsxRuntimeExports.jsx(Icon, Object.assign({ width: size, height: size, fill: fill, viewBox: "0 0 24 24", xmlns: "http://www.w3.org/2000/svg" }, props, { children: jsxRuntimeExports.jsx("path", { d: "M19.35 10.04C18.67 6.59 15.64 4 12 4C9.11 4 6.6 5.64 5.35 8.04C2.34 8.36 0 10.91 0 14C0 17.31 2.69 20 6 20H19C21.76 20 24 17.76 24 15C24 12.36 21.95 10.22 19.35 10.04ZM19 18H6C3.79 18 2 16.21 2 14C2 11.95 3.53 10.24 5.56 10.03L6.63 9.92L7.13 8.97C8.08 7.14 9.94 6 12 6C14.62 6 16.88 7.86 17.39 10.43L17.69 11.93L19.22 12.04C20.78 12.14 22 13.45 22 15C22 16.65 20.65 18 19 18V18ZM13.45 10H10.55V13H8L12 17L16 13H13.45V10Z", fill: fill }) })));
+});
+
 const ListItem = styled$1.div `
   font-size: 1rem;
   outline: 0;
@@ -13295,7 +13300,7 @@ function IconRight(props) {
 }
 
 /** Render a button HTML element applying the reset class name. */
-var Button$2 = React.forwardRef(function (props, ref) {
+var Button$3 = React.forwardRef(function (props, ref) {
     var _a = useDayPicker(), classNames = _a.classNames, styles = _a.styles;
     var classNamesArr = [classNames.button_reset, classNames.button];
     if (props.className) {
@@ -13329,8 +13334,8 @@ function Navigation(props) {
     var IconRightComponent = (_a = components === null || components === void 0 ? void 0 : components.IconRight) !== null && _a !== void 0 ? _a : IconRight;
     var IconLeftComponent = (_b = components === null || components === void 0 ? void 0 : components.IconLeft) !== null && _b !== void 0 ? _b : IconLeft;
     return (React.createElement("div", { className: classNames.nav, style: styles.nav },
-        !props.hidePrevious && (React.createElement(Button$2, { name: "previous-month", "aria-label": previousLabel, className: previousClassName, style: styles.nav_button_previous, disabled: !props.previousMonth, onClick: props.onPreviousClick }, dir === 'rtl' ? (React.createElement(IconRightComponent, { className: classNames.nav_icon, style: styles.nav_icon })) : (React.createElement(IconLeftComponent, { className: classNames.nav_icon, style: styles.nav_icon })))),
-        !props.hideNext && (React.createElement(Button$2, { name: "next-month", "aria-label": nextLabel, className: nextClassName, style: styles.nav_button_next, disabled: !props.nextMonth, onClick: props.onNextClick }, dir === 'rtl' ? (React.createElement(IconLeftComponent, { className: classNames.nav_icon, style: styles.nav_icon })) : (React.createElement(IconRightComponent, { className: classNames.nav_icon, style: styles.nav_icon }))))));
+        !props.hidePrevious && (React.createElement(Button$3, { name: "previous-month", "aria-label": previousLabel, className: previousClassName, style: styles.nav_button_previous, disabled: !props.previousMonth, onClick: props.onPreviousClick }, dir === 'rtl' ? (React.createElement(IconRightComponent, { className: classNames.nav_icon, style: styles.nav_icon })) : (React.createElement(IconLeftComponent, { className: classNames.nav_icon, style: styles.nav_icon })))),
+        !props.hideNext && (React.createElement(Button$3, { name: "next-month", "aria-label": nextLabel, className: nextClassName, style: styles.nav_button_next, disabled: !props.nextMonth, onClick: props.onNextClick }, dir === 'rtl' ? (React.createElement(IconLeftComponent, { className: classNames.nav_icon, style: styles.nav_icon })) : (React.createElement(IconRightComponent, { className: classNames.nav_icon, style: styles.nav_icon }))))));
 }
 
 /**
@@ -14420,7 +14425,7 @@ function Day(props) {
     if (!dayRender.isButton) {
         return React.createElement("div", __assign$w({}, dayRender.divProps));
     }
-    return React.createElement(Button$2, __assign$w({ name: "day", ref: buttonRef }, dayRender.buttonProps));
+    return React.createElement(Button$3, __assign$w({ name: "day", ref: buttonRef }, dayRender.buttonProps));
 }
 
 /**
@@ -14438,7 +14443,7 @@ function WeekNumber(props) {
     var handleClick = function (e) {
         onWeekNumberClick(weekNumber, dates, e);
     };
-    return (React.createElement(Button$2, { name: "week-number", "aria-label": label, className: classNames.weeknumber, style: styles.weeknumber, onClick: handleClick }, content));
+    return (React.createElement(Button$3, { name: "week-number", "aria-label": label, className: classNames.weeknumber, style: styles.weeknumber, onClick: handleClick }, content));
 }
 
 /** Render a row in the calendar, with the days and the week number. */
@@ -15156,7 +15161,7 @@ const TooltipContainer = styled$1.div `
 }}
 `;
 const Tooltip = (_a) => {
-    var { targetElement, children, delay = 500, maxWidth = 160, border = 0, fontSize = 13, fontWeight = 'normal', position = 'top' } = _a, props = __rest$1(_a, ["targetElement", "children", "delay", "maxWidth", "border", "fontSize", "fontWeight", "position"]);
+    var { targetElement, children, delay = 300, maxWidth = 160, border = 0, fontSize = 13, fontWeight = 'normal', position = 'top' } = _a, props = __rest$1(_a, ["targetElement", "children", "delay", "maxWidth", "border", "fontSize", "fontWeight", "position"]);
     const [isDisplay, setDisplay] = React__namespace.useState(false);
     const [_isDisplay, _setDisplay] = React__namespace.useState(false);
     const [delayTimer, setDelayTimer] = React__namespace.useState(); // Tooltipの表示時のdelay処理
@@ -16431,16 +16436,24 @@ const IconContainer = styled$1.div `
   justify-content: center;
   align-items: center;
 `;
+const Button$2 = styled$1.div `
+  width: 32px;
+  height: 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #eee;
+  border-radius: 8px;
+  cursor: pointer;
+  &:hover svg {
+    fill: #666;
+  }
+`;
 const Inner$1 = styled$1.div `
   flex-shrink: 1;
   width: 100%;
   padding: 12px;
   box-sizing: border-box;
-`;
-styled$1.div `
-  display: flex;
-  flex-shrink: 0;
-  width: 50px;
 `;
 const FileName = styled$1.div `
   white-space: nowrap;
@@ -16463,7 +16476,7 @@ const File = React__namespace.memo((_a) => {
         e.preventDefault();
         e.stopPropagation();
     }, []);
-    return (jsxRuntimeExports.jsxs(Container$4, Object.assign({ ref: imageRef }, props, { contentEditable: false }, { children: [jsxRuntimeExports.jsx(IconContainer, { children: jsxRuntimeExports.jsxs("svg", Object.assign({ width: "32", height: "32", viewBox: "0 0 24 24", fill: "none", xmlns: "http://www.w3.org/2000/svg" }, { children: [jsxRuntimeExports.jsx("path", { d: "M14 3V7C14 7.26522 14.1054 7.51957 14.2929 7.70711C14.4804 7.89464 14.7348 8 15 8H19", stroke: "#666666", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round" }), jsxRuntimeExports.jsx("path", { d: "M12 11V17M17 21H7C6.46957 21 5.96086 20.7893 5.58579 20.4142C5.21071 20.0391 5 19.5304 5 19V5C5 4.46957 5.21071 3.96086 5.58579 3.58579C5.96086 3.21071 6.46957 3 7 3H14L19 8V19C19 19.5304 18.7893 20.0391 18.4142 20.4142C18.0391 20.7893 17.5304 21 17 21Z", stroke: "#666666", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round" }), jsxRuntimeExports.jsx("path", { d: "M9.5 13.5L12 11L14.5 13.5", stroke: "#666666", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round" })] })) }), jsxRuntimeExports.jsxs(Inner$1, { children: [jsxRuntimeExports.jsx(FileName, { children: fileName }), jsxRuntimeExports.jsxs(Size, { children: [prettyBytes(size), isUploading && (jsxRuntimeExports.jsx(Loading, { children: jsxRuntimeExports.jsx(RotatingLines, { strokeColor: "grey", strokeWidth: "5", animationDuration: "0.75", width: "18", visible: true }) }))] })] }), jsxRuntimeExports.jsx(IconContainer, {})] })));
+    return (jsxRuntimeExports.jsxs(Container$4, Object.assign({ ref: imageRef }, props, { contentEditable: false }, { children: [jsxRuntimeExports.jsx(IconContainer, { children: jsxRuntimeExports.jsxs("svg", Object.assign({ width: "32", height: "32", viewBox: "0 0 24 24", fill: "none", xmlns: "http://www.w3.org/2000/svg" }, { children: [jsxRuntimeExports.jsx("path", { d: "M14 3V7C14 7.26522 14.1054 7.51957 14.2929 7.70711C14.4804 7.89464 14.7348 8 15 8H19", stroke: "#666666", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round" }), jsxRuntimeExports.jsx("path", { d: "M12 11V17M17 21H7C6.46957 21 5.96086 20.7893 5.58579 20.4142C5.21071 20.0391 5 19.5304 5 19V5C5 4.46957 5.21071 3.96086 5.58579 3.58579C5.96086 3.21071 6.46957 3 7 3H14L19 8V19C19 19.5304 18.7893 20.0391 18.4142 20.4142C18.0391 20.7893 17.5304 21 17 21Z", stroke: "#666666", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round" }), jsxRuntimeExports.jsx("path", { d: "M9.5 13.5L12 11L14.5 13.5", stroke: "#666666", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round" })] })) }), jsxRuntimeExports.jsxs(Inner$1, { children: [jsxRuntimeExports.jsx(FileName, { children: fileName }), jsxRuntimeExports.jsxs(Size, { children: [prettyBytes(size), isUploading && (jsxRuntimeExports.jsx(Loading, { children: jsxRuntimeExports.jsx(RotatingLines, { strokeColor: "grey", strokeWidth: "5", animationDuration: "0.75", width: "18", visible: true }) }))] })] }), jsxRuntimeExports.jsx(IconContainer, { children: jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$2, { children: jsxRuntimeExports.jsx(Download, {}) }), maxWidth: 200, position: 'bottom' }, { children: "\u30D5\u30A1\u30A4\u30EB\u3092\u30C0\u30A6\u30F3\u30ED\u30FC\u30C9\u3059\u308B" })) })] })));
 });
 
 /*! Copyright Twitter Inc. and other contributors. Licensed under MIT */

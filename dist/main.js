@@ -15271,7 +15271,7 @@ const Container$6 = styled$1.div `
 const CheckBoxOuter = styled$1.div `
   position: absolute;
   left: 4px;
-  top: -3px;
+  top: -2px;
   width: 32px;
   height: 32px;
   border-radius: 15%;
@@ -16427,7 +16427,7 @@ const Container$4 = styled$1.div `
   padding: 0 12px;
   background: #eee;
   border-radius: 8px;
-  margin: 4px 12px;
+  margin: 12px 0;
 `;
 const IconContainer = styled$1.div `
   display: flex;
@@ -16451,6 +16451,7 @@ const Button$2 = styled$1.div `
 `;
 const Inner$1 = styled$1.div `
   flex-shrink: 1;
+  overflow: hidden;
   width: 100%;
   padding: 12px;
   box-sizing: border-box;
@@ -16469,15 +16470,13 @@ const Loading = styled$1.div `
   margin-left: 8px;
 `;
 const File = React__namespace.memo((_a) => {
-    var { blockId, contents, attributes: { fileName, original, size }, meta: { isUploading = false }, editor } = _a, props = __rest$1(_a, ["blockId", "contents", "attributes", "meta", "editor"]);
+    var { blockId, contents, attributes, meta: { isUploading = false }, editor } = _a, props = __rest$1(_a, ["blockId", "contents", "attributes", "meta", "editor"]);
     const imageRef = React__namespace.useRef(null);
-    React__namespace.useCallback((e) => { }, []);
-    const handleDownload = React__namespace.useCallback((e) => { }, []);
-    React__namespace.useCallback((e) => {
-        e.preventDefault();
-        e.stopPropagation();
-    }, []);
-    return (jsxRuntimeExports.jsxs(Container$4, Object.assign({ ref: imageRef }, props, { contentEditable: false }, { children: [jsxRuntimeExports.jsx(IconContainer, { children: jsxRuntimeExports.jsxs("svg", Object.assign({ width: "32", height: "32", viewBox: "0 0 24 24", fill: "none", xmlns: "http://www.w3.org/2000/svg" }, { children: [jsxRuntimeExports.jsx("path", { d: "M14 3V7C14 7.26522 14.1054 7.51957 14.2929 7.70711C14.4804 7.89464 14.7348 8 15 8H19", stroke: "#666666", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round" }), jsxRuntimeExports.jsx("path", { d: "M12 11V17M17 21H7C6.46957 21 5.96086 20.7893 5.58579 20.4142C5.21071 20.0391 5 19.5304 5 19V5C5 4.46957 5.21071 3.96086 5.58579 3.58579C5.96086 3.21071 6.46957 3 7 3H14L19 8V19C19 19.5304 18.7893 20.0391 18.4142 20.4142C18.0391 20.7893 17.5304 21 17 21Z", stroke: "#666666", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round" }), jsxRuntimeExports.jsx("path", { d: "M9.5 13.5L12 11L14.5 13.5", stroke: "#666666", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round" })] })) }), jsxRuntimeExports.jsxs(Inner$1, { children: [jsxRuntimeExports.jsx(FileName, { children: fileName }), jsxRuntimeExports.jsxs(Size, { children: [prettyBytes(size), isUploading && (jsxRuntimeExports.jsx(Loading, { children: jsxRuntimeExports.jsx(RotatingLines, { strokeColor: "grey", strokeWidth: "5", animationDuration: "0.75", width: "18", visible: true }) }))] })] }), jsxRuntimeExports.jsx(IconContainer, { children: jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$2, Object.assign({ onClick: handleDownload }, { children: jsxRuntimeExports.jsx(Download, {}) })), maxWidth: 200, position: 'bottom' }, { children: "\u30D5\u30A1\u30A4\u30EB\u3092\u30C0\u30A6\u30F3\u30ED\u30FC\u30C9\u3059\u308B" })) })] })));
+    const handleDownload = React__namespace.useCallback((e) => {
+        var _a;
+        editor.getModule('uploader').download((_a = attributes === null || attributes === void 0 ? void 0 : attributes.files) !== null && _a !== void 0 ? _a : []);
+    }, [attributes]);
+    return (jsxRuntimeExports.jsxs(Container$4, Object.assign({ ref: imageRef }, props, { contentEditable: false }, { children: [jsxRuntimeExports.jsx(IconContainer, { children: jsxRuntimeExports.jsxs("svg", Object.assign({ width: "32", height: "32", viewBox: "0 0 24 24", fill: "none", xmlns: "http://www.w3.org/2000/svg" }, { children: [jsxRuntimeExports.jsx("path", { d: "M14 3V7C14 7.26522 14.1054 7.51957 14.2929 7.70711C14.4804 7.89464 14.7348 8 15 8H19", stroke: "#666666", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round" }), jsxRuntimeExports.jsx("path", { d: "M12 11V17M17 21H7C6.46957 21 5.96086 20.7893 5.58579 20.4142C5.21071 20.0391 5 19.5304 5 19V5C5 4.46957 5.21071 3.96086 5.58579 3.58579C5.96086 3.21071 6.46957 3 7 3H14L19 8V19C19 19.5304 18.7893 20.0391 18.4142 20.4142C18.0391 20.7893 17.5304 21 17 21Z", stroke: "#666666", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round" }), jsxRuntimeExports.jsx("path", { d: "M9.5 13.5L12 11L14.5 13.5", stroke: "#666666", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round" })] })) }), jsxRuntimeExports.jsxs(Inner$1, { children: [jsxRuntimeExports.jsx(FileName, { children: attributes === null || attributes === void 0 ? void 0 : attributes.fileName }), jsxRuntimeExports.jsxs(Size, { children: [prettyBytes(attributes === null || attributes === void 0 ? void 0 : attributes.size), isUploading && (jsxRuntimeExports.jsx(Loading, { children: jsxRuntimeExports.jsx(RotatingLines, { strokeColor: "grey", strokeWidth: "5", animationDuration: "0.75", width: "18", visible: true }) }))] })] }), jsxRuntimeExports.jsx(IconContainer, { children: jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$2, Object.assign({ onClick: handleDownload }, { children: jsxRuntimeExports.jsx(Download, {}) })), maxWidth: 200, position: 'bottom' }, { children: "\u30D5\u30A1\u30A4\u30EB\u3092\u30C0\u30A6\u30F3\u30ED\u30FC\u30C9\u3059\u308B" })) })] })));
 });
 
 /*! Copyright Twitter Inc. and other contributors. Licensed under MIT */
@@ -26915,6 +26914,11 @@ class UploaderModule {
                 fileReader.readAsDataURL(file);
             }
         });
+    }
+    download(files) {
+        if (typeof this.options.onDownload !== 'function')
+            return;
+        this.options.onDownload(files);
     }
 }
 

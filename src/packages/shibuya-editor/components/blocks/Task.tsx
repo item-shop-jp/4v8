@@ -65,7 +65,7 @@ const Container = styled.div<Pick<TaskProps, 'placeholder'>>`
 const CheckBoxOuter = styled.div`
   position: absolute;
   left: 4px;
-  top: -3px;
+  top: -2px;
   width: 32px;
   height: 32px;
   border-radius: 15%;

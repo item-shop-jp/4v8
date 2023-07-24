@@ -54,6 +54,9 @@ const settings = {
           }, 2000);
         });
       },
+      onDownload: (files: string[]) => {
+        console.log(123, files);
+      },
     },
   },
   scrollMarginBottom: 150,

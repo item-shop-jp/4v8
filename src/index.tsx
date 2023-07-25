@@ -58,6 +58,11 @@ const settings = {
         console.log(123, files);
       },
     },
+    toc: {
+      onChange: (labels: { type: string; label: string }[]) => {
+        console.log(123, labels);
+      },
+    },
   },
   scrollMarginBottom: 150,
   scrollMarginTop: 50,

@@ -34,6 +34,7 @@ import {
   UploaderModule,
   DragDropModule,
   CollaboratorModule,
+  TocModule,
 } from './modules';
 import { getBlockElementById, getBlockLength } from './utils/block';
 import { EditorEvents } from './constants';
@@ -300,6 +301,7 @@ export const Editor = React.memo(
             { name: 'uploader', module: UploaderModule },
             { name: 'drag-drop', module: DragDropModule },
             { name: 'collaborator', module: CollaboratorModule },
+            { name: 'toc', module: TocModule },
           ],
           settings?.modules ?? {},
         );

@@ -26973,6 +26973,32 @@ class CollaboratorModule {
     }
 }
 
+class TocModule {
+    constructor({ eventEmitter, editor, options }) {
+        this.editor = editor;
+        this.eventEmitter = eventEmitter;
+        this.options = Object.assign({}, options);
+        this.subs = new Subscription();
+    }
+    onInit() {
+        this.eventEmitter.info('init toc module');
+        const eventEmitter = this.editor.getEventEmitter();
+        this.subs.add(eventEmitter.select(EditorEvents.EVENT_EDITOR_CHANGED).subscribe((v) => {
+            const blocks = this.editor.getBlocks();
+            const headerBlocks = blocks.filter((v) => {
+                return ['HEADER1', 'HEADER2', 'HEADER3', 'HEADER4', 'HEADER5', 'HEADER6'].includes(v.type);
+            });
+            if (typeof this.options.onChange === 'function') {
+                this.options.onChange(headerBlocks);
+            }
+        }));
+    }
+    onDestroy() {
+        this.eventEmitter.info('destroy toc module');
+        this.subs.unsubscribe();
+    }
+}
+
 const Container$1 = styled$1.div `
   position: absolute;
   top: 8px;
@@ -27238,6 +27264,7 @@ const Editor = React__namespace.memo(React__namespace.forwardRef((_a, forwardRef
             { name: 'uploader', module: UploaderModule },
             { name: 'drag-drop', module: DragDropModule },
             { name: 'collaborator', module: CollaboratorModule },
+            { name: 'toc', module: TocModule },
         ], (_a = settings === null || settings === void 0 ? void 0 : settings.modules) !== null && _a !== void 0 ? _a : {});
         subs.add(eventEmitter.select(EditorEvents.EVENT_BLOCK_RERENDER).subscribe(() => {
             var _a;
@@ -27399,6 +27426,7 @@ exports.Paragraph = Paragraph;
 exports.SelectorModule = SelectorModule;
 exports.Strike = Strike;
 exports.Task = Task;
+exports.TocModule = TocModule;
 exports.ToolbarModule = ToolbarModule;
 exports.Underline = Underline;
 exports.UploaderModule = UploaderModule;

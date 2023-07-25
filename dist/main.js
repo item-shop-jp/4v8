@@ -6344,7 +6344,7 @@ const Header2 = React__namespace.memo((_a) => {
 });
 
 const Header$1 = styled$1.h3 `
-  font-size: 16px;
+  font-size: 18px;
   outline: 0;
   margin: 0;
   padding: 4px 12px;
@@ -6665,6 +6665,11 @@ const Assignment = React__namespace.memo((_a) => {
 const Close = React__namespace.memo((_a) => {
     var { size = baseIconProps.size, fill = baseIconProps.fill } = _a, props = __rest$1(_a, ["size", "fill"]);
     return (jsxRuntimeExports.jsx(Icon, Object.assign({ width: size, height: size, fill: fill, viewBox: "0 0 24 24", xmlns: "http://www.w3.org/2000/svg" }, props, { children: jsxRuntimeExports.jsx("path", { d: "M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12L19 6.41Z", fill: fill }) })));
+});
+
+const Download = React__namespace.memo((_a) => {
+    var { size = baseIconProps.size, fill = baseIconProps.fill } = _a, props = __rest$1(_a, ["size", "fill"]);
+    return (jsxRuntimeExports.jsx(Icon, Object.assign({ width: size, height: size, fill: fill, viewBox: "0 0 24 24", xmlns: "http://www.w3.org/2000/svg" }, props, { children: jsxRuntimeExports.jsx("path", { d: "M19.35 10.04C18.67 6.59 15.64 4 12 4C9.11 4 6.6 5.64 5.35 8.04C2.34 8.36 0 10.91 0 14C0 17.31 2.69 20 6 20H19C21.76 20 24 17.76 24 15C24 12.36 21.95 10.22 19.35 10.04ZM19 18H6C3.79 18 2 16.21 2 14C2 11.95 3.53 10.24 5.56 10.03L6.63 9.92L7.13 8.97C8.08 7.14 9.94 6 12 6C14.62 6 16.88 7.86 17.39 10.43L17.69 11.93L19.22 12.04C20.78 12.14 22 13.45 22 15C22 16.65 20.65 18 19 18V18ZM13.45 10H10.55V13H8L12 17L16 13H13.45V10Z", fill: fill }) })));
 });
 
 const ListItem = styled$1.div `
@@ -13295,7 +13300,7 @@ function IconRight(props) {
 }
 
 /** Render a button HTML element applying the reset class name. */
-var Button$2 = React.forwardRef(function (props, ref) {
+var Button$3 = React.forwardRef(function (props, ref) {
     var _a = useDayPicker(), classNames = _a.classNames, styles = _a.styles;
     var classNamesArr = [classNames.button_reset, classNames.button];
     if (props.className) {
@@ -13329,8 +13334,8 @@ function Navigation(props) {
     var IconRightComponent = (_a = components === null || components === void 0 ? void 0 : components.IconRight) !== null && _a !== void 0 ? _a : IconRight;
     var IconLeftComponent = (_b = components === null || components === void 0 ? void 0 : components.IconLeft) !== null && _b !== void 0 ? _b : IconLeft;
     return (React.createElement("div", { className: classNames.nav, style: styles.nav },
-        !props.hidePrevious && (React.createElement(Button$2, { name: "previous-month", "aria-label": previousLabel, className: previousClassName, style: styles.nav_button_previous, disabled: !props.previousMonth, onClick: props.onPreviousClick }, dir === 'rtl' ? (React.createElement(IconRightComponent, { className: classNames.nav_icon, style: styles.nav_icon })) : (React.createElement(IconLeftComponent, { className: classNames.nav_icon, style: styles.nav_icon })))),
-        !props.hideNext && (React.createElement(Button$2, { name: "next-month", "aria-label": nextLabel, className: nextClassName, style: styles.nav_button_next, disabled: !props.nextMonth, onClick: props.onNextClick }, dir === 'rtl' ? (React.createElement(IconLeftComponent, { className: classNames.nav_icon, style: styles.nav_icon })) : (React.createElement(IconRightComponent, { className: classNames.nav_icon, style: styles.nav_icon }))))));
+        !props.hidePrevious && (React.createElement(Button$3, { name: "previous-month", "aria-label": previousLabel, className: previousClassName, style: styles.nav_button_previous, disabled: !props.previousMonth, onClick: props.onPreviousClick }, dir === 'rtl' ? (React.createElement(IconRightComponent, { className: classNames.nav_icon, style: styles.nav_icon })) : (React.createElement(IconLeftComponent, { className: classNames.nav_icon, style: styles.nav_icon })))),
+        !props.hideNext && (React.createElement(Button$3, { name: "next-month", "aria-label": nextLabel, className: nextClassName, style: styles.nav_button_next, disabled: !props.nextMonth, onClick: props.onNextClick }, dir === 'rtl' ? (React.createElement(IconLeftComponent, { className: classNames.nav_icon, style: styles.nav_icon })) : (React.createElement(IconRightComponent, { className: classNames.nav_icon, style: styles.nav_icon }))))));
 }
 
 /**
@@ -14420,7 +14425,7 @@ function Day(props) {
     if (!dayRender.isButton) {
         return React.createElement("div", __assign$w({}, dayRender.divProps));
     }
-    return React.createElement(Button$2, __assign$w({ name: "day", ref: buttonRef }, dayRender.buttonProps));
+    return React.createElement(Button$3, __assign$w({ name: "day", ref: buttonRef }, dayRender.buttonProps));
 }
 
 /**
@@ -14438,7 +14443,7 @@ function WeekNumber(props) {
     var handleClick = function (e) {
         onWeekNumberClick(weekNumber, dates, e);
     };
-    return (React.createElement(Button$2, { name: "week-number", "aria-label": label, className: classNames.weeknumber, style: styles.weeknumber, onClick: handleClick }, content));
+    return (React.createElement(Button$3, { name: "week-number", "aria-label": label, className: classNames.weeknumber, style: styles.weeknumber, onClick: handleClick }, content));
 }
 
 /** Render a row in the calendar, with the days and the week number. */
@@ -15156,7 +15161,7 @@ const TooltipContainer = styled$1.div `
 }}
 `;
 const Tooltip = (_a) => {
-    var { targetElement, children, delay = 500, maxWidth = 160, border = 0, fontSize = 13, fontWeight = 'normal', position = 'top' } = _a, props = __rest$1(_a, ["targetElement", "children", "delay", "maxWidth", "border", "fontSize", "fontWeight", "position"]);
+    var { targetElement, children, delay = 300, maxWidth = 160, border = 0, fontSize = 13, fontWeight = 'normal', position = 'top' } = _a, props = __rest$1(_a, ["targetElement", "children", "delay", "maxWidth", "border", "fontSize", "fontWeight", "position"]);
     const [isDisplay, setDisplay] = React__namespace.useState(false);
     const [_isDisplay, _setDisplay] = React__namespace.useState(false);
     const [delayTimer, setDelayTimer] = React__namespace.useState(); // Tooltipの表示時のdelay処理
@@ -15266,7 +15271,7 @@ const Container$6 = styled$1.div `
 const CheckBoxOuter = styled$1.div `
   position: absolute;
   left: 4px;
-  top: -3px;
+  top: -2px;
   width: 32px;
   height: 32px;
   border-radius: 15%;
@@ -16422,7 +16427,7 @@ const Container$4 = styled$1.div `
   padding: 0 12px;
   background: #eee;
   border-radius: 8px;
-  margin: 4px 12px;
+  margin: 12px 0;
 `;
 const IconContainer = styled$1.div `
   display: flex;
@@ -16431,16 +16436,25 @@ const IconContainer = styled$1.div `
   justify-content: center;
   align-items: center;
 `;
+const Button$2 = styled$1.div `
+  width: 32px;
+  height: 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #eee;
+  border-radius: 8px;
+  cursor: pointer;
+  &:hover svg {
+    fill: #666;
+  }
+`;
 const Inner$1 = styled$1.div `
   flex-shrink: 1;
+  overflow: hidden;
   width: 100%;
   padding: 12px;
   box-sizing: border-box;
-`;
-styled$1.div `
-  display: flex;
-  flex-shrink: 0;
-  width: 50px;
 `;
 const FileName = styled$1.div `
   white-space: nowrap;
@@ -16456,14 +16470,13 @@ const Loading = styled$1.div `
   margin-left: 8px;
 `;
 const File = React__namespace.memo((_a) => {
-    var { blockId, contents, attributes: { fileName, original, size }, meta: { isUploading = false }, editor } = _a, props = __rest$1(_a, ["blockId", "contents", "attributes", "meta", "editor"]);
+    var { blockId, contents, attributes, meta: { isUploading = false }, editor } = _a, props = __rest$1(_a, ["blockId", "contents", "attributes", "meta", "editor"]);
     const imageRef = React__namespace.useRef(null);
-    React__namespace.useCallback((e) => { }, []);
-    React__namespace.useCallback((e) => {
-        e.preventDefault();
-        e.stopPropagation();
-    }, []);
-    return (jsxRuntimeExports.jsxs(Container$4, Object.assign({ ref: imageRef }, props, { contentEditable: false }, { children: [jsxRuntimeExports.jsx(IconContainer, { children: jsxRuntimeExports.jsxs("svg", Object.assign({ width: "32", height: "32", viewBox: "0 0 24 24", fill: "none", xmlns: "http://www.w3.org/2000/svg" }, { children: [jsxRuntimeExports.jsx("path", { d: "M14 3V7C14 7.26522 14.1054 7.51957 14.2929 7.70711C14.4804 7.89464 14.7348 8 15 8H19", stroke: "#666666", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round" }), jsxRuntimeExports.jsx("path", { d: "M12 11V17M17 21H7C6.46957 21 5.96086 20.7893 5.58579 20.4142C5.21071 20.0391 5 19.5304 5 19V5C5 4.46957 5.21071 3.96086 5.58579 3.58579C5.96086 3.21071 6.46957 3 7 3H14L19 8V19C19 19.5304 18.7893 20.0391 18.4142 20.4142C18.0391 20.7893 17.5304 21 17 21Z", stroke: "#666666", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round" }), jsxRuntimeExports.jsx("path", { d: "M9.5 13.5L12 11L14.5 13.5", stroke: "#666666", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round" })] })) }), jsxRuntimeExports.jsxs(Inner$1, { children: [jsxRuntimeExports.jsx(FileName, { children: fileName }), jsxRuntimeExports.jsxs(Size, { children: [prettyBytes(size), isUploading && (jsxRuntimeExports.jsx(Loading, { children: jsxRuntimeExports.jsx(RotatingLines, { strokeColor: "grey", strokeWidth: "5", animationDuration: "0.75", width: "18", visible: true }) }))] })] }), jsxRuntimeExports.jsx(IconContainer, {})] })));
+    const handleDownload = React__namespace.useCallback((e) => {
+        var _a;
+        editor.getModule('uploader').download((_a = attributes === null || attributes === void 0 ? void 0 : attributes.files) !== null && _a !== void 0 ? _a : []);
+    }, [attributes]);
+    return (jsxRuntimeExports.jsxs(Container$4, Object.assign({ ref: imageRef }, props, { contentEditable: false }, { children: [jsxRuntimeExports.jsx(IconContainer, { children: jsxRuntimeExports.jsxs("svg", Object.assign({ width: "32", height: "32", viewBox: "0 0 24 24", fill: "none", xmlns: "http://www.w3.org/2000/svg" }, { children: [jsxRuntimeExports.jsx("path", { d: "M14 3V7C14 7.26522 14.1054 7.51957 14.2929 7.70711C14.4804 7.89464 14.7348 8 15 8H19", stroke: "#666666", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round" }), jsxRuntimeExports.jsx("path", { d: "M12 11V17M17 21H7C6.46957 21 5.96086 20.7893 5.58579 20.4142C5.21071 20.0391 5 19.5304 5 19V5C5 4.46957 5.21071 3.96086 5.58579 3.58579C5.96086 3.21071 6.46957 3 7 3H14L19 8V19C19 19.5304 18.7893 20.0391 18.4142 20.4142C18.0391 20.7893 17.5304 21 17 21Z", stroke: "#666666", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round" }), jsxRuntimeExports.jsx("path", { d: "M9.5 13.5L12 11L14.5 13.5", stroke: "#666666", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round" })] })) }), jsxRuntimeExports.jsxs(Inner$1, { children: [jsxRuntimeExports.jsx(FileName, { children: attributes === null || attributes === void 0 ? void 0 : attributes.fileName }), jsxRuntimeExports.jsxs(Size, { children: [prettyBytes(attributes === null || attributes === void 0 ? void 0 : attributes.size), isUploading && (jsxRuntimeExports.jsx(Loading, { children: jsxRuntimeExports.jsx(RotatingLines, { strokeColor: "grey", strokeWidth: "5", animationDuration: "0.75", width: "18", visible: true }) }))] })] }), jsxRuntimeExports.jsx(IconContainer, { children: jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$2, Object.assign({ onClick: handleDownload }, { children: jsxRuntimeExports.jsx(Download, {}) })), maxWidth: 200, position: 'bottom' }, { children: "\u30D5\u30A1\u30A4\u30EB\u3092\u30C0\u30A6\u30F3\u30ED\u30FC\u30C9\u3059\u308B" })) })] })));
 });
 
 /*! Copyright Twitter Inc. and other contributors. Licensed under MIT */
@@ -16684,7 +16697,19 @@ const GlobalToolbar = React__namespace.memo((_a) => {
     const [isDisplay, setDisplay] = React__namespace.useState(false);
     const formatBlock = React__namespace.useCallback((type) => {
         editor.getModule('toolbar').setUpdating(true);
-        editor.getModule('toolbar').formatBlock(blockType !== type ? type : 'PARAGRAPH');
+        const selectedBlocks = editor.getModule('selector').getSelectedBlocks();
+        if (selectedBlocks.length > 0) {
+            const updateIds = selectedBlocks.map((v) => {
+                return v.id;
+            });
+            editor
+                .getModule('toolbar')
+                .formatMultiBlocks(updateIds, blockType !== type ? type : 'PARAGRAPH');
+            editor.getModule('clipboard').focus();
+        }
+        else {
+            editor.getModule('toolbar').formatBlock(blockType !== type ? type : 'PARAGRAPH');
+        }
         setTimeout(() => {
             editor.getModule('toolbar').setUpdating(false);
         }, 100);
@@ -16732,19 +16757,17 @@ const GlobalToolbar = React__namespace.memo((_a) => {
             .select(EditorEvents.EVENT_SELECTION_CHANGE)
             .pipe(combineLatestWith(eventEmitter.select(EditorEvents.EVENT_BLOCK_SELECTED)))
             .subscribe((v) => {
-            var _a;
             if (editor.getModule('toolbar').getUpdating())
                 return;
             const caret = editor.getCaretPosition();
-            if (!caret || !editor.hasFocus()) {
-                if (editor.getModule('selector').getSelectedBlocks().length > 0)
-                    return;
+            const selectedBlocks = editor.getModule('selector').getSelectedBlocks();
+            if (selectedBlocks.length < 1 && (!caret || !editor.hasFocus())) {
                 setDisplay(false);
                 return;
             }
             setDisplay(true);
-            setFormats(editor.getFormats(caret.blockId, caret.index, caret.length));
-            setBlockType((_a = editor.getBlock(caret.blockId)) === null || _a === void 0 ? void 0 : _a.type);
+            // setFormats(editor.getFormats(caret.blockId, caret.index, caret.length));
+            // setBlockType(editor.getBlock(caret.blockId)?.type);
         }));
         return () => {
             subs.unsubscribe();
@@ -24142,7 +24165,7 @@ class ToolbarModule {
         const block = this.editor.getBlock(caretPosition.blockId);
         if (!block)
             return;
-        this.editor.updateBlock(Object.assign(Object.assign({}, block), { type, attributes }));
+        this.editor.updateBlock(Object.assign(Object.assign({}, block), { type, attributes: Object.assign(Object.assign({}, block.attributes), attributes) }));
         this.editor.numberingList();
         this.editor.render([block.id]);
         this.editor.blur();
@@ -24151,6 +24174,16 @@ class ToolbarModule {
             index: caretPosition.index,
             length: caretPosition.length,
         }), 10);
+    }
+    formatMultiBlocks(blockIds, type, attributes = {}) {
+        blockIds.forEach((blockId) => {
+            const block = this.editor.getBlock(blockId);
+            if (!block)
+                return;
+            this.editor.updateBlock(Object.assign(Object.assign({}, block), { type, attributes: Object.assign(Object.assign({}, block.attributes), attributes) }));
+        });
+        this.editor.numberingList();
+        this.editor.render(blockIds);
     }
     setUpdating(isUpdating) {
         this.isUpdating = isUpdating;
@@ -24348,6 +24381,7 @@ class SelectorModule {
             if (startIndex === -1 || endIndex === -1)
                 return;
             this.selectBlocks(blocks.slice(startIndex < endIndex ? startIndex : endIndex, (endIndex > startIndex ? endIndex : startIndex) + 1));
+            this.setStart(this.startBlockId);
             return;
         }
         this.reset();
@@ -24539,6 +24573,8 @@ class SelectorModule {
         });
     }
     reset(e) {
+        if (this.editor.getModule('toolbar').getUpdating())
+            return;
         if (this.changed)
             return;
         if (this.areaSelecting && e && this.area.start) {
@@ -26213,16 +26249,9 @@ class ClipboardModule {
         this.subs.add(this.eventEmitter
             .select(EditorEvents.EVENT_BLOCK_SELECTED)
             .subscribe((blockIds) => {
-            if (!this.clipboardEl || blockIds.length < 1)
+            if (blockIds.length < 1)
                 return;
-            const range = new Range();
-            const selection = document.getSelection();
-            if (!selection)
-                return;
-            range.setStart(this.clipboardEl, 0);
-            range.setEnd(this.clipboardEl, 0);
-            selection.removeAllRanges();
-            selection.addRange(range);
+            this.focus();
         }));
     }
     onDestroy() {
@@ -26469,6 +26498,18 @@ class ClipboardModule {
                 }, 10);
             }
         }
+    }
+    focus() {
+        if (!this.clipboardEl)
+            return;
+        const range = new Range();
+        const selection = document.getSelection();
+        if (!selection)
+            return;
+        range.setStart(this.clipboardEl, 0);
+        range.setEnd(this.clipboardEl, 0);
+        selection.removeAllRanges();
+        selection.addRange(range);
     }
     _saveBlocks(event, blocks) {
         if (event.clipboardData) {
@@ -26874,6 +26915,11 @@ class UploaderModule {
             }
         });
     }
+    download(files) {
+        if (typeof this.options.onDownload !== 'function')
+            return;
+        this.options.onDownload(files);
+    }
 }
 
 class DragDropModule {
@@ -26924,6 +26970,32 @@ class CollaboratorModule {
     }
     getMembers() {
         return this.members;
+    }
+}
+
+class TocModule {
+    constructor({ eventEmitter, editor, options }) {
+        this.editor = editor;
+        this.eventEmitter = eventEmitter;
+        this.options = Object.assign({}, options);
+        this.subs = new Subscription();
+    }
+    onInit() {
+        this.eventEmitter.info('init toc module');
+        const eventEmitter = this.editor.getEventEmitter();
+        this.subs.add(eventEmitter.select(EditorEvents.EVENT_EDITOR_CHANGED).subscribe((v) => {
+            const blocks = this.editor.getBlocks();
+            const headerBlocks = blocks.filter((v) => {
+                return ['HEADER1', 'HEADER2', 'HEADER3', 'HEADER4', 'HEADER5', 'HEADER6'].includes(v.type);
+            });
+            if (typeof this.options.onChange === 'function') {
+                this.options.onChange(headerBlocks);
+            }
+        }));
+    }
+    onDestroy() {
+        this.eventEmitter.info('destroy toc module');
+        this.subs.unsubscribe();
     }
 }
 
@@ -27192,6 +27264,7 @@ const Editor = React__namespace.memo(React__namespace.forwardRef((_a, forwardRef
             { name: 'uploader', module: UploaderModule },
             { name: 'drag-drop', module: DragDropModule },
             { name: 'collaborator', module: CollaboratorModule },
+            { name: 'toc', module: TocModule },
         ], (_a = settings === null || settings === void 0 ? void 0 : settings.modules) !== null && _a !== void 0 ? _a : {});
         subs.add(eventEmitter.select(EditorEvents.EVENT_BLOCK_RERENDER).subscribe(() => {
             var _a;
@@ -27353,6 +27426,7 @@ exports.Paragraph = Paragraph;
 exports.SelectorModule = SelectorModule;
 exports.Strike = Strike;
 exports.Task = Task;
+exports.TocModule = TocModule;
 exports.ToolbarModule = ToolbarModule;
 exports.Underline = Underline;
 exports.UploaderModule = UploaderModule;

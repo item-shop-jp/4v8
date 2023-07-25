@@ -44,7 +44,6 @@ export class ClipboardModule implements Module {
       this.eventEmitter
         .select(EditorEvents.EVENT_BLOCK_SELECTED)
         .subscribe((blockIds: string[]) => {
-          console.log(blockIds);
           if (blockIds.length < 1) return;
           this.focus();
         }),

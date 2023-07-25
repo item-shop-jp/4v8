@@ -151,7 +151,7 @@ const TooltipContainer = styled.div<TooltipProps>`
 export const Tooltip: React.FC<Props> = ({
   targetElement,
   children,
-  delay = 500,
+  delay = 300,
   maxWidth = 160,
   border = 0,
   fontSize = 13,

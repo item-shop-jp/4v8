@@ -4,12 +4,14 @@ import prettyBytes from 'pretty-bytes';
 import { RotatingLines } from 'react-loader-spinner';
 import { EditorController } from '../../../types/editor';
 import { Formats } from '../../../types/format';
+import { Download } from '../../icons';
+import { Tooltip } from '../../popups';
 
 export interface FileProps {
   blockId: string;
   formats?: Formats;
   contents: React.ReactNode;
-  attributes: { fileName: string; original: string; size: number };
+  attributes: { fileName: string; original: string; size: number; files: string[] };
   meta: { isUploading?: boolean };
   editor: EditorController;
 }
@@ -20,7 +22,7 @@ const Container = styled.div`
   padding: 0 12px;
   background: #eee;
   border-radius: 8px;
-  margin: 4px 12px;
+  margin: 12px 0;
 `;
 const IconContainer = styled.div`
   display: flex;
@@ -29,16 +31,25 @@ const IconContainer = styled.div`
   justify-content: center;
   align-items: center;
 `;
+const Button = styled.div`
+  width: 32px;
+  height: 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #eee;
+  border-radius: 8px;
+  cursor: pointer;
+  &:hover svg {
+    fill: #666;
+  }
+`;
 const Inner = styled.div`
   flex-shrink: 1;
+  overflow: hidden;
   width: 100%;
   padding: 12px;
   box-sizing: border-box;
-`;
-const ButtonContainer = styled.div`
-  display: flex;
-  flex-shrink: 0;
-  width: 50px;
 `;
 
 const FileName = styled.div`
@@ -59,17 +70,19 @@ export const File = React.memo(
   ({
     blockId,
     contents,
-    attributes: { fileName, original, size },
+    attributes,
     meta: { isUploading = false },
     editor,
     ...props
   }: FileProps) => {
     const imageRef = React.useRef(null);
-    const handleClick = React.useCallback((e: React.MouseEvent) => {}, []);
-    const handleMouseDown = React.useCallback((e: React.MouseEvent) => {
-      e.preventDefault();
-      e.stopPropagation();
-    }, []);
+    const handleDownload = React.useCallback(
+      (e: React.MouseEvent) => {
+        editor.getModule('uploader').download(attributes?.files ?? []);
+      },
+      [attributes],
+    );
+
     return (
       <Container ref={imageRef} {...props} contentEditable={false}>
         <IconContainer>
@@ -104,9 +117,9 @@ export const File = React.memo(
           </svg>
         </IconContainer>
         <Inner>
-          <FileName>{fileName}</FileName>
+          <FileName>{attributes?.fileName}</FileName>
           <Size>
-            {prettyBytes(size)}
+            {prettyBytes(attributes?.size)}
             {isUploading && (
               <Loading>
                 <RotatingLines
@@ -120,7 +133,19 @@ export const File = React.memo(
             )}
           </Size>
         </Inner>
-        <IconContainer></IconContainer>
+        <IconContainer>
+          <Tooltip
+            targetElement={
+              <Button onClick={handleDownload}>
+                <Download />
+              </Button>
+            }
+            maxWidth={200}
+            position={'bottom'}
+          >
+            ファイルをダウンロードする
+          </Tooltip>
+        </IconContainer>
       </Container>
     );
   },

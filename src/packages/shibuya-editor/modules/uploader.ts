@@ -16,6 +16,7 @@ interface Props {
       size?: number;
       attributes?: any;
     } | null;
+    onDownload: (files: string[]) => void;
   };
 }
 
@@ -158,5 +159,10 @@ export class UploaderModule implements Module {
         fileReader.readAsDataURL(file);
       }
     });
+  }
+
+  download(files: string[]) {
+    if (typeof this.options.onDownload !== 'function') return;
+    this.options.onDownload(files);
   }
 }

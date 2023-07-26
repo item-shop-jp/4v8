@@ -60,7 +60,7 @@ export class TocModule implements Module {
       })
       .map((v) => {
         const plainText = v.contents.map((v) => v.text).join('');
-        return { type: v.type, label: plainText };
+        return { id: v.id, type: v.type, label: plainText };
       });
     if (typeof this.options.onChange === 'function') {
       this.options.onChange(headerBlocks);

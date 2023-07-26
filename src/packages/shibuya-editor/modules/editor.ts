@@ -172,4 +172,10 @@ export class EditorModule implements Module {
       this.editor.scrollIntoView();
     }, 10);
   }
+
+  scrollToBlock(blockId: string) {
+    const el = getBlockElementById(blockId);
+    if (!el) return;
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
 }

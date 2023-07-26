@@ -23289,6 +23289,12 @@ class EditorModule {
             this.editor.scrollIntoView();
         }, 10);
     }
+    scrollToBlock(blockId) {
+        const el = getBlockElementById(blockId);
+        if (!el)
+            return;
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
 }
 
 const ShortKey$1 = /Mac/i.test(navigator.platform) ? 'metaKey' : 'ctrlKey';
@@ -27003,7 +27009,7 @@ class TocModule {
         })
             .map((v) => {
             const plainText = v.contents.map((v) => v.text).join('');
-            return { type: v.type, label: plainText };
+            return { id: v.id, type: v.type, label: plainText };
         });
         if (typeof this.options.onChange === 'function') {
             this.options.onChange(headerBlocks);

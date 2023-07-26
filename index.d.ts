@@ -11,6 +11,7 @@ import {
   ToolbarModule,
   UploaderModule,
   KeyBoardModule,
+  TocModule,
 } from './src/packages/shibuya-editor/modules';
 import { FlattenSimpleInterpolation } from 'styled-components';
 
@@ -292,6 +293,7 @@ export interface EditorController {
   getModule(name: 'uploader'): UploaderModule;
   getModule(name: 'drag-drop'): DragDropModule;
   getModule(name: 'collaborator'): CollaboratorModule;
+  getModule(name: 'toc'): TocModule;
   getModule<T = any>(name: string): T | null;
   removeAllModules(): void;
   getEventEmitter(): EventEmitter;

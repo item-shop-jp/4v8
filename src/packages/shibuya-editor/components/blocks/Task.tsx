@@ -45,7 +45,7 @@ const Container = styled.div<Pick<TaskProps, 'placeholder'>>`
   font-size: 1rem;
   outline: 0;
   margin: 0;
-  padding: 2px 12px 2px;
+  padding: 4px 12px 4px;
   padding-left: calc(40px + 1.5em * var(--indent));
   box-sizing: border-box;
   position: relative;
@@ -65,7 +65,7 @@ const Container = styled.div<Pick<TaskProps, 'placeholder'>>`
 const CheckBoxOuter = styled.div`
   position: absolute;
   left: 4px;
-  top: -2px;
+  top: 0;
   width: 32px;
   height: 32px;
   border-radius: 15%;
@@ -282,7 +282,7 @@ export const Task = React.memo(
             {...props}
           >
             <CheckBoxOuter onClick={handleClickCheckBox}>
-              <CheckSquare size="20px" checked={checked} />
+              <CheckSquare size="24px" checked={checked} />
             </CheckBoxOuter>
             {contents}
           </Container>

@@ -113,9 +113,12 @@ export interface Inline {
 
 export type BlockType =
   | 'PARAGRAPH'
-  | 'ORDEREDLIST'
-  | 'BULLETLIST'
+  | 'ORDERED-LIST'
+  | 'BULLET-LIST'
   | 'BLOCKQUOTE'
+  | 'CODE-BLOCK'
+  | 'DECISION'
+  | 'TASK'
   | 'HEADER1'
   | 'HEADER2'
   | 'HEADER3'

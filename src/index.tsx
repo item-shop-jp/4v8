@@ -67,15 +67,7 @@ const settings = {
   scrollMarginBottom: 150,
   scrollMarginTop: 50,
   allowFormats: [],
-  indentableFormats: [
-    'ORDERED-LIST',
-    'BULLET-LIST',
-    'PARAGRAPH',
-    'BLOCKQUOTE',
-    'HEADER1',
-    'HEADER2',
-    'HEADER3',
-  ],
+  indentableFormats: ['ORDERED-LIST', 'BULLET-LIST', 'PARAGRAPH', 'BLOCKQUOTE', 'TASK', 'DECISION'],
 };
 
 export const Container: React.FC = React.memo(() => {

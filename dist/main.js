@@ -6649,7 +6649,7 @@ const CheckSquare = React__namespace.memo((_a) => {
 
 const Decision$1 = React__namespace.memo((_a) => {
     var { size = baseIconProps.size, fill = baseIconProps.fill } = _a, props = __rest$1(_a, ["size", "fill"]);
-    return (jsxRuntimeExports.jsx(Icon, Object.assign({ width: size, height: size, fill: fill, viewBox: "0 0 24 24", xmlns: "http://www.w3.org/2000/svg" }, props, { children: jsxRuntimeExports.jsx("path", { d: "M11 15H13V17H11V15ZM11 7H13V13H11V7ZM19 3H14.82C14.4 1.84 13.3 1 12 1C10.7 1 9.6 1.84 9.18 3H5C4.86 3 4.73 3.01 4.6 3.04C4.21 3.12 3.86 3.32 3.59 3.59C3.41 3.77 3.26 3.99 3.16 4.23C3.06 4.46 3 4.72 3 5V19C3 19.27 3.06 19.54 3.16 19.78C3.26 20.02 3.41 20.23 3.59 20.42C3.86 20.69 4.21 20.89 4.6 20.97C4.73 20.99 4.86 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM12 2.75C12.41 2.75 12.75 3.09 12.75 3.5C12.75 3.91 12.41 4.25 12 4.25C11.59 4.25 11.25 3.91 11.25 3.5C11.25 3.09 11.59 2.75 12 2.75ZM19 19H5V5H19V19Z", fill: fill }) })));
+    return (jsxRuntimeExports.jsx(Icon, Object.assign({ width: size, height: size, fill: fill, viewBox: "0 0 24 24", xmlns: "http://www.w3.org/2000/svg" }, props, { children: jsxRuntimeExports.jsx("path", { d: "M14 6L13 4H5V21H7V14H12L13 16H20V6H14ZM18 14H14L13 12H7V6H12L13 8H18V14Z", fill: fill }) })));
 });
 
 const Schedule = React__namespace.memo((_a) => {
@@ -8491,7 +8491,7 @@ const Container$9 = styled$1.div `
   font-size: 1rem;
   outline: 0;
   margin: 0;
-  padding: 2px 12px 2px;
+  padding: 4px 12px 4px;
   padding-left: calc(40px + 1.5em * var(--indent));
   box-sizing: border-box;
   position: relative;
@@ -8502,8 +8502,8 @@ const Container$9 = styled$1.div `
 `;
 const IconOuter = styled$1.div `
   position: absolute;
-  left: 4px;
-  top: -3px;
+  left: calc(4px + 1.5em * var(--indent));
+  top: 0;
   width: 32px;
   height: 32px;
   border-radius: 15%;
@@ -8526,7 +8526,7 @@ const Decision = React__namespace.memo((_a) => {
     React__namespace.useEffect(() => {
         handleChangeElement();
     }, []);
-    return (jsxRuntimeExports.jsxs(Container$9, Object.assign({ ref: headerRef, spellCheck: false, placeholder: showPlaceholder ? placeholder : '' }, props, { children: [jsxRuntimeExports.jsx(IconOuter, { children: jsxRuntimeExports.jsx(Decision$1, { size: "20px" }) }), contents] })));
+    return (jsxRuntimeExports.jsxs(Container$9, Object.assign({ ref: headerRef, spellCheck: false, placeholder: showPlaceholder ? placeholder : '' }, props, { children: [jsxRuntimeExports.jsx(IconOuter, { children: jsxRuntimeExports.jsx(Decision$1, { size: "24px" }) }), contents] })));
 });
 
 function getHtmlElement(el) {
@@ -15253,7 +15253,7 @@ const Container$6 = styled$1.div `
   font-size: 1rem;
   outline: 0;
   margin: 0;
-  padding: 2px 12px 2px;
+  padding: 4px 12px 4px;
   padding-left: calc(40px + 1.5em * var(--indent));
   box-sizing: border-box;
   position: relative;
@@ -15270,8 +15270,8 @@ const Container$6 = styled$1.div `
 `;
 const CheckBoxOuter = styled$1.div `
   position: absolute;
-  left: 4px;
-  top: -2px;
+  left: calc(4px + 1.5em * var(--indent));
+  top: 0;
   width: 32px;
   height: 32px;
   border-radius: 15%;
@@ -15410,7 +15410,7 @@ const Task = React__namespace.memo((_a) => {
     }
     return (jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [jsxRuntimeExports.jsxs(Wrapper, Object.assign({ onMouseOver: handleMouseOver, onMouseOut: handleMouseOut, style: isHover ? { backgroundColor: '#f7f9fa' } : {} }, { children: [jsxRuntimeExports.jsxs(Container$6, Object.assign({ ref: headerRef, spellCheck: false, placeholder: showPlaceholder ? placeholder : '', style: {
                             textDecoration: checked ? 'line-through' : 'none',
-                        } }, props, { children: [jsxRuntimeExports.jsx(CheckBoxOuter, Object.assign({ onClick: handleClickCheckBox }, { children: jsxRuntimeExports.jsx(CheckSquare, { size: "20px", checked: checked }) })), contents] })), jsxRuntimeExports.jsxs(Buttons, { children: [((_q = attributes === null || attributes === void 0 ? void 0 : attributes.assignees) !== null && _q !== void 0 ? _q : []).length > 0 ? (jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsxs(IconButton, Object.assign({ onClick: handleClickAssigneePicker }, { children: [attributes.assignees.slice(0, 2).map((assignee, i) => {
+                        } }, props, { children: [jsxRuntimeExports.jsx(CheckBoxOuter, Object.assign({ onClick: handleClickCheckBox }, { children: jsxRuntimeExports.jsx(CheckSquare, { size: "24px", checked: checked }) })), contents] })), jsxRuntimeExports.jsxs(Buttons, { children: [((_q = attributes === null || attributes === void 0 ? void 0 : attributes.assignees) !== null && _q !== void 0 ? _q : []).length > 0 ? (jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsxs(IconButton, Object.assign({ onClick: handleClickAssigneePicker }, { children: [attributes.assignees.slice(0, 2).map((assignee, i) => {
                                             return (jsxRuntimeExports.jsx(MemberIcon, Object.assign({ style: { right: `${12 * i}px` } }, { children: assignee.imageUrl ? (jsxRuntimeExports.jsx("img", { draggable: "false", src: assignee.imageUrl })) : (jsxRuntimeExports.jsx(Text$4, { children: assignee.name.slice(0, 1) })) }), assignee.id));
                                         }), attributes.assignees.length > 2 && (jsxRuntimeExports.jsx(MemberIcon, Object.assign({ style: { right: `${12 * 2}px` } }, { children: jsxRuntimeExports.jsxs(Text$4, { children: ["+", attributes.assignees.length - 2] }) })))] })), maxWidth: 200, position: 'bottom' }, { children: attributes.assignees.map((v) => {
                                     return (jsxRuntimeExports.jsxs(React__namespace.Fragment, { children: [v.name, jsxRuntimeExports.jsx("br", {})] }, v.id));
@@ -23289,6 +23289,12 @@ class EditorModule {
             this.editor.scrollIntoView();
         }, 10);
     }
+    scrollToBlock(blockId) {
+        const el = getBlockElementById(blockId);
+        if (!el)
+            return;
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
 }
 
 const ShortKey$1 = /Mac/i.test(navigator.platform) ? 'metaKey' : 'ctrlKey';
@@ -26983,19 +26989,31 @@ class TocModule {
     onInit() {
         this.eventEmitter.info('init toc module');
         const eventEmitter = this.editor.getEventEmitter();
-        this.subs.add(eventEmitter.select(EditorEvents.EVENT_EDITOR_CHANGED).subscribe((v) => {
-            const blocks = this.editor.getBlocks();
-            const headerBlocks = blocks.filter((v) => {
-                return ['HEADER1', 'HEADER2', 'HEADER3', 'HEADER4', 'HEADER5', 'HEADER6'].includes(v.type);
-            });
-            if (typeof this.options.onChange === 'function') {
-                this.options.onChange(headerBlocks);
-            }
+        const debouncedUpdate = debounce(200, () => {
+            this.updateToc();
+        });
+        debouncedUpdate();
+        this.subs.add(eventEmitter.select(EditorEvents.EVENT_EDITOR_HISTORY_PUSH).subscribe((v) => {
+            debouncedUpdate();
         }));
     }
     onDestroy() {
         this.eventEmitter.info('destroy toc module');
         this.subs.unsubscribe();
+    }
+    updateToc() {
+        const blocks = this.editor.getBlocks();
+        const headerBlocks = blocks
+            .filter((v) => {
+            return ['HEADER1', 'HEADER2', 'HEADER3', 'HEADER4', 'HEADER5', 'HEADER6'].includes(v.type);
+        })
+            .map((v) => {
+            const plainText = v.contents.map((v) => v.text).join('');
+            return { id: v.id, type: v.type, label: plainText };
+        });
+        if (typeof this.options.onChange === 'function') {
+            this.options.onChange(headerBlocks);
+        }
     }
 }
 

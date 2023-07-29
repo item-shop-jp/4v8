@@ -58,19 +58,16 @@ const settings = {
         console.log(123, files);
       },
     },
+    toc: {
+      onChange: (labels: { type: string; label: string }[]) => {
+        console.log(123, labels);
+      },
+    },
   },
   scrollMarginBottom: 150,
   scrollMarginTop: 50,
   allowFormats: [],
-  indentableFormats: [
-    'ORDERED-LIST',
-    'BULLET-LIST',
-    'PARAGRAPH',
-    'BLOCKQUOTE',
-    'HEADER1',
-    'HEADER2',
-    'HEADER3',
-  ],
+  indentableFormats: ['ORDERED-LIST', 'BULLET-LIST', 'PARAGRAPH', 'BLOCKQUOTE', 'TASK', 'DECISION'],
 };
 
 export const Container: React.FC = React.memo(() => {

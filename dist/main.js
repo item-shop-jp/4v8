@@ -26958,6 +26958,21 @@ class CollaboratorModule {
     }
     onInit() {
         this.eventEmitter.info('init collaborator module');
+        // 共同編集のテスト用
+        // this.eventEmitter.select(EditorEvents.EVENT_SELECTION_CHANGE).subscribe((v) => {
+        //   const caret = this.editor.getCaretPosition();
+        //   this.editor.getModule('collaborator').updatePosition({
+        //     id: 'OodywE2HkiW1KeTBPCa96',
+        //     name: 'ktgr',
+        //     blockId: caret?.blockId ?? null,
+        //     imageUrl: 'https://pbs.twimg.com/profile_images/1287576269442318337/TAhRwDuP_normal.jpg',
+        //   });
+        //   this.editor.getModule('collaborator').updatePosition({
+        //     id: 'OodywE2HkiW1KeTBPCa95',
+        //     name: 'ktgr2',
+        //     blockId: caret?.blockId ?? null,
+        //   });
+        // });
     }
     onDestroy() {
         this.eventEmitter.info('destroy collaborator module');
@@ -27020,15 +27035,16 @@ class TocModule {
 const Container$1 = styled$1.div `
   position: absolute;
   top: 8px;
-  left: -30px;
-  width: 32px;
-  height: 32px;
+  left: -24px;
+  width: 24px;
+  height: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
   user-select: none;
   border-radius: 100%;
   box-shadow: 0px 1px 5px 0px;
+  background-color: #fff;
   cursor: auto;
   overflow: hidden;
   transition: top 0.3s ease-in-out;
@@ -27039,7 +27055,7 @@ const Container$1 = styled$1.div `
   }
 `;
 const Text$1 = styled$1.div `
-  font-size: 22px;
+  font-size: 16px;
   width: 100%;
   height: 100%;
   display: flex;
@@ -27072,24 +27088,31 @@ const Collaborators = React__namespace.memo(({ editor }) => {
         };
     }, []);
     const memoCollaborators = React__namespace.useMemo(() => {
-        return collaborators.map((v) => {
+        return collaborators.reduce((r, v) => {
             var _a, _b;
             if (!v.blockId)
-                return v;
+                return r;
             const blockEl = getBlockElementById(v.blockId);
             const containerEl = getHtmlElement(editor.getSettings().scrollContainer);
             const options = editor.getModule('collaborator').getOptions();
             if (!blockEl)
-                return v;
+                return r;
             const containerScrollTop = containerEl ? containerEl.scrollTop : 0;
             const containerRect = containerEl === null || containerEl === void 0 ? void 0 : containerEl.getBoundingClientRect();
             const rect = blockEl.getBoundingClientRect();
-            return Object.assign(Object.assign({}, v), { top: containerScrollTop + rect.top - ((_a = containerRect === null || containerRect === void 0 ? void 0 : containerRect.top) !== null && _a !== void 0 ? _a : 0) - ((_b = options.marginTop) !== null && _b !== void 0 ? _b : 0) });
-        });
+            let top = containerScrollTop + rect.top - ((_a = containerRect === null || containerRect === void 0 ? void 0 : containerRect.top) !== null && _a !== void 0 ? _a : 0) - ((_b = options.marginTop) !== null && _b !== void 0 ? _b : 0);
+            if (r.find((x) => x.top === top)) {
+                top = top + 16;
+            }
+            return [
+                ...r,
+                Object.assign(Object.assign({}, v), { top }),
+            ];
+        }, []);
     }, [collaborators]);
     return (jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: memoCollaborators.map((collaborator) => {
             var _a;
-            return (jsxRuntimeExports.jsx(Container$1, Object.assign({ draggable: "false", style: { top: `${(_a = collaborator === null || collaborator === void 0 ? void 0 : collaborator.top) !== null && _a !== void 0 ? _a : 0}px` } }, { children: (collaborator === null || collaborator === void 0 ? void 0 : collaborator.imageUrl) ? (jsxRuntimeExports.jsx("img", { draggable: "false", src: collaborator === null || collaborator === void 0 ? void 0 : collaborator.imageUrl })) : (jsxRuntimeExports.jsx(Text$1, { children: collaborator.name.slice(0, 1) })) }), collaborator.id));
+            return (jsxRuntimeExports.jsx(Container$1, Object.assign({ draggable: "false", style: { top: `${(_a = collaborator === null || collaborator === void 0 ? void 0 : collaborator.top) !== null && _a !== void 0 ? _a : 0}px` } }, { children: (collaborator === null || collaborator === void 0 ? void 0 : collaborator.imageUrl) ? (jsxRuntimeExports.jsx("img", { draggable: "false", src: collaborator === null || collaborator === void 0 ? void 0 : collaborator.imageUrl })) : (jsxRuntimeExports.jsx(Text$1, { children: collaborator.name.slice(0, 1).toUpperCase() })) }), collaborator.id));
         }) }));
 });
 

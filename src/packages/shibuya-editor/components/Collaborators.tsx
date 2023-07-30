@@ -11,18 +11,23 @@ export interface CollaboratorProps {
   editor: EditorController;
 }
 
+interface ICollaboratingMember extends CollaboratingMember {
+  top?: number;
+}
+
 const Container = styled.div`
   position: absolute;
   top: 8px;
-  left: -30px;
-  width: 32px;
-  height: 32px;
+  left: -24px;
+  width: 24px;
+  height: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
   user-select: none;
   border-radius: 100%;
   box-shadow: 0px 1px 5px 0px;
+  background-color: #fff;
   cursor: auto;
   overflow: hidden;
   transition: top 0.3s ease-in-out;
@@ -34,7 +39,7 @@ const Container = styled.div`
 `;
 
 const Text = styled.div`
-  font-size: 22px;
+  font-size: 16px;
   width: 100%;
   height: 100%;
   display: flex;
@@ -43,9 +48,7 @@ const Text = styled.div`
 `;
 
 export const Collaborators = React.memo(({ editor }: CollaboratorProps) => {
-  const [collaborators, setCollaborators] = React.useState<
-    (CollaboratingMember & { top?: number })[]
-  >([]);
+  const [collaborators, setCollaborators] = React.useState<ICollaboratingMember[]>([]);
   React.useEffect(() => {
     const subs = new Subscription();
     const eventEmitter = editor.getEventEmitter();
@@ -75,20 +78,28 @@ export const Collaborators = React.memo(({ editor }: CollaboratorProps) => {
   }, []);
 
   const memoCollaborators = React.useMemo(() => {
-    return collaborators.map((v) => {
-      if (!v.blockId) return v;
+    return collaborators.reduce<ICollaboratingMember[]>((r, v) => {
+      if (!v.blockId) return r;
       const blockEl = getBlockElementById(v.blockId);
       const containerEl = getHtmlElement(editor.getSettings().scrollContainer);
       const options = editor.getModule('collaborator').getOptions();
-      if (!blockEl) return v;
+      if (!blockEl) return r;
       const containerScrollTop = containerEl ? containerEl.scrollTop : 0;
       const containerRect = containerEl?.getBoundingClientRect();
       const rect = blockEl.getBoundingClientRect();
-      return {
-        ...v,
-        top: containerScrollTop + rect.top - (containerRect?.top ?? 0) - (options.marginTop ?? 0),
-      };
-    });
+      let top =
+        containerScrollTop + rect.top - (containerRect?.top ?? 0) - (options.marginTop ?? 0);
+      if (r.find((x) => x.top === top)) {
+        top = top + 16;
+      }
+      return [
+        ...r,
+        {
+          ...v,
+          top,
+        },
+      ];
+    }, []);
   }, [collaborators]);
 
   return (
@@ -103,7 +114,7 @@ export const Collaborators = React.memo(({ editor }: CollaboratorProps) => {
             {collaborator?.imageUrl ? (
               <img draggable="false" src={collaborator?.imageUrl} />
             ) : (
-              <Text>{collaborator.name.slice(0, 1)}</Text>
+              <Text>{collaborator.name.slice(0, 1).toUpperCase()}</Text>
             )}
           </Container>
         );

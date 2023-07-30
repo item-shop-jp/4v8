@@ -44,7 +44,7 @@ const settings = {
       delay: 1000,
     },
     collaborator: {
-      marginTop: 0,
+      marginTop: 310,
     },
     uploader: {
       onUpload: async ({ base64 }: { original: File; base64: string | null; isImage: boolean }) => {

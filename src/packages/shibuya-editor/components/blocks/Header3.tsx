@@ -15,7 +15,7 @@ export interface Header3Props {
   editor: EditorController;
 }
 const Header = styled.h3`
-  font-size: 16px;
+  font-size: 18px;
   outline: 0;
   margin: 0;
   padding: 4px 12px;

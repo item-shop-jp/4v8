@@ -34,6 +34,7 @@ import {
   UploaderModule,
   DragDropModule,
   CollaboratorModule,
+  TocModule,
 } from './modules';
 import { getBlockElementById, getBlockLength } from './utils/block';
 import { EditorEvents } from './constants';
@@ -300,6 +301,7 @@ export const Editor = React.memo(
             { name: 'uploader', module: UploaderModule },
             { name: 'drag-drop', module: DragDropModule },
             { name: 'collaborator', module: CollaboratorModule },
+            { name: 'toc', module: TocModule },
           ],
           settings?.modules ?? {},
         );
@@ -307,6 +309,17 @@ export const Editor = React.memo(
           eventEmitter.select(EditorEvents.EVENT_BLOCK_RERENDER).subscribe(() => {
             const renderBlocks = editor.getBlocks();
             setBlocks(renderBlocks);
+
+            if (
+              renderBlocks.length <= 1 &&
+              renderBlocks[0].type === 'PARAGRAPH' &&
+              (getBlockLength(renderBlocks[0].id) ?? 0) < 1
+            ) {
+              setShowPlaceholder(true);
+            } else {
+              setShowPlaceholder(false);
+            }
+
             if (renderBlocks.length > 2000) {
               editor.getModule('selector').changeAreaMoveDelay(300);
             } else if (renderBlocks.length > 1000) {

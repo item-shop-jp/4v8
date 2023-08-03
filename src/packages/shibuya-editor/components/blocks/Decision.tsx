@@ -19,7 +19,7 @@ const Container = styled.div`
   font-size: 1rem;
   outline: 0;
   margin: 0;
-  padding: 2px 12px 2px;
+  padding: 4px 12px 4px;
   padding-left: calc(40px + 1.5em * var(--indent));
   box-sizing: border-box;
   position: relative;
@@ -31,8 +31,8 @@ const Container = styled.div`
 
 const IconOuter = styled.div`
   position: absolute;
-  left: 4px;
-  top: -3px;
+  left: calc(8px + 1.5em * var(--indent));
+  top: 0;
   width: 32px;
   height: 32px;
   border-radius: 15%;
@@ -72,7 +72,7 @@ export const Decision = React.memo(
         {...props}
       >
         <IconOuter>
-          <DecisionIcon size="20px" />
+          <DecisionIcon size="24px" />
         </IconOuter>
         {contents}
       </Container>

@@ -44,7 +44,7 @@ const settings = {
       delay: 1000,
     },
     collaborator: {
-      marginTop: 0,
+      marginTop: 310,
     },
     uploader: {
       onUpload: async ({ base64 }: { original: File; base64: string | null; isImage: boolean }) => {
@@ -54,20 +54,20 @@ const settings = {
           }, 2000);
         });
       },
+      onDownload: (files: string[]) => {
+        console.log(123, files);
+      },
+    },
+    toc: {
+      onChange: (labels: { type: string; label: string }[]) => {
+        console.log(123, labels);
+      },
     },
   },
   scrollMarginBottom: 150,
   scrollMarginTop: 50,
   allowFormats: [],
-  indentableFormats: [
-    'ORDERED-LIST',
-    'BULLET-LIST',
-    'PARAGRAPH',
-    'BLOCKQUOTE',
-    'HEADER1',
-    'HEADER2',
-    'HEADER3',
-  ],
+  indentableFormats: ['ORDERED-LIST', 'BULLET-LIST', 'PARAGRAPH', 'BLOCKQUOTE', 'TASK', 'DECISION'],
 };
 
 export const Container: React.FC = React.memo(() => {
@@ -87,7 +87,7 @@ export const Container: React.FC = React.memo(() => {
     setTimeout(() => {
       editorRef2.current?.setBlocks(
         JSON.parse(
-          '[{"id":"OodywE2HkiW1KeTBPCa96","contents":[{"id":"OYbvu_ZB9QppDCeIOSfbZ","attributes":{"bold": true},"text":"今日はいい天気ですね!!🤗","type":"TEXT","isEmbed":false}],"attributes":{},"type":"PARAGRAPH"}]',
+          '[{"id":"OodywE2HkiW1KeTBPCa96","contents":[{"id":"OYbvu_ZB9QppDCeIOSfbZ","attributes":{"bold":true},"text":"今日はいい天気ですね!!🤗","type":"TEXT","isEmbed":false}],"attributes":{"assignees":[{"id":"aaa2","name":"笹川裕也","selected":false},{"id":"aaa1","name":"田中 健太郎","imageUrl":"https://lh3.googleusercontent.com/a-/AAuE7mDqNcnkUNpr7-X6WOAp4QaSI399ToQaP38tSD5x=s100","selected":false}]},"type":"TASK","meta":{"listNumber":0}}]',
         ),
       );
     }, 20);
@@ -118,7 +118,7 @@ export const Container: React.FC = React.memo(() => {
       eventEmitter.select(EditorEvents.EVENT_EDITOR_CHANGED).subscribe((payload) => {
         payload.forEach((v: any) => {
           const block = editorRef2.current?.getBlock(v.blockId);
-          // console.log(JSON.stringify(block?.contents));
+          // console.log(JSON.stringify(block));
         });
       }),
     );

@@ -15332,7 +15332,7 @@ const Task = React__namespace.memo((_a) => {
     const handleSelectDatePicker = React__namespace.useCallback((date) => {
         const currentBlock = editor.getBlock(blockId);
         if (currentBlock) {
-            editor.updateBlock(Object.assign(Object.assign({}, currentBlock), { attributes: Object.assign(Object.assign({}, currentBlock.attributes), { deadline: date ? date.toString() : null }) }));
+            editor.updateBlock(Object.assign(Object.assign({}, currentBlock), { attributes: Object.assign(Object.assign({}, currentBlock.attributes), { deadline: date ? date.getTime() : null }) }));
             editor.render([blockId]);
         }
         setHover(false);

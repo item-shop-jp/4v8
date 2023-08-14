@@ -156,6 +156,32 @@ export const GlobalToolbar = React.memo(({ editor, ...props }: GlobalToolbarProp
     [formats, blockType],
   );
 
+  const handleFileUpload = React.useCallback(
+    (event: React.MouseEvent) => {
+      event.preventDefault();
+      const caretPosition = editor.getCaretPosition();
+      if (!caretPosition) return;
+
+      const fileHolder = document.createElement('input');
+      fileHolder.setAttribute('type', 'file');
+      fileHolder.setAttribute('accept', '*');
+      fileHolder.setAttribute('style', 'visibility:hidden');
+
+      fileHolder.onchange = () => {
+        editor
+          .getModule('uploader')
+          .upload(Array.from(fileHolder.files ?? []), caretPosition.blockId);
+      };
+      fileHolder.click();
+
+      document.body.appendChild(fileHolder);
+      setTimeout(() => {
+        document.body.removeChild(fileHolder);
+      }, 10);
+    },
+    [formats, blockType, editor],
+  );
+
   React.useEffect(() => {
     const subs = new Subscription();
     const eventEmitter = editor.getEventEmitter();
@@ -295,7 +321,7 @@ export const GlobalToolbar = React.memo(({ editor, ...props }: GlobalToolbarProp
           <Divider />
           <Tooltip
             targetElement={
-              <Button href="#" active={false} onClick={() => {}}>
+              <Button href="#" active={false} onClick={handleFileUpload}>
                 <FormatAttachment size="20" />
               </Button>
             }

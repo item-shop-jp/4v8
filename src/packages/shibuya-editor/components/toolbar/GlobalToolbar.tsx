@@ -18,6 +18,7 @@ import {
 } from '../icons';
 import { BlockType } from '../../types';
 import { Tooltip } from '../popups';
+import { FormatAttachment } from '../icons/toolbar/FormatAttachment';
 
 export interface GlobalToolbarProps {
   editor: EditorController;
@@ -290,6 +291,18 @@ export const GlobalToolbar = React.memo(({ editor, ...props }: GlobalToolbarProp
             position={'top'}
           >
             決定事項に切り替える
+          </Tooltip>
+          <Divider />
+          <Tooltip
+            targetElement={
+              <Button href="#" active={false} onClick={() => {}}>
+                <FormatAttachment size="20" />
+              </Button>
+            }
+            maxWidth={200}
+            position={'top'}
+          >
+            ファイルを添付
           </Tooltip>
         </Container>
       )}

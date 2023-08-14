@@ -6668,8 +6668,8 @@ const Close = React__namespace.memo((_a) => {
 });
 
 const Download = React__namespace.memo((_a) => {
-    var { size = baseIconProps.size, fill = baseIconProps.fill } = _a, props = __rest$1(_a, ["size", "fill"]);
-    return (jsxRuntimeExports.jsx(Icon, Object.assign({ width: size, height: size, fill: fill, viewBox: "0 0 24 24", xmlns: "http://www.w3.org/2000/svg" }, props, { children: jsxRuntimeExports.jsx("path", { d: "M19.35 10.04C18.67 6.59 15.64 4 12 4C9.11 4 6.6 5.64 5.35 8.04C2.34 8.36 0 10.91 0 14C0 17.31 2.69 20 6 20H19C21.76 20 24 17.76 24 15C24 12.36 21.95 10.22 19.35 10.04ZM19 18H6C3.79 18 2 16.21 2 14C2 11.95 3.53 10.24 5.56 10.03L6.63 9.92L7.13 8.97C8.08 7.14 9.94 6 12 6C14.62 6 16.88 7.86 17.39 10.43L17.69 11.93L19.22 12.04C20.78 12.14 22 13.45 22 15C22 16.65 20.65 18 19 18V18ZM13.45 10H10.55V13H8L12 17L16 13H13.45V10Z", fill: fill }) })));
+    __rest$1(_a, ["size", "fill"]);
+    return (jsxRuntimeExports.jsx(Icon, Object.assign({ width: "16", height: "16", viewBox: "0 0 16 16", fill: "none", xmlns: "http://www.w3.org/2000/svg" }, { children: jsxRuntimeExports.jsx("path", { fillRule: "evenodd", clipRule: "evenodd", d: "M2.39844 13.6016C2.39844 13.3894 2.48272 13.1859 2.63275 13.0359C2.78278 12.8858 2.98626 12.8016 3.19844 12.8016H12.7984C13.0106 12.8016 13.2141 12.8858 13.3641 13.0359C13.5142 13.1859 13.5984 13.3894 13.5984 13.6016C13.5984 13.8137 13.5142 14.0172 13.3641 14.1672C13.2141 14.3173 13.0106 14.4016 12.7984 14.4016H3.19844C2.98626 14.4016 2.78278 14.3173 2.63275 14.1672C2.48272 14.0172 2.39844 13.8137 2.39844 13.6016ZM5.03284 7.43596C5.18286 7.28599 5.38631 7.20173 5.59844 7.20173C5.81057 7.20173 6.01402 7.28599 6.16404 7.43596L7.19844 8.47036V2.40156C7.19844 2.18939 7.28272 1.98591 7.43275 1.83588C7.58278 1.68585 7.78626 1.60156 7.99844 1.60156C8.21061 1.60156 8.41409 1.68585 8.56412 1.83588C8.71415 1.98591 8.79844 2.18939 8.79844 2.40156V8.47036L9.83284 7.43596C9.90664 7.35955 9.99491 7.29861 10.0925 7.25668C10.1901 7.21475 10.2951 7.19268 10.4013 7.19176C10.5075 7.19084 10.6129 7.21108 10.7112 7.25131C10.8095 7.29153 10.8988 7.35093 10.974 7.42605C11.0491 7.50116 11.1085 7.59048 11.1487 7.6888C11.1889 7.78712 11.2092 7.89246 11.2082 7.99868C11.2073 8.10491 11.1852 8.20988 11.1433 8.30749C11.1014 8.40509 11.0404 8.49336 10.964 8.56716L8.56404 10.9672C8.41402 11.1171 8.21057 11.2014 7.99844 11.2014C7.78631 11.2014 7.58286 11.1171 7.43284 10.9672L5.03284 8.56716C4.88286 8.41714 4.79861 8.21369 4.79861 8.00156C4.79861 7.78943 4.88286 7.58598 5.03284 7.43596Z", fill: "#828282" }) })));
 });
 
 const ListItem = styled$1.div `
@@ -16424,15 +16424,17 @@ function prettyBytes(number, options) {
 const Container$4 = styled$1.div `
   outline: none;
   display: flex;
-  padding: 0 12px;
-  background: #eee;
-  border-radius: 8px;
+  align-items: center;
+  padding: 16px 32px;
+  gap: 8px;
   margin: 12px 0;
+  border: 1px solid #f0f0f0;
+  height: 56px;
+  box-sizing: border-box;
 `;
 const IconContainer = styled$1.div `
   display: flex;
   flex-shrink: 0;
-  width: 50px;
   justify-content: center;
   align-items: center;
 `;
@@ -16442,7 +16444,6 @@ const Button$2 = styled$1.div `
   display: flex;
   justify-content: center;
   align-items: center;
-  background: #eee;
   border-radius: 8px;
   cursor: pointer;
   &:hover svg {
@@ -16453,18 +16454,19 @@ const Inner$1 = styled$1.div `
   flex-shrink: 1;
   overflow: hidden;
   width: 100%;
-  padding: 12px;
   box-sizing: border-box;
 `;
 const FileName = styled$1.div `
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  font-weight: bold;
 `;
 const Size = styled$1.div `
   font-size: 12px;
   color: #999;
   display: flex;
+  flex-shrink: 0;
 `;
 const Loading = styled$1.div `
   margin-left: 8px;
@@ -16476,7 +16478,7 @@ const File = React__namespace.memo((_a) => {
         var _a;
         editor.getModule('uploader').download((_a = attributes === null || attributes === void 0 ? void 0 : attributes.files) !== null && _a !== void 0 ? _a : []);
     }, [attributes]);
-    return (jsxRuntimeExports.jsxs(Container$4, Object.assign({ ref: imageRef }, props, { contentEditable: false }, { children: [jsxRuntimeExports.jsx(IconContainer, { children: jsxRuntimeExports.jsxs("svg", Object.assign({ width: "32", height: "32", viewBox: "0 0 24 24", fill: "none", xmlns: "http://www.w3.org/2000/svg" }, { children: [jsxRuntimeExports.jsx("path", { d: "M14 3V7C14 7.26522 14.1054 7.51957 14.2929 7.70711C14.4804 7.89464 14.7348 8 15 8H19", stroke: "#666666", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round" }), jsxRuntimeExports.jsx("path", { d: "M12 11V17M17 21H7C6.46957 21 5.96086 20.7893 5.58579 20.4142C5.21071 20.0391 5 19.5304 5 19V5C5 4.46957 5.21071 3.96086 5.58579 3.58579C5.96086 3.21071 6.46957 3 7 3H14L19 8V19C19 19.5304 18.7893 20.0391 18.4142 20.4142C18.0391 20.7893 17.5304 21 17 21Z", stroke: "#666666", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round" }), jsxRuntimeExports.jsx("path", { d: "M9.5 13.5L12 11L14.5 13.5", stroke: "#666666", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round" })] })) }), jsxRuntimeExports.jsxs(Inner$1, { children: [jsxRuntimeExports.jsx(FileName, { children: attributes === null || attributes === void 0 ? void 0 : attributes.fileName }), jsxRuntimeExports.jsxs(Size, { children: [prettyBytes(attributes === null || attributes === void 0 ? void 0 : attributes.size), isUploading && (jsxRuntimeExports.jsx(Loading, { children: jsxRuntimeExports.jsx(RotatingLines, { strokeColor: "grey", strokeWidth: "5", animationDuration: "0.75", width: "18", visible: true }) }))] })] }), jsxRuntimeExports.jsx(IconContainer, { children: jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$2, Object.assign({ onClick: handleDownload }, { children: jsxRuntimeExports.jsx(Download, {}) })), maxWidth: 200, position: 'bottom' }, { children: "\u30D5\u30A1\u30A4\u30EB\u3092\u30C0\u30A6\u30F3\u30ED\u30FC\u30C9\u3059\u308B" })) })] })));
+    return (jsxRuntimeExports.jsxs(Container$4, Object.assign({ ref: imageRef }, props, { contentEditable: false }, { children: [jsxRuntimeExports.jsx(IconContainer, { children: jsxRuntimeExports.jsx("svg", Object.assign({ width: "16", height: "16", viewBox: "0 0 24 24", fill: "none", xmlns: "http://www.w3.org/2000/svg" }, { children: jsxRuntimeExports.jsx("path", { d: "M18.5 16H7C4.79 16 3 14.21 3 12C3 9.79 4.79 8 7 8H19.5C20.88 8 22 9.12 22 10.5C22 11.88 20.88 13 19.5 13H9C8.45 13 8 12.55 8 12C8 11.45 8.45 11 9 11H18.5V9.5H9C7.62 9.5 6.5 10.62 6.5 12C6.5 13.38 7.62 14.5 9 14.5H19.5C21.71 14.5 23.5 12.71 23.5 10.5C23.5 8.29 21.71 6.5 19.5 6.5H7C3.96 6.5 1.5 8.96 1.5 12C1.5 15.04 3.96 17.5 7 17.5H18.5V16Z", fill: "#18181B" }) })) }), jsxRuntimeExports.jsx(Inner$1, { children: jsxRuntimeExports.jsx(FileName, { children: attributes === null || attributes === void 0 ? void 0 : attributes.fileName }) }), jsxRuntimeExports.jsxs(Size, { children: [prettyBytes(attributes === null || attributes === void 0 ? void 0 : attributes.size), isUploading && (jsxRuntimeExports.jsx(Loading, { children: jsxRuntimeExports.jsx(RotatingLines, { strokeColor: "grey", strokeWidth: "5", animationDuration: "0.75", width: "18", visible: true }) }))] }), jsxRuntimeExports.jsx(IconContainer, { children: jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$2, Object.assign({ onClick: handleDownload }, { children: jsxRuntimeExports.jsx(Download, {}) })), maxWidth: 200, position: 'bottom' }, { children: "\u30D5\u30A1\u30A4\u30EB\u3092\u30C0\u30A6\u30F3\u30ED\u30FC\u30C9\u3059\u308B" })) })] })));
 });
 
 /*! Copyright Twitter Inc. and other contributors. Licensed under MIT */
@@ -16663,6 +16665,11 @@ const Link = () => Ce$1 `
   cursor: pointer;
 `;
 
+const FormatAttachment = React__namespace.memo((_a) => {
+    var { size = baseIconProps.size, fill = baseIconProps.fill } = _a; __rest$1(_a, ["size", "fill"]);
+    return (jsxRuntimeExports.jsx(Icon, Object.assign({ width: size, height: size, viewBox: "0 0 20 20", fill: "none", xmlns: "http://www.w3.org/2000/svg" }, { children: jsxRuntimeExports.jsx(Path, { d: "M15.4167 13.3346H5.83333C3.99167 13.3346 2.5 11.843 2.5 10.0013C2.5 8.15964 3.99167 6.66797 5.83333 6.66797H16.25C17.4 6.66797 18.3333 7.6013 18.3333 8.7513C18.3333 9.9013 17.4 10.8346 16.25 10.8346H7.5C7.04167 10.8346 6.66667 10.4596 6.66667 10.0013C6.66667 9.54297 7.04167 9.16797 7.5 9.16797H15.4167V7.91797H7.5C6.35 7.91797 5.41667 8.8513 5.41667 10.0013C5.41667 11.1513 6.35 12.0846 7.5 12.0846H16.25C18.0917 12.0846 19.5833 10.593 19.5833 8.7513C19.5833 6.90964 18.0917 5.41797 16.25 5.41797H5.83333C3.3 5.41797 1.25 7.46797 1.25 10.0013C1.25 12.5346 3.3 14.5846 5.83333 14.5846H15.4167V13.3346Z", fill: "white" }) })));
+});
+
 const Container$3 = styled$1.div `
   position: fixed;
   bottom: 12px;
@@ -16750,6 +16757,27 @@ const GlobalToolbar = React__namespace.memo((_a) => {
         event.preventDefault();
         formatBlock('BULLET-LIST');
     }, [formats, blockType]);
+    const handleFileUpload = React__namespace.useCallback((event) => {
+        event.preventDefault();
+        const caretPosition = editor.getCaretPosition();
+        if (!caretPosition)
+            return;
+        const fileHolder = document.createElement('input');
+        fileHolder.setAttribute('type', 'file');
+        fileHolder.setAttribute('accept', '*');
+        fileHolder.setAttribute('style', 'visibility:hidden');
+        fileHolder.onchange = () => {
+            var _a;
+            editor
+                .getModule('uploader')
+                .upload(Array.from((_a = fileHolder.files) !== null && _a !== void 0 ? _a : []), caretPosition.blockId);
+        };
+        fileHolder.click();
+        document.body.appendChild(fileHolder);
+        setTimeout(() => {
+            document.body.removeChild(fileHolder);
+        }, 10);
+    }, [formats, blockType, editor]);
     React__namespace.useEffect(() => {
         const subs = new Subscription();
         const eventEmitter = editor.getEventEmitter();
@@ -16773,7 +16801,7 @@ const GlobalToolbar = React__namespace.memo((_a) => {
             subs.unsubscribe();
         };
     }, []);
-    return ReactDOM.createPortal(jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: isDisplay && (jsxRuntimeExports.jsxs(Container$3, Object.assign({}, props, { children: [jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$1, Object.assign({ href: "#", onClick: handleHeader1, active: blockType === 'HEADER1' }, { children: jsxRuntimeExports.jsx(FormatHeader1, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u898B\u51FA\u3057(\u5927)\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$1, Object.assign({ href: "#", onClick: handleHeader2, active: blockType === 'HEADER2' }, { children: jsxRuntimeExports.jsx(FormatHeader2, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u898B\u51FA\u3057(\u4E2D)\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$1, Object.assign({ href: "#", onClick: handleHeader3, active: blockType === 'HEADER3' }, { children: jsxRuntimeExports.jsx(FormatHeader3, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u898B\u51FA\u3057(\u5C0F)\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Divider, {}), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$1, Object.assign({ href: "#", active: blockType === 'CODE-BLOCK', onClick: handleCodeBlock }, { children: jsxRuntimeExports.jsx(FormatCodeBlock, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u30B3\u30FC\u30C9\u30D6\u30ED\u30C3\u30AF\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$1, Object.assign({ href: "#", active: blockType === 'BLOCKQUOTE', onClick: handleBlockquote }, { children: jsxRuntimeExports.jsx(FormatBlockQuote, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u5F15\u7528\u30D6\u30ED\u30C3\u30AF\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Divider, {}), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$1, Object.assign({ href: "#", active: blockType === 'BULLET-LIST', onClick: handleBulletList }, { children: jsxRuntimeExports.jsx(FormatBulletList, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u7B87\u6761\u66F8\u304D\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$1, Object.assign({ href: "#", active: blockType === 'ORDERED-LIST', onClick: handleOrderedList }, { children: jsxRuntimeExports.jsx(FormatNumberList, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u756A\u53F7\u4ED8\u304D\u30EA\u30B9\u30C8\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Divider, {}), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$1, Object.assign({ href: "#", active: blockType === 'TASK', onClick: handleTask }, { children: jsxRuntimeExports.jsx(FormatTask, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u30BF\u30B9\u30AF\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$1, Object.assign({ href: "#", active: blockType === 'DECISION', onClick: handleDecision }, { children: jsxRuntimeExports.jsx(FormatDecision, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u6C7A\u5B9A\u4E8B\u9805\u306B\u5207\u308A\u66FF\u3048\u308B" }))] }))) }), document.body);
+    return ReactDOM.createPortal(jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: isDisplay && (jsxRuntimeExports.jsxs(Container$3, Object.assign({}, props, { children: [jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$1, Object.assign({ href: "#", onClick: handleHeader1, active: blockType === 'HEADER1' }, { children: jsxRuntimeExports.jsx(FormatHeader1, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u898B\u51FA\u3057(\u5927)\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$1, Object.assign({ href: "#", onClick: handleHeader2, active: blockType === 'HEADER2' }, { children: jsxRuntimeExports.jsx(FormatHeader2, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u898B\u51FA\u3057(\u4E2D)\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$1, Object.assign({ href: "#", onClick: handleHeader3, active: blockType === 'HEADER3' }, { children: jsxRuntimeExports.jsx(FormatHeader3, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u898B\u51FA\u3057(\u5C0F)\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Divider, {}), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$1, Object.assign({ href: "#", active: blockType === 'CODE-BLOCK', onClick: handleCodeBlock }, { children: jsxRuntimeExports.jsx(FormatCodeBlock, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u30B3\u30FC\u30C9\u30D6\u30ED\u30C3\u30AF\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$1, Object.assign({ href: "#", active: blockType === 'BLOCKQUOTE', onClick: handleBlockquote }, { children: jsxRuntimeExports.jsx(FormatBlockQuote, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u5F15\u7528\u30D6\u30ED\u30C3\u30AF\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Divider, {}), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$1, Object.assign({ href: "#", active: blockType === 'BULLET-LIST', onClick: handleBulletList }, { children: jsxRuntimeExports.jsx(FormatBulletList, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u7B87\u6761\u66F8\u304D\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$1, Object.assign({ href: "#", active: blockType === 'ORDERED-LIST', onClick: handleOrderedList }, { children: jsxRuntimeExports.jsx(FormatNumberList, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u756A\u53F7\u4ED8\u304D\u30EA\u30B9\u30C8\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Divider, {}), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$1, Object.assign({ href: "#", active: blockType === 'TASK', onClick: handleTask }, { children: jsxRuntimeExports.jsx(FormatTask, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u30BF\u30B9\u30AF\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$1, Object.assign({ href: "#", active: blockType === 'DECISION', onClick: handleDecision }, { children: jsxRuntimeExports.jsx(FormatDecision, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u6C7A\u5B9A\u4E8B\u9805\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Divider, {}), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$1, Object.assign({ href: "#", active: false, onClick: handleFileUpload }, { children: jsxRuntimeExports.jsx(FormatAttachment, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u30D5\u30A1\u30A4\u30EB\u3092\u6DFB\u4ED8" }))] }))) }), document.body);
 });
 
 const TOOLBAR_CHILD_WIDTH = 34;

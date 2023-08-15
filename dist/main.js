@@ -26101,6 +26101,8 @@ class HistoryModule {
                             index: textIndex,
                         });
                         this.editor.updateCaretRect();
+                        if (op.prevBlockId)
+                            this.editor.getModule('editor').scrollToBlock(op.prevBlockId);
                     }, 10);
                 }
             });
@@ -26121,6 +26123,8 @@ class HistoryModule {
                             index: textIndex,
                         });
                         this.editor.updateCaretRect();
+                        if (op.blockId)
+                            this.editor.getModule('editor').scrollToBlock(op.blockId);
                     }, 10);
                 }
             });
@@ -26170,6 +26174,8 @@ class HistoryModule {
                             index: textIndex,
                         });
                         this.editor.updateCaretRect();
+                        if (focusBlockId)
+                            this.editor.getModule('editor').scrollToBlock(focusBlockId);
                     }, 10);
                 }
             });
@@ -26185,6 +26191,8 @@ class HistoryModule {
                             index: textIndex,
                         });
                         this.editor.updateCaretRect();
+                        if (op.prevBlockId)
+                            this.editor.getModule('editor').scrollToBlock(op.prevBlockId);
                     }, 10);
                 }
             });
@@ -26241,6 +26249,8 @@ class HistoryModule {
                     length: 0,
                 });
                 this.editor.updateCaretRect();
+                if (op.blockId)
+                    this.editor.getModule('editor').scrollToBlock(op.blockId);
             }, 10);
             return;
         }
@@ -26332,6 +26342,7 @@ class ClipboardModule {
                         index: textIndex,
                     });
                     this.editor.updateCaretRect();
+                    this.editor.getModule('editor').scrollToBlock(prevBlockId);
                 }, 10);
             }
             else if (type === 'inlines') {

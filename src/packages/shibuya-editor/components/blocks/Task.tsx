@@ -143,7 +143,7 @@ export const Task = React.memo(
             ...currentBlock,
             attributes: {
               ...currentBlock.attributes,
-              deadline: date ? date.toString() : null,
+              deadline: date ? date.getTime() : null,
             },
           });
           editor.render([blockId]);

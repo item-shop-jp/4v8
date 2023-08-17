@@ -15,6 +15,7 @@ import { CaretPosition } from '../types/caret';
 import { Block, BlockType } from '../types';
 import { createInline } from '../utils/inline';
 import stringLength from 'string-length';
+import { copyObject } from '../utils/object';
 
 const ShortKey = /Mac/i.test(navigator.platform) ? 'metaKey' : 'ctrlKey';
 
@@ -144,12 +145,14 @@ export class KeyBoardModule implements Module {
       key: KeyCodes.BACKSPACE,
       prevented: true,
       overwriteAllEvents: true,
+      except: ['TABLE'],
       handler: this._handleBackspace.bind(this),
     });
     this.addBinding({
       key: KeyCodes.DELETE,
       prevented: true,
       overwriteAllEvents: true,
+      except: ['TABLE'],
       handler: this._handleDelete.bind(this),
     });
 
@@ -239,6 +242,22 @@ export class KeyBoardModule implements Module {
         handler: this._handleBackspace.bind(this),
       });
     }
+
+    // table
+    this.addBinding({
+      key: KeyCodes.BACKSPACE,
+      prevented: true,
+      overwriteAllEvents: true,
+      only: ['TABLE'],
+      handler: this._handleTableBackspace.bind(this),
+    });
+    this.addBinding({
+      key: KeyCodes.DELETE,
+      prevented: true,
+      overwriteAllEvents: true,
+      only: ['TABLE'],
+      handler: this._handleTableDelete.bind(this),
+    });
   }
 
   onDestroy() {
@@ -996,5 +1015,83 @@ export class KeyBoardModule implements Module {
       this.editor.updateCaretRect();
     }, 10);
     editor.render([block.id]);
+  }
+
+  // table
+  private _handleTableBackspace(caretPosition: CaretPosition, editor: EditorController) {
+    const block = editor.getBlock(caretPosition.blockId);
+    if (!caretPosition.childBlockId || !block) return;
+    const childBlockIndex = block.childBlocks.findIndex((v) => v.id === caretPosition.childBlockId);
+    if (childBlockIndex === -1) return;
+    const childBlocks = copyObject(block.childBlocks);
+    let deletedContents;
+    let caretIndex: number;
+
+    if (caretPosition.collapsed) {
+      caretIndex = caretPosition.index - 1;
+      deletedContents = deleteInlineContents(childBlocks[childBlockIndex].contents, caretIndex, 1);
+      deletedContents[deletedContents.length - 1].text =
+        deletedContents[deletedContents.length - 1].text;
+    } else {
+      if (caretPosition.length < 1) return;
+      caretIndex = caretPosition.index;
+      deletedContents = deleteInlineContents(
+        childBlocks[childBlockIndex].contents,
+        caretPosition.index,
+        caretPosition.length,
+      );
+    }
+    editor.updateBlock({
+      ...block,
+      childBlocks: [
+        ...block.childBlocks.slice(0, childBlockIndex),
+        {
+          ...block.childBlocks[childBlockIndex],
+          contents: deletedContents,
+        },
+        ...block.childBlocks.slice(childBlockIndex + 1),
+      ],
+    });
+    editor.blur();
+    editor.render([block.id]);
+    setTimeout(() => {
+      editor.setCaretPosition({
+        blockId: block.id,
+        childBlockId: caretPosition.childBlockId,
+        index: caretIndex,
+      });
+      editor.updateCaretRect();
+    }, 10);
+  }
+
+  private _handleTableDelete(caretPosition: CaretPosition, editor: EditorController) {
+    // const block = editor.getBlock(caretPosition.blockId);
+    // const blocks = editor.getBlocks();
+    // const blockIndex = blocks.findIndex((v) => v.id === caretPosition.blockId);
+    // const textLength = editor.getBlockLength(caretPosition.blockId) ?? 0;
+    // let deletedContents;
+    // if (caretPosition.collapsed) {
+    //   if (!block) return;
+    //   // Ignored for null characters
+    //   if (caretPosition.index >= textLength) {
+    //     editor.getModule('editor').mergeBlock(blocks[blockIndex].id, blocks[blockIndex + 1].id);
+    //     return;
+    //   }
+    //   deletedContents = deleteInlineContents(block.contents, caretPosition.index, 1);
+    // } else {
+    //   if (!block || caretPosition.length < 1) return;
+    //   deletedContents = deleteInlineContents(
+    //     block.contents,
+    //     caretPosition.index,
+    //     caretPosition.length,
+    //   );
+    // }
+    // editor.updateBlock({ ...block, contents: deletedContents });
+    // editor.blur();
+    // editor.render([block.id]);
+    // setTimeout(() => {
+    //   editor.setCaretPosition({ blockId: block.id, index: caretPosition.index });
+    //   editor.updateCaretRect();
+    // }, 10);
   }
 }

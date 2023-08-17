@@ -1065,33 +1065,46 @@ export class KeyBoardModule implements Module {
   }
 
   private _handleTableDelete(caretPosition: CaretPosition, editor: EditorController) {
-    // const block = editor.getBlock(caretPosition.blockId);
-    // const blocks = editor.getBlocks();
-    // const blockIndex = blocks.findIndex((v) => v.id === caretPosition.blockId);
-    // const textLength = editor.getBlockLength(caretPosition.blockId) ?? 0;
-    // let deletedContents;
-    // if (caretPosition.collapsed) {
-    //   if (!block) return;
-    //   // Ignored for null characters
-    //   if (caretPosition.index >= textLength) {
-    //     editor.getModule('editor').mergeBlock(blocks[blockIndex].id, blocks[blockIndex + 1].id);
-    //     return;
-    //   }
-    //   deletedContents = deleteInlineContents(block.contents, caretPosition.index, 1);
-    // } else {
-    //   if (!block || caretPosition.length < 1) return;
-    //   deletedContents = deleteInlineContents(
-    //     block.contents,
-    //     caretPosition.index,
-    //     caretPosition.length,
-    //   );
-    // }
-    // editor.updateBlock({ ...block, contents: deletedContents });
-    // editor.blur();
-    // editor.render([block.id]);
-    // setTimeout(() => {
-    //   editor.setCaretPosition({ blockId: block.id, index: caretPosition.index });
-    //   editor.updateCaretRect();
-    // }, 10);
+    const block = editor.getBlock(caretPosition.blockId);
+    if (!caretPosition.childBlockId || !block) return;
+    const childBlockIndex = block.childBlocks.findIndex((v) => v.id === caretPosition.childBlockId);
+    if (childBlockIndex === -1) return;
+    const childBlocks = copyObject(block.childBlocks);
+    let deletedContents;
+    if (caretPosition.collapsed) {
+      deletedContents = deleteInlineContents(
+        childBlocks[childBlockIndex].contents,
+        caretPosition.index,
+        1,
+      );
+    } else {
+      if (caretPosition.length < 1) return;
+      deletedContents = deleteInlineContents(
+        childBlocks[childBlockIndex].contents,
+        caretPosition.index,
+        caretPosition.length,
+      );
+    }
+    editor.updateBlock({
+      ...block,
+      childBlocks: [
+        ...block.childBlocks.slice(0, childBlockIndex),
+        {
+          ...block.childBlocks[childBlockIndex],
+          contents: deletedContents,
+        },
+        ...block.childBlocks.slice(childBlockIndex + 1),
+      ],
+    });
+    editor.blur();
+    editor.render([block.id]);
+    setTimeout(() => {
+      editor.setCaretPosition({
+        blockId: block.id,
+        childBlockId: caretPosition.childBlockId,
+        index: caretPosition.index,
+      });
+      editor.updateCaretRect();
+    }, 10);
   }
 }

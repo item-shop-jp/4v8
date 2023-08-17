@@ -96,6 +96,7 @@ export class ClipboardModule implements Module {
             index: textIndex,
           });
           this.editor.updateCaretRect();
+          this.editor.getModule('editor').scrollToBlock(prevBlockId);
         }, 10);
       } else if (type === 'inlines') {
         const appendContents = data as Inline[];

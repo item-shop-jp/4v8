@@ -19,15 +19,17 @@ export interface FileProps {
 const Container = styled.div`
   outline: none;
   display: flex;
-  padding: 0 12px;
-  background: #eee;
-  border-radius: 8px;
+  align-items: center;
+  padding: 16px 32px;
+  gap: 8px;
   margin: 12px 0;
+  border: 1px solid #f0f0f0;
+  height: 56px;
+  box-sizing: border-box;
 `;
 const IconContainer = styled.div`
   display: flex;
   flex-shrink: 0;
-  width: 50px;
   justify-content: center;
   align-items: center;
 `;
@@ -37,7 +39,6 @@ const Button = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  background: #eee;
   border-radius: 8px;
   cursor: pointer;
   &:hover svg {
@@ -48,7 +49,6 @@ const Inner = styled.div`
   flex-shrink: 1;
   overflow: hidden;
   width: 100%;
-  padding: 12px;
   box-sizing: border-box;
 `;
 
@@ -56,11 +56,13 @@ const FileName = styled.div`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  font-weight: bold;
 `;
 const Size = styled.div`
   font-size: 12px;
   color: #999;
   display: flex;
+  flex-shrink: 0;
 `;
 const Loading = styled.div`
   margin-left: 8px;
@@ -87,52 +89,35 @@ export const File = React.memo(
       <Container ref={imageRef} {...props} contentEditable={false}>
         <IconContainer>
           <svg
-            width="32"
-            height="32"
+            width="16"
+            height="16"
             viewBox="0 0 24 24"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
           >
             <path
-              d="M14 3V7C14 7.26522 14.1054 7.51957 14.2929 7.70711C14.4804 7.89464 14.7348 8 15 8H19"
-              stroke="#666666"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-            <path
-              d="M12 11V17M17 21H7C6.46957 21 5.96086 20.7893 5.58579 20.4142C5.21071 20.0391 5 19.5304 5 19V5C5 4.46957 5.21071 3.96086 5.58579 3.58579C5.96086 3.21071 6.46957 3 7 3H14L19 8V19C19 19.5304 18.7893 20.0391 18.4142 20.4142C18.0391 20.7893 17.5304 21 17 21Z"
-              stroke="#666666"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-            <path
-              d="M9.5 13.5L12 11L14.5 13.5"
-              stroke="#666666"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
+              d="M18.5 16H7C4.79 16 3 14.21 3 12C3 9.79 4.79 8 7 8H19.5C20.88 8 22 9.12 22 10.5C22 11.88 20.88 13 19.5 13H9C8.45 13 8 12.55 8 12C8 11.45 8.45 11 9 11H18.5V9.5H9C7.62 9.5 6.5 10.62 6.5 12C6.5 13.38 7.62 14.5 9 14.5H19.5C21.71 14.5 23.5 12.71 23.5 10.5C23.5 8.29 21.71 6.5 19.5 6.5H7C3.96 6.5 1.5 8.96 1.5 12C1.5 15.04 3.96 17.5 7 17.5H18.5V16Z"
+              fill="#18181B"
             />
           </svg>
         </IconContainer>
         <Inner>
           <FileName>{attributes?.fileName}</FileName>
-          <Size>
-            {prettyBytes(attributes?.size)}
-            {isUploading && (
-              <Loading>
-                <RotatingLines
-                  strokeColor="grey"
-                  strokeWidth="5"
-                  animationDuration="0.75"
-                  width="18"
-                  visible={true}
-                />
-              </Loading>
-            )}
-          </Size>
         </Inner>
+        <Size>
+          {prettyBytes(attributes?.size)}
+          {isUploading && (
+            <Loading>
+              <RotatingLines
+                strokeColor="grey"
+                strokeWidth="5"
+                animationDuration="0.75"
+                width="18"
+                visible={true}
+              />
+            </Loading>
+          )}
+        </Size>
         <IconContainer>
           <Tooltip
             targetElement={

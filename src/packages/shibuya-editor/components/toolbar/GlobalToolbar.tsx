@@ -19,6 +19,7 @@ import {
 import { Block, BlockAttributes, BlockType } from '../../types';
 import { Tooltip } from '../popups';
 import { createBlock } from '../../utils/block';
+import { FormatAttachment } from '../icons/toolbar/FormatAttachment';
 
 export interface GlobalToolbarProps {
   editor: EditorController;
@@ -176,6 +177,32 @@ export const GlobalToolbar = React.memo(({ editor, ...props }: GlobalToolbarProp
     [formats, blockType],
   );
 
+  const handleFileUpload = React.useCallback(
+    (event: React.MouseEvent) => {
+      event.preventDefault();
+      const caretPosition = editor.getCaretPosition();
+      if (!caretPosition) return;
+
+      const fileHolder = document.createElement('input');
+      fileHolder.setAttribute('type', 'file');
+      fileHolder.setAttribute('accept', '*');
+      fileHolder.setAttribute('style', 'visibility:hidden');
+
+      fileHolder.onchange = () => {
+        editor
+          .getModule('uploader')
+          .upload(Array.from(fileHolder.files ?? []), caretPosition.blockId);
+      };
+      fileHolder.click();
+
+      document.body.appendChild(fileHolder);
+      setTimeout(() => {
+        document.body.removeChild(fileHolder);
+      }, 10);
+    },
+    [formats, blockType, editor],
+  );
+
   React.useEffect(() => {
     const subs = new Subscription();
     const eventEmitter = editor.getEventEmitter();
@@ -312,6 +339,18 @@ export const GlobalToolbar = React.memo(({ editor, ...props }: GlobalToolbarProp
           >
             決定事項に切り替える
           </Tooltip>
+          <Divider />
+          <Tooltip
+            targetElement={
+              <Button href="#" active={false} onClick={handleFileUpload}>
+                <FormatAttachment size="20" />
+              </Button>
+            }
+            maxWidth={200}
+            position={'top'}
+          >
+            ファイルを添付
+          </Tooltip>
           <Tooltip
             targetElement={
               <Button href="#" active={blockType === 'TABLE'} onClick={handleTable}>
@@ -321,7 +360,7 @@ export const GlobalToolbar = React.memo(({ editor, ...props }: GlobalToolbarProp
             maxWidth={200}
             position={'top'}
           >
-            テーブルに切り替える
+            テーブルを追加
           </Tooltip>
         </Container>
       )}

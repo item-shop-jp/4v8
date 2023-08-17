@@ -259,6 +259,7 @@ export class HistoryModule implements Module {
               index: textIndex,
             });
             this.editor.updateCaretRect();
+            if (op.prevBlockId) this.editor.getModule('editor').scrollToBlock(op.prevBlockId);
           }, 10);
         }
       });
@@ -279,6 +280,7 @@ export class HistoryModule implements Module {
               index: textIndex,
             });
             this.editor.updateCaretRect();
+            if (op.blockId) this.editor.getModule('editor').scrollToBlock(op.blockId);
           }, 10);
         }
       });
@@ -338,6 +340,7 @@ export class HistoryModule implements Module {
               index: textIndex,
             });
             this.editor.updateCaretRect();
+            if (focusBlockId) this.editor.getModule('editor').scrollToBlock(focusBlockId);
           }, 10);
         }
       });
@@ -353,6 +356,7 @@ export class HistoryModule implements Module {
               index: textIndex,
             });
             this.editor.updateCaretRect();
+            if (op.prevBlockId) this.editor.getModule('editor').scrollToBlock(op.prevBlockId);
           }, 10);
         }
       });
@@ -415,6 +419,7 @@ export class HistoryModule implements Module {
           length: 0,
         });
         this.editor.updateCaretRect();
+        if (op.blockId) this.editor.getModule('editor').scrollToBlock(op.blockId);
       }, 10);
       return;
     }

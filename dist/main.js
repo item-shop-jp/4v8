@@ -27119,6 +27119,14 @@ const Collaborators = React__namespace.memo(({ editor }) => {
                 return [...prev];
             });
         }));
+        const debouncedUpdate = debounce(200, () => {
+            setCollaborators((prev) => {
+                return [...prev];
+            });
+        });
+        subs.add(eventEmitter.select(EditorEvents.EVENT_EDITOR_HISTORY_PUSH).subscribe(() => {
+            debouncedUpdate();
+        }));
         subs.add(eventEmitter.select(EditorEvents.EVENT_COLLABORATOR_REMOVE_ALL).subscribe(() => {
             setCollaborators([]);
         }));

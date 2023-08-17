@@ -1,6 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { Subscription } from 'rxjs';
+import { debounce } from 'throttle-debounce';
 import { EditorEvents } from '../constants';
 import { EditorController } from '../types/editor';
 import { CollaboratingMember } from '../modules/collaborator';
@@ -65,6 +66,16 @@ export const Collaborators = React.memo(({ editor }: CollaboratorProps) => {
           prev[index] = user;
           return [...prev];
         });
+      }),
+    );
+    const debouncedUpdate = debounce(200, () => {
+      setCollaborators((prev) => {
+        return [...prev];
+      });
+    });
+    subs.add(
+      eventEmitter.select(EditorEvents.EVENT_EDITOR_HISTORY_PUSH).subscribe(() => {
+        debouncedUpdate();
       }),
     );
     subs.add(

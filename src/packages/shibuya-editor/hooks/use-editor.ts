@@ -346,6 +346,12 @@ export function useEditor({
     return blockUtils.getBlockLength(element);
   }, []);
 
+  const getChildBlockLength = React.useCallback((blockId: string): number | null => {
+    const element = blockUtils.getBlockElementById(blockId, true);
+    if (!element) return null;
+    return blockUtils.getBlockLength(element, true);
+  }, []);
+
   const getCaretPosition = React.useCallback(() => {
     const nativeRange = getNativeRange();
     if (!nativeRange) return null;
@@ -1027,6 +1033,7 @@ export function useEditor({
       getBlocks,
       getBlock,
       getBlockLength,
+      getChildBlockLength,
       createBlock,
       updateBlock,
       updateBlocks,

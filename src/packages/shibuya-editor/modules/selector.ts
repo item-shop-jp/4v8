@@ -74,6 +74,11 @@ export class SelectorModule implements Module {
       prevented: true,
       handler: this._handleBackspace.bind(this),
     });
+    this.addBinding({
+      key: KeyCodes.DELETE,
+      prevented: true,
+      handler: this._handleBackspace.bind(this),
+    });
 
     this.addBinding({
       key: KeyCodes.ARROW_UP,
@@ -588,10 +593,18 @@ export class SelectorModule implements Module {
   }
 
   private _handleBackspace(editor: EditorController) {
+    const blocks = editor.getBlocks();
     const selectedBlocks = editor.getModule('selector').getSelectedBlocks();
     if (selectedBlocks.length < 1) return;
     editor.getModule('editor').deleteBlocks(selectedBlocks.map((block) => block.id));
+    const startIndex = blocks.findIndex((block) => block.id === selectedBlocks[0].id);
+    const prev = startIndex !== 1 ? blocks[startIndex - 1] : null;
     this.reset();
+    setTimeout(() => {
+      const blocks = editor.getBlocks();
+      editor.setCaretPosition({ blockId: prev?.id ?? blocks[0].id });
+      editor.updateCaretRect();
+    }, 10);
   }
 
   private _handleSelectorUp() {

@@ -57,6 +57,7 @@ export interface EditorController {
   getBlocks(): Block[];
   getBlock(blockId: string): Block | null;
   getBlockLength(blockId: string): number | null;
+  getChildBlockLength(blockId: string): number | null;
   createBlock(appendBlock: Block, prevBlockId?: string, type?: 'prepend' | 'append'): void;
   createBlock(
     appendBlock: Block,

@@ -104,21 +104,25 @@ export class KeyBoardModule implements Module {
     this.addBinding({
       key: KeyCodes.ARROW_UP,
       collapsed: true,
+      except: ['TABLE'],
       handler: this._handleKeyUp.bind(this),
     });
     this.addBinding({
       key: KeyCodes.ARROW_DOWN,
       collapsed: true,
+      except: ['TABLE'],
       handler: this._handleKeyDown.bind(this),
     });
     this.addBinding({
       key: KeyCodes.ARROW_LEFT,
       collapsed: true,
+      except: ['TABLE'],
       handler: this._handleKeyLeft.bind(this),
     });
     this.addBinding({
       key: KeyCodes.ARROW_RIGHT,
       collapsed: true,
+      except: ['TABLE'],
       handler: this._handleKeyRight.bind(this),
     });
 
@@ -273,6 +277,30 @@ export class KeyBoardModule implements Module {
       overwriteAllEvents: true,
       only: ['TABLE'],
       handler: this._handleTableDelete.bind(this),
+    });
+    this.addBinding({
+      key: KeyCodes.ARROW_UP,
+      collapsed: true,
+      only: ['TABLE'],
+      handler: this._handleTableKeyUp.bind(this),
+    });
+    this.addBinding({
+      key: KeyCodes.ARROW_DOWN,
+      collapsed: true,
+      only: ['TABLE'],
+      handler: this._handleTableKeyDown.bind(this),
+    });
+    this.addBinding({
+      key: KeyCodes.ARROW_LEFT,
+      collapsed: true,
+      only: ['TABLE'],
+      handler: this._handleTableKeyLeft.bind(this),
+    });
+    this.addBinding({
+      key: KeyCodes.ARROW_RIGHT,
+      collapsed: true,
+      only: ['TABLE'],
+      handler: this._handleTableKeyRight.bind(this),
     });
   }
 
@@ -478,8 +506,25 @@ export class KeyBoardModule implements Module {
         event.preventDefault();
         const blocks = editor.getBlocks();
         const currentIndex = blocks.findIndex((v) => v.id === caret.blockId);
-        if (currentIndex !== -1 && currentIndex > 0) {
+        if (currentIndex > 0) {
           const nextBlockLength = editor.getBlockLength(blocks[currentIndex - 1].id) ?? 0;
+          //tableの場合だけの処理
+          if (blocks[currentIndex - 1].type === 'TABLE') {
+            const rIndex = blocks[currentIndex - 1].attributes.tableR - 1;
+            const cIndex = blocks[currentIndex - 1].attributes.tableC - 1;
+            const lastChild = blocks[currentIndex - 1].childBlocks.find(
+              (v) => v.name === `r${rIndex}-c${cIndex}`,
+            );
+            if (!lastChild) return;
+            const lastChildBlockLength = editor.getChildBlockLength(lastChild.id) ?? 0;
+            editor.setCaretPosition({
+              blockId: blocks[currentIndex - 1].id,
+              childBlockId: lastChild.id,
+              index: lastChildBlockLength,
+              nextElementDirection: 'up',
+            });
+            return;
+          }
           editor.setCaretPosition({
             blockId: blocks[currentIndex - 1].id,
             index: nextBlockLength,
@@ -506,6 +551,22 @@ export class KeyBoardModule implements Module {
         const currentIndex = blocks.findIndex((v) => v.id === caret.blockId);
 
         if (currentIndex !== -1 && currentIndex < blocks.length - 1) {
+          //次がtableの場合だけの処理
+          if (blocks[currentIndex + 1].type === 'TABLE') {
+            const rIndex = 0;
+            const cIndex = 0;
+            const firstChild = blocks[currentIndex + 1].childBlocks.find(
+              (v) => v.name === `r${rIndex}-c${cIndex}`,
+            );
+            if (!firstChild) return;
+            editor.setCaretPosition({
+              blockId: blocks[currentIndex + 1].id,
+              childBlockId: firstChild.id,
+              index: 0,
+            });
+            setTimeout(() => editor.updateCaretRect(), 10);
+            return;
+          }
           editor.setCaretPosition({ blockId: blocks[currentIndex + 1].id });
         }
       }
@@ -1122,5 +1183,170 @@ export class KeyBoardModule implements Module {
       });
       editor.updateCaretRect();
     }, 10);
+  }
+
+  private _handleTableKeyLeft(
+    caretPosition: CaretPosition,
+    editor: EditorController,
+    event: React.KeyboardEvent,
+  ) {
+    const block = editor.getBlock(caretPosition.blockId);
+    if (!caretPosition.childBlockId || !block) return;
+    const childBlockIndex = block.childBlocks.findIndex((v) => v.id === caretPosition.childBlockId);
+    if (childBlockIndex === -1 || !block.childBlocks[childBlockIndex].name) return;
+    const match = block.childBlocks[childBlockIndex].name?.match(/^r([0-9]+)-c([0-9]+)/);
+
+    if (!match) return;
+    let currentR = Number(match[1]);
+    let currentC = Number(match[2]);
+    const blockLength = editor.getChildBlockLength(block.childBlocks[childBlockIndex].id);
+
+    if (blockLength === null) return;
+    if (blockLength === 0 || caretPosition.index === 0) {
+      event.preventDefault();
+      if (currentC === 0 && currentR === 0) {
+        // １つ前のブロックへ飛ばす
+        const blocks = editor.getBlocks();
+        const currentBlockIndex = blocks.findIndex((v) => v.id === caretPosition.blockId);
+        if (currentBlockIndex > 0) {
+          const nextBlockLength = editor.getBlockLength(blocks[currentBlockIndex - 1].id) ?? 0;
+          //次がtableの場合だけの処理
+          if (blocks[currentBlockIndex - 1].type === 'TABLE') {
+            const rIndex = blocks[currentBlockIndex - 1].attributes.tableR - 1;
+            const cIndex = blocks[currentBlockIndex - 1].attributes.tableC - 1;
+            const lastChild = blocks[currentBlockIndex - 1].childBlocks.find(
+              (v) => v.name === `r${rIndex}-c${cIndex}`,
+            );
+            if (!lastChild) return;
+            const lastChildBlockLength = editor.getChildBlockLength(lastChild.id) ?? 0;
+            editor.setCaretPosition({
+              blockId: blocks[currentBlockIndex - 1].id,
+              childBlockId: lastChild.id,
+              index: lastChildBlockLength,
+              nextElementDirection: 'up',
+            });
+            setTimeout(() => editor.updateCaretRect(), 10);
+            return;
+          }
+
+          editor.setCaretPosition({
+            blockId: blocks[currentBlockIndex - 1].id,
+            index: nextBlockLength,
+            nextElementDirection: 'up',
+          });
+          setTimeout(() => editor.updateCaretRect(), 10);
+          return;
+        }
+      }
+      if (currentC === 0) {
+        currentR--;
+        currentC = block.attributes.tableC - 1;
+      } else {
+        currentC--;
+      }
+      const prevChild = block.childBlocks.find((v) => v.name === `r${currentR}-c${currentC}`);
+      if (!prevChild) return;
+
+      const prevBlockLength = editor.getChildBlockLength(prevChild.id) ?? 0;
+      editor.setCaretPosition({
+        blockId: block.id,
+        childBlockId: prevChild.id,
+        index: prevBlockLength,
+      });
+    }
+    setTimeout(() => editor.updateCaretRect(), 10);
+  }
+
+  private _handleTableKeyRight(
+    caretPosition: CaretPosition,
+    editor: EditorController,
+    event: React.KeyboardEvent,
+  ) {
+    const block = editor.getBlock(caretPosition.blockId);
+    if (!caretPosition.childBlockId || !block) return;
+    const childBlockIndex = block.childBlocks.findIndex((v) => v.id === caretPosition.childBlockId);
+    if (childBlockIndex === -1 || !block.childBlocks[childBlockIndex].name) return;
+    const match = block.childBlocks[childBlockIndex].name?.match(/^r([0-9]+)-c([0-9]+)/);
+
+    if (!match) return;
+    let currentR = Number(match[1]);
+    let currentC = Number(match[2]);
+    const blockLength = editor.getChildBlockLength(block.childBlocks[childBlockIndex].id);
+
+    if (blockLength === null) return;
+    if (blockLength === 0 || blockLength === caretPosition.index) {
+      event.preventDefault();
+      if (currentC === block.attributes.tableC - 1 && currentR === block.attributes.tableR - 1) {
+        // １つ先のブロックへ飛ばす
+        const blocks = editor.getBlocks();
+        const currentBlockIndex = blocks.findIndex((v) => v.id === caretPosition.blockId);
+        if (currentBlockIndex === -1 || currentBlockIndex >= blocks.length - 1) return;
+
+        //次がtableの場合だけの処理
+        if (blocks[currentBlockIndex + 1].type === 'TABLE') {
+          const rIndex = 0;
+          const cIndex = 0;
+          const firstChild = blocks[currentBlockIndex + 1].childBlocks.find(
+            (v) => v.name === `r${rIndex}-c${cIndex}`,
+          );
+          if (!firstChild) return;
+          editor.setCaretPosition({
+            blockId: blocks[currentBlockIndex + 1].id,
+            childBlockId: firstChild.id,
+            index: 0,
+          });
+          setTimeout(() => editor.updateCaretRect(), 10);
+          return;
+        }
+
+        editor.setCaretPosition({
+          blockId: blocks[currentBlockIndex + 1].id,
+          index: 0,
+        });
+        setTimeout(() => editor.updateCaretRect(), 10);
+        return;
+      }
+      if (currentC === block.attributes.tableC - 1) {
+        currentR++;
+        currentC = 0;
+      } else {
+        currentC++;
+      }
+      const nextChild = block.childBlocks.find((v) => v.name === `r${currentR}-c${currentC}`);
+      if (!nextChild) return;
+
+      editor.setCaretPosition({
+        blockId: block.id,
+        childBlockId: nextChild.id,
+        index: 0,
+      });
+    }
+    setTimeout(() => editor.updateCaretRect(), 10);
+  }
+
+  private _handleTableKeyUp(
+    caretPosition: CaretPosition,
+    editor: EditorController,
+    event: React.KeyboardEvent,
+  ) {
+    if (!caretPosition.isTop) return;
+    if (editor.prev()) {
+      event.preventDefault();
+    } else {
+      setTimeout(() => editor.updateCaretRect(), 10);
+    }
+  }
+
+  private _handleTableKeyDown(
+    caretPosition: CaretPosition,
+    editor: EditorController,
+    event: React.KeyboardEvent,
+  ) {
+    if (!caretPosition.isBottom) return;
+    if (editor.next()) {
+      event.preventDefault();
+    } else {
+      setTimeout(() => editor.updateCaretRect(), 10);
+    }
   }
 }

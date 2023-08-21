@@ -233,13 +233,29 @@ export class KeyBoardModule implements Module {
         key: KeyCodes.D,
         prevented: true,
         ctrlKey: true,
+        except: ['TABLE'],
         handler: this._handleDelete.bind(this),
       });
       this.addBinding({
         key: KeyCodes.H,
         prevented: true,
         ctrlKey: true,
+        except: ['TABLE'],
         handler: this._handleBackspace.bind(this),
+      });
+      this.addBinding({
+        key: KeyCodes.D,
+        prevented: true,
+        ctrlKey: true,
+        only: ['TABLE'],
+        handler: this._handleTableDelete.bind(this),
+      });
+      this.addBinding({
+        key: KeyCodes.H,
+        prevented: true,
+        ctrlKey: true,
+        only: ['TABLE'],
+        handler: this._handleTableBackspace.bind(this),
       });
     }
 

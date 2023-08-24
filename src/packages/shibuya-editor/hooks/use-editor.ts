@@ -36,8 +36,8 @@ export function useEditor({
   eventEmitter,
 }: Props): [React.MutableRefObject<HTMLDivElement | null>, EditorController] {
   const editorRef = React.useRef<HTMLDivElement>(null);
-  const lastCaretPositionRef = React.useRef<CaretPosition | null>();
-  const lastCaretRectRef = React.useRef<DOMRect | null>();
+  const lastCaretPositionRef = React.useRef<CaretPosition | null>(null);
+  const lastCaretRectRef = React.useRef<DOMRect | null>(null);
   const blocksRef = React.useRef<Block[]>([]);
   const modulesRef = React.useRef<any>({});
 
@@ -383,6 +383,10 @@ export function useEditor({
     return lastCaretRectRef.current;
   }, []);
 
+  const getLastCaretRect = React.useCallback(() => {
+    return lastCaretRectRef.current;
+  }, []);
+
   const getNativeRange = React.useCallback(() => {
     const selection = document.getSelection();
     if (!selection || selection.rangeCount < 1) return null;
@@ -533,10 +537,11 @@ export function useEditor({
     if (!editorRef.current || !startInlineId || !endInlineId || !blockId || !blockElement) {
       return null;
     }
-
+    const caretRect = getRectByRange(nativeRange);
+    if (!caretRect) return null;
     // ネストされた要素の場合
-    let start, end;
-    if (childBlockId) {
+    let start, end, isTop, isBottom;
+    if (childBlockId && childBlockElement) {
       start = blockUtils.getChildBlockIndexFromNativeIndex(
         nativeRange.startContainer as HTMLElement,
         nativeRange.startOffset,
@@ -545,6 +550,16 @@ export function useEditor({
         nativeRange.endContainer as HTMLElement,
         nativeRange.endOffset,
       );
+      const blockRect = childBlockElement.getBoundingClientRect();
+      const paddingTopText = getComputedStyle(childBlockElement).paddingTop;
+      const paddingTop = paddingTopText.match(/^[0-9]+px$/) ? parseInt(paddingTopText) : 0;
+      const scrollbarHeight = blockRect.height - blockElement.clientHeight;
+      isTop = caretRect.y - (blockRect.y + paddingTop) < 10;
+      isBottom =
+        blockRect.y +
+          blockRect.height -
+          (caretRect.y + caretRect.height + paddingTop + scrollbarHeight) <
+        10;
     } else {
       start = blockUtils.getBlockIndexFromNativeIndex(
         nativeRange.startContainer as HTMLElement,
@@ -554,15 +569,20 @@ export function useEditor({
         nativeRange.endContainer as HTMLElement,
         nativeRange.endOffset,
       );
+      const blockRect = blockElement.getBoundingClientRect();
+      const paddingTopText = getComputedStyle(blockElement).paddingTop;
+      const paddingTop = paddingTopText.match(/^[0-9]+px$/) ? parseInt(paddingTopText) : 0;
+      const scrollbarHeight = blockRect.height - blockElement.clientHeight;
+      isTop = caretRect.y - (blockRect.y + paddingTop) < 10;
+      isBottom =
+        blockRect.y +
+          blockRect.height -
+          (caretRect.y + caretRect.height + paddingTop + scrollbarHeight) <
+        10;
     }
 
-    const caretRect = getRectByRange(nativeRange);
-    if (!caretRect) return null;
-    const blockRect = blockElement.getBoundingClientRect();
     if (!start || !end) return null;
-    const paddingTopText = getComputedStyle(blockElement).paddingTop;
-    const paddingTop = paddingTopText.match(/^[0-9]+px$/) ? parseInt(paddingTopText) : 0;
-    const scrollbarHeight = blockRect.height - blockElement.clientHeight;
+
     const range: CaretPosition = {
       blockId,
       childBlockId: childBlockId ?? null,
@@ -570,12 +590,8 @@ export function useEditor({
       index: start.index,
       length: end.index - start.index,
       collapsed: nativeRange.collapsed,
-      isTop: caretRect.y - (blockRect.y + paddingTop) < 10,
-      isBottom:
-        blockRect.y +
-          blockRect.height -
-          (caretRect.y + caretRect.height + paddingTop + scrollbarHeight) <
-        10,
+      isTop,
+      isBottom,
       rect: caretRect,
     };
 
@@ -1045,6 +1061,7 @@ export function useEditor({
       setCaretPosition,
       updateCaretPositionRef,
       updateCaretRect,
+      getLastCaretRect,
       scrollIntoView,
       getNativeRange,
       prev,

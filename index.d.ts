@@ -266,6 +266,7 @@ export interface EditorController {
   scrollIntoView(blockId?: string): void;
   updateCaretPositionRef(caret?: CaretPosition): void;
   updateCaretRect(rect?: DOMRect): DOMRect | null;
+  getLastCaretRect(): DOMRect | null;
   prev(params?: PositionParams): boolean;
   next(params?: PositionParams): boolean;
   render(affectedIds?: string[], isForce?: boolean): void;

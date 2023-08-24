@@ -53,7 +53,7 @@ export class KeyBoardModule implements Module {
   private syncChildBlock = throttle(
     200,
     (parentBlockId: string, blockId: string, blockKey: string, blockElement: HTMLElement) => {
-      this.editor.syncChildBlock(parentBlockId, blockId, blockKey, blockElement, true);
+      this.editor.syncChildBlock(parentBlockId, blockId, blockKey, blockElement);
     },
   );
   private syncCodeBlock = debounce(300, (blockId?: string, blockElement?: HTMLElement) => {
@@ -74,14 +74,14 @@ export class KeyBoardModule implements Module {
       key: KeyCodes.ENTER,
       composing: true,
       prevented: true,
-      except: ['CODE-BLOCK'],
+      except: ['CODE-BLOCK', 'TABLE'],
       handler: this._handleEnter.bind(this),
     });
     this.addBinding({
       key: KeyCodes.NUMPAD_ENTER,
       composing: true,
       prevented: true,
-      except: ['CODE-BLOCK'],
+      except: ['CODE-BLOCK', 'TABLE'],
       handler: this._handleEnter.bind(this),
     });
     // code-block enter
@@ -265,6 +265,20 @@ export class KeyBoardModule implements Module {
 
     // table
     this.addBinding({
+      key: KeyCodes.ENTER,
+      composing: true,
+      prevented: true,
+      only: ['TABLE'],
+      handler: this._handleTableEnter.bind(this),
+    });
+    this.addBinding({
+      key: KeyCodes.NUMPAD_ENTER,
+      composing: true,
+      prevented: true,
+      only: ['TABLE'],
+      handler: this._handleTableEnter.bind(this),
+    });
+    this.addBinding({
       key: KeyCodes.BACKSPACE,
       prevented: true,
       overwriteAllEvents: true,
@@ -405,7 +419,7 @@ export class KeyBoardModule implements Module {
       altKey = false,
       prevented = false,
       composing = false,
-      overwriteAllEvents = false,
+      overwriteAllEvents = false, // shiftやctrlとの同時押し含めすべて
       only = [],
       except = [],
       handler,
@@ -1330,6 +1344,18 @@ export class KeyBoardModule implements Module {
     event: React.KeyboardEvent,
   ) {
     if (!caretPosition.isTop) return;
+    const block = editor.getBlock(caretPosition.blockId);
+    if (!caretPosition.childBlockId || !block) return;
+    const childBlockIndex = block.childBlocks.findIndex((v) => v.id === caretPosition.childBlockId);
+    if (childBlockIndex === -1 || !block.childBlocks[childBlockIndex].name) return;
+    const match = block.childBlocks[childBlockIndex].name?.match(/^r([0-9]+)-c([0-9]+)/);
+
+    if (!match) return;
+    let currentR = Number(match[1]);
+    let currentC = Number(match[2]);
+
+    const rect = editor.getLastCaretRect();
+    console.log(rect);
     if (editor.prev()) {
       event.preventDefault();
     } else {
@@ -1347,6 +1373,12 @@ export class KeyBoardModule implements Module {
       event.preventDefault();
     } else {
       setTimeout(() => editor.updateCaretRect(), 10);
+    }
+  }
+
+  private _handleTableEnter(caretPosition: CaretPosition, editor: EditorController) {
+    if (this.composing) {
+      return;
     }
   }
 }

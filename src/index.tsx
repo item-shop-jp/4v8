@@ -55,12 +55,12 @@ const settings = {
         });
       },
       onDownload: (files: string[]) => {
-        console.log(123, files);
+        // console.log(123, files);
       },
     },
     toc: {
       onChange: (labels: { type: string; label: string }[]) => {
-        console.log(123, labels);
+        // console.log(123, labels);
       },
     },
   },

@@ -27147,7 +27147,15 @@ const Collaborators = React__namespace.memo(({ editor }) => {
             const containerScrollTop = containerEl ? containerEl.scrollTop : 0;
             const containerRect = containerEl === null || containerEl === void 0 ? void 0 : containerEl.getBoundingClientRect();
             const rect = blockEl.getBoundingClientRect();
-            let top = containerScrollTop + rect.top - ((_a = containerRect === null || containerRect === void 0 ? void 0 : containerRect.top) !== null && _a !== void 0 ? _a : 0) - ((_b = options.marginTop) !== null && _b !== void 0 ? _b : 0);
+            // １行以上の要素は気持ちパディングを取る
+            const paddingTop = parseInt(window.getComputedStyle(blockEl).getPropertyValue('padding-top'), 10);
+            console.log(paddingTop);
+            let top = containerScrollTop +
+                rect.top -
+                ((_a = containerRect === null || containerRect === void 0 ? void 0 : containerRect.top) !== null && _a !== void 0 ? _a : 0) -
+                ((_b = options.marginTop) !== null && _b !== void 0 ? _b : 0) +
+                (paddingTop > 4 ? paddingTop : 0);
+            // 複数人が同じ場所をフォーカスしている場合
             if (r.find((x) => x.top === top)) {
                 top = top + 16;
             }

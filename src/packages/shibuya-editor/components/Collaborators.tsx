@@ -98,8 +98,20 @@ export const Collaborators = React.memo(({ editor }: CollaboratorProps) => {
       const containerScrollTop = containerEl ? containerEl.scrollTop : 0;
       const containerRect = containerEl?.getBoundingClientRect();
       const rect = blockEl.getBoundingClientRect();
+
+      // １行以上の要素は気持ちパディングを取る
+      const paddingTop = parseInt(
+        window.getComputedStyle(blockEl).getPropertyValue('padding-top'),
+        10,
+      );
+      console.log(paddingTop);
       let top =
-        containerScrollTop + rect.top - (containerRect?.top ?? 0) - (options.marginTop ?? 0);
+        containerScrollTop +
+        rect.top -
+        (containerRect?.top ?? 0) -
+        (options.marginTop ?? 0) +
+        (paddingTop > 4 ? paddingTop : 0);
+      // 複数人が同じ場所をフォーカスしている場合
       if (r.find((x) => x.top === top)) {
         top = top + 16;
       }

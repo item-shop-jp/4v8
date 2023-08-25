@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { EditorController } from '../../../types/editor';
 import { InlineContainer } from '../../inlines/Container';
 import { Formats } from '../../../types/format';
-import { Block } from '../../../types';
+import { Block, Inline } from '../../../types';
 import { createBlock } from '../../../utils/block';
 
 export interface TableProps {
@@ -19,6 +19,14 @@ export interface TableProps {
     };
   };
   childBlocks: Block[];
+  editor: EditorController;
+}
+
+export interface TableCellProps {
+  blockId: string;
+  formats: Formats;
+  contents: Inline[];
+  scrollContainer?: HTMLElement | string;
   editor: EditorController;
 }
 
@@ -113,19 +121,13 @@ export const Table = React.memo(
                         maxWidth: memoTableWidths[cIndex]?.max ?? 240,
                       }}
                     >
-                      <TableContent
-                        suppressContentEditableWarning
-                        contentEditable={true}
-                        data-child-block-id={memoTableRows[rIndex][cIndex].id}
-                        data-child-block-key={`r${rIndex}-c${cIndex}`}
-                      >
-                        {InlineContainer({
-                          contents: memoTableRows[rIndex][cIndex].contents ?? [],
-                          formats,
-                          editor,
-                          scrollContainer,
-                        })}
-                      </TableContent>
+                      <TableCell
+                        contents={memoTableRows[rIndex][cIndex].contents}
+                        formats={formats}
+                        editor={editor}
+                        scrollContainer={scrollContainer}
+                        blockId={memoTableRows[rIndex][cIndex].id}
+                      />
                     </StyledTd>
                   );
                 })}
@@ -141,5 +143,28 @@ export const Table = React.memo(
         <StyledTable ref={tableRef}>{memoContents}</StyledTable>
       </Container>
     );
+  },
+);
+
+export const TableCell = React.memo(
+  ({ blockId, formats, contents, scrollContainer, editor }: TableCellProps) => {
+    const memoContent = React.useMemo(() => {
+      return (
+        <TableContent
+          suppressContentEditableWarning
+          contentEditable={true}
+          data-child-block-id={blockId}
+        >
+          {InlineContainer({
+            contents: contents ?? [],
+            formats,
+            editor,
+            scrollContainer,
+          })}
+        </TableContent>
+      );
+    }, [blockId, contents, formats, editor, scrollContainer]);
+
+    return <>{memoContent}</>;
   },
 );

@@ -113,11 +113,12 @@ export class HistoryModule implements Module {
     }
   }
 
-  // Deleting the operation history to avoid interfering with each other's changes during collaborative editing.
+  // 共同編集時はコンフリクト対策で同じブロックを編集したらupdate_contents以外の処理は消す
   transform(transformOp: Op) {
     this.stack.undo = this.stack.undo
       .map((ops) => {
         return ops.filter((op) => {
+          if (op.type === 'update_contents') return true;
           return transformOp.blockId !== op.blockId;
         });
       })
@@ -125,6 +126,7 @@ export class HistoryModule implements Module {
     this.stack.redo = this.stack.redo
       .map((ops) => {
         return ops.filter((op) => {
+          if (op.type === 'update_contents') return true;
           return transformOp.blockId !== op.blockId;
         });
       })
@@ -150,13 +152,14 @@ export class HistoryModule implements Module {
     }
   }
 
-  // Deleting the operation history to avoid interfering with each other's changes during collaborative editing.
+  // 共同編集時はコンフリクト対策で同じブロックを編集したらupdate_contents以外の処理は消す
   transformMultiLineOp(transformOps: Op[]) {
     const ids = transformOps.map((v) => v.blockId);
 
     this.stack.undo = this.stack.undo
       .map((ops) => {
         return ops.filter((op) => {
+          if (op.type === 'update_contents') return true;
           return !ids.includes(op.blockId);
         });
       })
@@ -164,6 +167,7 @@ export class HistoryModule implements Module {
     this.stack.redo = this.stack.redo
       .map((ops) => {
         return ops.filter((op) => {
+          if (op.type === 'update_contents') return true;
           return !ids.includes(op.blockId);
         });
       })
@@ -305,7 +309,7 @@ export class HistoryModule implements Module {
       });
 
       this.editor.numberingList();
-      this.editor.render(affectedIds);
+      this.editor.render(affectedIds, true);
       this.isUpdating = false;
     }
   }
@@ -378,7 +382,7 @@ export class HistoryModule implements Module {
         this.eventEmitter.emit(EditorEvents.EVENT_EDITOR_CHANGED, copyObject(ops));
       });
       this.editor.numberingList();
-      this.editor.render(affectedIds);
+      this.editor.render(affectedIds, true);
       this.isUpdating = false;
     }
   }

@@ -150,7 +150,7 @@ export const Table = React.memo(
 export const TableCell = React.memo(
   ({ parentBlockId, blockId, formats, scrollContainer, editor }: TableCellProps) => {
     const block = useChildBlockRenderer({ parentBlockId, blockId, editor });
-    console.log(block);
+
     const memoContent = React.useMemo(() => {
       return (
         <TableContent
@@ -166,7 +166,7 @@ export const TableCell = React.memo(
           })}
         </TableContent>
       );
-    }, [block, editor, scrollContainer]);
+    }, [block?.id, block?.contents, editor, scrollContainer]);
 
     return <>{memoContent}</>;
   },

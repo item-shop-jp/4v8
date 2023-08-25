@@ -10,7 +10,7 @@ import { createInline } from '../utils/inline';
 import { Module } from '../types/module';
 import { EditorController, Source } from '../types/editor';
 import { copyObject } from '../utils/object';
-import { BlockAttributes, BlockType } from '../types/block';
+import { Block, BlockAttributes, BlockType } from '../types/block';
 import { Inline } from '../types/inline';
 
 interface Props {
@@ -46,6 +46,7 @@ export class EditorModule implements Module {
     prevId = '',
     type = 'PARAGRAPH',
     contents = [],
+    childBlocks = [],
     attributes = {},
     meta = {},
     source = 'user',
@@ -55,6 +56,7 @@ export class EditorModule implements Module {
     prevId?: string;
     type?: BlockType;
     contents?: Inline[];
+    childBlocks?: Block[];
     attributes?: BlockAttributes;
     meta?: BlockAttributes;
     source?: Source;
@@ -62,7 +64,7 @@ export class EditorModule implements Module {
     historyPush?: boolean;
   } = {}) {
     const caretPosition = this.editor.getCaretPosition();
-    const appendBlock = createBlock(type, contents, attributes, meta);
+    const appendBlock = createBlock(type, contents, attributes, meta, childBlocks);
     const prevBlockId = prevId || caretPosition?.blockId;
     this.editor.createBlock(appendBlock, prevBlockId, 'append', source);
     this.editor.numberingList();

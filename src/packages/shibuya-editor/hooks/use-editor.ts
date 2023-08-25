@@ -1076,64 +1076,63 @@ export function useEditor({
   }, []);
 
   //real-time collaborative test
-  // React.useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     const block = getBlock(blocksRef.current[0].id);
-  //     if (!block) return;
-  //     const contents = [
-  //       ...block.contents.slice(0, block.contents.length - 1),
-  //       {
-  //         ...block.contents[block.contents.length - 1],
-  //         text: 'あ' + block.contents[block.contents.length - 1].text,
-  //       },
-  //     ];
-  //     console.log(JSON.stringify(contents));
-  //     updateBlock({ ...block, contents }, EventSources.COLLABORATOR);
-  //     render([block.id]);
-  //   }, 4000);
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      const block = getBlock(blocksRef.current[0].id);
+      if (!block) return;
+      const contents = [
+        ...block.contents.slice(0, block.contents.length - 1),
+        {
+          ...block.contents[block.contents.length - 1],
+          text: 'あ' + block.contents[block.contents.length - 1].text,
+        },
+      ];
+      updateBlock({ ...block, contents }, EventSources.COLLABORATOR);
+      render([block.id]);
+    }, 4000);
 
-  //   return () => {
-  //     clearInterval(interval);
-  //   };
-  // }, []);
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
 
   //real-time collaborative test(table)
-  // React.useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     const blocks = getBlocks();
-  //     const block = blocks.find((v) => v.type === 'TABLE');
-  //     if (!block) return;
-  //     const childBlockIndex = block.childBlocks.findIndex((v) => v.name === 'r0-c0');
-  //     if (childBlockIndex === -1) return;
-  //     const childBlockContents = copyObject(block.childBlocks[childBlockIndex].contents);
-  //     const contents = [
-  //       ...childBlockContents.slice(0, childBlockContents.length - 1),
-  //       {
-  //         ...childBlockContents[childBlockContents.length - 1],
-  //         text: 'あ' + childBlockContents[childBlockContents.length - 1].text,
-  //       },
-  //     ];
-  //     updateBlock(
-  //       {
-  //         ...block,
-  //         childBlocks: [
-  //           ...block.childBlocks.slice(0, childBlockIndex),
-  //           {
-  //             ...block.childBlocks[childBlockIndex],
-  //             contents,
-  //           },
-  //           ...block.childBlocks.slice(childBlockIndex + 1),
-  //         ],
-  //       },
-  //       EventSources.COLLABORATOR,
-  //     );
-  //     renderChild(block.id, [block.childBlocks[childBlockIndex].id]);
-  //   }, 4000);
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      const blocks = getBlocks();
+      const block = blocks.find((v) => v.type === 'TABLE');
+      if (!block) return;
+      const childBlockIndex = block.childBlocks.findIndex((v) => v.name === 'r0-c0');
+      if (childBlockIndex === -1) return;
+      const childBlockContents = copyObject(block.childBlocks[childBlockIndex].contents);
+      const contents = [
+        ...childBlockContents.slice(0, childBlockContents.length - 1),
+        {
+          ...childBlockContents[childBlockContents.length - 1],
+          text: 'あ' + childBlockContents[childBlockContents.length - 1].text,
+        },
+      ];
+      updateBlock(
+        {
+          ...block,
+          childBlocks: [
+            ...block.childBlocks.slice(0, childBlockIndex),
+            {
+              ...block.childBlocks[childBlockIndex],
+              contents,
+            },
+            ...block.childBlocks.slice(childBlockIndex + 1),
+          ],
+        },
+        EventSources.COLLABORATOR,
+      );
+      renderChild(block.id, [block.childBlocks[childBlockIndex].id]);
+    }, 4000);
 
-  //   return () => {
-  //     clearInterval(interval);
-  //   };
-  // }, []);
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
 
   React.useEffect(() => {
     const debouncedSelectionChange = debounce(200, (e: Event) => {

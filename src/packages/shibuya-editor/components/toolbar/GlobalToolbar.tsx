@@ -167,12 +167,21 @@ export const GlobalToolbar = React.memo(({ editor, ...props }: GlobalToolbarProp
   const handleTable = React.useCallback(
     (event: React.MouseEvent) => {
       event.preventDefault();
-      formatBlock('TABLE', { tableC: 2, tableR: 2 }, [
-        { ...createBlock('PARAGRAPH'), name: 'r0-c0' },
-        { ...createBlock('PARAGRAPH'), name: 'r0-c1' },
-        { ...createBlock('PARAGRAPH'), name: 'r1-c0' },
-        { ...createBlock('PARAGRAPH'), name: 'r1-c1' },
-      ]);
+      const caretPosition = editor.getCaretPosition();
+      if (!caretPosition) return;
+      editor.getModule('editor').createBlock({
+        prevId: caretPosition.blockId,
+        type: 'TABLE',
+        attributes: { tableC: 2, tableR: 2 },
+        childBlocks: [
+          { ...createBlock('PARAGRAPH'), name: 'r0-c0' },
+          { ...createBlock('PARAGRAPH'), name: 'r0-c1' },
+          { ...createBlock('PARAGRAPH'), name: 'r1-c0' },
+          { ...createBlock('PARAGRAPH'), name: 'r1-c1' },
+        ],
+        focus: false,
+        historyPush: true,
+      });
     },
     [formats, blockType],
   );

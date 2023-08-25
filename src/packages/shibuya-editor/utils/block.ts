@@ -9,15 +9,16 @@ import { Inline, InlineAttributes, InlineType } from '../types/inline';
 export function createBlock(
   type: BlockType,
   contents: Inline[] = [],
-  attributes?: BlockAttributes,
-  meta?: BlockAttributes,
+  attributes: BlockAttributes = {},
+  meta: BlockAttributes = {},
+  childBlocks: Block[] = [],
 ): Block {
   return {
     id: uuidv4(),
     contents: contents.length < 1 ? [createInline('TEXT')] : contents,
-    attributes: attributes ?? {},
-    meta: meta ?? {},
-    childBlocks: [],
+    attributes,
+    meta,
+    childBlocks,
     type,
   };
 }

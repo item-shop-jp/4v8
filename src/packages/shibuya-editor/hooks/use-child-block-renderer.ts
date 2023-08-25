@@ -73,6 +73,19 @@ export function useChildBlockRenderer({ parentBlockId, blockId, editor }: Props)
         }),
     );
 
+    subs.add(
+      eventEmitter
+        .select<string[]>(EditorEvents.EVENT_BLOCK_RERENDER_FORCE)
+        .pipe(filter((affectedIds) => affectedIds.includes(parentBlockId)))
+        .subscribe(() => {
+          const parentBlock = editor.getBlock(parentBlockId);
+          if (!parentBlock) return;
+          const currentBlock = parentBlock.childBlocks.find((v) => v.id === blockId);
+          if (!currentBlock) return;
+          setBlock({ ...currentBlock });
+        }),
+    );
+
     return () => {
       subs.unsubscribe();
     };

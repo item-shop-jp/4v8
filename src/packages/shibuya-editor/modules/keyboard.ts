@@ -1148,7 +1148,7 @@ export class KeyBoardModule implements Module {
       ],
     });
     editor.blur();
-    editor.render([block.id]);
+    editor.renderChild(block.id, [block.childBlocks[childBlockIndex].id]);
     setTimeout(() => {
       editor.setCaretPosition({
         blockId: block.id,
@@ -1192,7 +1192,7 @@ export class KeyBoardModule implements Module {
       ],
     });
     editor.blur();
-    editor.render([block.id]);
+    editor.renderChild(block.id, [block.childBlocks[childBlockIndex].id]);
     setTimeout(() => {
       editor.setCaretPosition({
         blockId: block.id,

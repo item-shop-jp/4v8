@@ -5,6 +5,7 @@ import { InlineContainer } from '../../inlines/Container';
 import { Formats } from '../../../types/format';
 import { Block, Inline } from '../../../types';
 import { createBlock } from '../../../utils/block';
+import { useChildBlockRenderer } from '../../../hooks';
 
 export interface TableProps {
   blockId: string;
@@ -23,9 +24,9 @@ export interface TableProps {
 }
 
 export interface TableCellProps {
+  parentBlockId: string;
   blockId: string;
   formats: Formats;
-  contents: Inline[];
   scrollContainer?: HTMLElement | string;
   editor: EditorController;
 }
@@ -122,10 +123,10 @@ export const Table = React.memo(
                       }}
                     >
                       <TableCell
-                        contents={memoTableRows[rIndex][cIndex].contents}
                         formats={formats}
                         editor={editor}
                         scrollContainer={scrollContainer}
+                        parentBlockId={blockId}
                         blockId={memoTableRows[rIndex][cIndex].id}
                       />
                     </StyledTd>
@@ -147,23 +148,25 @@ export const Table = React.memo(
 );
 
 export const TableCell = React.memo(
-  ({ blockId, formats, contents, scrollContainer, editor }: TableCellProps) => {
+  ({ parentBlockId, blockId, formats, scrollContainer, editor }: TableCellProps) => {
+    const block = useChildBlockRenderer({ parentBlockId, blockId, editor });
+    console.log(block);
     const memoContent = React.useMemo(() => {
       return (
         <TableContent
           suppressContentEditableWarning
           contentEditable={true}
-          data-child-block-id={blockId}
+          data-child-block-id={block?.id}
         >
           {InlineContainer({
-            contents: contents ?? [],
+            contents: block?.contents ?? [],
             formats,
             editor,
             scrollContainer,
           })}
         </TableContent>
       );
-    }, [blockId, contents, formats, editor, scrollContainer]);
+    }, [block, editor, scrollContainer]);
 
     return <>{memoContent}</>;
   },

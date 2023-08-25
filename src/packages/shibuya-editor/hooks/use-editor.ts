@@ -758,7 +758,7 @@ export function useEditor({
       });
 
       if (affected || forceUpdate) {
-        render([parentBlockId]);
+        renderChild(parentBlockId, [childBlocks[childBlockIndex].id]);
         let newCaretPosition = lastCaretPositionRef.current;
         if (!newCaretPosition) {
           if (!lastCaretRectRef.current) return;
@@ -969,6 +969,20 @@ export function useEditor({
     }
   }, []);
 
+  const renderChild = React.useCallback(
+    (parentBlockId: string, affectedIds: string[] = [], isForce = false) => {
+      if (isForce) {
+        eventEmitter.emit(EditorEvents.EVENT_CHILD_BLOCK_RERENDER_FORCE, {
+          parentBlockId,
+          affectedIds,
+        });
+      } else {
+        eventEmitter.emit(EditorEvents.EVENT_CHILD_BLOCK_RERENDER, { parentBlockId, affectedIds });
+      }
+    },
+    [],
+  );
+
   const numberingList = React.useCallback(() => {
     let listNumbers: number[] = [];
     let lastIndent = 0;
@@ -1050,6 +1064,7 @@ export function useEditor({
       next,
       numberingList,
       render,
+      renderChild,
       addModule,
       addModules,
       getModule,
@@ -1112,7 +1127,7 @@ export function useEditor({
   //       },
   //       EventSources.COLLABORATOR,
   //     );
-  //     render([block.id]);
+  //     renderChild(block.id, [block.childBlocks[childBlockIndex].id]);
   //   }, 4000);
 
   //   return () => {

@@ -269,6 +269,7 @@ export interface EditorController {
   prev(params?: PositionParams): boolean;
   next(params?: PositionParams): boolean;
   render(affectedIds?: string[], isForce?: boolean): void;
+  renderChild(parentBlockId: string, affectedIds?: string[], isForce?: boolean): void;
   numberingList(): void;
   addModule(
     name: string,

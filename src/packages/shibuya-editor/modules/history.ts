@@ -131,7 +131,7 @@ export class HistoryModule implements Module {
       .filter((ops) => ops.length > 0);
 
     const caret = this.editor.getCaretPosition();
-    if (caret && caret.blockId === transformOp.blockId) {
+    if (caret && caret.blockId === transformOp.blockId && !caret.childBlockId) {
       if (transformOp.type === HistoryType.UPDATE_CONTENTS && transformOp.redo) {
         this.editor.blur();
         const block = this.editor.getBlock(caret.blockId);

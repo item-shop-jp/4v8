@@ -54,12 +54,13 @@ export class ToolbarModule implements Module {
         caretPosition.length,
         attributes,
       );
+      this.editor.renderChild(block.id, [caretPosition.childBlockId]);
     } else {
       this.editor.formatText(block.id, caretPosition.index, caretPosition.length, attributes);
+      this.editor.render([block.id]);
     }
 
     this.editor.blur();
-    this.editor.render([block.id]);
     setTimeout(
       () =>
         this.editor.setCaretPosition({

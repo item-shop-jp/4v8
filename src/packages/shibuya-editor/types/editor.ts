@@ -84,7 +84,6 @@ export interface EditorController {
   ): void;
   getCaretPosition(): CaretPosition | null;
   getNativeRange(): Range | null;
-  scrollIntoView(blockId?: string): void;
   updateCaretPositionRef(caret?: CaretPosition): void;
   updateCaretRect(rect?: DOMRect): DOMRect | null;
   getLastCaretRect(): DOMRect | null;

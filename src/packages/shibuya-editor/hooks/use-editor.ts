@@ -91,8 +91,23 @@ export function useEditor({
       }
       const prevBlock = blockUtils.getBlockElementById(blocksRef.current[currentIndex - 1].id);
       if (!prevBlock) return false;
-      // for embedded elements
-      if (prevBlock.contentEditable === 'false') {
+      // 埋め込み要素対応
+      if (blocksRef.current[currentIndex - 1].type === 'TABLE') {
+        const tableBlock = blocksRef.current[currentIndex - 1];
+        const tableLastChild = tableBlock.childBlocks.find(
+          (v) =>
+            v.name === `r${tableBlock.attributes.tableR - 1}-c${tableBlock.attributes.tableC - 1}`,
+        );
+        if (!tableLastChild) return false;
+        const tableLastChildLength = getChildBlockLength(tableLastChild.id) ?? 0;
+        setCaretPosition({
+          blockId: tableBlock.id,
+          childBlockId: tableLastChild.id,
+          index: tableLastChildLength,
+          nextElementDirection: 'up',
+        });
+        return true;
+      } else if (prevBlock.contentEditable === 'false') {
         return prev({ blockId: prevBlock.dataset.blockId });
       }
       let prevRect = prevBlock.getBoundingClientRect();
@@ -162,10 +177,6 @@ export function useEditor({
         range.startContainer,
         range.startOffset,
       );
-      const nativeRange = getNativeRange();
-      if (!nativeRange) return false;
-      const newCaretPosition = normalizeRange(nativeRange);
-      if (!newCaretPosition) return false;
 
       updateCaretPositionRef();
       return true;
@@ -194,8 +205,19 @@ export function useEditor({
       const nextBlock = blockUtils.getBlockElementById(blocksRef.current[currentIndex + 1].id);
 
       if (!nextBlock) return false;
-      // for embedded elements
-      if (nextBlock.contentEditable === 'false') {
+      // 埋め込み要素対応
+      if (blocksRef.current[currentIndex + 1].type === 'TABLE') {
+        const tableBlock = blocksRef.current[currentIndex + 1];
+        const tableFirstChild = tableBlock.childBlocks.find((v) => v.name === `r0-c0`);
+        if (!tableFirstChild) return false;
+        const tableFirstChildLength = getChildBlockLength(tableFirstChild.id) ?? 0;
+        setCaretPosition({
+          blockId: tableBlock.id,
+          childBlockId: tableFirstChild.id,
+          index: tableFirstChildLength,
+        });
+        return true;
+      } else if (nextBlock.contentEditable === 'false') {
         return next({ blockId: nextBlock.dataset.blockId });
       }
       let nextRect = nextBlock.getBoundingClientRect();
@@ -203,7 +225,7 @@ export function useEditor({
       const scrollHeight = container?.clientHeight ?? window.innerHeight;
 
       if (container) {
-        const containerRect = container.getBoundingClientRect() ?? 0;
+        const containerRect = container.getBoundingClientRect();
         if (
           nextRect.top + nextRect.height >=
           containerRect.top + containerRect.height - settings.scrollMarginBottom
@@ -252,10 +274,6 @@ export function useEditor({
         range.startContainer,
         range.startOffset,
       );
-      const nativeRange = getNativeRange();
-      if (!nativeRange) return false;
-      const newCaretPosition = normalizeRange(nativeRange);
-      if (!newCaretPosition) return false;
 
       updateCaretPositionRef();
       return true;
@@ -487,41 +505,6 @@ export function useEditor({
     [],
   );
 
-  const scrollIntoView = React.useCallback((blockId?: string) => {
-    blockId = blockId ?? lastCaretPositionRef.current?.blockId ?? '';
-    const element = blockUtils.getBlockElementById(blockId);
-    if (!element) return;
-    let nextRect =
-      element.parentElement?.getBoundingClientRect() ?? element.getBoundingClientRect();
-    const container = getHtmlElement(settings.scrollContainer);
-    const scrollHeight = container?.clientHeight ?? window.innerHeight;
-    if (container) {
-      const containerRect = container.getBoundingClientRect() ?? 0;
-      if (
-        nextRect.top + nextRect.height >=
-        containerRect.top + containerRect.height - settings.scrollMarginBottom
-      ) {
-        const scrollTop =
-          (element.parentElement?.offsetTop ?? 0) -
-          container.clientHeight +
-          settings.scrollMarginBottom;
-        if (container.scrollHeight > scrollTop + container.clientHeight) {
-          container.scrollTop = scrollTop;
-        } else {
-          container.scrollTop = container.scrollHeight - container.clientHeight;
-        }
-        nextRect =
-          element.parentElement?.getBoundingClientRect() ?? element.getBoundingClientRect();
-      }
-    } else if (nextRect.top + nextRect.height >= scrollHeight - settings.scrollMarginBottom) {
-      if (document.scrollingElement) {
-        const nextTop = document.scrollingElement.scrollTop + nextRect.top;
-        const p = nextTop - window.innerHeight + settings.scrollMarginBottom;
-        document.scrollingElement.scrollTop = p;
-      }
-    }
-  }, []);
-
   const normalizeRange = React.useCallback((nativeRange: Range) => {
     const [startInlineId, startInlineElement] = getInlineId(
       nativeRange.startContainer as HTMLElement,
@@ -553,7 +536,7 @@ export function useEditor({
       const blockRect = childBlockElement.getBoundingClientRect();
       const paddingTopText = getComputedStyle(childBlockElement).paddingTop;
       const paddingTop = paddingTopText.match(/^[0-9]+px$/) ? parseInt(paddingTopText) : 0;
-      const scrollbarHeight = blockRect.height - blockElement.clientHeight;
+      const scrollbarHeight = blockRect.height - childBlockElement.clientHeight;
       isTop = caretRect.y - (blockRect.y + paddingTop) < 10;
       isBottom =
         blockRect.y +
@@ -1062,7 +1045,6 @@ export function useEditor({
       updateCaretPositionRef,
       updateCaretRect,
       getLastCaretRect,
-      scrollIntoView,
       getNativeRange,
       prev,
       next,

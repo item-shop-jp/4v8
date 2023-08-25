@@ -8,14 +8,18 @@ import {
   deleteInlineContents,
   getBlockId,
   getChildBlockId,
+  getBlockElementById,
   insertTextInlineContents,
   createBlock as utilCreateBlock,
+  getOuter,
 } from '../utils/block';
 import { CaretPosition } from '../types/caret';
 import { Block, BlockType } from '../types';
 import { createInline } from '../utils/inline';
 import stringLength from 'string-length';
 import { copyObject } from '../utils/object';
+import { caretRangeFromPoint } from '../utils/range';
+import { getHtmlElement } from '../utils/dom';
 
 const ShortKey = /Mac/i.test(navigator.platform) ? 'metaKey' : 'ctrlKey';
 
@@ -1354,8 +1358,38 @@ export class KeyBoardModule implements Module {
     let currentR = Number(match[1]);
     let currentC = Number(match[2]);
 
-    const rect = editor.getLastCaretRect();
-    console.log(rect);
+    if (currentR > 0) {
+      const prevChild = block.childBlocks.find((v) => v.name === `r${currentR - 1}-c${currentC}`);
+      if (!prevChild) return;
+      const settings = editor.getSettings();
+      const container = getHtmlElement(settings.scrollContainer);
+      const prevChildEl = getBlockElementById(prevChild.id, true);
+      if (!prevChildEl) return;
+
+      // １つ前の要素が見切れてる場合は強制スクロール
+      const prevChildRect = prevChildEl.getBoundingClientRect();
+      if (prevChildRect.top < 0) {
+        if (container) {
+          container.scrollTop -= 40;
+        } else {
+          if (document.scrollingElement) {
+            document.scrollingElement.scrollTop -= 40;
+          }
+        }
+      }
+
+      const prevChildBlockLength = editor.getChildBlockLength(prevChild.id) ?? 0;
+      event.preventDefault();
+      editor.setCaretPosition({
+        blockId: block.id,
+        childBlockId: prevChild.id,
+        index: prevChildBlockLength,
+        nextElementDirection: 'up',
+      });
+      editor.updateCaretRect();
+      return;
+    }
+
     if (editor.prev()) {
       event.preventDefault();
     } else {
@@ -1369,6 +1403,48 @@ export class KeyBoardModule implements Module {
     event: React.KeyboardEvent,
   ) {
     if (!caretPosition.isBottom) return;
+    const block = editor.getBlock(caretPosition.blockId);
+    if (!caretPosition.childBlockId || !block) return;
+    const childBlockIndex = block.childBlocks.findIndex((v) => v.id === caretPosition.childBlockId);
+    if (childBlockIndex === -1 || !block.childBlocks[childBlockIndex].name) return;
+    const match = block.childBlocks[childBlockIndex].name?.match(/^r([0-9]+)-c([0-9]+)/);
+
+    if (!match) return;
+    let currentR = Number(match[1]);
+    let currentC = Number(match[2]);
+    if (currentR < block.attributes.tableR - 1) {
+      const nextChild = block.childBlocks.find((v) => v.name === `r${currentR + 1}-c${currentC}`);
+      if (!nextChild) return;
+      const settings = editor.getSettings();
+      const container = getHtmlElement(settings.scrollContainer);
+      const nextChildEl = getBlockElementById(nextChild.id, true);
+      if (!nextChildEl) return;
+
+      // １つ先の要素が見切れてる場合は強制スクロール
+      const nextChildRect = nextChildEl.getBoundingClientRect();
+      if (container) {
+        const containerRect = container.getBoundingClientRect();
+        if (nextChildRect.top + nextChildRect.height >= containerRect.top + containerRect.height) {
+          container.scrollTop += nextChildRect.height;
+        }
+      } else {
+        if (document.scrollingElement) {
+          document.scrollingElement.scrollTop += nextChildRect.height;
+        }
+      }
+
+      const prevChildBlockLength = editor.getChildBlockLength(nextChild.id) ?? 0;
+      event.preventDefault();
+      editor.setCaretPosition({
+        blockId: block.id,
+        childBlockId: nextChild.id,
+        index: prevChildBlockLength,
+      });
+      editor.updateCaretRect();
+
+      return;
+    }
+
     if (editor.next()) {
       event.preventDefault();
     } else {

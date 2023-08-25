@@ -7,7 +7,6 @@ import { EditorController } from './packages/shibuya-editor/types/editor';
 import { Editor, Paragraph, Header1 } from './packages/shibuya-editor';
 
 const ScrollContainer = styled.div`
-  margin: 50px auto;
   max-width: 600px;
   height: 600px;
   overflow: auto;

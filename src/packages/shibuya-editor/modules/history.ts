@@ -7,7 +7,16 @@ import { EventEmitter } from '../utils/event-emitter';
 import { getTextLength, getStartIndex } from '../utils/json0';
 import { Block } from '../types/block';
 import { EditorController, Source } from '../types/editor';
-import { Op, JSON0, UpdateOp, AddOp, RemoveOp } from '../types/history';
+import {
+  Op,
+  JSON0,
+  UpdateOp,
+  AddOp,
+  RemoveOp,
+  UpdateChildBlockOp,
+  AddChildBlockOp,
+  RemoveChildBlockOp,
+} from '../types/history';
 import { EditorEvents, EventSources, HistoryType } from '../constants';
 import { copyObject } from '../utils/object';
 import { getBlockLength } from '../utils/block';
@@ -118,7 +127,6 @@ export class HistoryModule implements Module {
     this.stack.undo = this.stack.undo
       .map((ops) => {
         return ops.filter((op) => {
-          if (op.type === 'update_contents') return true;
           return transformOp.blockId !== op.blockId;
         });
       })
@@ -126,7 +134,6 @@ export class HistoryModule implements Module {
     this.stack.redo = this.stack.redo
       .map((ops) => {
         return ops.filter((op) => {
-          if (op.type === 'update_contents') return true;
           return transformOp.blockId !== op.blockId;
         });
       })
@@ -159,7 +166,6 @@ export class HistoryModule implements Module {
     this.stack.undo = this.stack.undo
       .map((ops) => {
         return ops.filter((op) => {
-          if (op.type === 'update_contents') return true;
           return !ids.includes(op.blockId);
         });
       })
@@ -167,7 +173,6 @@ export class HistoryModule implements Module {
     this.stack.redo = this.stack.redo
       .map((ops) => {
         return ops.filter((op) => {
-          if (op.type === 'update_contents') return true;
           return !ids.includes(op.blockId);
         });
       })
@@ -180,7 +185,12 @@ export class HistoryModule implements Module {
     const updateOps = this.tmpUndo
       .filter((tmp) => tmp.type === HistoryType.UPDATE_CONTENTS)
       .reverse();
-    const otherOps = this.tmpUndo.filter((tmp) => tmp.type !== HistoryType.UPDATE_CONTENTS);
+    const updateChildOps = this.tmpUndo
+      .filter((tmp) => tmp.type === HistoryType.CHILD_BLOCK_UPDATE_CONTENTS)
+      .reverse();
+    const otherOps = this.tmpUndo.filter(
+      (tmp) => tmp.type === HistoryType.ADD_BLOCK || tmp.type === HistoryType.REMOVE_BLOCK,
+    );
     otherOps.forEach((tmp) => {
       const index = optimizedUndo.findIndex(
         (v) => v.blockId === tmp.blockId && v.type === tmp.type,
@@ -216,6 +226,32 @@ export class HistoryModule implements Module {
         }
       }
     });
+    updateChildOps.forEach((tmp) => {
+      const index = optimizedUndo.findIndex(
+        (v) => v.blockId === tmp.blockId && v.type === tmp.type,
+      );
+      if (index === -1) {
+        optimizedUndo.push(tmp);
+        return;
+      }
+      if (
+        tmp.type === HistoryType.CHILD_BLOCK_UPDATE_CONTENTS &&
+        optimizedUndo[index].type === HistoryType.CHILD_BLOCK_UPDATE_CONTENTS
+      ) {
+        if ((optimizedUndo[index] as UpdateChildBlockOp).undo && tmp.undo) {
+          (optimizedUndo[index] as UpdateChildBlockOp).undo = json0.type.compose(
+            (optimizedUndo[index] as UpdateChildBlockOp).undo,
+            tmp.undo,
+          );
+        }
+        if ((optimizedUndo[index] as UpdateChildBlockOp).redo && tmp.redo) {
+          (optimizedUndo[index] as UpdateChildBlockOp).redo = json0.type.compose(
+            tmp.redo,
+            (optimizedUndo[index] as UpdateChildBlockOp).redo,
+          );
+        }
+      }
+    });
     this.tmpUndo = [];
     this.stack.undo.push(optimizedUndo);
     setTimeout(() => {
@@ -243,6 +279,17 @@ export class HistoryModule implements Module {
       const updateOps: UpdateOp[] = ops.filter(
         (v) => v.type === HistoryType.UPDATE_CONTENTS,
       ) as UpdateOp[];
+      const childBlockUpdateOps: UpdateChildBlockOp[] = ops.filter(
+        (v) => v.type === HistoryType.CHILD_BLOCK_UPDATE_CONTENTS,
+      ) as UpdateChildBlockOp[];
+
+      childBlockUpdateOps.forEach((op, i) => {
+        this.executeJson0(op.blockId, op.undo, op.parentBlockId);
+        this.editor.renderChild(op.parentBlockId, [op.blockId], true);
+        if (i === childBlockUpdateOps.length - 1 && addOps.length < 1 && removeOps.length < 1) {
+          this.moveCaret(op, op.position, 'undo');
+        }
+      });
 
       updateOps.forEach((op, i) => {
         this.executeJson0(op.blockId, op.undo);
@@ -330,6 +377,9 @@ export class HistoryModule implements Module {
       const updateOps: UpdateOp[] = ops.filter(
         (v) => v.type === HistoryType.UPDATE_CONTENTS,
       ) as UpdateOp[];
+      const childBlockUpdateOps: UpdateChildBlockOp[] = ops.filter(
+        (v) => v.type === HistoryType.CHILD_BLOCK_UPDATE_CONTENTS,
+      ) as UpdateChildBlockOp[];
 
       removeOps.forEach((op, i) => {
         this.editor.deleteBlock(op.blockId);
@@ -366,17 +416,21 @@ export class HistoryModule implements Module {
       });
 
       updateOps.forEach((op, i) => {
-        switch (op.type) {
-          case HistoryType.UPDATE_CONTENTS: {
-            this.executeJson0(op.blockId, op.redo);
-            affectedIds.push(op.blockId);
-            if (i === updateOps.length - 1) {
-              this.moveCaret(op, op.position, 'redo');
-            }
-            break;
-          }
+        this.executeJson0(op.blockId, op.redo);
+        affectedIds.push(op.blockId);
+        if (i === updateOps.length - 1) {
+          this.moveCaret(op, op.position, 'redo');
         }
       });
+
+      childBlockUpdateOps.forEach((op, i) => {
+        this.executeJson0(op.blockId, op.redo, op.parentBlockId);
+        this.editor.renderChild(op.parentBlockId, [op.blockId], true);
+        if (i === childBlockUpdateOps.length - 1) {
+          this.moveCaret(op, op.position, 'redo');
+        }
+      });
+
       this.stack.undo.push(ops);
       setTimeout(() => {
         this.eventEmitter.emit(EditorEvents.EVENT_EDITOR_CHANGED, copyObject(ops));
@@ -387,32 +441,61 @@ export class HistoryModule implements Module {
     }
   }
 
-  executeJson0(blockId: string, ops: JSON0[]) {
+  executeJson0(blockId: string, ops: JSON0[], parentBlockId?: string) {
     try {
-      const block = this.editor.getBlock(blockId);
-      if (!block) return;
-      const updatedBlock: Block = json0.type.apply(block, ops);
-      this.editor.updateBlock(
-        {
-          ...updatedBlock,
-          contents: updatedBlock.contents.map((content) => {
-            return {
-              id: content.id ?? uuidv4(),
-              attributes: content.attributes ?? {},
-              text: content.text ?? '',
-              type: content.type ?? 'TEXT',
-              isEmbed: content.isEmbed ?? false,
-            };
-          }),
-        },
-        EventSources.USER,
-      );
+      if (parentBlockId) {
+        const parentBlock = this.editor.getBlock(parentBlockId);
+        if (!parentBlock) return;
+        const block = parentBlock.childBlocks.find((v) => v.id === blockId);
+        if (!block) return;
+
+        const updatedBlock: Block = json0.type.apply(block, ops);
+        this.editor.updateChildBlock(
+          parentBlockId,
+          {
+            ...updatedBlock,
+            contents: updatedBlock.contents.map((content) => {
+              return {
+                id: content.id ?? uuidv4(),
+                attributes: content.attributes ?? {},
+                text: content.text ?? '',
+                type: content.type ?? 'TEXT',
+                isEmbed: content.isEmbed ?? false,
+              };
+            }),
+          },
+          EventSources.USER,
+        );
+      } else {
+        const block = this.editor.getBlock(blockId);
+        if (!block) return;
+        const updatedBlock: Block = json0.type.apply(block, ops);
+        this.editor.updateBlock(
+          {
+            ...updatedBlock,
+            contents: updatedBlock.contents.map((content) => {
+              return {
+                id: content.id ?? uuidv4(),
+                attributes: content.attributes ?? {},
+                text: content.text ?? '',
+                type: content.type ?? 'TEXT',
+                isEmbed: content.isEmbed ?? false,
+              };
+            }),
+          },
+          EventSources.USER,
+        );
+      }
     } catch (e) {
       this.eventEmitter.info('Failed to restore hisotry', e);
     }
   }
 
-  moveCaret(op: UpdateOp, position?: CaretPosition, type: 'undo' | 'redo' = 'undo') {
+  moveCaret(
+    op: UpdateOp | UpdateChildBlockOp,
+    position?: CaretPosition,
+    type: 'undo' | 'redo' = 'undo',
+  ) {
     if (!position) {
       const blockLength = this.editor.getBlockLength(op.blockId) ?? 0;
 

@@ -34,4 +34,35 @@ export interface RemoveOp {
   position?: CaretPosition;
 }
 
-export type Op = UpdateOp | AddOp | RemoveOp;
+export interface UpdateChildBlockOp {
+  type: 'update_child_block_contents';
+  parentBlockId: string;
+  blockId: string;
+  undo: JSON0[];
+  redo: JSON0[];
+  position?: CaretPosition;
+}
+
+export interface AddChildBlockOp {
+  type: 'add_child_block';
+  blockId: string;
+  block: Block;
+  parentBlockId: string;
+  position?: CaretPosition;
+}
+
+export interface RemoveChildBlockOp {
+  type: 'remove_child_block';
+  blockId: string;
+  block: Block;
+  parentBlockId: string;
+  position?: CaretPosition;
+}
+
+export type Op =
+  | UpdateOp
+  | AddOp
+  | RemoveOp
+  | UpdateChildBlockOp
+  | AddChildBlockOp
+  | RemoveChildBlockOp;

@@ -734,28 +734,15 @@ export function useEditor({
       let childBlocks = copyObject(parentBlock.childBlocks ?? []);
       let childBlockIndex = childBlocks.findIndex((v) => v.id === blockId);
       if (childBlockIndex === -1) {
-        childBlocks = [
-          ...childBlocks,
-          { ...blockUtils.createBlock('PARAGRAPH', contents), id: blockId, name: blockKey },
-        ];
-      } else {
-        if (isEqual(childBlocks[childBlockIndex]?.contents, contents)) return;
-        childBlocks = [
-          ...childBlocks.slice(0, childBlockIndex),
-          {
-            ...childBlocks[childBlockIndex],
-            contents,
-          },
-          ...childBlocks.slice(childBlockIndex + 1),
-        ];
+        // Todo:: ここにブロック追加処理を
+        // { ...blockUtils.createBlock('PARAGRAPH', contents), id: blockId, name: blockKey },
+        return;
       }
+      if (isEqual(childBlocks[childBlockIndex]?.contents, contents)) return;
 
       updateCaretPositionRef();
 
-      updateBlock({
-        ...parentBlock,
-        childBlocks,
-      });
+      updateChildBlock(parentBlock.id, { ...childBlocks[childBlockIndex], contents });
 
       if (affected || forceUpdate) {
         renderChild(parentBlockId, [childBlocks[childBlockIndex].id]);
@@ -866,6 +853,7 @@ export function useEditor({
       if (prev.meta) {
         delete prev.meta;
       }
+
       const prevBlock = {
         ...prev,
         contents: prev.contents.map((content) => {
@@ -876,7 +864,7 @@ export function useEditor({
             isEmbed: content.isEmbed,
           };
         }),
-      };
+      } as Partial<Block>;
       const currentBlock = {
         ...block,
         contents: contents.map((content) => {
@@ -887,7 +875,10 @@ export function useEditor({
             isEmbed: content.isEmbed,
           };
         }),
-      };
+      } as Partial<Block>;
+
+      delete prevBlock.childBlocks;
+      delete currentBlock.childBlocks;
 
       const redo = json0diff(prevBlock, currentBlock, DiffMatchPatch);
       const undo = json0diff(currentBlock, prevBlock, DiffMatchPatch);
@@ -896,6 +887,84 @@ export function useEditor({
         eventEmitter.emit(EditorEvents.EVENT_EDITOR_HISTORY_PUSH, {
           payload: {
             type: HistoryType.UPDATE_CONTENTS,
+            blockId: block.id,
+            undo,
+            redo,
+          },
+          source,
+        });
+      }
+    },
+    [],
+  );
+
+  const updateChildBlock = React.useCallback(
+    (parentBlockId: string, targetBlock: Block, source: Source = EventSources.USER) => {
+      const parentIndex = blocksRef.current.findIndex((v) => v.id === parentBlockId);
+      if (parentIndex === -1) return;
+      const currentIndex = blocksRef.current[parentIndex].childBlocks.findIndex(
+        (v) => v.id === targetBlock.id,
+      );
+      if (currentIndex === -1) return;
+
+      const block = copyObject(targetBlock);
+      const prev = copyObject(blocksRef.current[parentIndex].childBlocks[currentIndex]);
+      Object.keys(block.attributes).forEach((key) => {
+        if (typeof block.attributes[key] === 'boolean' && !block.attributes[key]) {
+          delete block.attributes[key];
+        }
+      });
+      const contents = blockUtils.optimizeInlineContents(block.contents);
+      blocksRef.current[parentIndex].childBlocks = [
+        ...blocksRef.current[parentIndex].childBlocks.slice(0, currentIndex),
+        {
+          ...blocksRef.current[parentIndex].childBlocks[currentIndex],
+          ...block,
+          contents,
+        },
+        ...blocksRef.current[parentIndex].childBlocks.slice(currentIndex + 1),
+      ];
+
+      if (block.meta) {
+        delete block.meta;
+      }
+      if (prev.meta) {
+        delete prev.meta;
+      }
+      const prevBlock = {
+        ...prev,
+        contents: prev.contents.map((content) => {
+          return {
+            attributes: content.attributes,
+            text: content.text,
+            type: content.type,
+            isEmbed: content.isEmbed,
+          };
+        }),
+      } as Partial<Block>;
+      const currentBlock = {
+        ...block,
+        contents: contents.map((content) => {
+          return {
+            attributes: content.attributes,
+            text: content.text,
+            type: content.type,
+            isEmbed: content.isEmbed,
+          };
+        }),
+      } as Partial<Block>;
+
+      delete prevBlock.childBlocks;
+      delete currentBlock.childBlocks;
+
+      const redo = json0diff(prevBlock, currentBlock, DiffMatchPatch);
+      const undo = json0diff(currentBlock, prevBlock, DiffMatchPatch);
+
+      if (redo && undo) {
+        eventEmitter.emit(EditorEvents.EVENT_EDITOR_HISTORY_PUSH, {
+          payload: {
+            type: HistoryType.CHILD_BLOCK_UPDATE_CONTENTS,
+            parentBlockId: parentBlockId,
             blockId: block.id,
             undo,
             redo,
@@ -1052,6 +1121,7 @@ export function useEditor({
       updateBlocks,
       deleteBlock,
       deleteBlocks,
+      updateChildBlock,
       sync,
       syncChildBlock,
       getCaretPosition,
@@ -1076,63 +1146,63 @@ export function useEditor({
   }, []);
 
   //real-time collaborative test
-  React.useEffect(() => {
-    const interval = setInterval(() => {
-      const block = getBlock(blocksRef.current[0].id);
-      if (!block) return;
-      const contents = [
-        ...block.contents.slice(0, block.contents.length - 1),
-        {
-          ...block.contents[block.contents.length - 1],
-          text: 'あ' + block.contents[block.contents.length - 1].text,
-        },
-      ];
-      updateBlock({ ...block, contents }, EventSources.COLLABORATOR);
-      render([block.id]);
-    }, 4000);
+  // React.useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     const block = getBlock(blocksRef.current[0].id);
+  //     if (!block) return;
+  //     const contents = [
+  //       ...block.contents.slice(0, block.contents.length - 1),
+  //       {
+  //         ...block.contents[block.contents.length - 1],
+  //         text: 'あ' + block.contents[block.contents.length - 1].text,
+  //       },
+  //     ];
+  //     updateBlock({ ...block, contents }, EventSources.COLLABORATOR);
+  //     render([block.id]);
+  //   }, 4000);
 
-    return () => {
-      clearInterval(interval);
-    };
-  }, []);
+  //   return () => {
+  //     clearInterval(interval);
+  //   };
+  // }, []);
 
   //real-time collaborative test(table)
-  React.useEffect(() => {
-    const interval = setInterval(() => {
-      const blocks = getBlocks();
-      const block = blocks.find((v) => v.type === 'TABLE');
-      if (!block) return;
-      const childBlockIndex = block.childBlocks.findIndex((v) => v.name === 'r0-c0');
-      if (childBlockIndex === -1) return;
-      const childBlockContents = copyObject(block.childBlocks[childBlockIndex].contents);
-      const contents = [
-        ...childBlockContents.slice(0, childBlockContents.length - 1),
-        {
-          ...childBlockContents[childBlockContents.length - 1],
-          text: 'あ' + childBlockContents[childBlockContents.length - 1].text,
-        },
-      ];
-      updateBlock(
-        {
-          ...block,
-          childBlocks: [
-            ...block.childBlocks.slice(0, childBlockIndex),
-            {
-              ...block.childBlocks[childBlockIndex],
-              contents,
-            },
-            ...block.childBlocks.slice(childBlockIndex + 1),
-          ],
-        },
-        EventSources.COLLABORATOR,
-      );
-      renderChild(block.id, [block.childBlocks[childBlockIndex].id]);
-    }, 4000);
+  // React.useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     const blocks = getBlocks();
+  //     const block = blocks.find((v) => v.type === 'TABLE');
+  //     if (!block) return;
+  //     const childBlockIndex = block.childBlocks.findIndex((v) => v.name === 'r0-c0');
+  //     if (childBlockIndex === -1) return;
+  //     const childBlockContents = copyObject(block.childBlocks[childBlockIndex].contents);
+  //     const contents = [
+  //       ...childBlockContents.slice(0, childBlockContents.length - 1),
+  //       {
+  //         ...childBlockContents[childBlockContents.length - 1],
+  //         text: 'あ' + childBlockContents[childBlockContents.length - 1].text,
+  //       },
+  //     ];
+  //     updateBlock(
+  //       {
+  //         ...block,
+  //         childBlocks: [
+  //           ...block.childBlocks.slice(0, childBlockIndex),
+  //           {
+  //             ...block.childBlocks[childBlockIndex],
+  //             contents,
+  //           },
+  //           ...block.childBlocks.slice(childBlockIndex + 1),
+  //         ],
+  //       },
+  //       EventSources.COLLABORATOR,
+  //     );
+  //     renderChild(block.id, [block.childBlocks[childBlockIndex].id]);
+  //   }, 4000);
 
-    return () => {
-      clearInterval(interval);
-    };
-  }, []);
+  //   return () => {
+  //     clearInterval(interval);
+  //   };
+  // }, []);
 
   React.useEffect(() => {
     const debouncedSelectionChange = debounce(200, (e: Event) => {

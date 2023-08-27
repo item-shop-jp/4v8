@@ -242,9 +242,9 @@ export interface EditorController {
   getBlocks(): Block[];
   getBlock(blockId: string): Block | null;
   getBlockLength(blockId: string): number | null;
-  createBlock(appendBlock: Block, prevBlockId?: string, type?: 'prepend' | 'append'): void;
+  createBlock(block: Block, prevBlockId?: string, type?: 'prepend' | 'append'): void;
   createBlock(
-    appendBlock: Block,
+    block: Block,
     prevBlockId?: string,
     type?: 'prepend' | 'append',
     source?: Source,
@@ -255,8 +255,12 @@ export interface EditorController {
   deleteBlock(blockId: string, source: Source): void;
   deleteBlocks(blockIds: string[]): void;
   deleteBlocks(blockIds: string[], source: Source): void;
+  createChildBlocks(parentBlockId: string, blocks: Block[]): void;
+  createChildBlocks(parentBlockId: string, blocks: Block[], source: Source): void;
   updateChildBlock(parentBlockId: string, block: Block): void;
   updateChildBlock(parentBlockId: string, block: Block, source: Source): void;
+  deleteChildBlocks(parentBlockId: string, blockIds: string[]): void;
+  deleteChildBlocks(parentBlockId: string, blockIds: string[], source: Source): void;
   sync(blockId?: string, blockElement?: HTMLElement, forceUpdate?: boolean): void;
   setCaretPosition(
     caretPosition: Partial<CaretPosition> & {

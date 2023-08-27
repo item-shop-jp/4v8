@@ -71,8 +71,12 @@ export interface EditorController {
   deleteBlock(blockId: string, source: Source): void;
   deleteBlocks(blockIds: string[]): void;
   deleteBlocks(blockIds: string[], source: Source): void;
+  createChildBlocks(parentBlockId: string, blocks: Block[]): void;
+  createChildBlocks(parentBlockId: string, blocks: Block[], source: Source): void;
   updateChildBlock(parentBlockId: string, block: Block): void;
   updateChildBlock(parentBlockId: string, block: Block, source: Source): void;
+  deleteChildBlocks(parentBlockId: string, blockIds: string[]): void;
+  deleteChildBlocks(parentBlockId: string, blockIds: string[], source: Source): void;
   sync(blockId?: string, blockElement?: HTMLElement, forceUpdate?: boolean): void;
   syncChildBlock(
     parentBlockId: string,

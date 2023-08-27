@@ -282,12 +282,38 @@ export class HistoryModule implements Module {
       const childBlockUpdateOps: UpdateChildBlockOp[] = ops.filter(
         (v) => v.type === HistoryType.CHILD_BLOCK_UPDATE_CONTENTS,
       ) as UpdateChildBlockOp[];
+      const childBlockAddOps: AddChildBlockOp[] = ops.filter(
+        (v) => v.type === HistoryType.CHILD_BLOCK_ADD_BLOCK,
+      ) as AddChildBlockOp[];
+      const childBlockRemoveOps: RemoveChildBlockOp[] = ops.filter(
+        (v) => v.type === HistoryType.CHILD_BLOCK_REMOVE_BLOCK,
+      ) as RemoveChildBlockOp[];
 
       childBlockUpdateOps.forEach((op, i) => {
         this.executeJson0(op.blockId, op.undo, op.parentBlockId);
         this.editor.renderChild(op.parentBlockId, [op.blockId], true);
         if (i === childBlockUpdateOps.length - 1 && addOps.length < 1 && removeOps.length < 1) {
           this.moveCaret(op, op.position, 'undo');
+        }
+      });
+
+      childBlockAddOps.forEach((op, i) => {
+        this.editor.deleteChildBlocks(op.parentBlockId, [op.block.id]);
+        this.editor.renderChild(op.parentBlockId, [op.blockId], true);
+      });
+
+      childBlockRemoveOps.forEach((op, i) => {
+        this.editor.createChildBlocks(op.parentBlockId, [copyObject(op.block)]);
+
+        if (i === childBlockRemoveOps.length - 1) {
+          setTimeout(() => {
+            this.editor.setCaretPosition({
+              blockId: op.parentBlockId,
+              childBlockId: op.block.id,
+              index: 0,
+            });
+            this.editor.updateCaretRect();
+          }, 10);
         }
       });
 
@@ -380,6 +406,12 @@ export class HistoryModule implements Module {
       const childBlockUpdateOps: UpdateChildBlockOp[] = ops.filter(
         (v) => v.type === HistoryType.CHILD_BLOCK_UPDATE_CONTENTS,
       ) as UpdateChildBlockOp[];
+      const childBlockAddOps: AddChildBlockOp[] = ops.filter(
+        (v) => v.type === HistoryType.CHILD_BLOCK_ADD_BLOCK,
+      ) as AddChildBlockOp[];
+      const childBlockRemoveOps: RemoveChildBlockOp[] = ops.filter(
+        (v) => v.type === HistoryType.CHILD_BLOCK_REMOVE_BLOCK,
+      ) as RemoveChildBlockOp[];
 
       removeOps.forEach((op, i) => {
         this.editor.deleteBlock(op.blockId);
@@ -420,6 +452,27 @@ export class HistoryModule implements Module {
         affectedIds.push(op.blockId);
         if (i === updateOps.length - 1) {
           this.moveCaret(op, op.position, 'redo');
+        }
+      });
+
+      childBlockRemoveOps.forEach((op, i) => {
+        this.editor.deleteChildBlocks(op.parentBlockId, [op.block.id]);
+        this.editor.renderChild(op.parentBlockId, [op.blockId], true);
+      });
+
+      childBlockAddOps.forEach((op, i) => {
+        this.editor.createChildBlocks(op.parentBlockId, [copyObject(op.block)]);
+        this.editor.renderChild(op.parentBlockId, [op.blockId], true);
+        if (i === childBlockUpdateOps.length - 1 && childBlockUpdateOps.length < 1) {
+          setTimeout(() => {
+            const textIndex = this.editor.getChildBlockLength(op.blockId) ?? 0;
+            this.editor.setCaretPosition({
+              blockId: op.parentBlockId,
+              childBlockId: op.blockId,
+              index: textIndex,
+            });
+            this.editor.updateCaretRect();
+          }, 10);
         }
       });
 

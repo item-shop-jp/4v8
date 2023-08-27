@@ -314,29 +314,26 @@ export function useEditor({
       length: number,
       attributes: InlineAttributes = {},
     ) => {
-      const block = blocksRef.current.find((v) => v.id === blockId);
-      if (!block) return null;
-      const childBlocks = copyObject(block.childBlocks);
-      const childBlockIndex = childBlocks.findIndex((v) => v.id === childBlockId);
+      const parentBlockIndex = blocksRef.current.findIndex((v) => v.id === blockId);
+      if (parentBlockIndex === -1) return null;
+      const childBlockIndex = blocksRef.current[parentBlockIndex].childBlocks.findIndex(
+        (v) => v.id === childBlockId,
+      );
       if (childBlockIndex === -1) return null;
+      const childBlock = copyObject(
+        blocksRef.current[parentBlockIndex].childBlocks[childBlockIndex],
+      );
 
       const contents = blockUtils.setAttributesForInlineContents(
-        copyObject(childBlocks[childBlockIndex].contents),
+        childBlock.contents,
         attributes,
         index,
         length,
       );
 
-      updateBlock({
-        ...block,
-        childBlocks: [
-          ...childBlocks.slice(0, childBlockIndex),
-          {
-            ...childBlocks[childBlockIndex],
-            contents,
-          },
-          ...childBlocks.slice(childBlockIndex + 1),
-        ],
+      updateChildBlock(blockId, {
+        ...childBlock,
+        contents,
       });
     },
     [],
@@ -821,6 +818,31 @@ export function useEditor({
     [],
   );
 
+  const createChildBlocks = React.useCallback(
+    (parentBlockId: string, appendBlocks: Block[], source: Source = EventSources.USER) => {
+      const currentIndex = blocksRef.current.findIndex((v) => v.id === parentBlockId);
+      const blocks = copyObject(appendBlocks);
+      eventEmitter.emit(EditorEvents.EVENT_EDITOR_HISTORY_PUSH, {
+        payload: {
+          type: HistoryType.CHILD_BLOCK_ADD_BLOCK,
+          parentBlockId,
+          blocks,
+        },
+        source,
+      });
+
+      blocksRef.current = [
+        ...blocksRef.current.slice(0, currentIndex),
+        {
+          ...blocksRef.current[currentIndex],
+          childBlocks: [...blocksRef.current[currentIndex].childBlocks, ...blocks],
+        },
+        ...blocksRef.current.slice(currentIndex + 1),
+      ];
+    },
+    [],
+  );
+
   const updateBlocks = React.useCallback((blocks: Block[]) => {
     blocksRef.current = blocks;
   }, []);
@@ -1018,6 +1040,43 @@ export function useEditor({
     [],
   );
 
+  const deleteChildBlocks = React.useCallback(
+    (parentBlockId: string, blockIds: string[], source: Source = EventSources.USER) => {
+      const currentIndex = blocksRef.current.findIndex((v) => v.id === parentBlockId);
+
+      if (currentIndex === -1) return;
+      const deleteBlocks = blocksRef.current[currentIndex].childBlocks.filter((v) =>
+        blockIds.includes(v.id),
+      );
+
+      if (deleteBlocks.length < 1) return;
+
+      eventEmitter.emit(EditorEvents.EVENT_EDITOR_HISTORY_PUSH, {
+        payload: deleteBlocks.map((block) => {
+          return {
+            type: HistoryType.CHILD_BLOCK_REMOVE_BLOCK,
+            blockId: block.id,
+            block: copyObject(block),
+            parentBlockId,
+          };
+        }),
+        source,
+      });
+
+      blocksRef.current = [
+        ...blocksRef.current.slice(0, currentIndex),
+        {
+          ...blocksRef.current[currentIndex],
+          childBlocks: blocksRef.current[currentIndex].childBlocks.filter(
+            (v) => !blockIds.includes(v.id),
+          ),
+        },
+        ...blocksRef.current.slice(currentIndex + 1),
+      ];
+    },
+    [],
+  );
+
   const render = React.useCallback((affectedIds: string[] = [], isForce = false) => {
     // 埋め込み要素が最後だったら空行を追加
     const lastIndex = blocksRef.current.length - 1;
@@ -1121,7 +1180,9 @@ export function useEditor({
       updateBlocks,
       deleteBlock,
       deleteBlocks,
+      createChildBlocks,
       updateChildBlock,
+      deleteChildBlocks,
       sync,
       syncChildBlock,
       getCaretPosition,

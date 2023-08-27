@@ -305,7 +305,7 @@ export class HistoryModule implements Module {
           this.moveCaret(op, op.position, 'undo');
         }
       });
-      console.log(childBlockAddOps);
+
       childBlockAddOps.forEach((op, i) => {
         this.editor.deleteChildBlocks(op.parentBlockId, [op.block.id]);
         this.editor.renderChild(op.parentBlockId, [op.blockId], true);

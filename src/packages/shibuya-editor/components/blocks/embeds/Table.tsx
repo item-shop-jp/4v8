@@ -4,7 +4,7 @@ import { EditorController } from '../../../types/editor';
 import { InlineContainer } from '../../inlines/Container';
 import { Formats } from '../../../types/format';
 import { Block, Inline } from '../../../types';
-import { createBlock } from '../../../utils/block';
+import { createBlock, getBlockElementById } from '../../../utils/block';
 import { useChildBlockRenderer } from '../../../hooks';
 
 export interface TableProps {
@@ -53,11 +53,25 @@ const StyledTd = styled.td`
   border-bottom-width: 0;
   vertical-align: top;
   background-clip: padding-box;
+  position: relative;
+  user-drag: none;
 `;
 
 const TableContent = styled.div`
   outline: none;
   padding: 8px;
+`;
+
+const Resizer = styled.div`
+  position: absolute;
+  width: 5px;
+  top: 0;
+  right: -2px;
+  height: 100%;
+  z-index: 1;
+  transition: background 150ms ease 50ms;
+  cursor: col-resize;
+  user-drag: none;
 `;
 
 export const Table = React.memo(
@@ -72,6 +86,12 @@ export const Table = React.memo(
     ...props
   }: TableProps) => {
     const tableRef = React.useRef<HTMLTableElement>(null);
+    const [hoverResizeCol, setHoverResizeCol] = React.useState<number>();
+    const [dragParams, setDragParams] = React.useState<{
+      col: number;
+      left: number;
+      width: number;
+    }>();
 
     const handleInput = React.useCallback(
       (e: React.FormEvent) => {
@@ -82,6 +102,28 @@ export const Table = React.memo(
         }
       },
       [blockId],
+    );
+
+    const handleResizeMouseOver = React.useCallback(
+      (col: number) => (e: React.FormEvent) => {
+        setHoverResizeCol(col);
+      },
+      [],
+    );
+    const handleResizeMouseLeave = React.useCallback((e: React.FormEvent) => {
+      setHoverResizeCol(undefined);
+    }, []);
+    const handleMouseDown = React.useCallback(
+      (col: number) => (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const block = childBlocks.find((v) => v.name === `r0-c${col}`);
+        if (!block) return;
+        const el = getBlockElementById(block.id, true);
+        if (!el) return;
+        setDragParams({ col, left: e.clientX, width: el.clientWidth });
+      },
+      [tableSettings],
     );
 
     const memoTableRows: Block[][] = React.useMemo(() => {
@@ -98,12 +140,13 @@ export const Table = React.memo(
     }, [childBlocks, tableR, tableC]);
 
     const memoTableWidths = React.useMemo(() => {
-      let widths: { min: number; max: number }[] = [];
+      let widths: number[] = [];
       for (let c = 0; c < tableC; c++) {
         widths[c] = Object.prototype.hasOwnProperty.call(tableSettings, `c${c}-width`)
           ? tableSettings[`c${c}-width`]
-          : { min: 120, max: 240 };
+          : null;
       }
+
       return widths;
     }, [tableSettings]);
 
@@ -118,8 +161,8 @@ export const Table = React.memo(
                     <StyledTd
                       key={cIndex}
                       style={{
-                        minWidth: memoTableWidths[cIndex]?.min ?? 120,
-                        maxWidth: memoTableWidths[cIndex]?.max ?? 240,
+                        minWidth: memoTableWidths[cIndex] ?? 120,
+                        width: memoTableWidths[cIndex] ?? 'auto',
                       }}
                     >
                       <TableCell
@@ -129,6 +172,18 @@ export const Table = React.memo(
                         parentBlockId={blockId}
                         blockId={memoTableRows[rIndex][cIndex].id}
                       />
+                      <Resizer
+                        style={{
+                          backgroundColor:
+                            cIndex === hoverResizeCol || cIndex === dragParams?.col
+                              ? 'red'
+                              : 'transparent',
+                        }}
+                        onMouseOver={handleResizeMouseOver(cIndex)}
+                        onMouseLeave={handleResizeMouseLeave}
+                        onMouseDown={handleMouseDown(cIndex)}
+                        draggable="false"
+                      />
                     </StyledTd>
                   );
                 })}
@@ -137,7 +192,58 @@ export const Table = React.memo(
           })}
         </tbody>
       );
-    }, [memoTableRows, formats, scrollContainer, editor]);
+    }, [
+      memoTableRows,
+      memoTableWidths,
+      formats,
+      scrollContainer,
+      editor,
+      hoverResizeCol,
+      dragParams,
+    ]);
+
+    React.useEffect(() => {
+      if (!editor || !dragParams) return;
+
+      const handleMouseMove = (e: MouseEvent) => {
+        let width = 0;
+        if (e.clientX > dragParams.left) {
+          width = dragParams.width + (e.clientX - dragParams.left);
+        } else {
+          width = dragParams.width - (dragParams.left - e.clientX);
+        }
+        if (width < 100) {
+          width = 100;
+        }
+
+        const block = childBlocks.find((v) => v.name === `r0-c${dragParams.col}`);
+        if (!block) return;
+        const el = getBlockElementById(block.id, true);
+        if (!el) return;
+        el.style.width = `${width}px`;
+      };
+
+      const handleMouseUp = (e: MouseEvent) => {
+        setDragParams(undefined);
+        // const currentBlock = editor.getBlock(blockId);
+        // if (!currentBlock) return;
+        // editor.updateBlock({
+        //   ...currentBlock,
+        //   attributes: {
+        //     ...currentBlock.attributes,
+        //     width: imageRef.current.width,
+        //   },
+        // });
+        // editor.render([blockId]);
+      };
+
+      window.addEventListener('mousemove', handleMouseMove, true);
+      window.addEventListener('mouseup', handleMouseUp, true);
+      return () => {
+        window.removeEventListener('mousemove', handleMouseMove, true);
+        window.removeEventListener('mouseup', handleMouseUp, true);
+      };
+    }, [dragParams, childBlocks]);
 
     return (
       <Container {...props} contentEditable={false} draggable="false" onBeforeInput={handleInput}>

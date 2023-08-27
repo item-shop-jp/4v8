@@ -823,11 +823,14 @@ export function useEditor({
       const currentIndex = blocksRef.current.findIndex((v) => v.id === parentBlockId);
       const blocks = copyObject(appendBlocks);
       eventEmitter.emit(EditorEvents.EVENT_EDITOR_HISTORY_PUSH, {
-        payload: {
-          type: HistoryType.CHILD_BLOCK_ADD_BLOCK,
-          parentBlockId,
-          blocks,
-        },
+        payload: blocks.map((block) => {
+          return {
+            type: HistoryType.CHILD_BLOCK_ADD_BLOCK,
+            parentBlockId,
+            blockId: block.id,
+            block,
+          };
+        }),
         source,
       });
 

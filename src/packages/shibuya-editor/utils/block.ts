@@ -11,14 +11,13 @@ export function createBlock(
   contents: Inline[] = [],
   attributes: BlockAttributes = {},
   meta: BlockAttributes = {},
-  childBlocks: Block[] = [],
 ): Block {
   return {
     id: uuidv4(),
     contents: contents.length < 1 ? [createInline('TEXT')] : contents,
     attributes,
     meta,
-    childBlocks,
+    childBlocks: [],
     type,
   };
 }

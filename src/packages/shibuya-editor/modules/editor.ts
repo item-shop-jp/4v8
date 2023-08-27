@@ -46,7 +46,6 @@ export class EditorModule implements Module {
     prevId = '',
     type = 'PARAGRAPH',
     contents = [],
-    childBlocks = [],
     attributes = {},
     meta = {},
     source = 'user',
@@ -56,7 +55,6 @@ export class EditorModule implements Module {
     prevId?: string;
     type?: BlockType;
     contents?: Inline[];
-    childBlocks?: Block[];
     attributes?: BlockAttributes;
     meta?: BlockAttributes;
     source?: Source;
@@ -64,7 +62,7 @@ export class EditorModule implements Module {
     historyPush?: boolean;
   } = {}) {
     const caretPosition = this.editor.getCaretPosition();
-    const appendBlock = createBlock(type, contents, attributes, meta, childBlocks);
+    const appendBlock = createBlock(type, contents, attributes, meta);
     const prevBlockId = prevId || caretPosition?.blockId;
     this.editor.createBlock(appendBlock, prevBlockId, 'append', source);
     this.editor.numberingList();

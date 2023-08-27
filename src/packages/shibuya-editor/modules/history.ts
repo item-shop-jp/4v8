@@ -114,6 +114,12 @@ export class HistoryModule implements Module {
     if (op.type === HistoryType.UPDATE_CONTENTS && (op.undo.length < 1 || op.redo.length < 1)) {
       return;
     }
+    if (
+      op.type === HistoryType.CHILD_BLOCK_UPDATE_CONTENTS &&
+      (op.undo.length < 1 || op.redo.length < 1)
+    ) {
+      return;
+    }
     this.tmpUndo.push(op);
     if (force) {
       this.optimizeOp();
@@ -189,8 +195,11 @@ export class HistoryModule implements Module {
       .filter((tmp) => tmp.type === HistoryType.CHILD_BLOCK_UPDATE_CONTENTS)
       .reverse();
     const otherOps = this.tmpUndo.filter(
-      (tmp) => tmp.type === HistoryType.ADD_BLOCK || tmp.type === HistoryType.REMOVE_BLOCK,
+      (tmp) =>
+        tmp.type !== HistoryType.UPDATE_CONTENTS &&
+        tmp.type !== HistoryType.CHILD_BLOCK_UPDATE_CONTENTS,
     );
+
     otherOps.forEach((tmp) => {
       const index = optimizedUndo.findIndex(
         (v) => v.blockId === tmp.blockId && v.type === tmp.type,
@@ -296,7 +305,7 @@ export class HistoryModule implements Module {
           this.moveCaret(op, op.position, 'undo');
         }
       });
-
+      console.log(childBlockAddOps);
       childBlockAddOps.forEach((op, i) => {
         this.editor.deleteChildBlocks(op.parentBlockId, [op.block.id]);
         this.editor.renderChild(op.parentBlockId, [op.blockId], true);
@@ -371,7 +380,12 @@ export class HistoryModule implements Module {
           if (v.type === HistoryType.REMOVE_BLOCK) {
             return { ...v, type: HistoryType.ADD_BLOCK };
           }
-          if (v.type !== HistoryType.UPDATE_CONTENTS) return v;
+          if (v.type === HistoryType.CHILD_BLOCK_ADD_BLOCK) {
+            return { ...v, type: HistoryType.CHILD_BLOCK_REMOVE_BLOCK };
+          }
+          if (v.type === HistoryType.CHILD_BLOCK_REMOVE_BLOCK) {
+            return { ...v, type: HistoryType.CHILD_BLOCK_ADD_BLOCK };
+          }
           return {
             ...v,
             undo: v.redo,

@@ -1136,16 +1136,9 @@ export class KeyBoardModule implements Module {
         caretPosition.length,
       );
     }
-    editor.updateBlock({
-      ...block,
-      childBlocks: [
-        ...block.childBlocks.slice(0, childBlockIndex),
-        {
-          ...block.childBlocks[childBlockIndex],
-          contents: deletedContents,
-        },
-        ...block.childBlocks.slice(childBlockIndex + 1),
-      ],
+    editor.updateChildBlock(block.id, {
+      ...block.childBlocks[childBlockIndex],
+      contents: deletedContents,
     });
     editor.blur();
     editor.renderChild(block.id, [block.childBlocks[childBlockIndex].id]);
@@ -1180,16 +1173,9 @@ export class KeyBoardModule implements Module {
         caretPosition.length,
       );
     }
-    editor.updateBlock({
-      ...block,
-      childBlocks: [
-        ...block.childBlocks.slice(0, childBlockIndex),
-        {
-          ...block.childBlocks[childBlockIndex],
-          contents: deletedContents,
-        },
-        ...block.childBlocks.slice(childBlockIndex + 1),
-      ],
+    editor.updateChildBlock(block.id, {
+      ...block.childBlocks[childBlockIndex],
+      contents: deletedContents,
     });
     editor.blur();
     editor.renderChild(block.id, [block.childBlocks[childBlockIndex].id]);

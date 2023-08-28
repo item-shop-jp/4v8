@@ -515,7 +515,6 @@ export class HistoryModule implements Module {
         if (!parentBlock) return;
         const block = parentBlock.childBlocks.find((v) => v.id === blockId);
         if (!block) return;
-
         const updatedBlock: Block = json0.type.apply(block, ops);
         this.editor.updateChildBlock(
           parentBlockId,

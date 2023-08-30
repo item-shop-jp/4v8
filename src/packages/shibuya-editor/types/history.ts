@@ -35,7 +35,7 @@ export interface RemoveOp {
 }
 
 export interface UpdateChildBlockOp {
-  type: 'update_child_block_contents';
+  type: 'child_block_update_contents';
   parentBlockId: string;
   blockId: string;
   undo: JSON0[];
@@ -44,7 +44,7 @@ export interface UpdateChildBlockOp {
 }
 
 export interface AddChildBlockOp {
-  type: 'add_child_block';
+  type: 'child_block_add_block';
   blockId: string;
   block: Block;
   parentBlockId: string;
@@ -52,7 +52,7 @@ export interface AddChildBlockOp {
 }
 
 export interface RemoveChildBlockOp {
-  type: 'remove_child_block';
+  type: 'child_block_remove_block';
   blockId: string;
   block: Block;
   parentBlockId: string;

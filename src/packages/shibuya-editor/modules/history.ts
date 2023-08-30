@@ -130,17 +130,33 @@ export class HistoryModule implements Module {
 
   // 共同編集時はコンフリクト対策で同じブロックを編集したらupdate_contents以外の処理は消す
   transform(transformOp: Op) {
+    const blockId =
+      'parentBlockId' in transformOp ? transformOp.parentBlockId : transformOp.blockId;
+
     this.stack.undo = this.stack.undo
       .map((ops) => {
         return ops.filter((op) => {
-          return transformOp.blockId !== op.blockId;
+          if (
+            'parentBlockId' in op &&
+            ['child_block_add_block', 'child_block_remove_block'].includes(op.type)
+          ) {
+            console.log('remove op', op, blockId !== op.parentBlockId);
+            return blockId !== op.parentBlockId;
+          }
+          return blockId !== op.blockId;
         });
       })
       .filter((ops) => ops.length > 0);
     this.stack.redo = this.stack.redo
       .map((ops) => {
         return ops.filter((op) => {
-          return transformOp.blockId !== op.blockId;
+          if (
+            'parentBlockId' in op &&
+            ['child_block_add_block', 'child_block_remove_block'].includes(op.type)
+          ) {
+            return blockId !== op.parentBlockId;
+          }
+          return blockId !== op.blockId;
         });
       })
       .filter((ops) => ops.length > 0);
@@ -167,19 +183,34 @@ export class HistoryModule implements Module {
 
   // 共同編集時はコンフリクト対策で同じブロックを編集したらupdate_contents以外の処理は消す
   transformMultiLineOp(transformOps: Op[]) {
-    const ids = transformOps.map((v) => v.blockId);
+    const parentIds = [
+      ...transformOps.map((v) => !('parentBlockId' in v) && v.blockId),
+      ...transformOps.map((v) => 'parentBlockId' in v && v.parentBlockId),
+    ];
 
     this.stack.undo = this.stack.undo
       .map((ops) => {
         return ops.filter((op) => {
-          return !ids.includes(op.blockId);
+          if (
+            'parentBlockId' in op &&
+            ['child_block_add_block', 'child_block_remove_block'].includes(op.type)
+          ) {
+            return !parentIds.includes(op.parentBlockId);
+          }
+          return !parentIds.includes(op.blockId);
         });
       })
       .filter((ops) => ops.length > 0);
     this.stack.redo = this.stack.redo
       .map((ops) => {
         return ops.filter((op) => {
-          return !ids.includes(op.blockId);
+          if (
+            'parentBlockId' in op &&
+            ['child_block_add_block', 'child_block_remove_block'].includes(op.type)
+          ) {
+            return !parentIds.includes(op.parentBlockId);
+          }
+          return !parentIds.includes(op.blockId);
         });
       })
       .filter((ops) => ops.length > 0);

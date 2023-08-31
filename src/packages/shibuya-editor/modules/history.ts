@@ -140,7 +140,6 @@ export class HistoryModule implements Module {
             'parentBlockId' in op &&
             ['child_block_add_block', 'child_block_remove_block'].includes(op.type)
           ) {
-            console.log('remove op', op, blockId !== op.parentBlockId);
             return blockId !== op.parentBlockId;
           }
           return blockId !== op.blockId;

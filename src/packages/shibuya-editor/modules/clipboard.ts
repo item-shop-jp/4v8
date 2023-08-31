@@ -82,7 +82,13 @@ export class ClipboardModule implements Module {
         const appendBlocks = data as Block[];
         let prevBlockId = prevBlock.id;
         const affectedIds = appendBlocks.map((v, i) => {
-          const appendBlock = { ...v, id: uuidv4() };
+          const appendBlock = {
+            ...v,
+            id: uuidv4(),
+            childBlocks: v.childBlocks.map((c) => {
+              return { ...c, id: uuidv4() };
+            }),
+          };
           this.editor.createBlock(appendBlock, prevBlockId);
           prevBlockId = appendBlock.id;
           return appendBlock.id;
@@ -277,10 +283,20 @@ export class ClipboardModule implements Module {
     } else {
       // inline
       const caretPosition = this.editor.getCaretPosition();
-      const block = this.editor.getBlock(caretPosition?.blockId ?? '');
-      if (block && caretPosition && !caretPosition.collapsed && caretPosition.length > 0) {
+      if (!caretPosition) return;
+      const block = this.editor.getBlock(caretPosition.blockId);
+      if (!block) return;
+      let contents = [];
+      if (caretPosition.childBlockId) {
+        const childBlock = block.childBlocks.find((v) => v.id === caretPosition.childBlockId);
+        if (!childBlock) return;
+        contents = childBlock.contents;
+      } else {
+        contents = block.contents;
+      }
+      if (!caretPosition.collapsed && caretPosition.length > 0) {
         const inlineContents = getInlineContents(
-          block.contents,
+          contents,
           caretPosition.index,
           caretPosition.length,
         );

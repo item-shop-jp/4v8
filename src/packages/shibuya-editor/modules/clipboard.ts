@@ -58,6 +58,7 @@ export class ClipboardModule implements Module {
   onPaste(event: React.ClipboardEvent) {
     event.preventDefault();
     const caretPosition = this.editor.getCaretPosition();
+    if (!caretPosition) return;
 
     const dataTransferItems = event.clipboardData.items ?? [];
     const files: File[] = [];
@@ -73,8 +74,8 @@ export class ClipboardModule implements Module {
     }
 
     const clipboardJson = event.clipboardData.getData('text/shibuya-formats');
-    const prevBlock = this.editor.getBlock(caretPosition?.blockId ?? '');
-    if (caretPosition && prevBlock && clipboardJson) {
+    const prevBlock = this.editor.getBlock(caretPosition.blockId);
+    if (prevBlock && clipboardJson) {
       const { type, data } = JSON.parse(clipboardJson);
 
       // blocks
@@ -104,7 +105,7 @@ export class ClipboardModule implements Module {
           this.editor.updateCaretRect();
           this.editor.getModule('editor').scrollToBlock(prevBlockId);
         }, 10);
-      } else if (type === 'inlines') {
+      } else if (type === 'inlines' && !caretPosition.childBlockId) {
         const appendContents = data as Inline[];
         let contents = copyObject(prevBlock.contents);
         if (caretPosition.length > 0) {
@@ -131,6 +132,40 @@ export class ClipboardModule implements Module {
         setTimeout(() => {
           this.editor.setCaretPosition({
             blockId: prevBlock.id,
+            index: caretPosition.index + appendTextLength,
+          });
+          this.editor.updateCaretRect();
+        }, 10);
+      } else if (type === 'inlines' && caretPosition.childBlockId) {
+        const targetBlock = prevBlock.childBlocks.find((v) => v.id === caretPosition.childBlockId);
+        if (!targetBlock) return;
+        const appendContents = data as Inline[];
+        let contents = copyObject(targetBlock.contents);
+        if (caretPosition.length > 0) {
+          contents = deleteInlineContents(contents, caretPosition.index, caretPosition.length);
+        }
+        const [first, last] = splitInlineContents(contents, caretPosition.index);
+        const appendTextLength = stringLength(
+          appendContents
+            .map((v) => v.text)
+            .join('')
+            .replaceAll(/\uFEFF/gi, ''),
+        );
+        this.editor.updateChildBlock(prevBlock.id, {
+          ...targetBlock,
+          contents: [
+            ...first,
+            ...appendContents.map((v) => {
+              return { ...v, id: uuidv4() };
+            }),
+            ...last,
+          ],
+        });
+        this.editor.renderChild(prevBlock.id, [targetBlock.id]);
+        setTimeout(() => {
+          this.editor.setCaretPosition({
+            blockId: prevBlock.id,
+            childBlockId: targetBlock.id,
             index: caretPosition.index + appendTextLength,
           });
           this.editor.updateCaretRect();

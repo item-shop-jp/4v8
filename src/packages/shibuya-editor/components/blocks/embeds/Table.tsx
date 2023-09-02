@@ -55,6 +55,8 @@ const StyledTd = styled.td`
   background-clip: padding-box;
   position: relative;
   user-drag: none;
+  box-sizing: border-box;
+}
 `;
 
 const TableContent = styled.div`
@@ -161,8 +163,11 @@ export const Table = React.memo(
                     <StyledTd
                       key={cIndex}
                       style={{
-                        minWidth: memoTableWidths[cIndex] ?? 120,
-                        width: memoTableWidths[cIndex] ?? 'auto',
+                        minWidth: 120,
+                        width:
+                          memoTableWidths[cIndex] && rIndex === 0
+                            ? memoTableWidths[cIndex]
+                            : 'auto',
                       }}
                     >
                       <TableCell
@@ -212,29 +217,36 @@ export const Table = React.memo(
         } else {
           width = dragParams.width - (dragParams.left - e.clientX);
         }
-        if (width < 100) {
-          width = 100;
+        if (width < 120) {
+          width = 120;
         }
 
         const block = childBlocks.find((v) => v.name === `r0-c${dragParams.col}`);
         if (!block) return;
         const el = getBlockElementById(block.id, true);
-        if (!el) return;
-        el.style.width = `${width}px`;
+        if (!el?.parentElement) return;
+        el.parentElement.style.width = `${width}px`;
       };
 
       const handleMouseUp = (e: MouseEvent) => {
+        const block = childBlocks.find((v) => v.name === `r0-c${dragParams.col}`);
+        if (!block) return;
+        const el = getBlockElementById(block.id, true);
+        if (!el?.parentElement) return;
         setDragParams(undefined);
-        // const currentBlock = editor.getBlock(blockId);
-        // if (!currentBlock) return;
-        // editor.updateBlock({
-        //   ...currentBlock,
-        //   attributes: {
-        //     ...currentBlock.attributes,
-        //     width: imageRef.current.width,
-        //   },
-        // });
-        // editor.render([blockId]);
+
+        console.log(el.parentElement.getBoundingClientRect().width);
+        const currentBlock = editor.getBlock(blockId);
+        if (!currentBlock) return;
+        tableSettings[`c${dragParams.col}-width`] = el.parentElement.getBoundingClientRect().width;
+        editor.updateBlock({
+          ...currentBlock,
+          attributes: {
+            ...currentBlock.attributes,
+            tableSettings,
+          },
+        });
+        editor.render([blockId]);
       };
 
       window.addEventListener('mousemove', handleMouseMove, true);
@@ -243,7 +255,7 @@ export const Table = React.memo(
         window.removeEventListener('mousemove', handleMouseMove, true);
         window.removeEventListener('mouseup', handleMouseUp, true);
       };
-    }, [dragParams, childBlocks]);
+    }, [dragParams, childBlocks, tableSettings]);
 
     return (
       <Container {...props} contentEditable={false} draggable="false" onBeforeInput={handleInput}>

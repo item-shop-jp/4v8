@@ -6,6 +6,7 @@ import { Formats } from '../../../types/format';
 import { Block, Inline } from '../../../types';
 import { createBlock, getBlockElementById } from '../../../utils/block';
 import { useChildBlockRenderer } from '../../../hooks';
+import { copyObject } from '../../../utils/object';
 
 export interface TableProps {
   blockId: string;
@@ -176,11 +177,25 @@ export const Table = React.memo(
         const currentBlock = editor.getBlock(blockId);
         if (!currentBlock) return;
 
+        // 拡縮情報を更新
+        const prevSettings = copyObject(tableSettings);
+        const nextSettings: TableProps['attributes']['tableSettings'] = {};
+        for (let c = 0; c < currentBlock.attributes.tableC + 1; c++) {
+          if (c > colIndex) {
+            if (!prevSettings[`c${c - 1}-width`]) continue;
+            nextSettings[`c${c}-width`] = prevSettings[`c${c - 1}-width`];
+          } else if (c < colIndex) {
+            if (!prevSettings[`c${c}-width`]) continue;
+            nextSettings[`c${c}-width`] = prevSettings[`c${c}-width`];
+          }
+        }
+
         editor.updateBlock({
           ...currentBlock,
           attributes: {
             ...currentBlock.attributes,
             tableC: currentBlock.attributes.tableC + 1,
+            tableSettings: nextSettings,
           },
         });
 
@@ -200,26 +215,23 @@ export const Table = React.memo(
               if (!childBlock) {
                 const appendBlock = { ...createBlock('PARAGRAPH'), name: `r${r}-c${c}` };
                 createdBlocks = [...createdBlocks, appendBlock];
-                updatedBlockIds = [...updatedBlockIds, appendBlock.id];
-                console.log('update', `${r}-${c}`, appendBlock.id);
               } else {
                 editor.updateChildBlock(blockId, {
                   ...childBlock,
                   name: `r${r}-c${c}`,
                 });
                 updatedBlockIds = [...updatedBlockIds, childBlock.id];
-                console.log('update', `${r}-${c}`, childBlock.id);
               }
             }
           }
         }
-        console.log(createdBlocks);
+
         editor.createChildBlocks(blockId, createdBlocks);
 
         editor.render([blockId]);
         editor.renderChild(blockId, updatedBlockIds);
       },
-      [blockId, editor],
+      [blockId, editor, tableSettings],
     );
     const handleRemoveColumn = React.useCallback(
       (colIndex: number) => (e: React.MouseEvent) => {
@@ -263,11 +275,14 @@ export const Table = React.memo(
                     <StyledTd
                       key={cIndex}
                       style={{
-                        minWidth: 120,
-                        width:
+                        minWidth:
                           memoTableWidths[cIndex] && rIndex === 0
-                            ? memoTableWidths[cIndex]
-                            : 'auto',
+                            ? `${memoTableWidths[cIndex]}px`
+                            : '120px',
+                        maxWidth:
+                          memoTableWidths[cIndex] && rIndex === 0
+                            ? `${memoTableWidths[cIndex]}px`
+                            : '120px',
                       }}
                     >
                       <TableCell
@@ -289,6 +304,14 @@ export const Table = React.memo(
                         onMouseDown={handleMouseDown(cIndex)}
                         draggable="false"
                       />
+                      {rIndex === 0 && cIndex === 0 && (
+                        <AddColumn
+                          onClick={handleAddColumn(cIndex)}
+                          style={{ right: 'auto', left: '-14px' }}
+                        >
+                          +
+                        </AddColumn>
+                      )}
                       {rIndex === 0 && (
                         <AddColumn onClick={handleAddColumn(cIndex + 1)}>+</AddColumn>
                       )}
@@ -331,7 +354,8 @@ export const Table = React.memo(
         if (!block) return;
         const el = getBlockElementById(block.id, true);
         if (!el?.parentElement) return;
-        el.parentElement.style.width = `${width}px`;
+        el.parentElement.style.minWidth = `${width}px`;
+        el.parentElement.style.maxWidth = `${width}px`;
       };
 
       const handleMouseUp = (e: MouseEvent) => {

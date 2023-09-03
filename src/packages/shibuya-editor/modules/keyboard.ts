@@ -336,13 +336,17 @@ export class KeyBoardModule implements Module {
   }
 
   onInput(e: React.FormEvent) {
+    const nativeRange = this.editor.getNativeRange();
+    const el = nativeRange?.startContainer as HTMLElement;
+
     setTimeout(() => {
-      const nativeRange = this.editor.getNativeRange();
-      const [blockId, blockElement] = getBlockId(nativeRange?.startContainer as HTMLElement);
+      const [blockId, blockElement] = getBlockId(el);
+
       if (this.composing || !blockId || !blockElement) {
         return;
       }
       const block = this.editor.getBlock(blockId);
+
       if (!block) return;
       if (block.type === 'CODE-BLOCK') {
         this.syncCodeBlock(blockId, blockElement);
@@ -353,14 +357,13 @@ export class KeyBoardModule implements Module {
   }
 
   onInputChildBlock(parentBlockId: string, e: React.FormEvent) {
+    const nativeRange = this.editor.getNativeRange();
+    const el = nativeRange?.startContainer as HTMLElement;
     setTimeout(() => {
       const parentBlock = this.editor.getBlock(parentBlockId);
 
       if (!parentBlock) return;
-      const nativeRange = this.editor.getNativeRange();
-      const [blockId, blockKey, blockElement] = getChildBlockId(
-        nativeRange?.startContainer as HTMLElement,
-      );
+      const [blockId, blockKey, blockElement] = getChildBlockId(el);
 
       if (this.composing || !blockId || !blockKey || !blockElement) {
         return;

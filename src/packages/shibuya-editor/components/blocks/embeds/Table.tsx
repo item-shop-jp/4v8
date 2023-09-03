@@ -76,6 +76,49 @@ const Resizer = styled.div`
   user-drag: none;
 `;
 
+const AddColumn = styled.div`
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  top: -12px;
+  right: -14px;
+  z-index: 1;
+  background: #fff;
+  border-radius: 50%;
+  border: 1px solid #c1c7cd;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 300ms ease 100ms;
+  &:hover {
+    opacity: 1;
+  }
+`;
+
+const RemoveColumn = styled.div`
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  top: -12px;
+  left: 50%;
+  z-index: 1;
+  transform: translateX(-50%);
+  background: #fff;
+  border-radius: 50%;
+  border: 1px solid #c1c7cd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 300ms ease 100ms;
+  &:hover {
+    opacity: 1;
+  }
+  cursor: pointer;
+`;
+
 export const Table = React.memo(
   ({
     blockId,
@@ -126,6 +169,63 @@ export const Table = React.memo(
         setDragParams({ col, left: e.clientX, width: el.clientWidth });
       },
       [tableSettings],
+    );
+
+    const handleAddColumn = React.useCallback(
+      (colIndex: number) => (e: React.MouseEvent) => {
+        const currentBlock = editor.getBlock(blockId);
+        if (!currentBlock) return;
+
+        editor.updateBlock({
+          ...currentBlock,
+          attributes: {
+            ...currentBlock.attributes,
+            tableC: currentBlock.attributes.tableC + 1,
+          },
+        });
+
+        // 追加されたカラム位置より後のブロックを採番しなおす
+        let createdBlocks: Block[] = [];
+        let updatedBlockIds: string[] = [];
+        for (let r = 0; r < currentBlock.attributes.tableR; r++) {
+          for (let c = 0; c < currentBlock.attributes.tableC + 1; c++) {
+            if (c === colIndex) {
+              createdBlocks = [
+                ...createdBlocks,
+                { ...createBlock('PARAGRAPH'), name: `r${r}-c${c}` },
+              ];
+            }
+            if (c > colIndex) {
+              const childBlock = currentBlock.childBlocks.find((v) => v.name === `r${r}-c${c - 1}`);
+              if (!childBlock) {
+                const appendBlock = { ...createBlock('PARAGRAPH'), name: `r${r}-c${c}` };
+                createdBlocks = [...createdBlocks, appendBlock];
+                updatedBlockIds = [...updatedBlockIds, appendBlock.id];
+                console.log('update', `${r}-${c}`, appendBlock.id);
+              } else {
+                editor.updateChildBlock(blockId, {
+                  ...childBlock,
+                  name: `r${r}-c${c}`,
+                });
+                updatedBlockIds = [...updatedBlockIds, childBlock.id];
+                console.log('update', `${r}-${c}`, childBlock.id);
+              }
+            }
+          }
+        }
+        console.log(createdBlocks);
+        editor.createChildBlocks(blockId, createdBlocks);
+
+        editor.render([blockId]);
+        editor.renderChild(blockId, updatedBlockIds);
+      },
+      [blockId, editor],
+    );
+    const handleRemoveColumn = React.useCallback(
+      (colIndex: number) => (e: React.MouseEvent) => {
+        console.log('remove', colIndex);
+      },
+      [blockId, editor],
     );
 
     const memoTableRows: Block[][] = React.useMemo(() => {
@@ -189,6 +289,12 @@ export const Table = React.memo(
                         onMouseDown={handleMouseDown(cIndex)}
                         draggable="false"
                       />
+                      {rIndex === 0 && (
+                        <AddColumn onClick={handleAddColumn(cIndex + 1)}>+</AddColumn>
+                      )}
+                      {rIndex === 0 && (
+                        <RemoveColumn onClick={handleRemoveColumn(cIndex + 1)}>-</RemoveColumn>
+                      )}
                     </StyledTd>
                   );
                 })}
@@ -234,8 +340,6 @@ export const Table = React.memo(
         const el = getBlockElementById(block.id, true);
         if (!el?.parentElement) return;
         setDragParams(undefined);
-
-        console.log(el.parentElement.getBoundingClientRect().width);
         const currentBlock = editor.getBlock(blockId);
         if (!currentBlock) return;
         tableSettings[`c${dragParams.col}-width`] = el.parentElement.getBoundingClientRect().width;

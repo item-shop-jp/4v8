@@ -250,6 +250,7 @@ export const Table = React.memo(
           margedRows[r][c] = cellBlock ?? createBlock('PARAGRAPH');
         }
       }
+
       return margedRows;
     }, [childBlocks, tableR, tableC]);
 
@@ -273,7 +274,7 @@ export const Table = React.memo(
                 {row.map((column, cIndex) => {
                   return (
                     <StyledTd
-                      key={cIndex}
+                      key={memoTableRows[rIndex][cIndex].id}
                       style={{
                         minWidth:
                           memoTableWidths[cIndex] && rIndex === 0

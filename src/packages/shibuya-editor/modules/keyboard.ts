@@ -173,7 +173,7 @@ export class KeyBoardModule implements Module {
     this.addBinding({
       key: KeyCodes.TAB,
       prevented: true,
-      except: ['CODE-BLOCK'],
+      except: ['CODE-BLOCK', 'TABLE'],
       handler: this._handleIndent.bind(this),
     });
 
@@ -181,7 +181,7 @@ export class KeyBoardModule implements Module {
       key: KeyCodes.TAB,
       shiftKey: true,
       prevented: true,
-      except: ['CODE-BLOCK'],
+      except: ['CODE-BLOCK', 'TABLE'],
       handler: this._handleOutdent.bind(this),
     });
 
@@ -319,6 +319,12 @@ export class KeyBoardModule implements Module {
       collapsed: true,
       only: ['TABLE'],
       handler: this._handleTableKeyRight.bind(this),
+    });
+    this.addBinding({
+      key: KeyCodes.TAB,
+      prevented: true,
+      only: ['TABLE'],
+      handler: this._handleTableTab.bind(this),
     });
   }
 
@@ -1283,8 +1289,8 @@ export class KeyBoardModule implements Module {
     if (blockLength === null) return;
     if (blockLength === 0 || blockLength === caretPosition.index) {
       event.preventDefault();
+      // １つ先のブロックへ飛ばす
       if (currentC === block.attributes.tableC - 1 && currentR === block.attributes.tableR - 1) {
-        // １つ先のブロックへ飛ばす
         const blocks = editor.getBlocks();
         const currentBlockIndex = blocks.findIndex((v) => v.id === caretPosition.blockId);
         if (currentBlockIndex === -1 || currentBlockIndex >= blocks.length - 1) return;
@@ -1313,6 +1319,7 @@ export class KeyBoardModule implements Module {
         setTimeout(() => editor.updateCaretRect(), 10);
         return;
       }
+
       if (currentC === block.attributes.tableC - 1) {
         currentR++;
         currentC = 0;
@@ -1445,5 +1452,37 @@ export class KeyBoardModule implements Module {
     if (this.composing) {
       return;
     }
+  }
+
+  private _handleTableTab(caretPosition: CaretPosition, editor: EditorController) {
+    const block = editor.getBlock(caretPosition.blockId);
+    if (!caretPosition.childBlockId || !block) return;
+    const childBlockIndex = block.childBlocks.findIndex((v) => v.id === caretPosition.childBlockId);
+    if (childBlockIndex === -1 || !block.childBlocks[childBlockIndex].name) return;
+    const match = block.childBlocks[childBlockIndex].name?.match(/^r([0-9]+)-c([0-9]+)/);
+
+    if (!match) return;
+    let currentR = Number(match[1]);
+    let currentC = Number(match[2]);
+
+    // １つ先のセルへ移動
+    if (currentR === block.attributes.tableR - 1 && currentC === block.attributes.tableC - 1)
+      return;
+    if (currentC === block.attributes.tableC - 1) {
+      currentR++;
+      currentC = 0;
+    } else {
+      currentC++;
+    }
+    const nextChild = block.childBlocks.find((v) => v.name === `r${currentR}-c${currentC}`);
+    if (!nextChild) return;
+
+    const nextBlockLength = editor.getChildBlockLength(nextChild.id) ?? 0;
+
+    editor.setCaretPosition({
+      blockId: block.id,
+      childBlockId: nextChild.id,
+      index: nextBlockLength,
+    });
   }
 }

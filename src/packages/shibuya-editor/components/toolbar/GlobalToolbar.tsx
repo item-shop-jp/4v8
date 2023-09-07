@@ -229,8 +229,12 @@ export const GlobalToolbar = React.memo(({ editor, ...props }: GlobalToolbarProp
             return;
           }
           setDisplay(true);
+          if (!caret) return;
+          const targetBlock = editor.getBlock(caret.blockId);
+          if (!targetBlock) return;
           // setFormats(editor.getFormats(caret.blockId, caret.index, caret.length));
-          // setBlockType(editor.getBlock(caret.blockId)?.type);
+
+          setBlockType(targetBlock.type);
         }),
     );
     return () => {

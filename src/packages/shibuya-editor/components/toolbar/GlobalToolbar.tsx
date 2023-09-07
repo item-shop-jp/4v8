@@ -66,6 +66,8 @@ export const GlobalToolbar = React.memo(({ editor, ...props }: GlobalToolbarProp
 
   const formatBlock = React.useCallback(
     (type: BlockType, attributes: BlockAttributes = {}, childBlocks: Block[] = []) => {
+      const caretPosition = editor.getCaretPosition();
+      if (!caretPosition || caretPosition.childBlockId) return;
       editor.getModule('toolbar').setUpdating(true);
       const selectedBlocks = editor.getModule('selector').getSelectedBlocks();
       if (selectedBlocks.length > 0) {
@@ -366,7 +368,7 @@ export const GlobalToolbar = React.memo(({ editor, ...props }: GlobalToolbarProp
           </Tooltip>
           <Tooltip
             targetElement={
-              <Button href="#" active={blockType === 'TABLE'} onClick={handleTable}>
+              <Button href="#" active={false} onClick={handleTable}>
                 <FormatDecision size="20" />
               </Button>
             }

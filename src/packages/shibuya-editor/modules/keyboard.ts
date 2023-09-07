@@ -326,6 +326,13 @@ export class KeyBoardModule implements Module {
       only: ['TABLE'],
       handler: this._handleTableTab.bind(this),
     });
+    this.addBinding({
+      key: KeyCodes.TAB,
+      shiftKey: true,
+      prevented: true,
+      only: ['TABLE'],
+      handler: this._handleTableShiftTab.bind(this),
+    });
   }
 
   onDestroy() {
@@ -1465,7 +1472,7 @@ export class KeyBoardModule implements Module {
     let currentR = Number(match[1]);
     let currentC = Number(match[2]);
 
-    // １つ先のセルへ移動
+    // １つ前のセルへ移動
     if (currentR === block.attributes.tableR - 1 && currentC === block.attributes.tableC - 1)
       return;
     if (currentC === block.attributes.tableC - 1) {
@@ -1473,6 +1480,37 @@ export class KeyBoardModule implements Module {
       currentC = 0;
     } else {
       currentC++;
+    }
+    const nextChild = block.childBlocks.find((v) => v.name === `r${currentR}-c${currentC}`);
+    if (!nextChild) return;
+
+    const nextBlockLength = editor.getChildBlockLength(nextChild.id) ?? 0;
+
+    editor.setCaretPosition({
+      blockId: block.id,
+      childBlockId: nextChild.id,
+      index: nextBlockLength,
+    });
+  }
+
+  private _handleTableShiftTab(caretPosition: CaretPosition, editor: EditorController) {
+    const block = editor.getBlock(caretPosition.blockId);
+    if (!caretPosition.childBlockId || !block) return;
+    const childBlockIndex = block.childBlocks.findIndex((v) => v.id === caretPosition.childBlockId);
+    if (childBlockIndex === -1 || !block.childBlocks[childBlockIndex].name) return;
+    const match = block.childBlocks[childBlockIndex].name?.match(/^r([0-9]+)-c([0-9]+)/);
+
+    if (!match) return;
+    let currentR = Number(match[1]);
+    let currentC = Number(match[2]);
+
+    // １つ先のセルへ移動
+    if (currentR === 0 && currentC === 0) return;
+    if (currentC === 0) {
+      currentR--;
+      currentC = block.attributes.tableC - 1;
+    } else {
+      currentC--;
     }
     const nextChild = block.childBlocks.find((v) => v.name === `r${currentR}-c${currentC}`);
     if (!nextChild) return;

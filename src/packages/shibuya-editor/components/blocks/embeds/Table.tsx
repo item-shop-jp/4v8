@@ -233,11 +233,74 @@ export const Table = React.memo(
       },
       [blockId, editor, tableSettings],
     );
+
     const handleRemoveColumn = React.useCallback(
       (colIndex: number) => (e: React.MouseEvent) => {
-        console.log('remove', colIndex);
+        colIndex--;
+        const currentBlock = editor.getBlock(blockId);
+        if (!currentBlock) return;
+        if (currentBlock.attributes.tableC <= 1) return;
+
+        // 拡縮情報を更新
+        const prevSettings = copyObject(tableSettings);
+        const nextSettings: TableProps['attributes']['tableSettings'] = {};
+        for (let c = 0; c < currentBlock.attributes.tableC; c++) {
+          if (c > colIndex) {
+            if (!prevSettings[`c${c}-width`]) continue;
+            nextSettings[`c${c - 1}-width`] = prevSettings[`c${c}-width`];
+          } else if (c < colIndex) {
+            if (!prevSettings[`c${c}-width`]) continue;
+            nextSettings[`c${c}-width`] = prevSettings[`c${c}-width`];
+          }
+        }
+
+        editor.updateBlock({
+          ...currentBlock,
+          attributes: {
+            ...currentBlock.attributes,
+            tableC: currentBlock.attributes.tableC - 1,
+            tableSettings: nextSettings,
+          },
+        });
+
+        // 削除されたカラム位置より後のブロックを採番しなおす
+        let removedBlockIds: string[] = [];
+        let createdBlocks: Block[] = [];
+        let updatedBlockIds: string[] = [];
+        for (let r = 0; r < currentBlock.attributes.tableR; r++) {
+          for (let c = 0; c < currentBlock.attributes.tableC; c++) {
+            if (c === colIndex) {
+              const childBlock = currentBlock.childBlocks.find((v) => v.name === `r${r}-c${c}`);
+              if (childBlock) {
+                removedBlockIds = [...removedBlockIds, childBlock.id];
+              }
+            }
+            if (c > colIndex) {
+              const childBlock = currentBlock.childBlocks.find((v) => v.name === `r${r}-c${c}`);
+              if (!childBlock) {
+                const appendBlock = { ...createBlock('PARAGRAPH'), name: `r${r}-c${c - 1}` };
+                createdBlocks = [...createdBlocks, appendBlock];
+              } else {
+                editor.updateChildBlock(blockId, {
+                  ...childBlock,
+                  name: `r${r}-c${c - 1}`,
+                });
+                updatedBlockIds = [...updatedBlockIds, childBlock.id];
+              }
+            }
+          }
+        }
+
+        console.log(removedBlockIds, createdBlocks);
+        if (createdBlocks.length > 0) {
+          editor.createChildBlocks(blockId, createdBlocks);
+        }
+        editor.deleteChildBlocks(blockId, removedBlockIds);
+
+        editor.render([blockId]);
+        editor.renderChild(blockId, updatedBlockIds);
       },
-      [blockId, editor],
+      [blockId, editor, tableSettings],
     );
 
     const memoTableRows: Block[][] = React.useMemo(() => {

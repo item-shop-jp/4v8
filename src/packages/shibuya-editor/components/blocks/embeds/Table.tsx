@@ -97,6 +97,26 @@ const AddColumn = styled.div`
     opacity: 1;
   }
 `;
+const AddRow = styled.div`
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  bottom: -12px;
+  left: -32px;
+  z-index: 1;
+  background: #fff;
+  border-radius: 50%;
+  border: 1px solid #c1c7cd;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 300ms ease 100ms;
+  &:hover {
+    opacity: 1;
+  }
+`;
 
 const RemoveColumn = styled.div`
   position: absolute;
@@ -106,6 +126,28 @@ const RemoveColumn = styled.div`
   left: 50%;
   z-index: 1;
   transform: translateX(-50%);
+  background: #fff;
+  border-radius: 50%;
+  border: 1px solid #c1c7cd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 300ms ease 100ms;
+  &:hover {
+    opacity: 1;
+  }
+  cursor: pointer;
+`;
+
+const RemoveRow = styled.div`
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  left: -32px;
+  top: 50%;
+  z-index: 1;
+  transform: translateY(-50%);
   background: #fff;
   border-radius: 50%;
   border: 1px solid #c1c7cd;
@@ -227,7 +269,7 @@ export const Table = React.memo(
         }
 
         editor.createChildBlocks(blockId, createdBlocks);
-
+        editor.getModule('history')?.optimizeOp();
         editor.render([blockId]);
         editor.renderChild(blockId, updatedBlockIds);
       },
@@ -291,12 +333,113 @@ export const Table = React.memo(
           }
         }
 
-        console.log(removedBlockIds, createdBlocks);
         if (createdBlocks.length > 0) {
           editor.createChildBlocks(blockId, createdBlocks);
         }
         editor.deleteChildBlocks(blockId, removedBlockIds);
+        editor.getModule('history')?.optimizeOp();
+        editor.render([blockId]);
+        editor.renderChild(blockId, updatedBlockIds);
+      },
+      [blockId, editor, tableSettings],
+    );
 
+    const handleAddRow = React.useCallback(
+      (rowIndex: number) => (e: React.MouseEvent) => {
+        const currentBlock = editor.getBlock(blockId);
+        if (!currentBlock) return;
+
+        editor.updateBlock({
+          ...currentBlock,
+          attributes: {
+            ...currentBlock.attributes,
+            tableR: currentBlock.attributes.tableR + 1,
+          },
+        });
+
+        // 追加されたカラム位置より後のブロックを採番しなおす
+        let createdBlocks: Block[] = [];
+        let updatedBlockIds: string[] = [];
+        for (let r = 0; r < currentBlock.attributes.tableR + 1; r++) {
+          for (let c = 0; c < currentBlock.attributes.tableC; c++) {
+            if (r === rowIndex) {
+              createdBlocks = [
+                ...createdBlocks,
+                { ...createBlock('PARAGRAPH'), name: `r${r}-c${c}` },
+              ];
+            }
+            if (r > rowIndex) {
+              const childBlock = currentBlock.childBlocks.find((v) => v.name === `r${r - 1}-c${c}`);
+              if (!childBlock) {
+                const appendBlock = { ...createBlock('PARAGRAPH'), name: `r${r}-c${c}` };
+                createdBlocks = [...createdBlocks, appendBlock];
+              } else {
+                editor.updateChildBlock(blockId, {
+                  ...childBlock,
+                  name: `r${r}-c${c}`,
+                });
+                updatedBlockIds = [...updatedBlockIds, childBlock.id];
+              }
+            }
+          }
+        }
+
+        editor.createChildBlocks(blockId, createdBlocks);
+        editor.getModule('history')?.optimizeOp();
+        editor.render([blockId]);
+        editor.renderChild(blockId, updatedBlockIds);
+      },
+      [blockId, editor, tableSettings],
+    );
+
+    const handleRemoveRow = React.useCallback(
+      (rowIndex: number) => (e: React.MouseEvent) => {
+        rowIndex--;
+        const currentBlock = editor.getBlock(blockId);
+        if (!currentBlock) return;
+        if (currentBlock.attributes.tableR <= 1) return;
+
+        editor.updateBlock({
+          ...currentBlock,
+          attributes: {
+            ...currentBlock.attributes,
+            tableR: currentBlock.attributes.tableR - 1,
+          },
+        });
+
+        // 削除されたカラム位置より後のブロックを採番しなおす
+        let removedBlockIds: string[] = [];
+        let createdBlocks: Block[] = [];
+        let updatedBlockIds: string[] = [];
+        for (let r = 0; r < currentBlock.attributes.tableR; r++) {
+          for (let c = 0; c < currentBlock.attributes.tableC; c++) {
+            if (r === rowIndex) {
+              const childBlock = currentBlock.childBlocks.find((v) => v.name === `r${r}-c${c}`);
+              if (childBlock) {
+                removedBlockIds = [...removedBlockIds, childBlock.id];
+              }
+            }
+            if (r > rowIndex) {
+              const childBlock = currentBlock.childBlocks.find((v) => v.name === `r${r}-c${c}`);
+              if (!childBlock) {
+                const appendBlock = { ...createBlock('PARAGRAPH'), name: `r${r - 1}-c${c}` };
+                createdBlocks = [...createdBlocks, appendBlock];
+              } else {
+                editor.updateChildBlock(blockId, {
+                  ...childBlock,
+                  name: `r${r - 1}-c${c}`,
+                });
+                updatedBlockIds = [...updatedBlockIds, childBlock.id];
+              }
+            }
+          }
+        }
+
+        if (createdBlocks.length > 0) {
+          editor.createChildBlocks(blockId, createdBlocks);
+        }
+        editor.deleteChildBlocks(blockId, removedBlockIds);
+        editor.getModule('history')?.optimizeOp();
         editor.render([blockId]);
         editor.renderChild(blockId, updatedBlockIds);
       },
@@ -338,6 +481,7 @@ export const Table = React.memo(
                   return (
                     <StyledTd
                       key={memoTableRows[rIndex][cIndex].id}
+                      data-child-block-name={memoTableRows[rIndex][cIndex].name}
                       style={{
                         minWidth:
                           memoTableWidths[cIndex] && rIndex === 0
@@ -381,6 +525,10 @@ export const Table = React.memo(
                       )}
                       {rIndex === 0 && (
                         <RemoveColumn onClick={handleRemoveColumn(cIndex + 1)}>-</RemoveColumn>
+                      )}
+                      {cIndex === 0 && <AddRow onClick={handleAddRow(rIndex + 1)}>+</AddRow>}
+                      {cIndex === 0 && (
+                        <RemoveRow onClick={handleRemoveRow(rIndex + 1)}>-</RemoveRow>
                       )}
                     </StyledTd>
                   );
@@ -430,12 +578,16 @@ export const Table = React.memo(
         setDragParams(undefined);
         const currentBlock = editor.getBlock(blockId);
         if (!currentBlock) return;
-        tableSettings[`c${dragParams.col}-width`] = el.parentElement.getBoundingClientRect().width;
+        const _settings = copyObject(tableSettings);
+        _settings[`c${dragParams.col}-width`] = el.parentElement.getBoundingClientRect().width;
         editor.updateBlock({
           ...currentBlock,
           attributes: {
             ...currentBlock.attributes,
-            tableSettings,
+            tableSettings: {
+              ...(currentBlock.attributes.tableSettings ?? {}),
+              ..._settings,
+            },
           },
         });
         editor.render([blockId]);

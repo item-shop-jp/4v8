@@ -8,6 +8,7 @@ export type BlockType =
   | 'CODE-BLOCK'
   | 'DECISION'
   | 'TASK'
+  | 'TABLE'
   | 'HEADER1'
   | 'HEADER2'
   | 'HEADER3'

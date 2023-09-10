@@ -59,6 +59,11 @@ export interface LinkPopupProps {
   scrollContainer?: HTMLElement | string;
 }
 
+export interface PalettePopupProps {
+  editor: EditorController;
+  scrollContainer?: HTMLElement | string;
+}
+
 export interface Formats {
   'toolbar/global': React.FC<GlobalToolbarProps>;
   'toolbar/bubble': React.FC<BubbleToolbarProps>;
@@ -70,6 +75,11 @@ export interface Formats {
   'block/code-block': React.FC<BlockProps>;
   'block/ordered-list': React.FC<BlockProps>;
   'block/bullet-list': React.FC<BlockProps>;
+  'block/decision': React.FC<BlockProps>;
+  'block/task': React.FC<BlockProps>;
+  'block/image': React.FC<BlockProps>;
+  'block/file': React.FC<BlockProps>;
+  'block/table': React.FC<BlockProps>;
   'inline/text': React.FC<InlineProps>;
   'inline/code-token': React.FC<InlineProps>;
   'inline/style/bold': () => FlattenSimpleInterpolation;
@@ -80,6 +90,7 @@ export interface Formats {
   'inline/style/color': (color: string) => FlattenSimpleInterpolation;
   'inline/style/link': (url?: string) => FlattenSimpleInterpolation;
   'popup/link': React.FC<LinkPopupProps>;
+  'popup/palette': React.FC<PalettePopupProps>;
   [key: string]: any;
 }
 
@@ -119,6 +130,7 @@ export type BlockType =
   | 'CODE-BLOCK'
   | 'DECISION'
   | 'TASK'
+  | 'TABLE'
   | 'HEADER1'
   | 'HEADER2'
   | 'HEADER3'
@@ -138,17 +150,10 @@ export interface Block {
   contents: Inline[];
   attributes: BlockAttributes;
   type: BlockType;
+  childBlocks: Block[];
   meta?: BlockAttributes;
+  name?: string;
 }
-
-export const Paragraph: React.MemoExoticComponent<(props: BlockProps) => JSX.Element>;
-export const Header1: React.MemoExoticComponent<(props: BlockProps) => JSX.Element>;
-export const Header2: React.MemoExoticComponent<(props: BlockProps) => JSX.Element>;
-export const Header3: React.MemoExoticComponent<(props: BlockProps) => JSX.Element>;
-export const OrderedList: React.MemoExoticComponent<(props: BlockProps) => JSX.Element>;
-export const BulletList: React.MemoExoticComponent<(props: BlockProps) => JSX.Element>;
-export const Blockquote: React.MemoExoticComponent<(props: BlockProps) => JSX.Element>;
-export const CodeBlock: React.MemoExoticComponent<(props: BlockProps) => JSX.Element>;
 
 export interface Settings {
   scrollMarginBottom?: number;

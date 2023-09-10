@@ -224,11 +224,11 @@ export const Table = React.memo(
         const nextSettings: TableProps['attributes']['tableSettings'] = {};
         for (let c = 0; c < currentBlock.attributes.tableC + 1; c++) {
           if (c > colIndex) {
-            if (!prevSettings[`c${c - 1}-width`]) continue;
-            nextSettings[`c${c}-width`] = prevSettings[`c${c - 1}-width`];
+            if (!prevSettings[`cw${c - 1}`]) continue;
+            nextSettings[`cw${c}`] = prevSettings[`cw${c - 1}`];
           } else if (c < colIndex) {
-            if (!prevSettings[`c${c}-width`]) continue;
-            nextSettings[`c${c}-width`] = prevSettings[`c${c}-width`];
+            if (!prevSettings[`cw${c}`]) continue;
+            nextSettings[`cw${c}`] = prevSettings[`cw${c}`];
           }
         }
 
@@ -288,11 +288,11 @@ export const Table = React.memo(
         const nextSettings: TableProps['attributes']['tableSettings'] = {};
         for (let c = 0; c < currentBlock.attributes.tableC; c++) {
           if (c > colIndex) {
-            if (!prevSettings[`c${c}-width`]) continue;
-            nextSettings[`c${c - 1}-width`] = prevSettings[`c${c}-width`];
+            if (!prevSettings[`cw${c}`]) continue;
+            nextSettings[`cw${c - 1}`] = prevSettings[`cw${c}`];
           } else if (c < colIndex) {
-            if (!prevSettings[`c${c}-width`]) continue;
-            nextSettings[`c${c}-width`] = prevSettings[`c${c}-width`];
+            if (!prevSettings[`cw${c}`]) continue;
+            nextSettings[`cw${c}`] = prevSettings[`cw${c}`];
           }
         }
 
@@ -463,8 +463,8 @@ export const Table = React.memo(
     const memoTableWidths = React.useMemo(() => {
       let widths: number[] = [];
       for (let c = 0; c < tableC; c++) {
-        widths[c] = Object.prototype.hasOwnProperty.call(tableSettings, `c${c}-width`)
-          ? tableSettings[`c${c}-width`]
+        widths[c] = Object.prototype.hasOwnProperty.call(tableSettings, `cw${c}`)
+          ? tableSettings[`cw${c}`]
           : null;
       }
 
@@ -579,7 +579,7 @@ export const Table = React.memo(
         const currentBlock = editor.getBlock(blockId);
         if (!currentBlock) return;
         const _settings = copyObject(tableSettings);
-        _settings[`c${dragParams.col}-width`] = el.parentElement.getBoundingClientRect().width;
+        _settings[`cw${dragParams.col}`] = el.parentElement.getBoundingClientRect().width;
         editor.updateBlock({
           ...currentBlock,
           attributes: {

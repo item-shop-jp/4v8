@@ -4111,6 +4111,8 @@ const EditorEvents = {
     EVENT_EDITOR_CHANGED: 'editor-changed',
     EVENT_BLOCK_RERENDER: 'block-rerender',
     EVENT_BLOCK_RERENDER_FORCE: 'block-rerender-force',
+    EVENT_CHILD_BLOCK_RERENDER: 'child-block-rerender',
+    EVENT_CHILD_BLOCK_RERENDER_FORCE: 'child-block-rerender-force',
     EVENT_BLOCK_SELECTED: 'block-selected',
     EVENT_SELECTION_CHANGE: 'selection-change',
     EVENT_LINK_CLICK: 'button-clicked',
@@ -4125,6 +4127,9 @@ const HistoryType = {
     UPDATE_CONTENTS: 'update_contents',
     ADD_BLOCK: 'add_block',
     REMOVE_BLOCK: 'remove_block',
+    CHILD_BLOCK_UPDATE_CONTENTS: 'child_block_update_contents',
+    CHILD_BLOCK_ADD_BLOCK: 'child_block_add_block',
+    CHILD_BLOCK_REMOVE_BLOCK: 'child_block_remove_block',
 };
 const EventSources = {
     SILENT: 'silent',
@@ -6228,6 +6233,3093 @@ function parseTokens(tokens, result = []) {
     return codeContents;
 }
 
+var lodash_isequal = {exports: {}};
+
+/**
+ * Lodash (Custom Build) <https://lodash.com/>
+ * Build: `lodash modularize exports="npm" -o ./`
+ * Copyright JS Foundation and other contributors <https://js.foundation/>
+ * Released under MIT license <https://lodash.com/license>
+ * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
+ * Copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+ */
+lodash_isequal.exports;
+
+(function (module, exports) {
+	/** Used as the size to enable large array optimizations. */
+	var LARGE_ARRAY_SIZE = 200;
+
+	/** Used to stand-in for `undefined` hash values. */
+	var HASH_UNDEFINED = '__lodash_hash_undefined__';
+
+	/** Used to compose bitmasks for value comparisons. */
+	var COMPARE_PARTIAL_FLAG = 1,
+	    COMPARE_UNORDERED_FLAG = 2;
+
+	/** Used as references for various `Number` constants. */
+	var MAX_SAFE_INTEGER = 9007199254740991;
+
+	/** `Object#toString` result references. */
+	var argsTag = '[object Arguments]',
+	    arrayTag = '[object Array]',
+	    asyncTag = '[object AsyncFunction]',
+	    boolTag = '[object Boolean]',
+	    dateTag = '[object Date]',
+	    errorTag = '[object Error]',
+	    funcTag = '[object Function]',
+	    genTag = '[object GeneratorFunction]',
+	    mapTag = '[object Map]',
+	    numberTag = '[object Number]',
+	    nullTag = '[object Null]',
+	    objectTag = '[object Object]',
+	    promiseTag = '[object Promise]',
+	    proxyTag = '[object Proxy]',
+	    regexpTag = '[object RegExp]',
+	    setTag = '[object Set]',
+	    stringTag = '[object String]',
+	    symbolTag = '[object Symbol]',
+	    undefinedTag = '[object Undefined]',
+	    weakMapTag = '[object WeakMap]';
+
+	var arrayBufferTag = '[object ArrayBuffer]',
+	    dataViewTag = '[object DataView]',
+	    float32Tag = '[object Float32Array]',
+	    float64Tag = '[object Float64Array]',
+	    int8Tag = '[object Int8Array]',
+	    int16Tag = '[object Int16Array]',
+	    int32Tag = '[object Int32Array]',
+	    uint8Tag = '[object Uint8Array]',
+	    uint8ClampedTag = '[object Uint8ClampedArray]',
+	    uint16Tag = '[object Uint16Array]',
+	    uint32Tag = '[object Uint32Array]';
+
+	/**
+	 * Used to match `RegExp`
+	 * [syntax characters](http://ecma-international.org/ecma-262/7.0/#sec-patterns).
+	 */
+	var reRegExpChar = /[\\^$.*+?()[\]{}|]/g;
+
+	/** Used to detect host constructors (Safari). */
+	var reIsHostCtor = /^\[object .+?Constructor\]$/;
+
+	/** Used to detect unsigned integer values. */
+	var reIsUint = /^(?:0|[1-9]\d*)$/;
+
+	/** Used to identify `toStringTag` values of typed arrays. */
+	var typedArrayTags = {};
+	typedArrayTags[float32Tag] = typedArrayTags[float64Tag] =
+	typedArrayTags[int8Tag] = typedArrayTags[int16Tag] =
+	typedArrayTags[int32Tag] = typedArrayTags[uint8Tag] =
+	typedArrayTags[uint8ClampedTag] = typedArrayTags[uint16Tag] =
+	typedArrayTags[uint32Tag] = true;
+	typedArrayTags[argsTag] = typedArrayTags[arrayTag] =
+	typedArrayTags[arrayBufferTag] = typedArrayTags[boolTag] =
+	typedArrayTags[dataViewTag] = typedArrayTags[dateTag] =
+	typedArrayTags[errorTag] = typedArrayTags[funcTag] =
+	typedArrayTags[mapTag] = typedArrayTags[numberTag] =
+	typedArrayTags[objectTag] = typedArrayTags[regexpTag] =
+	typedArrayTags[setTag] = typedArrayTags[stringTag] =
+	typedArrayTags[weakMapTag] = false;
+
+	/** Detect free variable `global` from Node.js. */
+	var freeGlobal = typeof commonjsGlobal == 'object' && commonjsGlobal && commonjsGlobal.Object === Object && commonjsGlobal;
+
+	/** Detect free variable `self`. */
+	var freeSelf = typeof self == 'object' && self && self.Object === Object && self;
+
+	/** Used as a reference to the global object. */
+	var root = freeGlobal || freeSelf || Function('return this')();
+
+	/** Detect free variable `exports`. */
+	var freeExports = exports && !exports.nodeType && exports;
+
+	/** Detect free variable `module`. */
+	var freeModule = freeExports && 'object' == 'object' && module && !module.nodeType && module;
+
+	/** Detect the popular CommonJS extension `module.exports`. */
+	var moduleExports = freeModule && freeModule.exports === freeExports;
+
+	/** Detect free variable `process` from Node.js. */
+	var freeProcess = moduleExports && freeGlobal.process;
+
+	/** Used to access faster Node.js helpers. */
+	var nodeUtil = (function() {
+	  try {
+	    return freeProcess && freeProcess.binding && freeProcess.binding('util');
+	  } catch (e) {}
+	}());
+
+	/* Node.js helper references. */
+	var nodeIsTypedArray = nodeUtil && nodeUtil.isTypedArray;
+
+	/**
+	 * A specialized version of `_.filter` for arrays without support for
+	 * iteratee shorthands.
+	 *
+	 * @private
+	 * @param {Array} [array] The array to iterate over.
+	 * @param {Function} predicate The function invoked per iteration.
+	 * @returns {Array} Returns the new filtered array.
+	 */
+	function arrayFilter(array, predicate) {
+	  var index = -1,
+	      length = array == null ? 0 : array.length,
+	      resIndex = 0,
+	      result = [];
+
+	  while (++index < length) {
+	    var value = array[index];
+	    if (predicate(value, index, array)) {
+	      result[resIndex++] = value;
+	    }
+	  }
+	  return result;
+	}
+
+	/**
+	 * Appends the elements of `values` to `array`.
+	 *
+	 * @private
+	 * @param {Array} array The array to modify.
+	 * @param {Array} values The values to append.
+	 * @returns {Array} Returns `array`.
+	 */
+	function arrayPush(array, values) {
+	  var index = -1,
+	      length = values.length,
+	      offset = array.length;
+
+	  while (++index < length) {
+	    array[offset + index] = values[index];
+	  }
+	  return array;
+	}
+
+	/**
+	 * A specialized version of `_.some` for arrays without support for iteratee
+	 * shorthands.
+	 *
+	 * @private
+	 * @param {Array} [array] The array to iterate over.
+	 * @param {Function} predicate The function invoked per iteration.
+	 * @returns {boolean} Returns `true` if any element passes the predicate check,
+	 *  else `false`.
+	 */
+	function arraySome(array, predicate) {
+	  var index = -1,
+	      length = array == null ? 0 : array.length;
+
+	  while (++index < length) {
+	    if (predicate(array[index], index, array)) {
+	      return true;
+	    }
+	  }
+	  return false;
+	}
+
+	/**
+	 * The base implementation of `_.times` without support for iteratee shorthands
+	 * or max array length checks.
+	 *
+	 * @private
+	 * @param {number} n The number of times to invoke `iteratee`.
+	 * @param {Function} iteratee The function invoked per iteration.
+	 * @returns {Array} Returns the array of results.
+	 */
+	function baseTimes(n, iteratee) {
+	  var index = -1,
+	      result = Array(n);
+
+	  while (++index < n) {
+	    result[index] = iteratee(index);
+	  }
+	  return result;
+	}
+
+	/**
+	 * The base implementation of `_.unary` without support for storing metadata.
+	 *
+	 * @private
+	 * @param {Function} func The function to cap arguments for.
+	 * @returns {Function} Returns the new capped function.
+	 */
+	function baseUnary(func) {
+	  return function(value) {
+	    return func(value);
+	  };
+	}
+
+	/**
+	 * Checks if a `cache` value for `key` exists.
+	 *
+	 * @private
+	 * @param {Object} cache The cache to query.
+	 * @param {string} key The key of the entry to check.
+	 * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+	 */
+	function cacheHas(cache, key) {
+	  return cache.has(key);
+	}
+
+	/**
+	 * Gets the value at `key` of `object`.
+	 *
+	 * @private
+	 * @param {Object} [object] The object to query.
+	 * @param {string} key The key of the property to get.
+	 * @returns {*} Returns the property value.
+	 */
+	function getValue(object, key) {
+	  return object == null ? undefined : object[key];
+	}
+
+	/**
+	 * Converts `map` to its key-value pairs.
+	 *
+	 * @private
+	 * @param {Object} map The map to convert.
+	 * @returns {Array} Returns the key-value pairs.
+	 */
+	function mapToArray(map) {
+	  var index = -1,
+	      result = Array(map.size);
+
+	  map.forEach(function(value, key) {
+	    result[++index] = [key, value];
+	  });
+	  return result;
+	}
+
+	/**
+	 * Creates a unary function that invokes `func` with its argument transformed.
+	 *
+	 * @private
+	 * @param {Function} func The function to wrap.
+	 * @param {Function} transform The argument transform.
+	 * @returns {Function} Returns the new function.
+	 */
+	function overArg(func, transform) {
+	  return function(arg) {
+	    return func(transform(arg));
+	  };
+	}
+
+	/**
+	 * Converts `set` to an array of its values.
+	 *
+	 * @private
+	 * @param {Object} set The set to convert.
+	 * @returns {Array} Returns the values.
+	 */
+	function setToArray(set) {
+	  var index = -1,
+	      result = Array(set.size);
+
+	  set.forEach(function(value) {
+	    result[++index] = value;
+	  });
+	  return result;
+	}
+
+	/** Used for built-in method references. */
+	var arrayProto = Array.prototype,
+	    funcProto = Function.prototype,
+	    objectProto = Object.prototype;
+
+	/** Used to detect overreaching core-js shims. */
+	var coreJsData = root['__core-js_shared__'];
+
+	/** Used to resolve the decompiled source of functions. */
+	var funcToString = funcProto.toString;
+
+	/** Used to check objects for own properties. */
+	var hasOwnProperty = objectProto.hasOwnProperty;
+
+	/** Used to detect methods masquerading as native. */
+	var maskSrcKey = (function() {
+	  var uid = /[^.]+$/.exec(coreJsData && coreJsData.keys && coreJsData.keys.IE_PROTO || '');
+	  return uid ? ('Symbol(src)_1.' + uid) : '';
+	}());
+
+	/**
+	 * Used to resolve the
+	 * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
+	 * of values.
+	 */
+	var nativeObjectToString = objectProto.toString;
+
+	/** Used to detect if a method is native. */
+	var reIsNative = RegExp('^' +
+	  funcToString.call(hasOwnProperty).replace(reRegExpChar, '\\$&')
+	  .replace(/hasOwnProperty|(function).*?(?=\\\()| for .+?(?=\\\])/g, '$1.*?') + '$'
+	);
+
+	/** Built-in value references. */
+	var Buffer = moduleExports ? root.Buffer : undefined,
+	    Symbol = root.Symbol,
+	    Uint8Array = root.Uint8Array,
+	    propertyIsEnumerable = objectProto.propertyIsEnumerable,
+	    splice = arrayProto.splice,
+	    symToStringTag = Symbol ? Symbol.toStringTag : undefined;
+
+	/* Built-in method references for those with the same name as other `lodash` methods. */
+	var nativeGetSymbols = Object.getOwnPropertySymbols,
+	    nativeIsBuffer = Buffer ? Buffer.isBuffer : undefined,
+	    nativeKeys = overArg(Object.keys, Object);
+
+	/* Built-in method references that are verified to be native. */
+	var DataView = getNative(root, 'DataView'),
+	    Map = getNative(root, 'Map'),
+	    Promise = getNative(root, 'Promise'),
+	    Set = getNative(root, 'Set'),
+	    WeakMap = getNative(root, 'WeakMap'),
+	    nativeCreate = getNative(Object, 'create');
+
+	/** Used to detect maps, sets, and weakmaps. */
+	var dataViewCtorString = toSource(DataView),
+	    mapCtorString = toSource(Map),
+	    promiseCtorString = toSource(Promise),
+	    setCtorString = toSource(Set),
+	    weakMapCtorString = toSource(WeakMap);
+
+	/** Used to convert symbols to primitives and strings. */
+	var symbolProto = Symbol ? Symbol.prototype : undefined,
+	    symbolValueOf = symbolProto ? symbolProto.valueOf : undefined;
+
+	/**
+	 * Creates a hash object.
+	 *
+	 * @private
+	 * @constructor
+	 * @param {Array} [entries] The key-value pairs to cache.
+	 */
+	function Hash(entries) {
+	  var index = -1,
+	      length = entries == null ? 0 : entries.length;
+
+	  this.clear();
+	  while (++index < length) {
+	    var entry = entries[index];
+	    this.set(entry[0], entry[1]);
+	  }
+	}
+
+	/**
+	 * Removes all key-value entries from the hash.
+	 *
+	 * @private
+	 * @name clear
+	 * @memberOf Hash
+	 */
+	function hashClear() {
+	  this.__data__ = nativeCreate ? nativeCreate(null) : {};
+	  this.size = 0;
+	}
+
+	/**
+	 * Removes `key` and its value from the hash.
+	 *
+	 * @private
+	 * @name delete
+	 * @memberOf Hash
+	 * @param {Object} hash The hash to modify.
+	 * @param {string} key The key of the value to remove.
+	 * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+	 */
+	function hashDelete(key) {
+	  var result = this.has(key) && delete this.__data__[key];
+	  this.size -= result ? 1 : 0;
+	  return result;
+	}
+
+	/**
+	 * Gets the hash value for `key`.
+	 *
+	 * @private
+	 * @name get
+	 * @memberOf Hash
+	 * @param {string} key The key of the value to get.
+	 * @returns {*} Returns the entry value.
+	 */
+	function hashGet(key) {
+	  var data = this.__data__;
+	  if (nativeCreate) {
+	    var result = data[key];
+	    return result === HASH_UNDEFINED ? undefined : result;
+	  }
+	  return hasOwnProperty.call(data, key) ? data[key] : undefined;
+	}
+
+	/**
+	 * Checks if a hash value for `key` exists.
+	 *
+	 * @private
+	 * @name has
+	 * @memberOf Hash
+	 * @param {string} key The key of the entry to check.
+	 * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+	 */
+	function hashHas(key) {
+	  var data = this.__data__;
+	  return nativeCreate ? (data[key] !== undefined) : hasOwnProperty.call(data, key);
+	}
+
+	/**
+	 * Sets the hash `key` to `value`.
+	 *
+	 * @private
+	 * @name set
+	 * @memberOf Hash
+	 * @param {string} key The key of the value to set.
+	 * @param {*} value The value to set.
+	 * @returns {Object} Returns the hash instance.
+	 */
+	function hashSet(key, value) {
+	  var data = this.__data__;
+	  this.size += this.has(key) ? 0 : 1;
+	  data[key] = (nativeCreate && value === undefined) ? HASH_UNDEFINED : value;
+	  return this;
+	}
+
+	// Add methods to `Hash`.
+	Hash.prototype.clear = hashClear;
+	Hash.prototype['delete'] = hashDelete;
+	Hash.prototype.get = hashGet;
+	Hash.prototype.has = hashHas;
+	Hash.prototype.set = hashSet;
+
+	/**
+	 * Creates an list cache object.
+	 *
+	 * @private
+	 * @constructor
+	 * @param {Array} [entries] The key-value pairs to cache.
+	 */
+	function ListCache(entries) {
+	  var index = -1,
+	      length = entries == null ? 0 : entries.length;
+
+	  this.clear();
+	  while (++index < length) {
+	    var entry = entries[index];
+	    this.set(entry[0], entry[1]);
+	  }
+	}
+
+	/**
+	 * Removes all key-value entries from the list cache.
+	 *
+	 * @private
+	 * @name clear
+	 * @memberOf ListCache
+	 */
+	function listCacheClear() {
+	  this.__data__ = [];
+	  this.size = 0;
+	}
+
+	/**
+	 * Removes `key` and its value from the list cache.
+	 *
+	 * @private
+	 * @name delete
+	 * @memberOf ListCache
+	 * @param {string} key The key of the value to remove.
+	 * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+	 */
+	function listCacheDelete(key) {
+	  var data = this.__data__,
+	      index = assocIndexOf(data, key);
+
+	  if (index < 0) {
+	    return false;
+	  }
+	  var lastIndex = data.length - 1;
+	  if (index == lastIndex) {
+	    data.pop();
+	  } else {
+	    splice.call(data, index, 1);
+	  }
+	  --this.size;
+	  return true;
+	}
+
+	/**
+	 * Gets the list cache value for `key`.
+	 *
+	 * @private
+	 * @name get
+	 * @memberOf ListCache
+	 * @param {string} key The key of the value to get.
+	 * @returns {*} Returns the entry value.
+	 */
+	function listCacheGet(key) {
+	  var data = this.__data__,
+	      index = assocIndexOf(data, key);
+
+	  return index < 0 ? undefined : data[index][1];
+	}
+
+	/**
+	 * Checks if a list cache value for `key` exists.
+	 *
+	 * @private
+	 * @name has
+	 * @memberOf ListCache
+	 * @param {string} key The key of the entry to check.
+	 * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+	 */
+	function listCacheHas(key) {
+	  return assocIndexOf(this.__data__, key) > -1;
+	}
+
+	/**
+	 * Sets the list cache `key` to `value`.
+	 *
+	 * @private
+	 * @name set
+	 * @memberOf ListCache
+	 * @param {string} key The key of the value to set.
+	 * @param {*} value The value to set.
+	 * @returns {Object} Returns the list cache instance.
+	 */
+	function listCacheSet(key, value) {
+	  var data = this.__data__,
+	      index = assocIndexOf(data, key);
+
+	  if (index < 0) {
+	    ++this.size;
+	    data.push([key, value]);
+	  } else {
+	    data[index][1] = value;
+	  }
+	  return this;
+	}
+
+	// Add methods to `ListCache`.
+	ListCache.prototype.clear = listCacheClear;
+	ListCache.prototype['delete'] = listCacheDelete;
+	ListCache.prototype.get = listCacheGet;
+	ListCache.prototype.has = listCacheHas;
+	ListCache.prototype.set = listCacheSet;
+
+	/**
+	 * Creates a map cache object to store key-value pairs.
+	 *
+	 * @private
+	 * @constructor
+	 * @param {Array} [entries] The key-value pairs to cache.
+	 */
+	function MapCache(entries) {
+	  var index = -1,
+	      length = entries == null ? 0 : entries.length;
+
+	  this.clear();
+	  while (++index < length) {
+	    var entry = entries[index];
+	    this.set(entry[0], entry[1]);
+	  }
+	}
+
+	/**
+	 * Removes all key-value entries from the map.
+	 *
+	 * @private
+	 * @name clear
+	 * @memberOf MapCache
+	 */
+	function mapCacheClear() {
+	  this.size = 0;
+	  this.__data__ = {
+	    'hash': new Hash,
+	    'map': new (Map || ListCache),
+	    'string': new Hash
+	  };
+	}
+
+	/**
+	 * Removes `key` and its value from the map.
+	 *
+	 * @private
+	 * @name delete
+	 * @memberOf MapCache
+	 * @param {string} key The key of the value to remove.
+	 * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+	 */
+	function mapCacheDelete(key) {
+	  var result = getMapData(this, key)['delete'](key);
+	  this.size -= result ? 1 : 0;
+	  return result;
+	}
+
+	/**
+	 * Gets the map value for `key`.
+	 *
+	 * @private
+	 * @name get
+	 * @memberOf MapCache
+	 * @param {string} key The key of the value to get.
+	 * @returns {*} Returns the entry value.
+	 */
+	function mapCacheGet(key) {
+	  return getMapData(this, key).get(key);
+	}
+
+	/**
+	 * Checks if a map value for `key` exists.
+	 *
+	 * @private
+	 * @name has
+	 * @memberOf MapCache
+	 * @param {string} key The key of the entry to check.
+	 * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+	 */
+	function mapCacheHas(key) {
+	  return getMapData(this, key).has(key);
+	}
+
+	/**
+	 * Sets the map `key` to `value`.
+	 *
+	 * @private
+	 * @name set
+	 * @memberOf MapCache
+	 * @param {string} key The key of the value to set.
+	 * @param {*} value The value to set.
+	 * @returns {Object} Returns the map cache instance.
+	 */
+	function mapCacheSet(key, value) {
+	  var data = getMapData(this, key),
+	      size = data.size;
+
+	  data.set(key, value);
+	  this.size += data.size == size ? 0 : 1;
+	  return this;
+	}
+
+	// Add methods to `MapCache`.
+	MapCache.prototype.clear = mapCacheClear;
+	MapCache.prototype['delete'] = mapCacheDelete;
+	MapCache.prototype.get = mapCacheGet;
+	MapCache.prototype.has = mapCacheHas;
+	MapCache.prototype.set = mapCacheSet;
+
+	/**
+	 *
+	 * Creates an array cache object to store unique values.
+	 *
+	 * @private
+	 * @constructor
+	 * @param {Array} [values] The values to cache.
+	 */
+	function SetCache(values) {
+	  var index = -1,
+	      length = values == null ? 0 : values.length;
+
+	  this.__data__ = new MapCache;
+	  while (++index < length) {
+	    this.add(values[index]);
+	  }
+	}
+
+	/**
+	 * Adds `value` to the array cache.
+	 *
+	 * @private
+	 * @name add
+	 * @memberOf SetCache
+	 * @alias push
+	 * @param {*} value The value to cache.
+	 * @returns {Object} Returns the cache instance.
+	 */
+	function setCacheAdd(value) {
+	  this.__data__.set(value, HASH_UNDEFINED);
+	  return this;
+	}
+
+	/**
+	 * Checks if `value` is in the array cache.
+	 *
+	 * @private
+	 * @name has
+	 * @memberOf SetCache
+	 * @param {*} value The value to search for.
+	 * @returns {number} Returns `true` if `value` is found, else `false`.
+	 */
+	function setCacheHas(value) {
+	  return this.__data__.has(value);
+	}
+
+	// Add methods to `SetCache`.
+	SetCache.prototype.add = SetCache.prototype.push = setCacheAdd;
+	SetCache.prototype.has = setCacheHas;
+
+	/**
+	 * Creates a stack cache object to store key-value pairs.
+	 *
+	 * @private
+	 * @constructor
+	 * @param {Array} [entries] The key-value pairs to cache.
+	 */
+	function Stack(entries) {
+	  var data = this.__data__ = new ListCache(entries);
+	  this.size = data.size;
+	}
+
+	/**
+	 * Removes all key-value entries from the stack.
+	 *
+	 * @private
+	 * @name clear
+	 * @memberOf Stack
+	 */
+	function stackClear() {
+	  this.__data__ = new ListCache;
+	  this.size = 0;
+	}
+
+	/**
+	 * Removes `key` and its value from the stack.
+	 *
+	 * @private
+	 * @name delete
+	 * @memberOf Stack
+	 * @param {string} key The key of the value to remove.
+	 * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+	 */
+	function stackDelete(key) {
+	  var data = this.__data__,
+	      result = data['delete'](key);
+
+	  this.size = data.size;
+	  return result;
+	}
+
+	/**
+	 * Gets the stack value for `key`.
+	 *
+	 * @private
+	 * @name get
+	 * @memberOf Stack
+	 * @param {string} key The key of the value to get.
+	 * @returns {*} Returns the entry value.
+	 */
+	function stackGet(key) {
+	  return this.__data__.get(key);
+	}
+
+	/**
+	 * Checks if a stack value for `key` exists.
+	 *
+	 * @private
+	 * @name has
+	 * @memberOf Stack
+	 * @param {string} key The key of the entry to check.
+	 * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+	 */
+	function stackHas(key) {
+	  return this.__data__.has(key);
+	}
+
+	/**
+	 * Sets the stack `key` to `value`.
+	 *
+	 * @private
+	 * @name set
+	 * @memberOf Stack
+	 * @param {string} key The key of the value to set.
+	 * @param {*} value The value to set.
+	 * @returns {Object} Returns the stack cache instance.
+	 */
+	function stackSet(key, value) {
+	  var data = this.__data__;
+	  if (data instanceof ListCache) {
+	    var pairs = data.__data__;
+	    if (!Map || (pairs.length < LARGE_ARRAY_SIZE - 1)) {
+	      pairs.push([key, value]);
+	      this.size = ++data.size;
+	      return this;
+	    }
+	    data = this.__data__ = new MapCache(pairs);
+	  }
+	  data.set(key, value);
+	  this.size = data.size;
+	  return this;
+	}
+
+	// Add methods to `Stack`.
+	Stack.prototype.clear = stackClear;
+	Stack.prototype['delete'] = stackDelete;
+	Stack.prototype.get = stackGet;
+	Stack.prototype.has = stackHas;
+	Stack.prototype.set = stackSet;
+
+	/**
+	 * Creates an array of the enumerable property names of the array-like `value`.
+	 *
+	 * @private
+	 * @param {*} value The value to query.
+	 * @param {boolean} inherited Specify returning inherited property names.
+	 * @returns {Array} Returns the array of property names.
+	 */
+	function arrayLikeKeys(value, inherited) {
+	  var isArr = isArray(value),
+	      isArg = !isArr && isArguments(value),
+	      isBuff = !isArr && !isArg && isBuffer(value),
+	      isType = !isArr && !isArg && !isBuff && isTypedArray(value),
+	      skipIndexes = isArr || isArg || isBuff || isType,
+	      result = skipIndexes ? baseTimes(value.length, String) : [],
+	      length = result.length;
+
+	  for (var key in value) {
+	    if ((inherited || hasOwnProperty.call(value, key)) &&
+	        !(skipIndexes && (
+	           // Safari 9 has enumerable `arguments.length` in strict mode.
+	           key == 'length' ||
+	           // Node.js 0.10 has enumerable non-index properties on buffers.
+	           (isBuff && (key == 'offset' || key == 'parent')) ||
+	           // PhantomJS 2 has enumerable non-index properties on typed arrays.
+	           (isType && (key == 'buffer' || key == 'byteLength' || key == 'byteOffset')) ||
+	           // Skip index properties.
+	           isIndex(key, length)
+	        ))) {
+	      result.push(key);
+	    }
+	  }
+	  return result;
+	}
+
+	/**
+	 * Gets the index at which the `key` is found in `array` of key-value pairs.
+	 *
+	 * @private
+	 * @param {Array} array The array to inspect.
+	 * @param {*} key The key to search for.
+	 * @returns {number} Returns the index of the matched value, else `-1`.
+	 */
+	function assocIndexOf(array, key) {
+	  var length = array.length;
+	  while (length--) {
+	    if (eq(array[length][0], key)) {
+	      return length;
+	    }
+	  }
+	  return -1;
+	}
+
+	/**
+	 * The base implementation of `getAllKeys` and `getAllKeysIn` which uses
+	 * `keysFunc` and `symbolsFunc` to get the enumerable property names and
+	 * symbols of `object`.
+	 *
+	 * @private
+	 * @param {Object} object The object to query.
+	 * @param {Function} keysFunc The function to get the keys of `object`.
+	 * @param {Function} symbolsFunc The function to get the symbols of `object`.
+	 * @returns {Array} Returns the array of property names and symbols.
+	 */
+	function baseGetAllKeys(object, keysFunc, symbolsFunc) {
+	  var result = keysFunc(object);
+	  return isArray(object) ? result : arrayPush(result, symbolsFunc(object));
+	}
+
+	/**
+	 * The base implementation of `getTag` without fallbacks for buggy environments.
+	 *
+	 * @private
+	 * @param {*} value The value to query.
+	 * @returns {string} Returns the `toStringTag`.
+	 */
+	function baseGetTag(value) {
+	  if (value == null) {
+	    return value === undefined ? undefinedTag : nullTag;
+	  }
+	  return (symToStringTag && symToStringTag in Object(value))
+	    ? getRawTag(value)
+	    : objectToString(value);
+	}
+
+	/**
+	 * The base implementation of `_.isArguments`.
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is an `arguments` object,
+	 */
+	function baseIsArguments(value) {
+	  return isObjectLike(value) && baseGetTag(value) == argsTag;
+	}
+
+	/**
+	 * The base implementation of `_.isEqual` which supports partial comparisons
+	 * and tracks traversed objects.
+	 *
+	 * @private
+	 * @param {*} value The value to compare.
+	 * @param {*} other The other value to compare.
+	 * @param {boolean} bitmask The bitmask flags.
+	 *  1 - Unordered comparison
+	 *  2 - Partial comparison
+	 * @param {Function} [customizer] The function to customize comparisons.
+	 * @param {Object} [stack] Tracks traversed `value` and `other` objects.
+	 * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
+	 */
+	function baseIsEqual(value, other, bitmask, customizer, stack) {
+	  if (value === other) {
+	    return true;
+	  }
+	  if (value == null || other == null || (!isObjectLike(value) && !isObjectLike(other))) {
+	    return value !== value && other !== other;
+	  }
+	  return baseIsEqualDeep(value, other, bitmask, customizer, baseIsEqual, stack);
+	}
+
+	/**
+	 * A specialized version of `baseIsEqual` for arrays and objects which performs
+	 * deep comparisons and tracks traversed objects enabling objects with circular
+	 * references to be compared.
+	 *
+	 * @private
+	 * @param {Object} object The object to compare.
+	 * @param {Object} other The other object to compare.
+	 * @param {number} bitmask The bitmask flags. See `baseIsEqual` for more details.
+	 * @param {Function} customizer The function to customize comparisons.
+	 * @param {Function} equalFunc The function to determine equivalents of values.
+	 * @param {Object} [stack] Tracks traversed `object` and `other` objects.
+	 * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
+	 */
+	function baseIsEqualDeep(object, other, bitmask, customizer, equalFunc, stack) {
+	  var objIsArr = isArray(object),
+	      othIsArr = isArray(other),
+	      objTag = objIsArr ? arrayTag : getTag(object),
+	      othTag = othIsArr ? arrayTag : getTag(other);
+
+	  objTag = objTag == argsTag ? objectTag : objTag;
+	  othTag = othTag == argsTag ? objectTag : othTag;
+
+	  var objIsObj = objTag == objectTag,
+	      othIsObj = othTag == objectTag,
+	      isSameTag = objTag == othTag;
+
+	  if (isSameTag && isBuffer(object)) {
+	    if (!isBuffer(other)) {
+	      return false;
+	    }
+	    objIsArr = true;
+	    objIsObj = false;
+	  }
+	  if (isSameTag && !objIsObj) {
+	    stack || (stack = new Stack);
+	    return (objIsArr || isTypedArray(object))
+	      ? equalArrays(object, other, bitmask, customizer, equalFunc, stack)
+	      : equalByTag(object, other, objTag, bitmask, customizer, equalFunc, stack);
+	  }
+	  if (!(bitmask & COMPARE_PARTIAL_FLAG)) {
+	    var objIsWrapped = objIsObj && hasOwnProperty.call(object, '__wrapped__'),
+	        othIsWrapped = othIsObj && hasOwnProperty.call(other, '__wrapped__');
+
+	    if (objIsWrapped || othIsWrapped) {
+	      var objUnwrapped = objIsWrapped ? object.value() : object,
+	          othUnwrapped = othIsWrapped ? other.value() : other;
+
+	      stack || (stack = new Stack);
+	      return equalFunc(objUnwrapped, othUnwrapped, bitmask, customizer, stack);
+	    }
+	  }
+	  if (!isSameTag) {
+	    return false;
+	  }
+	  stack || (stack = new Stack);
+	  return equalObjects(object, other, bitmask, customizer, equalFunc, stack);
+	}
+
+	/**
+	 * The base implementation of `_.isNative` without bad shim checks.
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is a native function,
+	 *  else `false`.
+	 */
+	function baseIsNative(value) {
+	  if (!isObject(value) || isMasked(value)) {
+	    return false;
+	  }
+	  var pattern = isFunction(value) ? reIsNative : reIsHostCtor;
+	  return pattern.test(toSource(value));
+	}
+
+	/**
+	 * The base implementation of `_.isTypedArray` without Node.js optimizations.
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is a typed array, else `false`.
+	 */
+	function baseIsTypedArray(value) {
+	  return isObjectLike(value) &&
+	    isLength(value.length) && !!typedArrayTags[baseGetTag(value)];
+	}
+
+	/**
+	 * The base implementation of `_.keys` which doesn't treat sparse arrays as dense.
+	 *
+	 * @private
+	 * @param {Object} object The object to query.
+	 * @returns {Array} Returns the array of property names.
+	 */
+	function baseKeys(object) {
+	  if (!isPrototype(object)) {
+	    return nativeKeys(object);
+	  }
+	  var result = [];
+	  for (var key in Object(object)) {
+	    if (hasOwnProperty.call(object, key) && key != 'constructor') {
+	      result.push(key);
+	    }
+	  }
+	  return result;
+	}
+
+	/**
+	 * A specialized version of `baseIsEqualDeep` for arrays with support for
+	 * partial deep comparisons.
+	 *
+	 * @private
+	 * @param {Array} array The array to compare.
+	 * @param {Array} other The other array to compare.
+	 * @param {number} bitmask The bitmask flags. See `baseIsEqual` for more details.
+	 * @param {Function} customizer The function to customize comparisons.
+	 * @param {Function} equalFunc The function to determine equivalents of values.
+	 * @param {Object} stack Tracks traversed `array` and `other` objects.
+	 * @returns {boolean} Returns `true` if the arrays are equivalent, else `false`.
+	 */
+	function equalArrays(array, other, bitmask, customizer, equalFunc, stack) {
+	  var isPartial = bitmask & COMPARE_PARTIAL_FLAG,
+	      arrLength = array.length,
+	      othLength = other.length;
+
+	  if (arrLength != othLength && !(isPartial && othLength > arrLength)) {
+	    return false;
+	  }
+	  // Assume cyclic values are equal.
+	  var stacked = stack.get(array);
+	  if (stacked && stack.get(other)) {
+	    return stacked == other;
+	  }
+	  var index = -1,
+	      result = true,
+	      seen = (bitmask & COMPARE_UNORDERED_FLAG) ? new SetCache : undefined;
+
+	  stack.set(array, other);
+	  stack.set(other, array);
+
+	  // Ignore non-index properties.
+	  while (++index < arrLength) {
+	    var arrValue = array[index],
+	        othValue = other[index];
+
+	    if (customizer) {
+	      var compared = isPartial
+	        ? customizer(othValue, arrValue, index, other, array, stack)
+	        : customizer(arrValue, othValue, index, array, other, stack);
+	    }
+	    if (compared !== undefined) {
+	      if (compared) {
+	        continue;
+	      }
+	      result = false;
+	      break;
+	    }
+	    // Recursively compare arrays (susceptible to call stack limits).
+	    if (seen) {
+	      if (!arraySome(other, function(othValue, othIndex) {
+	            if (!cacheHas(seen, othIndex) &&
+	                (arrValue === othValue || equalFunc(arrValue, othValue, bitmask, customizer, stack))) {
+	              return seen.push(othIndex);
+	            }
+	          })) {
+	        result = false;
+	        break;
+	      }
+	    } else if (!(
+	          arrValue === othValue ||
+	            equalFunc(arrValue, othValue, bitmask, customizer, stack)
+	        )) {
+	      result = false;
+	      break;
+	    }
+	  }
+	  stack['delete'](array);
+	  stack['delete'](other);
+	  return result;
+	}
+
+	/**
+	 * A specialized version of `baseIsEqualDeep` for comparing objects of
+	 * the same `toStringTag`.
+	 *
+	 * **Note:** This function only supports comparing values with tags of
+	 * `Boolean`, `Date`, `Error`, `Number`, `RegExp`, or `String`.
+	 *
+	 * @private
+	 * @param {Object} object The object to compare.
+	 * @param {Object} other The other object to compare.
+	 * @param {string} tag The `toStringTag` of the objects to compare.
+	 * @param {number} bitmask The bitmask flags. See `baseIsEqual` for more details.
+	 * @param {Function} customizer The function to customize comparisons.
+	 * @param {Function} equalFunc The function to determine equivalents of values.
+	 * @param {Object} stack Tracks traversed `object` and `other` objects.
+	 * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
+	 */
+	function equalByTag(object, other, tag, bitmask, customizer, equalFunc, stack) {
+	  switch (tag) {
+	    case dataViewTag:
+	      if ((object.byteLength != other.byteLength) ||
+	          (object.byteOffset != other.byteOffset)) {
+	        return false;
+	      }
+	      object = object.buffer;
+	      other = other.buffer;
+
+	    case arrayBufferTag:
+	      if ((object.byteLength != other.byteLength) ||
+	          !equalFunc(new Uint8Array(object), new Uint8Array(other))) {
+	        return false;
+	      }
+	      return true;
+
+	    case boolTag:
+	    case dateTag:
+	    case numberTag:
+	      // Coerce booleans to `1` or `0` and dates to milliseconds.
+	      // Invalid dates are coerced to `NaN`.
+	      return eq(+object, +other);
+
+	    case errorTag:
+	      return object.name == other.name && object.message == other.message;
+
+	    case regexpTag:
+	    case stringTag:
+	      // Coerce regexes to strings and treat strings, primitives and objects,
+	      // as equal. See http://www.ecma-international.org/ecma-262/7.0/#sec-regexp.prototype.tostring
+	      // for more details.
+	      return object == (other + '');
+
+	    case mapTag:
+	      var convert = mapToArray;
+
+	    case setTag:
+	      var isPartial = bitmask & COMPARE_PARTIAL_FLAG;
+	      convert || (convert = setToArray);
+
+	      if (object.size != other.size && !isPartial) {
+	        return false;
+	      }
+	      // Assume cyclic values are equal.
+	      var stacked = stack.get(object);
+	      if (stacked) {
+	        return stacked == other;
+	      }
+	      bitmask |= COMPARE_UNORDERED_FLAG;
+
+	      // Recursively compare objects (susceptible to call stack limits).
+	      stack.set(object, other);
+	      var result = equalArrays(convert(object), convert(other), bitmask, customizer, equalFunc, stack);
+	      stack['delete'](object);
+	      return result;
+
+	    case symbolTag:
+	      if (symbolValueOf) {
+	        return symbolValueOf.call(object) == symbolValueOf.call(other);
+	      }
+	  }
+	  return false;
+	}
+
+	/**
+	 * A specialized version of `baseIsEqualDeep` for objects with support for
+	 * partial deep comparisons.
+	 *
+	 * @private
+	 * @param {Object} object The object to compare.
+	 * @param {Object} other The other object to compare.
+	 * @param {number} bitmask The bitmask flags. See `baseIsEqual` for more details.
+	 * @param {Function} customizer The function to customize comparisons.
+	 * @param {Function} equalFunc The function to determine equivalents of values.
+	 * @param {Object} stack Tracks traversed `object` and `other` objects.
+	 * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
+	 */
+	function equalObjects(object, other, bitmask, customizer, equalFunc, stack) {
+	  var isPartial = bitmask & COMPARE_PARTIAL_FLAG,
+	      objProps = getAllKeys(object),
+	      objLength = objProps.length,
+	      othProps = getAllKeys(other),
+	      othLength = othProps.length;
+
+	  if (objLength != othLength && !isPartial) {
+	    return false;
+	  }
+	  var index = objLength;
+	  while (index--) {
+	    var key = objProps[index];
+	    if (!(isPartial ? key in other : hasOwnProperty.call(other, key))) {
+	      return false;
+	    }
+	  }
+	  // Assume cyclic values are equal.
+	  var stacked = stack.get(object);
+	  if (stacked && stack.get(other)) {
+	    return stacked == other;
+	  }
+	  var result = true;
+	  stack.set(object, other);
+	  stack.set(other, object);
+
+	  var skipCtor = isPartial;
+	  while (++index < objLength) {
+	    key = objProps[index];
+	    var objValue = object[key],
+	        othValue = other[key];
+
+	    if (customizer) {
+	      var compared = isPartial
+	        ? customizer(othValue, objValue, key, other, object, stack)
+	        : customizer(objValue, othValue, key, object, other, stack);
+	    }
+	    // Recursively compare objects (susceptible to call stack limits).
+	    if (!(compared === undefined
+	          ? (objValue === othValue || equalFunc(objValue, othValue, bitmask, customizer, stack))
+	          : compared
+	        )) {
+	      result = false;
+	      break;
+	    }
+	    skipCtor || (skipCtor = key == 'constructor');
+	  }
+	  if (result && !skipCtor) {
+	    var objCtor = object.constructor,
+	        othCtor = other.constructor;
+
+	    // Non `Object` object instances with different constructors are not equal.
+	    if (objCtor != othCtor &&
+	        ('constructor' in object && 'constructor' in other) &&
+	        !(typeof objCtor == 'function' && objCtor instanceof objCtor &&
+	          typeof othCtor == 'function' && othCtor instanceof othCtor)) {
+	      result = false;
+	    }
+	  }
+	  stack['delete'](object);
+	  stack['delete'](other);
+	  return result;
+	}
+
+	/**
+	 * Creates an array of own enumerable property names and symbols of `object`.
+	 *
+	 * @private
+	 * @param {Object} object The object to query.
+	 * @returns {Array} Returns the array of property names and symbols.
+	 */
+	function getAllKeys(object) {
+	  return baseGetAllKeys(object, keys, getSymbols);
+	}
+
+	/**
+	 * Gets the data for `map`.
+	 *
+	 * @private
+	 * @param {Object} map The map to query.
+	 * @param {string} key The reference key.
+	 * @returns {*} Returns the map data.
+	 */
+	function getMapData(map, key) {
+	  var data = map.__data__;
+	  return isKeyable(key)
+	    ? data[typeof key == 'string' ? 'string' : 'hash']
+	    : data.map;
+	}
+
+	/**
+	 * Gets the native function at `key` of `object`.
+	 *
+	 * @private
+	 * @param {Object} object The object to query.
+	 * @param {string} key The key of the method to get.
+	 * @returns {*} Returns the function if it's native, else `undefined`.
+	 */
+	function getNative(object, key) {
+	  var value = getValue(object, key);
+	  return baseIsNative(value) ? value : undefined;
+	}
+
+	/**
+	 * A specialized version of `baseGetTag` which ignores `Symbol.toStringTag` values.
+	 *
+	 * @private
+	 * @param {*} value The value to query.
+	 * @returns {string} Returns the raw `toStringTag`.
+	 */
+	function getRawTag(value) {
+	  var isOwn = hasOwnProperty.call(value, symToStringTag),
+	      tag = value[symToStringTag];
+
+	  try {
+	    value[symToStringTag] = undefined;
+	    var unmasked = true;
+	  } catch (e) {}
+
+	  var result = nativeObjectToString.call(value);
+	  if (unmasked) {
+	    if (isOwn) {
+	      value[symToStringTag] = tag;
+	    } else {
+	      delete value[symToStringTag];
+	    }
+	  }
+	  return result;
+	}
+
+	/**
+	 * Creates an array of the own enumerable symbols of `object`.
+	 *
+	 * @private
+	 * @param {Object} object The object to query.
+	 * @returns {Array} Returns the array of symbols.
+	 */
+	var getSymbols = !nativeGetSymbols ? stubArray : function(object) {
+	  if (object == null) {
+	    return [];
+	  }
+	  object = Object(object);
+	  return arrayFilter(nativeGetSymbols(object), function(symbol) {
+	    return propertyIsEnumerable.call(object, symbol);
+	  });
+	};
+
+	/**
+	 * Gets the `toStringTag` of `value`.
+	 *
+	 * @private
+	 * @param {*} value The value to query.
+	 * @returns {string} Returns the `toStringTag`.
+	 */
+	var getTag = baseGetTag;
+
+	// Fallback for data views, maps, sets, and weak maps in IE 11 and promises in Node.js < 6.
+	if ((DataView && getTag(new DataView(new ArrayBuffer(1))) != dataViewTag) ||
+	    (Map && getTag(new Map) != mapTag) ||
+	    (Promise && getTag(Promise.resolve()) != promiseTag) ||
+	    (Set && getTag(new Set) != setTag) ||
+	    (WeakMap && getTag(new WeakMap) != weakMapTag)) {
+	  getTag = function(value) {
+	    var result = baseGetTag(value),
+	        Ctor = result == objectTag ? value.constructor : undefined,
+	        ctorString = Ctor ? toSource(Ctor) : '';
+
+	    if (ctorString) {
+	      switch (ctorString) {
+	        case dataViewCtorString: return dataViewTag;
+	        case mapCtorString: return mapTag;
+	        case promiseCtorString: return promiseTag;
+	        case setCtorString: return setTag;
+	        case weakMapCtorString: return weakMapTag;
+	      }
+	    }
+	    return result;
+	  };
+	}
+
+	/**
+	 * Checks if `value` is a valid array-like index.
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @param {number} [length=MAX_SAFE_INTEGER] The upper bounds of a valid index.
+	 * @returns {boolean} Returns `true` if `value` is a valid index, else `false`.
+	 */
+	function isIndex(value, length) {
+	  length = length == null ? MAX_SAFE_INTEGER : length;
+	  return !!length &&
+	    (typeof value == 'number' || reIsUint.test(value)) &&
+	    (value > -1 && value % 1 == 0 && value < length);
+	}
+
+	/**
+	 * Checks if `value` is suitable for use as unique object key.
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is suitable, else `false`.
+	 */
+	function isKeyable(value) {
+	  var type = typeof value;
+	  return (type == 'string' || type == 'number' || type == 'symbol' || type == 'boolean')
+	    ? (value !== '__proto__')
+	    : (value === null);
+	}
+
+	/**
+	 * Checks if `func` has its source masked.
+	 *
+	 * @private
+	 * @param {Function} func The function to check.
+	 * @returns {boolean} Returns `true` if `func` is masked, else `false`.
+	 */
+	function isMasked(func) {
+	  return !!maskSrcKey && (maskSrcKey in func);
+	}
+
+	/**
+	 * Checks if `value` is likely a prototype object.
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is a prototype, else `false`.
+	 */
+	function isPrototype(value) {
+	  var Ctor = value && value.constructor,
+	      proto = (typeof Ctor == 'function' && Ctor.prototype) || objectProto;
+
+	  return value === proto;
+	}
+
+	/**
+	 * Converts `value` to a string using `Object.prototype.toString`.
+	 *
+	 * @private
+	 * @param {*} value The value to convert.
+	 * @returns {string} Returns the converted string.
+	 */
+	function objectToString(value) {
+	  return nativeObjectToString.call(value);
+	}
+
+	/**
+	 * Converts `func` to its source code.
+	 *
+	 * @private
+	 * @param {Function} func The function to convert.
+	 * @returns {string} Returns the source code.
+	 */
+	function toSource(func) {
+	  if (func != null) {
+	    try {
+	      return funcToString.call(func);
+	    } catch (e) {}
+	    try {
+	      return (func + '');
+	    } catch (e) {}
+	  }
+	  return '';
+	}
+
+	/**
+	 * Performs a
+	 * [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
+	 * comparison between two values to determine if they are equivalent.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 4.0.0
+	 * @category Lang
+	 * @param {*} value The value to compare.
+	 * @param {*} other The other value to compare.
+	 * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
+	 * @example
+	 *
+	 * var object = { 'a': 1 };
+	 * var other = { 'a': 1 };
+	 *
+	 * _.eq(object, object);
+	 * // => true
+	 *
+	 * _.eq(object, other);
+	 * // => false
+	 *
+	 * _.eq('a', 'a');
+	 * // => true
+	 *
+	 * _.eq('a', Object('a'));
+	 * // => false
+	 *
+	 * _.eq(NaN, NaN);
+	 * // => true
+	 */
+	function eq(value, other) {
+	  return value === other || (value !== value && other !== other);
+	}
+
+	/**
+	 * Checks if `value` is likely an `arguments` object.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 0.1.0
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is an `arguments` object,
+	 *  else `false`.
+	 * @example
+	 *
+	 * _.isArguments(function() { return arguments; }());
+	 * // => true
+	 *
+	 * _.isArguments([1, 2, 3]);
+	 * // => false
+	 */
+	var isArguments = baseIsArguments(function() { return arguments; }()) ? baseIsArguments : function(value) {
+	  return isObjectLike(value) && hasOwnProperty.call(value, 'callee') &&
+	    !propertyIsEnumerable.call(value, 'callee');
+	};
+
+	/**
+	 * Checks if `value` is classified as an `Array` object.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 0.1.0
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is an array, else `false`.
+	 * @example
+	 *
+	 * _.isArray([1, 2, 3]);
+	 * // => true
+	 *
+	 * _.isArray(document.body.children);
+	 * // => false
+	 *
+	 * _.isArray('abc');
+	 * // => false
+	 *
+	 * _.isArray(_.noop);
+	 * // => false
+	 */
+	var isArray = Array.isArray;
+
+	/**
+	 * Checks if `value` is array-like. A value is considered array-like if it's
+	 * not a function and has a `value.length` that's an integer greater than or
+	 * equal to `0` and less than or equal to `Number.MAX_SAFE_INTEGER`.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 4.0.0
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is array-like, else `false`.
+	 * @example
+	 *
+	 * _.isArrayLike([1, 2, 3]);
+	 * // => true
+	 *
+	 * _.isArrayLike(document.body.children);
+	 * // => true
+	 *
+	 * _.isArrayLike('abc');
+	 * // => true
+	 *
+	 * _.isArrayLike(_.noop);
+	 * // => false
+	 */
+	function isArrayLike(value) {
+	  return value != null && isLength(value.length) && !isFunction(value);
+	}
+
+	/**
+	 * Checks if `value` is a buffer.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 4.3.0
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is a buffer, else `false`.
+	 * @example
+	 *
+	 * _.isBuffer(new Buffer(2));
+	 * // => true
+	 *
+	 * _.isBuffer(new Uint8Array(2));
+	 * // => false
+	 */
+	var isBuffer = nativeIsBuffer || stubFalse;
+
+	/**
+	 * Performs a deep comparison between two values to determine if they are
+	 * equivalent.
+	 *
+	 * **Note:** This method supports comparing arrays, array buffers, booleans,
+	 * date objects, error objects, maps, numbers, `Object` objects, regexes,
+	 * sets, strings, symbols, and typed arrays. `Object` objects are compared
+	 * by their own, not inherited, enumerable properties. Functions and DOM
+	 * nodes are compared by strict equality, i.e. `===`.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 0.1.0
+	 * @category Lang
+	 * @param {*} value The value to compare.
+	 * @param {*} other The other value to compare.
+	 * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
+	 * @example
+	 *
+	 * var object = { 'a': 1 };
+	 * var other = { 'a': 1 };
+	 *
+	 * _.isEqual(object, other);
+	 * // => true
+	 *
+	 * object === other;
+	 * // => false
+	 */
+	function isEqual(value, other) {
+	  return baseIsEqual(value, other);
+	}
+
+	/**
+	 * Checks if `value` is classified as a `Function` object.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 0.1.0
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is a function, else `false`.
+	 * @example
+	 *
+	 * _.isFunction(_);
+	 * // => true
+	 *
+	 * _.isFunction(/abc/);
+	 * // => false
+	 */
+	function isFunction(value) {
+	  if (!isObject(value)) {
+	    return false;
+	  }
+	  // The use of `Object#toString` avoids issues with the `typeof` operator
+	  // in Safari 9 which returns 'object' for typed arrays and other constructors.
+	  var tag = baseGetTag(value);
+	  return tag == funcTag || tag == genTag || tag == asyncTag || tag == proxyTag;
+	}
+
+	/**
+	 * Checks if `value` is a valid array-like length.
+	 *
+	 * **Note:** This method is loosely based on
+	 * [`ToLength`](http://ecma-international.org/ecma-262/7.0/#sec-tolength).
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 4.0.0
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is a valid length, else `false`.
+	 * @example
+	 *
+	 * _.isLength(3);
+	 * // => true
+	 *
+	 * _.isLength(Number.MIN_VALUE);
+	 * // => false
+	 *
+	 * _.isLength(Infinity);
+	 * // => false
+	 *
+	 * _.isLength('3');
+	 * // => false
+	 */
+	function isLength(value) {
+	  return typeof value == 'number' &&
+	    value > -1 && value % 1 == 0 && value <= MAX_SAFE_INTEGER;
+	}
+
+	/**
+	 * Checks if `value` is the
+	 * [language type](http://www.ecma-international.org/ecma-262/7.0/#sec-ecmascript-language-types)
+	 * of `Object`. (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 0.1.0
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is an object, else `false`.
+	 * @example
+	 *
+	 * _.isObject({});
+	 * // => true
+	 *
+	 * _.isObject([1, 2, 3]);
+	 * // => true
+	 *
+	 * _.isObject(_.noop);
+	 * // => true
+	 *
+	 * _.isObject(null);
+	 * // => false
+	 */
+	function isObject(value) {
+	  var type = typeof value;
+	  return value != null && (type == 'object' || type == 'function');
+	}
+
+	/**
+	 * Checks if `value` is object-like. A value is object-like if it's not `null`
+	 * and has a `typeof` result of "object".
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 4.0.0
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
+	 * @example
+	 *
+	 * _.isObjectLike({});
+	 * // => true
+	 *
+	 * _.isObjectLike([1, 2, 3]);
+	 * // => true
+	 *
+	 * _.isObjectLike(_.noop);
+	 * // => false
+	 *
+	 * _.isObjectLike(null);
+	 * // => false
+	 */
+	function isObjectLike(value) {
+	  return value != null && typeof value == 'object';
+	}
+
+	/**
+	 * Checks if `value` is classified as a typed array.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 3.0.0
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is a typed array, else `false`.
+	 * @example
+	 *
+	 * _.isTypedArray(new Uint8Array);
+	 * // => true
+	 *
+	 * _.isTypedArray([]);
+	 * // => false
+	 */
+	var isTypedArray = nodeIsTypedArray ? baseUnary(nodeIsTypedArray) : baseIsTypedArray;
+
+	/**
+	 * Creates an array of the own enumerable property names of `object`.
+	 *
+	 * **Note:** Non-object values are coerced to objects. See the
+	 * [ES spec](http://ecma-international.org/ecma-262/7.0/#sec-object.keys)
+	 * for more details.
+	 *
+	 * @static
+	 * @since 0.1.0
+	 * @memberOf _
+	 * @category Object
+	 * @param {Object} object The object to query.
+	 * @returns {Array} Returns the array of property names.
+	 * @example
+	 *
+	 * function Foo() {
+	 *   this.a = 1;
+	 *   this.b = 2;
+	 * }
+	 *
+	 * Foo.prototype.c = 3;
+	 *
+	 * _.keys(new Foo);
+	 * // => ['a', 'b'] (iteration order is not guaranteed)
+	 *
+	 * _.keys('hi');
+	 * // => ['0', '1']
+	 */
+	function keys(object) {
+	  return isArrayLike(object) ? arrayLikeKeys(object) : baseKeys(object);
+	}
+
+	/**
+	 * This method returns a new empty array.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 4.13.0
+	 * @category Util
+	 * @returns {Array} Returns the new empty array.
+	 * @example
+	 *
+	 * var arrays = _.times(2, _.stubArray);
+	 *
+	 * console.log(arrays);
+	 * // => [[], []]
+	 *
+	 * console.log(arrays[0] === arrays[1]);
+	 * // => false
+	 */
+	function stubArray() {
+	  return [];
+	}
+
+	/**
+	 * This method returns `false`.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 4.13.0
+	 * @category Util
+	 * @returns {boolean} Returns `false`.
+	 * @example
+	 *
+	 * _.times(2, _.stubFalse);
+	 * // => [false, false]
+	 */
+	function stubFalse() {
+	  return false;
+	}
+
+	module.exports = isEqual; 
+} (lodash_isequal, lodash_isequal.exports));
+
+var lodash_isequalExports = lodash_isequal.exports;
+var isEqual = /*@__PURE__*/getDefaultExportFromCjs(lodash_isequalExports);
+
+function ansiRegex({onlyFirst = false} = {}) {
+	const pattern = [
+	    '[\\u001B\\u009B][[\\]()#;?]*(?:(?:(?:(?:;[-a-zA-Z\\d\\/#&.:=?%@~_]+)*|[a-zA-Z\\d]+(?:;[-a-zA-Z\\d\\/#&.:=?%@~_]*)*)?\\u0007)',
+		'(?:(?:\\d{1,4}(?:;\\d{0,4})*)?[\\dA-PR-TZcf-ntqry=><~]))'
+	].join('|');
+
+	return new RegExp(pattern, onlyFirst ? undefined : 'g');
+}
+
+function stripAnsi(string) {
+	if (typeof string !== 'string') {
+		throw new TypeError(`Expected a \`string\`, got \`${typeof string}\``);
+	}
+
+	return string.replace(ansiRegex(), '');
+}
+
+// Based on https://github.com/lodash/lodash/blob/6018350ac10d5ce6a5b7db625140b82aeab804df/.internal/unicodeSize.js
+
+function charRegex() {
+	// Used to compose unicode character classes.
+	const astralRange = "\\ud800-\\udfff";
+	const comboMarksRange = "\\u0300-\\u036f";
+	const comboHalfMarksRange = "\\ufe20-\\ufe2f";
+	const comboSymbolsRange = "\\u20d0-\\u20ff";
+	const comboMarksExtendedRange = "\\u1ab0-\\u1aff";
+	const comboMarksSupplementRange = "\\u1dc0-\\u1dff";
+	const comboRange = comboMarksRange + comboHalfMarksRange + comboSymbolsRange + comboMarksExtendedRange + comboMarksSupplementRange;
+	const varRange = "\\ufe0e\\ufe0f";
+
+	// Used to compose unicode capture groups.
+	const astral = `[${astralRange}]`;
+	const combo = `[${comboRange}]`;
+	const fitz = "\\ud83c[\\udffb-\\udfff]";
+	const modifier = `(?:${combo}|${fitz})`;
+	const nonAstral = `[^${astralRange}]`;
+	const regional = "(?:\\ud83c[\\udde6-\\uddff]){2}";
+	const surrogatePair = "[\\ud800-\\udbff][\\udc00-\\udfff]";
+	const zeroWidthJoiner = "\\u200d";
+	const blackFlag = "(?:\\ud83c\\udff4\\udb40\\udc67\\udb40\\udc62\\udb40(?:\\udc65|\\udc73|\\udc77)\\udb40(?:\\udc6e|\\udc63|\\udc6c)\\udb40(?:\\udc67|\\udc74|\\udc73)\\udb40\\udc7f)";
+
+	// Used to compose unicode regexes.
+	const optModifier = `${modifier}?`;
+	const optVar = `[${varRange}]?`;
+	const optJoin = `(?:${zeroWidthJoiner}(?:${[nonAstral, regional, surrogatePair].join("|")})${optVar + optModifier})*`;
+	const seq = optVar + optModifier + optJoin;
+	const nonAstralCombo = `${nonAstral}${combo}?`;
+	const symbol = `(?:${[blackFlag, nonAstralCombo, combo, regional, surrogatePair, astral].join("|")})`;
+
+	// Used to match [string symbols](https://mathiasbynens.be/notes/javascript-unicode).
+	return new RegExp(`${fitz}(?=${fitz})|${symbol + seq}`, "g")
+}
+
+function stringLength(string, {countAnsiEscapeCodes = false} = {}) {
+	if (string === '') {
+		return 0;
+	}
+
+	if (!countAnsiEscapeCodes) {
+		string = stripAnsi(string);
+	}
+
+	if (string === '') {
+		return 0;
+	}
+
+	return string.match(charRegex()).length;
+}
+
+var dist = {};
+
+const strPosToUni = (s, strOffset = s.length) => {
+    let pairs = 0;
+    let i = 0;
+    for (; i < strOffset; i++) {
+        const code = s.charCodeAt(i);
+        if (code >= 0xd800 && code <= 0xdfff) {
+            pairs++;
+            i++; // Skip the second part of the pair.
+        }
+    }
+    if (i !== strOffset)
+        throw Error('Invalid offset - splits unicode bytes');
+    return i - pairs;
+};
+const uniToStrPos = (s, uniOffset) => {
+    let pos = 0;
+    for (; uniOffset > 0; uniOffset--) {
+        const code = s.charCodeAt(pos);
+        pos += code >= 0xd800 && code <= 0xdfff ? 2 : 1;
+    }
+    return pos;
+};
+
+var unicount = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    strPosToUni: strPosToUni,
+    uniToStrPos: uniToStrPos
+});
+
+var require$$0 = /*@__PURE__*/getAugmentedNamespace(unicount);
+
+var type = {};
+
+(function (exports) {
+	/* Text OT!
+	 *
+	 * This is an OT implementation for text. It is the standard implementation of
+	 * text used by ShareJS.
+	 *
+	 * This type is composable and by default non-invertable (operations do not by
+	 * default contain enough information to invert them). Its similar to ShareJS's
+	 * old text-composable type, but its not invertable and its very similar to the
+	 * text-tp2 implementation but it doesn't support tombstones or purging.
+	 *
+	 * Ops are lists of components which iterate over the document. Components are
+	 * either:
+	 *
+	 * - A number N: Skip N characters in the original document
+	 * - "str": Insert "str" at the current position in the document
+	 * - {d:N}: Delete N characters at the current position in the document
+	 * - {d:"str"}: Delete "str" at the current position in the document. This is
+	 *   equivalent to {d:N} but provides extra information for operation
+	 *   invertability.
+	 *
+	 * Eg: [3, 'hi', 5, {d:8}]
+	 *
+	 * The operation does not have to skip the last characters in the document.
+	 *
+	 * Snapshots are by default strings.
+	 *
+	 * Cursors are either a single number (which is the cursor position) or a pair
+	 * of [anchor, focus] (aka [start, end]). Be aware that end can be before start.
+	 *
+	 * The actual string type is configurable. The OG default exposed text type uses
+	 * raw javascript strings, but they're not compatible with OT implementations in
+	 * other languages because string.length returns the wrong value for unicode
+	 * characters that don't fit in 2 bytes. And JS strings are quite an inefficient
+	 * data structure for manipulating lines & UTF8 offsets. For this reason, you
+	 * can use your own data structure underneath the text OT code.
+	 *
+	 * Note that insert operations themselves are always raw strings. Its just
+	 * snapshots that are configurable.
+	 */
+	Object.defineProperty(exports, "__esModule", { value: true });
+	exports.uniSlice = exports.dlen = exports.eachOp = void 0;
+	const unicount_1 = require$$0;
+	/** Check the operation is valid. Throws if not valid. */
+	const checkOp = (op) => {
+	    if (!Array.isArray(op))
+	        throw Error('Op must be an array of components');
+	    let last = null;
+	    for (let i = 0; i < op.length; i++) {
+	        const c = op[i];
+	        switch (typeof c) {
+	            case 'object':
+	                // The only valid objects are {d:X} for +ive values of X or non-empty strings.
+	                if (typeof c.d !== 'number' && typeof c.d !== 'string')
+	                    throw Error('Delete must be number or string');
+	                if (exports.dlen(c.d) <= 0)
+	                    throw Error('Deletes must not be empty');
+	                break;
+	            case 'string':
+	                // Strings are inserts.
+	                if (!(c.length > 0))
+	                    throw Error('Inserts cannot be empty');
+	                break;
+	            case 'number':
+	                // Numbers must be skips. They have to be +ive numbers.
+	                if (!(c > 0))
+	                    throw Error('Skip components must be >0');
+	                if (typeof last === 'number')
+	                    throw Error('Adjacent skip components should be combined');
+	                break;
+	        }
+	        last = c;
+	    }
+	    if (typeof last === 'number')
+	        throw Error('Op has a trailing skip');
+	};
+	// TODO: Consider exposing this at the library level.
+	// TODO: Also consider rewriting this to use es iterators instead of callback-passing style.
+	function eachOp(op, fn) {
+	    let prePos = 0, postPos = 0;
+	    for (let i = 0; i < op.length; i++) {
+	        const c = op[i];
+	        fn(c, prePos, postPos);
+	        switch (typeof c) {
+	            case 'object': // Delete
+	                prePos += exports.dlen(c.d);
+	                break;
+	            case 'string': // Insert
+	                postPos += unicount_1.strPosToUni(c);
+	                break;
+	            case 'number': // Skip
+	                prePos += c;
+	                postPos += c;
+	                break;
+	        }
+	    }
+	}
+	exports.eachOp = eachOp;
+	function mapOp(op, fn) {
+	    const newOp = [];
+	    const append = makeAppend(newOp);
+	    eachOp(op, (c, prePos, postPos) => {
+	        append(fn(c, prePos, postPos));
+	    });
+	    return trim(newOp);
+	}
+	const id = (x) => x;
+	const normalize = (op) => {
+	    return mapOp(op, id);
+	};
+	exports.dlen = (d) => typeof d === 'number' ? d : unicount_1.strPosToUni(d);
+	/** Make a function that appends to the given operation. */
+	const makeAppend = (op) => (component) => {
+	    if (!component || component.d === 0 || component.d === '') ;
+	    else if (op.length === 0) {
+	        op.push(component);
+	    }
+	    else if (typeof component === typeof op[op.length - 1]) {
+	        if (typeof component === 'object') {
+	            // Concatenate deletes. This is annoying because the op or component could
+	            // contain strings or numbers.
+	            const last = op[op.length - 1];
+	            last.d = typeof last.d === 'string' && typeof component.d === 'string'
+	                ? last.d + component.d // Preserve invert information
+	                : exports.dlen(last.d) + exports.dlen(component.d); // Discard invert information, if any.
+	            // (op[op.length - 1] as {d:number}).d += component.d
+	        }
+	        else {
+	            // Concat strings / inserts. TSC should be smart enough for this :p
+	            op[op.length - 1] += component;
+	        }
+	    }
+	    else {
+	        op.push(component);
+	    }
+	};
+	/** Get the length of a component */
+	const componentLength = (c) => (typeof c === 'number' ? c
+	    : typeof c === 'string' ? unicount_1.strPosToUni(c)
+	        : typeof c.d === 'number' ? c.d
+	            : unicount_1.strPosToUni(c.d));
+	// Does not support negative numbers.
+	exports.uniSlice = (s, startUni, endUni) => {
+	    const start = unicount_1.uniToStrPos(s, startUni);
+	    const end = endUni == null ? Infinity : unicount_1.uniToStrPos(s, endUni);
+	    return s.slice(start, end);
+	};
+	const dslice = (d, start, end) => (typeof d === 'number'
+	    ? (end == null) ? d - start : Math.min(d, end) - start
+	    : exports.uniSlice(d, start, end));
+	/** Makes and returns utility functions take and peek.
+	 */
+	const makeTake = (op) => {
+	    // TODO: Rewrite this by passing a context, like the rust code does. Its cleaner that way.
+	    // The index of the next component to take
+	    let idx = 0;
+	    // The offset into the component. For strings this is in UCS2 length, not
+	    // unicode codepoints.
+	    let offset = 0;
+	    // Take up to length n from the front of op. If n is -1, take the entire next
+	    // op component. If indivisableField == 'd', delete components won't be separated.
+	    // If indivisableField == 'i', insert components won't be separated.
+	    const take = (n, indivisableField) => {
+	        // We're at the end of the operation. The op has skips, forever. Infinity
+	        // might make more sense than null here.
+	        if (idx === op.length)
+	            return n === -1 ? null : n;
+	        const c = op[idx];
+	        let part;
+	        if (typeof c === 'number') {
+	            // Skip
+	            if (n === -1 || c - offset <= n) {
+	                part = c - offset;
+	                ++idx;
+	                offset = 0;
+	                return part;
+	            }
+	            else {
+	                offset += n;
+	                return n;
+	            }
+	        }
+	        else if (typeof c === 'string') {
+	            // Insert
+	            if (n === -1 || indivisableField === 'i' || unicount_1.strPosToUni(c.slice(offset)) <= n) {
+	                part = c.slice(offset);
+	                ++idx;
+	                offset = 0;
+	                return part;
+	            }
+	            else {
+	                const offset2 = offset + unicount_1.uniToStrPos(c.slice(offset), n);
+	                part = c.slice(offset, offset2);
+	                offset = offset2;
+	                return part;
+	            }
+	        }
+	        else {
+	            // Delete
+	            //
+	            // So this is a little weird - the insert case uses UCS2 length offsets
+	            // directly instead of counting in codepoints. Thats more efficient, but
+	            // more complicated. It only matters for non-invertable ops with huge
+	            // deletes being composed / transformed by other very complicated ops.
+	            // Probably not common enough to optimize for. Esp since this is a little
+	            // bit of a mess anyway, and the tests should iron out any problems.
+	            if (n === -1 || indivisableField === 'd' || exports.dlen(c.d) - offset <= n) {
+	                // Emit the remainder of the delete.
+	                part = { d: dslice(c.d, offset) };
+	                // part = {d: dlen(c.d) - offset}
+	                ++idx;
+	                offset = 0;
+	                return part;
+	            }
+	            else {
+	                // Slice into the delete content
+	                let result = dslice(c.d, offset, offset + n);
+	                offset += n;
+	                return { d: result };
+	            }
+	        }
+	    };
+	    // Peek at the next op that will be returned.
+	    const peek = () => op[idx];
+	    return { take, peek };
+	};
+	/** Trim any excess skips from the end of an operation.
+	 *
+	 * There should only be at most one, because the operation was made with append.
+	 */
+	const trim = (op) => {
+	    if (op.length > 0 && typeof op[op.length - 1] === 'number') {
+	        op.pop();
+	    }
+	    return op;
+	};
+	/** Transform op by otherOp.
+	 *
+	 * @param op - The operation to transform
+	 * @param otherOp - Operation to transform it by
+	 * @param side - Either 'left' or 'right'
+	 */
+	function transform(op1, op2, side) {
+	    if (side !== 'left' && side !== 'right') {
+	        throw Error("side (" + side + ") must be 'left' or 'right'");
+	    }
+	    checkOp(op1);
+	    checkOp(op2);
+	    const newOp = [];
+	    const append = makeAppend(newOp);
+	    const { take, peek } = makeTake(op1);
+	    for (let i = 0; i < op2.length; i++) {
+	        const c2 = op2[i];
+	        let length, c1;
+	        switch (typeof c2) {
+	            case 'number': // Skip
+	                length = c2;
+	                while (length > 0) {
+	                    c1 = take(length, 'i');
+	                    append(c1);
+	                    if (typeof c1 !== 'string') {
+	                        length -= componentLength(c1);
+	                    }
+	                }
+	                break;
+	            case 'string': // Insert
+	                if (side === 'left') {
+	                    // The left insert should go first.
+	                    if (typeof peek() === 'string') {
+	                        append(take(-1));
+	                    }
+	                }
+	                // Otherwise skip the inserted text.
+	                append(unicount_1.strPosToUni(c2));
+	                break;
+	            case 'object': // Delete
+	                length = exports.dlen(c2.d);
+	                while (length > 0) {
+	                    c1 = take(length, 'i');
+	                    switch (typeof c1) {
+	                        case 'number':
+	                            length -= c1;
+	                            break;
+	                        case 'string':
+	                            append(c1);
+	                            break;
+	                        case 'object':
+	                            // The delete is unnecessary now - the text has already been deleted.
+	                            length -= exports.dlen(c1.d);
+	                    }
+	                }
+	                break;
+	        }
+	    }
+	    // Append any extra data in op1.
+	    let c;
+	    while ((c = take(-1)))
+	        append(c);
+	    return trim(newOp);
+	}
+	/** Compose op1 and op2 together and return the result */
+	function compose(op1, op2) {
+	    checkOp(op1);
+	    checkOp(op2);
+	    const result = [];
+	    const append = makeAppend(result);
+	    const { take } = makeTake(op1);
+	    for (let i = 0; i < op2.length; i++) {
+	        const component = op2[i];
+	        let length, chunk;
+	        switch (typeof component) {
+	            case 'number': // Skip
+	                length = component;
+	                while (length > 0) {
+	                    chunk = take(length, 'd');
+	                    append(chunk);
+	                    if (typeof chunk !== 'object') {
+	                        length -= componentLength(chunk);
+	                    }
+	                }
+	                break;
+	            case 'string': // Insert
+	                append(component);
+	                break;
+	            case 'object': // Delete
+	                length = exports.dlen(component.d); // Length of the delete we're doing
+	                let offset = 0; // Offset into our deleted content
+	                while (offset < length) {
+	                    chunk = take(length - offset, 'd');
+	                    switch (typeof chunk) {
+	                        case 'number':
+	                            // We're deleting the skipped characters.
+	                            append({ d: dslice(component.d, offset, offset + chunk) });
+	                            offset += chunk;
+	                            break;
+	                        case 'string':
+	                            offset += unicount_1.strPosToUni(chunk);
+	                            break;
+	                        case 'object':
+	                            append(chunk);
+	                    }
+	                }
+	                break;
+	        }
+	    }
+	    let c;
+	    while ((c = take(-1)))
+	        append(c);
+	    return trim(result);
+	}
+	// This operates in unicode offsets to make it consistent with the equivalent
+	// methods in other languages / systems.
+	const transformPosition = (cursor, op) => {
+	    let pos = 0;
+	    for (let i = 0; i < op.length && cursor > pos; i++) {
+	        const c = op[i];
+	        // I could actually use the op_iter stuff above - but I think its simpler
+	        // like this.
+	        switch (typeof c) {
+	            case 'number': { // skip
+	                pos += c;
+	                break;
+	            }
+	            case 'string': // insert
+	                // Its safe to use c.length here because they're both utf16 offsets.
+	                // Ignoring pos because the doc doesn't know about the insert yet.
+	                const offset = unicount_1.strPosToUni(c);
+	                pos += offset;
+	                cursor += offset;
+	                break;
+	            case 'object': // delete
+	                cursor -= Math.min(exports.dlen(c.d), cursor - pos);
+	                break;
+	        }
+	    }
+	    return cursor;
+	};
+	const transformSelection = (selection, op) => (typeof selection === 'number'
+	    ? transformPosition(selection, op)
+	    : selection.map(s => transformPosition(s, op)));
+	function makeInvertible(op, doc, ropeImpl) {
+	    return mapOp(op, (c, prePos) => ((typeof c === 'object' && typeof c.d === 'number') // Delete
+	        ? { d: ropeImpl.slice(doc, prePos, prePos + c.d) }
+	        : c));
+	}
+	/** Attempt to invert the operation. Operations with {d:N} components cannot be inverted, and this method will throw. */
+	function invert(op) {
+	    return mapOp(op, c => {
+	        switch (typeof c) {
+	            case 'object': // Delete
+	                if (typeof c.d === 'number') {
+	                    throw Error('Cannot invert text op: Deleted characters missing from operation. makeInvertible must be called first.');
+	                }
+	                else
+	                    return c.d; // delete -> insert
+	            case 'string': return { d: c }; // Insert -> delete
+	            case 'number': return c; // skip -> skip
+	        }
+	    });
+	}
+	/** Strip extraneous invertibility information from the operation */
+	function stripInvertible(op) {
+	    return mapOp(op, c => ((typeof c === 'object' && typeof c.d === 'string')
+	        ? { d: unicount_1.strPosToUni(c.d) }
+	        : c));
+	}
+	/** Helper method. returns true if the operation can be successfully inverted. */
+	function isInvertible(op) {
+	    let invertible = true;
+	    eachOp(op, c => {
+	        if (typeof c === 'object' && typeof c.d === 'number')
+	            invertible = false;
+	    });
+	    return invertible;
+	}
+	function makeType(ropeImpl) {
+	    return {
+	        name: 'text-unicode',
+	        uri: 'http://sharejs.org/types/text-unicode',
+	        trim,
+	        normalize,
+	        checkOp,
+	        /** Create a new text snapshot.
+	         *
+	         * @param {string} initial - initial snapshot data. Optional. Defaults to ''.
+	         * @returns {Snap} Initial document snapshot object
+	         */
+	        create(initial = '') {
+	            if (typeof initial !== 'string') {
+	                throw Error('Initial data must be a string');
+	            }
+	            return ropeImpl.create(initial);
+	        },
+	        /** Apply an operation to a document snapshot
+	         */
+	        apply(str, op) {
+	            checkOp(op);
+	            const builder = ropeImpl.builder(str);
+	            for (let i = 0; i < op.length; i++) {
+	                const component = op[i];
+	                switch (typeof component) {
+	                    case 'number':
+	                        builder.skip(component);
+	                        break;
+	                    case 'string':
+	                        builder.append(component);
+	                        break;
+	                    case 'object':
+	                        builder.del(exports.dlen(component.d));
+	                        break;
+	                }
+	            }
+	            return builder.build();
+	        },
+	        transform,
+	        compose,
+	        transformPosition,
+	        transformSelection,
+	        isInvertible,
+	        makeInvertible(op, doc) { return makeInvertible(op, doc, ropeImpl); },
+	        stripInvertible,
+	        invert,
+	        invertWithDoc(op, doc) { return invert(makeInvertible(op, doc, ropeImpl)); },
+	        isNoop: (op) => op.length === 0
+	    };
+	}
+	exports.default = makeType; 
+} (type));
+
+var api$1 = {};
+
+Object.defineProperty(api$1, "__esModule", { value: true });
+// Text document API for the 'text' type. This implements some standard API
+// methods for any text-like type, so you can easily bind a textarea or
+// something without being fussy about the underlying OT implementation.
+//
+// The API is desigend as a set of functions to be mixed in to some context
+// object as part of its lifecycle. It expects that object to have getSnapshot
+// and submitOp methods, and call _onOp when an operation is received.
+//
+// This API defines:
+//
+// - getLength() returns the length of the document in characters
+// - getText() returns a string of the document
+// - insert(pos, text, [callback]) inserts text at position pos in the document
+// - remove(pos, length, [callback]) removes length characters at position pos
+//
+// A user can define:
+// - onInsert(pos, text): Called when text is inserted.
+// - onRemove(pos, length): Called when text is removed.
+const type_1 = type;
+const unicount_1 = require$$0;
+function api(getSnapshot, submitOp) {
+    return {
+        // Returns the text content of the document
+        get: getSnapshot,
+        // Returns the number of characters in the string
+        getLength() { return getSnapshot().length; },
+        // Insert the specified text at the given position in the document
+        insert(pos, text, callback) {
+            const uniPos = unicount_1.strPosToUni(getSnapshot(), pos);
+            return submitOp([uniPos, text], callback);
+        },
+        remove(pos, lengthOrContent, callback) {
+            const uniPos = unicount_1.strPosToUni(getSnapshot(), pos);
+            return submitOp([uniPos, { d: lengthOrContent }], callback);
+        },
+        // When you use this API, you should implement these two methods
+        // in your editing context.
+        //onInsert: function(pos, text) {},
+        //onRemove: function(pos, removedLength) {},
+        _onOp(op) {
+            type_1.eachOp(op, (component, prePos, postPos) => {
+                switch (typeof component) {
+                    case 'string':
+                        if (this.onInsert)
+                            this.onInsert(postPos, component);
+                        break;
+                    case 'object':
+                        const dl = type_1.dlen(component.d);
+                        if (this.onRemove)
+                            this.onRemove(postPos, dl);
+                }
+            });
+        },
+        onInsert: null,
+        onRemove: null,
+    };
+}
+api$1.default = api;
+api.provides = { text: true };
+
+(function (exports) {
+	var __createBinding = (commonjsGlobal && commonjsGlobal.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+	    if (k2 === undefined) k2 = k;
+	    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+	}) : (function(o, m, k, k2) {
+	    if (k2 === undefined) k2 = k;
+	    o[k2] = m[k];
+	}));
+	var __setModuleDefault = (commonjsGlobal && commonjsGlobal.__setModuleDefault) || (Object.create ? (function(o, v) {
+	    Object.defineProperty(o, "default", { enumerable: true, value: v });
+	}) : function(o, v) {
+	    o["default"] = v;
+	});
+	var __importStar = (commonjsGlobal && commonjsGlobal.__importStar) || function (mod) {
+	    if (mod && mod.__esModule) return mod;
+	    var result = {};
+	    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+	    __setModuleDefault(result, mod);
+	    return result;
+	};
+	var __importDefault = (commonjsGlobal && commonjsGlobal.__importDefault) || function (mod) {
+	    return (mod && mod.__esModule) ? mod : { "default": mod };
+	};
+	Object.defineProperty(exports, "__esModule", { value: true });
+	exports.type = exports.remove = exports.insert = void 0;
+	// This is an implementation of the text OT type built on top of JS strings.
+	// You would think this would be horribly inefficient, but its surpringly
+	// good. JS strings are magic.
+	const unicount_1 = require$$0;
+	const type_1 = __importStar(type);
+	const api_1 = __importDefault(api$1);
+	const ropeImplUnicodeString = {
+	    create(s) { return s; },
+	    toString(s) { return s; },
+	    builder(oldDoc) {
+	        if (typeof oldDoc !== 'string')
+	            throw Error('Invalid document snapshot: ' + oldDoc);
+	        const newDoc = [];
+	        return {
+	            skip(n) {
+	                let offset = unicount_1.uniToStrPos(oldDoc, n);
+	                if (offset > oldDoc.length)
+	                    throw Error('The op is too long for this document');
+	                newDoc.push(oldDoc.slice(0, offset));
+	                oldDoc = oldDoc.slice(offset);
+	            },
+	            append(s) {
+	                newDoc.push(s);
+	            },
+	            del(n) {
+	                oldDoc = oldDoc.slice(unicount_1.uniToStrPos(oldDoc, n));
+	            },
+	            build() { return newDoc.join('') + oldDoc; },
+	        };
+	    },
+	    slice: type_1.uniSlice,
+	};
+	const textString = type_1.default(ropeImplUnicodeString);
+	const type$1 = Object.assign(Object.assign({}, textString), { api: api_1.default });
+	exports.type = type$1;
+	exports.insert = (pos, text) => (text.length === 0
+	    ? []
+	    : pos === 0 ? [text] : [pos, text]);
+	exports.remove = (pos, textOrLen) => (type_1.dlen(textOrLen) === 0
+	    ? []
+	    : pos === 0 ? [{ d: textOrLen }] : [pos, { d: textOrLen }]);
+	var type_2 = type;
+	Object.defineProperty(exports, "makeType", { enumerable: true, get: function () { return type_2.default; } }); 
+} (dist));
+
+function createBlock(type, contents = [], attributes = {}, meta = {}) {
+    return {
+        id: v4(),
+        contents: contents.length < 1 ? [createInline('TEXT')] : contents,
+        attributes,
+        meta,
+        childBlocks: [],
+        type,
+    };
+}
+function getBlockId(node) {
+    var _a;
+    if ((_a = node.dataset) === null || _a === void 0 ? void 0 : _a.blockId) {
+        return [node.dataset.blockId, node];
+    }
+    if (!node.parentElement) {
+        return [];
+    }
+    return getBlockId(node.parentElement);
+}
+function getChildBlockId(node) {
+    var _a, _b;
+    if ((_a = node.dataset) === null || _a === void 0 ? void 0 : _a.childBlockId) {
+        return [
+            node.dataset.childBlockId,
+            (_b = node.dataset.childBlockKey) !== null && _b !== void 0 ? _b : node.dataset.childBlockId,
+            node,
+        ];
+    }
+    if (!node.parentElement) {
+        return [];
+    }
+    return getChildBlockId(node.parentElement);
+}
+function getBlockElementById(blockId, isChild = false) {
+    const query = isChild ? `[data-child-block-id="${blockId}"]` : `[data-block-id="${blockId}"]`;
+    const element = document.querySelector(query);
+    if (!element)
+        return null;
+    return element;
+}
+function getOuter(node) {
+    if (node.classList.contains('shibuya-block-outer')) {
+        return node;
+    }
+    if (!node.parentElement) {
+        return null;
+    }
+    return getOuter(node.parentElement);
+}
+function getBlockOuterElementById(blockId) {
+    const element = document.querySelector('[data-block-id="' + blockId + '"]');
+    if (!element)
+        return null;
+    const outerEl = getOuter(element);
+    if (!outerEl)
+        return null;
+    return outerEl;
+}
+function getBlockLength(block, isChild = false) {
+    var _a;
+    let element;
+    if (isChild) {
+        element = block instanceof HTMLElement ? block : getBlockElementById(block, true);
+    }
+    else {
+        element = block instanceof HTMLElement ? block : getBlockElementById(block);
+    }
+    if (!element)
+        return null;
+    let cumulativeLength = 0;
+    for (let i = 0; i < element.children.length; i++) {
+        const targetElement = element.children[i];
+        const format = (_a = targetElement.dataset.format) === null || _a === void 0 ? void 0 : _a.replace(/^inline\//, '').toUpperCase();
+        const inlineLength = isEmbed(format)
+            ? 1
+            : stringLength(getInlineText(targetElement).replaceAll(/\uFEFF/gi, ''));
+        cumulativeLength += inlineLength;
+    }
+    return cumulativeLength;
+}
+function convertHTMLtoInlines(block) {
+    const element = block instanceof HTMLElement ? block : getBlockElementById(block);
+    let affectedLength = 0;
+    let affected = false;
+    if (!element)
+        return { contents: [], affectedLength, affected };
+    const contents = Array.from(element.childNodes).reduce((r, inline, currentIndex) => {
+        var _a, _b;
+        if (inline instanceof Text) {
+            element.removeChild(inline);
+            if (!(inline === null || inline === void 0 ? void 0 : inline.textContent))
+                return r;
+            affectedLength += inline.length;
+            affected = true;
+            return [...r, createInline('TEXT', inline.textContent)];
+        }
+        const inlineText = getInlineText(inline);
+        const format = (_a = inline.dataset.format) === null || _a === void 0 ? void 0 : _a.replace(/^inline\//, '').toUpperCase();
+        if (!format || !inline.dataset.inlineId)
+            return r;
+        if (inlineText.match(/\uFEFF$/i)) {
+            affected = true;
+        }
+        if (inlineText.match(/^\uFEFF/i)) {
+            affectedLength -= 1;
+            affected = true;
+        }
+        let text = inlineText.replaceAll(/\uFEFF/gi, '');
+        text = currentIndex === 0 && text.length < 1 ? '\uFEFF' : text;
+        return [
+            ...r,
+            {
+                id: inline.dataset.inlineId,
+                attributes: JSON.parse((_b = inline.dataset.attributes) !== null && _b !== void 0 ? _b : ''),
+                text,
+                type: format,
+                isEmbed: isEmbed(format),
+            },
+        ];
+    }, []);
+    return { contents, affectedLength, affected };
+}
+// convert block index to native index
+function getNativeIndexFromBlockIndex(block, index, isChild = false) {
+    var _a, _b;
+    let element;
+    if (isChild) {
+        element = block instanceof HTMLElement ? block : getBlockElementById(block, true);
+    }
+    else {
+        element = block instanceof HTMLElement ? block : getBlockElementById(block);
+    }
+    if (!element)
+        return null;
+    let cumulativeLength = 0;
+    for (let i = 0; i < element.children.length; i++) {
+        const targetElement = element.children[i];
+        const format = (_a = targetElement.dataset.format) === null || _a === void 0 ? void 0 : _a.replace(/^inline\//, '').toUpperCase();
+        if (format) {
+            if (isEmbed(format)) {
+                cumulativeLength += 1;
+            }
+            else {
+                const childNodes = targetElement.childNodes;
+                for (let j = 0; j < childNodes.length; j++) {
+                    const node = childNodes[j];
+                    let nodeLength = stringLength((_b = node.textContent) !== null && _b !== void 0 ? _b : '');
+                    nodeLength = nodeLength > 0 ? nodeLength : 1;
+                    if (index <= cumulativeLength + nodeLength) {
+                        if (node instanceof Image) {
+                            if (index === cumulativeLength + nodeLength) {
+                                return {
+                                    node: targetElement,
+                                    index: j + 1,
+                                };
+                            }
+                            return {
+                                node: targetElement,
+                                index: j,
+                            };
+                        }
+                        if (node.tagName === 'BR') {
+                            return targetElement.nextSibling
+                                ? {
+                                    node: targetElement.nextSibling,
+                                    index: 0,
+                                }
+                                : {
+                                    node: targetElement,
+                                    index: j,
+                                };
+                        }
+                        return {
+                            node: node instanceof Text ? node : targetElement,
+                            index: index - cumulativeLength,
+                        };
+                    }
+                    cumulativeLength += nodeLength;
+                }
+            }
+        }
+    }
+    return null;
+}
+function getBlockIndexFromNativeIndex(ChildNode, offset) {
+    var _a, _b, _c;
+    const [inlineId, inlineElement] = getInlineId(ChildNode);
+    const [blockId, blockElement] = getBlockId(ChildNode);
+    if (!inlineId || !inlineElement || !blockElement || !blockId)
+        return null;
+    let cumulativeLength = 0;
+    for (let i = 0; i < blockElement.children.length; i++) {
+        const targetElement = blockElement.children[i];
+        const format = (_a = targetElement.dataset.format) === null || _a === void 0 ? void 0 : _a.replace(/^inline\//, '').toUpperCase();
+        if (format) {
+            const inlineLength = isEmbed(format)
+                ? 1
+                : stringLength(getInlineText(targetElement));
+            if (targetElement === inlineElement) {
+                const childNodes = Array.from(inlineElement.childNodes);
+                let normalizedOffset = 0;
+                for (let j = 0; j < childNodes.length; j++) {
+                    if (childNodes[j] === ChildNode) {
+                        const offestText = (_b = childNodes[j].textContent) !== null && _b !== void 0 ? _b : '';
+                        // emoji support
+                        const offsetTextIndex = stringLength(offestText.slice(0, offset));
+                        normalizedOffset += offsetTextIndex;
+                        break;
+                    }
+                    if (ChildNode.contains(childNodes[j]) && j === offset) {
+                        break;
+                    }
+                    // <br> only line support
+                    if (ChildNode === inlineElement && j === offset) {
+                        normalizedOffset += 1;
+                        break;
+                    }
+                    let nodeLength = stringLength((_c = childNodes[j].textContent) !== null && _c !== void 0 ? _c : '');
+                    nodeLength = nodeLength > 0 ? nodeLength : 1;
+                    normalizedOffset += nodeLength;
+                }
+                return { blockId, index: cumulativeLength + normalizedOffset };
+            }
+            cumulativeLength += inlineLength;
+        }
+    }
+    return null;
+}
+function getChildBlockIndexFromNativeIndex(ChildNode, offset) {
+    var _a, _b, _c;
+    const [inlineId, inlineElement] = getInlineId(ChildNode);
+    const [blockId, blockKey, blockElement] = getChildBlockId(ChildNode);
+    if (!inlineId || !inlineElement || !blockElement || !blockId)
+        return null;
+    let cumulativeLength = 0;
+    for (let i = 0; i < blockElement.children.length; i++) {
+        const targetElement = blockElement.children[i];
+        const format = (_a = targetElement.dataset.format) === null || _a === void 0 ? void 0 : _a.replace(/^inline\//, '').toUpperCase();
+        if (format) {
+            const inlineLength = isEmbed(format)
+                ? 1
+                : stringLength(getInlineText(targetElement));
+            if (targetElement === inlineElement) {
+                const childNodes = Array.from(inlineElement.childNodes);
+                let normalizedOffset = 0;
+                for (let j = 0; j < childNodes.length; j++) {
+                    if (childNodes[j] === ChildNode) {
+                        const offestText = (_b = childNodes[j].textContent) !== null && _b !== void 0 ? _b : '';
+                        // emoji support
+                        const offsetTextIndex = stringLength(offestText.slice(0, offset));
+                        normalizedOffset += offsetTextIndex;
+                        break;
+                    }
+                    if (ChildNode.contains(childNodes[j]) && j === offset) {
+                        break;
+                    }
+                    // <br> only line support
+                    if (ChildNode === inlineElement && j === offset) {
+                        normalizedOffset += 1;
+                        break;
+                    }
+                    let nodeLength = stringLength((_c = childNodes[j].textContent) !== null && _c !== void 0 ? _c : '');
+                    nodeLength = nodeLength > 0 ? nodeLength : 1;
+                    normalizedOffset += nodeLength;
+                }
+                return { blockId, index: cumulativeLength + normalizedOffset };
+            }
+            cumulativeLength += inlineLength;
+        }
+    }
+    return null;
+}
+// index is the position to start deleting, and length is the number of characters to delete (default is 1).
+function deleteInlineContents(contents, index, length = 1) {
+    let startIndex = index;
+    let endIndex = index + length;
+    const destContents = [];
+    let cumulativeLength = 0;
+    for (let i = 0; i < contents.length; i++) {
+        const inlineLength = contents[i].isEmbed ? 1 : stringLength(contents[i].text);
+        if (length > 0 &&
+            endIndex >= cumulativeLength &&
+            startIndex < cumulativeLength + inlineLength) {
+            if (!contents[i].isEmbed) {
+                let deleteIndex = startIndex - cumulativeLength;
+                deleteIndex = deleteIndex > 0 ? deleteIndex : 0;
+                const textlength = stringLength(contents[i].text) - deleteIndex;
+                const deletelength = textlength - length >= 0 ? length : textlength;
+                length -= deletelength;
+                const removeOp = dist.remove(deleteIndex, deletelength);
+                const text = dist.type.apply(contents[i].text, removeOp);
+                if (stringLength(text) > 0) {
+                    destContents.push(Object.assign(Object.assign({}, contents[i]), { text }));
+                }
+            }
+            else {
+                length--;
+            }
+        }
+        else {
+            destContents.push(contents[i]);
+        }
+        cumulativeLength += inlineLength;
+    }
+    if (destContents.length < 1) {
+        destContents.push(createInline('TEXT'));
+    }
+    return destContents;
+}
+function insertTextInlineContents(contents, text, index) {
+    const destContents = [];
+    let processedIndex = 0;
+    for (let i = 0; i < contents.length; i++) {
+        const inlineLength = contents[i].isEmbed ? 1 : stringLength(contents[i].text);
+        if (index > processedIndex && index <= processedIndex + inlineLength) {
+            const insertIndex = index - processedIndex;
+            const insertOp = dist.insert(insertIndex, text);
+            const insertedText = dist.type.apply(contents[i].text, insertOp);
+            if (stringLength(insertedText) > 0) {
+                destContents.push(Object.assign(Object.assign({}, contents[i]), { text: insertedText }));
+            }
+        }
+        else {
+            destContents.push(contents[i]);
+        }
+        processedIndex += inlineLength;
+    }
+    return destContents;
+}
+function setAttributesForInlineContents(contents, attributes, index, length = 1) {
+    let startIndex = index;
+    let endIndex = index + length;
+    const destContents = [];
+    let cumulativeLength = 0;
+    for (let i = 0; i < contents.length; i++) {
+        const inlineLength = contents[i].isEmbed ? 1 : stringLength(contents[i].text);
+        if (length > 0 &&
+            endIndex >= cumulativeLength &&
+            startIndex < cumulativeLength + inlineLength) {
+            if (!contents[i].isEmbed) {
+                let formatIndex = startIndex - cumulativeLength;
+                formatIndex = formatIndex > 0 ? formatIndex : 0;
+                const textlength = stringLength(contents[i].text) - formatIndex;
+                const formatlength = textlength - length >= 0 ? length : textlength;
+                length -= formatlength;
+                const firstText = dist.type.apply(contents[i].text, dist.remove(formatIndex, textlength));
+                const middleText = dist.type.apply(contents[i].text, dist.type.compose(dist.remove(0, formatIndex), dist.remove(formatlength, stringLength(contents[i].text) - (formatIndex + formatlength))));
+                const lastText = dist.type.apply(contents[i].text, dist.remove(0, formatIndex + formatlength));
+                if (firstText.length > 0) {
+                    destContents.push(Object.assign(Object.assign({}, contents[i]), { id: v4(), text: firstText }));
+                }
+                if (middleText.length > 0) {
+                    const mergedAttributes = Object.assign(Object.assign({}, contents[i].attributes), attributes);
+                    Object.keys(mergedAttributes).forEach((key) => {
+                        if (typeof mergedAttributes[key] === 'boolean' && !mergedAttributes[key]) {
+                            delete mergedAttributes[key];
+                        }
+                    });
+                    destContents.push(Object.assign(Object.assign({}, contents[i]), { id: v4(), text: middleText, attributes: mergedAttributes }));
+                }
+                if (lastText.length > 0) {
+                    destContents.push(Object.assign(Object.assign({}, contents[i]), { id: v4(), text: lastText }));
+                }
+            }
+            else {
+                length--;
+            }
+        }
+        else {
+            destContents.push(contents[i]);
+        }
+        cumulativeLength += inlineLength;
+    }
+    if (destContents.length < 1) {
+        destContents.push(createInline('TEXT'));
+    }
+    return destContents;
+}
+// length is the string currently selected by the user and to be deleted when splitting.
+function splitInlineContents(contents, index) {
+    const startIndex = index;
+    const firstContents = [];
+    const lastContents = [];
+    let cumulativeLength = 0;
+    for (let i = 0; i < contents.length; i++) {
+        const inlineLength = contents[i].isEmbed ? 1 : stringLength(contents[i].text);
+        if (startIndex >= cumulativeLength && startIndex < cumulativeLength + inlineLength) {
+            if (!contents[i].isEmbed) {
+                const sliceIndex = startIndex - cumulativeLength;
+                const firstText = dist.type.apply(contents[i].text, dist.remove(sliceIndex, stringLength(contents[i].text) - sliceIndex));
+                const lastText = dist.type.apply(contents[i].text, dist.remove(0, sliceIndex));
+                if (firstText.length > 0) {
+                    firstContents.push(Object.assign(Object.assign({}, contents[i]), { text: firstText }));
+                }
+                if (lastText.length > 0) {
+                    lastContents.push(Object.assign(Object.assign({}, contents[i]), { id: v4(), text: lastText }));
+                }
+            }
+            else {
+                lastContents.push(contents[i]);
+            }
+        }
+        else {
+            if (startIndex > cumulativeLength) {
+                firstContents.push(contents[i]);
+            }
+            else {
+                lastContents.push(contents[i]);
+            }
+        }
+        cumulativeLength += inlineLength;
+    }
+    return [firstContents, lastContents];
+}
+function optimizeInlineContents(contents) {
+    let prevAttributes = {};
+    const dest = contents.reduce((r, v, i) => {
+        if (v.text === '\uFEFF') {
+            prevAttributes = Object.assign({}, v.attributes);
+            return r;
+        }
+        if (v.text === '' && !v.isEmbed) {
+            return r;
+        }
+        if (r.length > 0 && isEqual(v.attributes, prevAttributes)) {
+            prevAttributes = Object.assign({}, v.attributes);
+            r[r.length - 1].text += v.text;
+            return [...r];
+        }
+        prevAttributes = Object.assign({}, v.attributes);
+        return [...r, v];
+    }, []);
+    if (dest.length < 1) {
+        dest.push(createInline('TEXT'));
+    }
+    return dest;
+}
+function getInlineContents(contents, index, length = 0) {
+    let startIndex = index;
+    let endIndex = index + length;
+    const destContents = [];
+    let cumulativeLength = 0;
+    for (let i = 0; i < contents.length; i++) {
+        const inlineLength = contents[i].isEmbed ? 1 : stringLength(contents[i].text);
+        if (length > 0 &&
+            endIndex >= cumulativeLength &&
+            startIndex < cumulativeLength + inlineLength) {
+            if (!contents[i].isEmbed) {
+                let selectedIndex = startIndex - cumulativeLength;
+                selectedIndex = selectedIndex > 0 ? selectedIndex : 0;
+                const textlength = stringLength(contents[i].text);
+                const deleteTextlength = textlength - selectedIndex;
+                const selectedLength = textlength - length >= 0 ? length : textlength;
+                const deletelength = deleteTextlength - length >= 0 ? length : deleteTextlength;
+                length -= deletelength;
+                let text = contents[i].text;
+                if (textlength - (selectedIndex + selectedLength) > 0) {
+                    const removeLast = dist.remove(selectedIndex + selectedLength, textlength - (selectedIndex + selectedLength));
+                    text = dist.type.apply(text, removeLast);
+                }
+                const removeFirst = dist.remove(0, selectedIndex);
+                text = dist.type.apply(text, removeFirst);
+                if (stringLength(text) > 0) {
+                    destContents.push(Object.assign(Object.assign({}, contents[i]), { text }));
+                }
+            }
+            else {
+                length--;
+            }
+        }
+        cumulativeLength += inlineLength;
+    }
+    return destContents;
+}
+function getDuplicateAttributes(contents, index, length = 0) {
+    let startIndex = index;
+    let endIndex = index + length;
+    const destContents = [];
+    let cumulativeLength = 0;
+    for (let i = 0; i < contents.length; i++) {
+        const inlineLength = contents[i].isEmbed ? 1 : stringLength(contents[i].text);
+        if (length < 1) {
+            break;
+        }
+        if (endIndex >= cumulativeLength && startIndex < cumulativeLength + inlineLength) {
+            if (!contents[i].isEmbed) {
+                let selectedIndex = startIndex - cumulativeLength;
+                selectedIndex = selectedIndex > 0 ? selectedIndex : 0;
+                const textlength = stringLength(contents[i].text) - selectedIndex;
+                const selectedlength = textlength - length >= 0 ? length : textlength;
+                length -= selectedlength;
+                const text = dist.type.apply(contents[i].text, dist.remove(selectedIndex + selectedlength, stringLength(contents[i].text) - (selectedIndex + selectedlength)));
+                if (stringLength(text) > 0) {
+                    destContents.push(Object.assign({}, contents[i].attributes));
+                }
+            }
+            else {
+                length--;
+            }
+        }
+        cumulativeLength += inlineLength;
+    }
+    const duplicateAttributes = destContents.reduce((r, v, i) => {
+        if (i === 0) {
+            return Object.assign({}, v);
+        }
+        const attributes = Object.assign({}, r);
+        Object.keys(attributes).forEach((attr) => {
+            if (!Object.prototype.hasOwnProperty.call(v, attr)) {
+                delete attributes[attr];
+            }
+        });
+        return attributes;
+    }, {});
+    return duplicateAttributes;
+}
+function convertBlocksToText(blocks) {
+    const text = blocks.reduce((r, block) => {
+        return `${r}${block.contents.map((content) => content.text).join('')}\n`;
+    }, '');
+    return text.replaceAll(/\uFEFF/gi, '');
+}
+
 const Outer = styled$1.div `
   position: relative;
 `;
@@ -6246,28 +9338,44 @@ const BlockContainer = React__namespace.memo((_a) => {
     var { blockId, editor, selected, readOnly = false, scrollContainer, formats } = _a, props = __rest$1(_a, ["blockId", "editor", "selected", "readOnly", "scrollContainer", "formats"]);
     const block = useBlockRenderer({ blockId, editor });
     const memoContents = React__namespace.useMemo(() => {
-        var _a, _b, _c, _d, _e, _f;
+        var _a, _b, _c, _d;
         const { embeddedBlocks } = editor.getSettings();
         if (embeddedBlocks.includes((_a = block === null || block === void 0 ? void 0 : block.type) !== null && _a !== void 0 ? _a : '')) {
             return [];
         }
         if ((block === null || block === void 0 ? void 0 : block.type) === 'CODE-BLOCK') {
             const text = block.contents.map((content) => content.text).join('');
-            textToPrismaToken(text, (_c = (_b = block.attributes) === null || _b === void 0 ? void 0 : _b.language) !== null && _c !== void 0 ? _c : 'typescript').map((v, i) => {
-                return Object.assign(Object.assign({}, v), { id: i });
-            });
             return InlineContainer({
-                contents: textToPrismaToken(text, (_e = (_d = block.attributes) === null || _d === void 0 ? void 0 : _d.language) !== null && _e !== void 0 ? _e : 'typescript'),
+                contents: textToPrismaToken(text, (_c = (_b = block.attributes) === null || _b === void 0 ? void 0 : _b.language) !== null && _c !== void 0 ? _c : 'typescript'),
                 formats,
                 editor,
                 scrollContainer,
             });
         }
-        return InlineContainer({ contents: (_f = block === null || block === void 0 ? void 0 : block.contents) !== null && _f !== void 0 ? _f : [], formats, editor, scrollContainer });
+        return InlineContainer({ contents: (_d = block === null || block === void 0 ? void 0 : block.contents) !== null && _d !== void 0 ? _d : [], formats, editor, scrollContainer });
     }, [block === null || block === void 0 ? void 0 : block.contents, block === null || block === void 0 ? void 0 : block.type, formats, editor]);
     const blockFormat = `block/${block === null || block === void 0 ? void 0 : block.type.toLocaleLowerCase()}`;
     const Container = (_b = formats[blockFormat]) !== null && _b !== void 0 ? _b : formats['block/paragraph'];
-    return (jsxRuntimeExports.jsxs(Outer, Object.assign({ "data-id": blockId, className: 'shibuya-block-outer', style: { '--indent': `${(_d = (_c = block === null || block === void 0 ? void 0 : block.attributes) === null || _c === void 0 ? void 0 : _c.indent) !== null && _d !== void 0 ? _d : 0}` } }, { children: [jsxRuntimeExports.jsx(Container, Object.assign({ suppressContentEditableWarning: true, className: 'notranslate', contentEditable: !readOnly, blockId: blockId, "data-block-id": blockId, "data-attributes": JSON.stringify(block === null || block === void 0 ? void 0 : block.attributes), "data-metas": JSON.stringify(block === null || block === void 0 ? void 0 : block.meta), "data-format": blockFormat, formats: formats, attributes: block === null || block === void 0 ? void 0 : block.attributes, meta: (_e = block === null || block === void 0 ? void 0 : block.meta) !== null && _e !== void 0 ? _e : {}, contents: memoContents, editor: editor, scrollContainer: scrollContainer, selected: selected }, props)), selected && jsxRuntimeExports.jsx(Overlay, {})] })));
+    const memoOverlay = React__namespace.useMemo(() => {
+        var _a;
+        const blockEl = getBlockElementById(blockId);
+        if (!blockEl || !blockEl.parentElement)
+            return;
+        let rect = blockEl.getBoundingClientRect();
+        if ((block === null || block === void 0 ? void 0 : block.type) === 'TABLE') {
+            const tableRect = (_a = blockEl.querySelector('table')) === null || _a === void 0 ? void 0 : _a.getBoundingClientRect();
+            if (tableRect)
+                rect = tableRect;
+        }
+        const parentRect = blockEl.parentElement.getBoundingClientRect();
+        return {
+            width: rect.width,
+            height: rect.height,
+            left: rect.left - parentRect.left,
+            top: rect.top - parentRect.top,
+        };
+    }, [blockId, selected]);
+    return (jsxRuntimeExports.jsxs(Outer, Object.assign({ "data-id": blockId, className: 'shibuya-block-outer', style: { '--indent': `${(_d = (_c = block === null || block === void 0 ? void 0 : block.attributes) === null || _c === void 0 ? void 0 : _c.indent) !== null && _d !== void 0 ? _d : 0}` } }, { children: [jsxRuntimeExports.jsx(Container, Object.assign({ suppressContentEditableWarning: true, className: 'notranslate', contentEditable: !readOnly, blockId: blockId, "data-block-id": blockId, "data-attributes": JSON.stringify(block === null || block === void 0 ? void 0 : block.attributes), "data-metas": JSON.stringify(block === null || block === void 0 ? void 0 : block.meta), "data-format": blockFormat, formats: formats, attributes: block === null || block === void 0 ? void 0 : block.attributes, childBlocks: block === null || block === void 0 ? void 0 : block.childBlocks, meta: (_e = block === null || block === void 0 ? void 0 : block.meta) !== null && _e !== void 0 ? _e : {}, contents: memoContents, editor: editor, scrollContainer: scrollContainer, selected: selected }, props)), selected && jsxRuntimeExports.jsx(Overlay, { style: memoOverlay })] })));
 });
 
 function useMutationObserver(ref, callback, options = {
@@ -6502,7 +9610,7 @@ const ListItem$1 = styled$1.div `
     font-family: Arial;
     font-size: 1.5em;
     line-height: 1;
-    top: 3px;
+    top: 1px;
     content: var(--content);
     left: calc(18px + 1em * var(--indent));
   }
@@ -6733,7 +9841,7 @@ const CheckList = React__namespace.memo((_a) => {
         } }, props, { children: [jsxRuntimeExports.jsx(CheckBoxOuter$1, Object.assign({ onClick: handleClickCheckBox }, { children: jsxRuntimeExports.jsx(CheckSquare, { size: "20px", checked: checked }) })), contents] })));
 });
 
-const Container$b = styled$1.blockquote `
+const Container$c = styled$1.blockquote `
   outline: 0;
   margin: 0 0 0 12px;
   padding: 2px 12px;
@@ -6743,7 +9851,7 @@ const Container$b = styled$1.blockquote `
 `;
 const Blockquote = React__namespace.memo((_a) => {
     var { blockId, contents, editor } = _a, props = __rest$1(_a, ["blockId", "contents", "editor"]);
-    return (jsxRuntimeExports.jsx(Container$b, Object.assign({ spellCheck: false }, props, { children: contents })));
+    return (jsxRuntimeExports.jsx(Container$c, Object.assign({ spellCheck: false }, props, { children: contents })));
 });
 
 const P$1 = styled$1.p `
@@ -8405,7 +11513,7 @@ const Wrapper$2 = styled$1.div `
   overflow: auto;
   border-radius: 0.3em;
 `;
-const Container$a = styled$1.div `
+const Container$b = styled$1.div `
   outline: 0;
   color: #f8f8f2;
   text-shadow: 0 1px rgba(0, 0, 0, 0.3);
@@ -8482,12 +11590,12 @@ const CodeBlock = React__namespace.memo((_a) => {
         var _a;
         return (_a = attributes === null || attributes === void 0 ? void 0 : attributes.language) !== null && _a !== void 0 ? _a : 'typescript';
     }, [attributes]);
-    return (jsxRuntimeExports.jsxs(Wrapper$2, Object.assign({ onMouseEnter: handleShowSelector, onMouseLeave: handleHideSelector }, { children: [jsxRuntimeExports.jsx(Container$a, Object.assign({ spellCheck: false }, props, { children: contents })), jsxRuntimeExports.jsx(LanguageSelectButton, Object.assign({ opacity: displayButtons ? 1 : 0, contentEditable: false, onClick: handleClickLanguageSelectButton }, { children: memoLanguage })), displayLanguageSelector && (jsxRuntimeExports.jsx(LanguageSelector, { children: CodeBlockLanguages.map((v, i) => {
+    return (jsxRuntimeExports.jsxs(Wrapper$2, Object.assign({ onMouseEnter: handleShowSelector, onMouseLeave: handleHideSelector }, { children: [jsxRuntimeExports.jsx(Container$b, Object.assign({ spellCheck: false }, props, { children: contents })), jsxRuntimeExports.jsx(LanguageSelectButton, Object.assign({ opacity: displayButtons ? 1 : 0, contentEditable: false, onClick: handleClickLanguageSelectButton }, { children: memoLanguage })), displayLanguageSelector && (jsxRuntimeExports.jsx(LanguageSelector, { children: CodeBlockLanguages.map((v, i) => {
                     return (jsxRuntimeExports.jsx("div", Object.assign({ className: "button", onClick: handleSelectLanguage(v) }, { children: v }), i));
                 }) }))] })));
 });
 
-const Container$9 = styled$1.div `
+const Container$a = styled$1.div `
   font-size: 1rem;
   outline: 0;
   margin: 0;
@@ -8526,7 +11634,7 @@ const Decision = React__namespace.memo((_a) => {
     React__namespace.useEffect(() => {
         handleChangeElement();
     }, []);
-    return (jsxRuntimeExports.jsxs(Container$9, Object.assign({ ref: headerRef, spellCheck: false, placeholder: showPlaceholder ? placeholder : '' }, props, { children: [jsxRuntimeExports.jsx(IconOuter, { children: jsxRuntimeExports.jsx(Decision$1, { size: "24px" }) }), contents] })));
+    return (jsxRuntimeExports.jsxs(Container$a, Object.assign({ ref: headerRef, spellCheck: false, placeholder: showPlaceholder ? placeholder : '' }, props, { children: [jsxRuntimeExports.jsx(IconOuter, { children: jsxRuntimeExports.jsx(Decision$1, { size: "24px" }) }), contents] })));
 });
 
 function getHtmlElement(el) {
@@ -8660,7 +11768,7 @@ const LinkPopup = React__namespace.memo((_a) => {
     return ReactDOM.createPortal(popupOpen && (jsxRuntimeExports.jsx("div", Object.assign({ ref: modalRef }, { children: popupMode === 'openEnterLink' && (jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: jsxRuntimeExports.jsx(EnterLinkContainer, Object.assign({ style: { top: (_b = popupPosition === null || popupPosition === void 0 ? void 0 : popupPosition.top) !== null && _b !== void 0 ? _b : 0, left: (_c = popupPosition === null || popupPosition === void 0 ? void 0 : popupPosition.left) !== null && _c !== void 0 ? _c : 0 } }, props, { value: linkUrl, placeholder: "\u30EA\u30F3\u30AF\u5148\u3092\u5165\u529B\u3057\u3066\u304F\u3060\u3055\u3044", onMouseDown: handleClick, onClick: handleClick, onChange: handleChange, onBlur: handleSave, onKeyDown: handleKeyDown })) })) }))), (_d = getHtmlElement(scrollContainer)) !== null && _d !== void 0 ? _d : document.body);
 });
 
-const Container$8 = styled$1.div `
+const Container$9 = styled$1.div `
   position: absolute;
   background-color: #18181b;
   border: 1px solid #ccc;
@@ -8765,7 +11873,7 @@ const PalettePopup = React__namespace.memo(({ editor, scrollContainer }) => {
             document.removeEventListener('click', handleClose, true);
         };
     }, [popupOpen]);
-    return ReactDOM.createPortal(popupOpen && (jsxRuntimeExports.jsxs(Container$8, Object.assign({ ref: modalRef, id: "palette-popup", style: { top: (_a = position === null || position === void 0 ? void 0 : position.top) !== null && _a !== void 0 ? _a : 0, left: (_b = position === null || position === void 0 ? void 0 : position.left) !== null && _b !== void 0 ? _b : 0 } }, { children: [jsxRuntimeExports.jsx(Color$1, { color: "#EF4444", onClick: handleFormatColor('#EF4444') }), jsxRuntimeExports.jsx(Color$1, { color: "#55B938", onClick: handleFormatColor('#55B938') }), jsxRuntimeExports.jsx(Color$1, { color: "#EAC645", onClick: handleFormatColor('#EAC645') }), jsxRuntimeExports.jsx(Color$1, { color: "#5296D5", onClick: handleFormatColor('#5296D5') })] }))), (_c = getHtmlElement(scrollContainer)) !== null && _c !== void 0 ? _c : document.body);
+    return ReactDOM.createPortal(popupOpen && (jsxRuntimeExports.jsxs(Container$9, Object.assign({ ref: modalRef, id: "palette-popup", style: { top: (_a = position === null || position === void 0 ? void 0 : position.top) !== null && _a !== void 0 ? _a : 0, left: (_b = position === null || position === void 0 ? void 0 : position.left) !== null && _b !== void 0 ? _b : 0 } }, { children: [jsxRuntimeExports.jsx(Color$1, { color: "#EF4444", onClick: handleFormatColor('#EF4444') }), jsxRuntimeExports.jsx(Color$1, { color: "#55B938", onClick: handleFormatColor('#55B938') }), jsxRuntimeExports.jsx(Color$1, { color: "#EAC645", onClick: handleFormatColor('#EAC645') }), jsxRuntimeExports.jsx(Color$1, { color: "#5296D5", onClick: handleFormatColor('#5296D5') })] }))), (_c = getHtmlElement(scrollContainer)) !== null && _c !== void 0 ? _c : document.body);
 });
 
 function buildFormatLongFn(args) {
@@ -14515,7 +17623,7 @@ function getMonthWeeks(month, options) {
 }
 
 /** Render the table with the calendar. */
-function Table(props) {
+function Table$1(props) {
     var _a, _b, _c;
     var _d = useDayPicker(), locale = _d.locale, classNames = _d.classNames, styles = _d.styles, hideHead = _d.hideHead, fixedWeeks = _d.fixedWeeks, components = _d.components, weekStartsOn = _d.weekStartsOn, firstWeekContainsDate = _d.firstWeekContainsDate, ISOWeek = _d.ISOWeek;
     var weeks = getMonthWeeks(props.displayMonth, {
@@ -14642,7 +17750,7 @@ function Month(props) {
     var CaptionComponent = (_b = components === null || components === void 0 ? void 0 : components.Caption) !== null && _b !== void 0 ? _b : Caption;
     return (React.createElement("div", { key: props.displayIndex, className: className.join(' '), style: style },
         React.createElement(CaptionComponent, { id: captionId, displayMonth: props.displayMonth }),
-        React.createElement(Table, { "aria-labelledby": captionId, displayMonth: props.displayMonth })));
+        React.createElement(Table$1, { "aria-labelledby": captionId, displayMonth: props.displayMonth })));
 }
 
 /** Render the container with the months according to the number of months to display. */
@@ -15039,7 +18147,7 @@ const AssigneePicker = React__namespace.memo((_a) => {
                 }) })] })), (_b = getHtmlElement(scrollContainer)) !== null && _b !== void 0 ? _b : document.body);
 });
 
-const Container$7 = styled$1.div `
+const Container$8 = styled$1.div `
   display: flex;
   position: relative;
   user-select: none;
@@ -15191,7 +18299,7 @@ const Tooltip = (_a) => {
             setDelayTimer(window.setTimeout(() => setDisplay(true), delay));
         }
     }, [_isDisplay, delay]);
-    return (jsxRuntimeExports.jsxs(Container$7, Object.assign({ ref: containerRef, onMouseOver: handleMouseOver, onMouseOut: handleMouseOut }, props, { children: [targetElement, isDisplay && (jsxRuntimeExports.jsx(TooltipContainer, Object.assign({ containerRect: containerRect, maxWidth: maxWidth, position: position, border: border, fontWeight: fontWeight, fontSize: fontSize, isDisplay: _isDisplay }, { children: children })))] })));
+    return (jsxRuntimeExports.jsxs(Container$8, Object.assign({ ref: containerRef, onMouseOver: handleMouseOver, onMouseOut: handleMouseOut }, props, { children: [targetElement, isDisplay && (jsxRuntimeExports.jsx(TooltipContainer, Object.assign({ containerRect: containerRect, maxWidth: maxWidth, position: position, border: border, fontWeight: fontWeight, fontSize: fontSize, isDisplay: _isDisplay }, { children: children })))] })));
 };
 
 function formatDate(date) {
@@ -15249,7 +18357,7 @@ const IconButton = styled$1.div `
   color: #a1a1aa;
   flex-direction: row-reverse;
 `;
-const Container$6 = styled$1.div `
+const Container$7 = styled$1.div `
   font-size: 1rem;
   outline: 0;
   margin: 0;
@@ -15408,7 +18516,7 @@ const Task = React__namespace.memo((_a) => {
         modalPosition.top = ((_l = scrollEl === null || scrollEl === void 0 ? void 0 : scrollEl.scrollTop) !== null && _l !== void 0 ? _l : 0) + ((_m = blockRect === null || blockRect === void 0 ? void 0 : blockRect.top) !== null && _m !== void 0 ? _m : 0) - 60;
         modalPosition.left = ((_o = editorRect === null || editorRect === void 0 ? void 0 : editorRect.left) !== null && _o !== void 0 ? _o : 0) + ((_p = editorRect === null || editorRect === void 0 ? void 0 : editorRect.width) !== null && _p !== void 0 ? _p : 0) - 400;
     }
-    return (jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [jsxRuntimeExports.jsxs(Wrapper, Object.assign({ onMouseOver: handleMouseOver, onMouseOut: handleMouseOut, style: isHover ? { backgroundColor: '#f7f9fa' } : {} }, { children: [jsxRuntimeExports.jsxs(Container$6, Object.assign({ ref: headerRef, spellCheck: false, placeholder: showPlaceholder ? placeholder : '', style: {
+    return (jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [jsxRuntimeExports.jsxs(Wrapper, Object.assign({ onMouseOver: handleMouseOver, onMouseOut: handleMouseOut, style: isHover ? { backgroundColor: '#f7f9fa' } : {} }, { children: [jsxRuntimeExports.jsxs(Container$7, Object.assign({ ref: headerRef, spellCheck: false, placeholder: showPlaceholder ? placeholder : '', style: {
                             textDecoration: checked ? 'line-through' : 'none',
                         } }, props, { children: [jsxRuntimeExports.jsx(CheckBoxOuter, Object.assign({ onClick: handleClickCheckBox }, { children: jsxRuntimeExports.jsx(CheckSquare, { size: "24px", checked: checked }) })), contents] })), jsxRuntimeExports.jsxs(Buttons, { children: [((_q = attributes === null || attributes === void 0 ? void 0 : attributes.assignees) !== null && _q !== void 0 ? _q : []).length > 0 ? (jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsxs(IconButton, Object.assign({ onClick: handleClickAssigneePicker }, { children: [attributes.assignees.slice(0, 2).map((assignee, i) => {
                                             return (jsxRuntimeExports.jsx(MemberIcon, Object.assign({ style: { right: `${12 * i}px` } }, { children: assignee.imageUrl ? (jsxRuntimeExports.jsx("img", { draggable: "false", src: assignee.imageUrl })) : (jsxRuntimeExports.jsx(Text$4, { children: assignee.name.slice(0, 1) })) }), assignee.id));
@@ -16164,7 +19272,7 @@ var __assign = (undefined && undefined.__assign) || function () {
     return __assign.apply(this, arguments);
 };
 
-const Container$5 = styled$1.div `
+const Container$6 = styled$1.div `
   outline: none;
   display: flex;
   margin: 0;
@@ -16295,7 +19403,7 @@ const Image$1 = React__namespace.memo((_a) => {
             window.removeEventListener('mouseup', handleMouseUp, true);
         };
     }, [dragParams]);
-    return (jsxRuntimeExports.jsx(Container$5, Object.assign({}, props, { contentEditable: false, draggable: "false" }, { children: jsxRuntimeExports.jsxs(Inner$2, Object.assign({ onMouseEnter: handleMouseEnter, onMouseLeave: handleMouseLeave }, { children: [jsxRuntimeExports.jsx("img", { src: thumbnail, onClick: handleClick, ref: imageRef, width: imageWidth, draggable: "false" }), isUploading ? (jsxRuntimeExports.jsx(Loading$1, { children: jsxRuntimeExports.jsx(MutatingDots, { height: "100", width: "100", color: "#4fa94d", secondaryColor: "#4fa94d", radius: "12.5", ariaLabel: "mutating-dots-loading", visible: true }) })) : (jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [jsxRuntimeExports.jsx(LeftImageResizer, Object.assign({ onMouseDown: handleMouseDown('left') }, { children: jsxRuntimeExports.jsx(ResizeHandler, { opacity: displayResizer ? 1 : 0 }) })), jsxRuntimeExports.jsx(RightImageResizer, Object.assign({ onMouseDown: handleMouseDown('right') }, { children: jsxRuntimeExports.jsx(ResizeHandler, { opacity: displayResizer ? 1 : 0 }) }))] }))] })) })));
+    return (jsxRuntimeExports.jsx(Container$6, Object.assign({}, props, { contentEditable: false, draggable: "false" }, { children: jsxRuntimeExports.jsxs(Inner$2, Object.assign({ onMouseEnter: handleMouseEnter, onMouseLeave: handleMouseLeave }, { children: [jsxRuntimeExports.jsx("img", { src: thumbnail, onClick: handleClick, ref: imageRef, width: imageWidth, draggable: "false" }), isUploading ? (jsxRuntimeExports.jsx(Loading$1, { children: jsxRuntimeExports.jsx(MutatingDots, { height: "100", width: "100", color: "#4fa94d", secondaryColor: "#4fa94d", radius: "12.5", ariaLabel: "mutating-dots-loading", visible: true }) })) : (jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [jsxRuntimeExports.jsx(LeftImageResizer, Object.assign({ onMouseDown: handleMouseDown('left') }, { children: jsxRuntimeExports.jsx(ResizeHandler, { opacity: displayResizer ? 1 : 0 }) })), jsxRuntimeExports.jsx(RightImageResizer, Object.assign({ onMouseDown: handleMouseDown('right') }, { children: jsxRuntimeExports.jsx(ResizeHandler, { opacity: displayResizer ? 1 : 0 }) }))] }))] })) })));
 });
 
 const BYTE_UNITS = [
@@ -16421,7 +19529,7 @@ function prettyBytes(number, options) {
 	return prefix + numberString + separator + unit;
 }
 
-const Container$4 = styled$1.div `
+const Container$5 = styled$1.div `
   outline: none;
   display: flex;
   align-items: center;
@@ -16478,2362 +19586,70 @@ const File = React__namespace.memo((_a) => {
         var _a;
         editor.getModule('uploader').download((_a = attributes === null || attributes === void 0 ? void 0 : attributes.files) !== null && _a !== void 0 ? _a : []);
     }, [attributes]);
-    return (jsxRuntimeExports.jsxs(Container$4, Object.assign({ ref: imageRef }, props, { contentEditable: false }, { children: [jsxRuntimeExports.jsx(IconContainer, { children: jsxRuntimeExports.jsx("svg", Object.assign({ width: "16", height: "16", viewBox: "0 0 24 24", fill: "none", xmlns: "http://www.w3.org/2000/svg" }, { children: jsxRuntimeExports.jsx("path", { d: "M18.5 16H7C4.79 16 3 14.21 3 12C3 9.79 4.79 8 7 8H19.5C20.88 8 22 9.12 22 10.5C22 11.88 20.88 13 19.5 13H9C8.45 13 8 12.55 8 12C8 11.45 8.45 11 9 11H18.5V9.5H9C7.62 9.5 6.5 10.62 6.5 12C6.5 13.38 7.62 14.5 9 14.5H19.5C21.71 14.5 23.5 12.71 23.5 10.5C23.5 8.29 21.71 6.5 19.5 6.5H7C3.96 6.5 1.5 8.96 1.5 12C1.5 15.04 3.96 17.5 7 17.5H18.5V16Z", fill: "#18181B" }) })) }), jsxRuntimeExports.jsx(Inner$1, { children: jsxRuntimeExports.jsx(FileName, { children: attributes === null || attributes === void 0 ? void 0 : attributes.fileName }) }), jsxRuntimeExports.jsxs(Size, { children: [prettyBytes(attributes === null || attributes === void 0 ? void 0 : attributes.size), isUploading && (jsxRuntimeExports.jsx(Loading, { children: jsxRuntimeExports.jsx(RotatingLines, { strokeColor: "grey", strokeWidth: "5", animationDuration: "0.75", width: "18", visible: true }) }))] }), jsxRuntimeExports.jsx(IconContainer, { children: jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$2, Object.assign({ onClick: handleDownload }, { children: jsxRuntimeExports.jsx(Download, {}) })), maxWidth: 200, position: 'bottom' }, { children: "\u30D5\u30A1\u30A4\u30EB\u3092\u30C0\u30A6\u30F3\u30ED\u30FC\u30C9\u3059\u308B" })) })] })));
+    return (jsxRuntimeExports.jsxs(Container$5, Object.assign({ ref: imageRef }, props, { contentEditable: false }, { children: [jsxRuntimeExports.jsx(IconContainer, { children: jsxRuntimeExports.jsx("svg", Object.assign({ width: "16", height: "16", viewBox: "0 0 24 24", fill: "none", xmlns: "http://www.w3.org/2000/svg" }, { children: jsxRuntimeExports.jsx("path", { d: "M18.5 16H7C4.79 16 3 14.21 3 12C3 9.79 4.79 8 7 8H19.5C20.88 8 22 9.12 22 10.5C22 11.88 20.88 13 19.5 13H9C8.45 13 8 12.55 8 12C8 11.45 8.45 11 9 11H18.5V9.5H9C7.62 9.5 6.5 10.62 6.5 12C6.5 13.38 7.62 14.5 9 14.5H19.5C21.71 14.5 23.5 12.71 23.5 10.5C23.5 8.29 21.71 6.5 19.5 6.5H7C3.96 6.5 1.5 8.96 1.5 12C1.5 15.04 3.96 17.5 7 17.5H18.5V16Z", fill: "#18181B" }) })) }), jsxRuntimeExports.jsx(Inner$1, { children: jsxRuntimeExports.jsx(FileName, { children: attributes === null || attributes === void 0 ? void 0 : attributes.fileName }) }), jsxRuntimeExports.jsxs(Size, { children: [prettyBytes(attributes === null || attributes === void 0 ? void 0 : attributes.size), isUploading && (jsxRuntimeExports.jsx(Loading, { children: jsxRuntimeExports.jsx(RotatingLines, { strokeColor: "grey", strokeWidth: "5", animationDuration: "0.75", width: "18", visible: true }) }))] }), jsxRuntimeExports.jsx(IconContainer, { children: jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$2, Object.assign({ onClick: handleDownload }, { children: jsxRuntimeExports.jsx(Download, {}) })), maxWidth: 200, position: 'bottom' }, { children: "\u30D5\u30A1\u30A4\u30EB\u3092\u30C0\u30A6\u30F3\u30ED\u30FC\u30C9\u3059\u308B" })) })] })));
 });
 
-/*! Copyright Twitter Inc. and other contributors. Licensed under MIT */
-var twemoji=function(){var twemoji={base:"https://twemoji.maxcdn.com/v/14.0.2/",ext:".png",size:"72x72",className:"emoji",convert:{fromCodePoint:fromCodePoint,toCodePoint:toCodePoint},onerror:function onerror(){if(this.parentNode){this.parentNode.replaceChild(createText(this.alt,false),this);}},parse:parse,replace:replace,test:test},escaper={"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"},re=/(?:\ud83d\udc68\ud83c\udffb\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc68\ud83c\udffc\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc68\ud83c\udffd\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc68\ud83c\udffe\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc68\ud83c\udfff\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffb\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffb\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc69\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffc\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffc\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc69\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffd\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffd\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc69\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffe\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffe\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc69\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udfff\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udfff\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc69\ud83c[\udffb-\udfff]|\ud83e\uddd1\ud83c\udffb\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83e\uddd1\ud83c[\udffc-\udfff]|\ud83e\uddd1\ud83c\udffc\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83e\uddd1\ud83c[\udffb\udffd-\udfff]|\ud83e\uddd1\ud83c\udffd\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83e\uddd1\ud83c[\udffb\udffc\udffe\udfff]|\ud83e\uddd1\ud83c\udffe\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83e\uddd1\ud83c[\udffb-\udffd\udfff]|\ud83e\uddd1\ud83c\udfff\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83e\uddd1\ud83c[\udffb-\udffe]|\ud83d\udc68\ud83c\udffb\u200d\u2764\ufe0f\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc68\ud83c\udffb\u200d\ud83e\udd1d\u200d\ud83d\udc68\ud83c[\udffc-\udfff]|\ud83d\udc68\ud83c\udffc\u200d\u2764\ufe0f\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc68\ud83c\udffc\u200d\ud83e\udd1d\u200d\ud83d\udc68\ud83c[\udffb\udffd-\udfff]|\ud83d\udc68\ud83c\udffd\u200d\u2764\ufe0f\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc68\ud83c\udffd\u200d\ud83e\udd1d\u200d\ud83d\udc68\ud83c[\udffb\udffc\udffe\udfff]|\ud83d\udc68\ud83c\udffe\u200d\u2764\ufe0f\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc68\ud83c\udffe\u200d\ud83e\udd1d\u200d\ud83d\udc68\ud83c[\udffb-\udffd\udfff]|\ud83d\udc68\ud83c\udfff\u200d\u2764\ufe0f\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc68\ud83c\udfff\u200d\ud83e\udd1d\u200d\ud83d\udc68\ud83c[\udffb-\udffe]|\ud83d\udc69\ud83c\udffb\u200d\u2764\ufe0f\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffb\u200d\u2764\ufe0f\u200d\ud83d\udc69\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffb\u200d\ud83e\udd1d\u200d\ud83d\udc68\ud83c[\udffc-\udfff]|\ud83d\udc69\ud83c\udffb\u200d\ud83e\udd1d\u200d\ud83d\udc69\ud83c[\udffc-\udfff]|\ud83d\udc69\ud83c\udffc\u200d\u2764\ufe0f\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffc\u200d\u2764\ufe0f\u200d\ud83d\udc69\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffc\u200d\ud83e\udd1d\u200d\ud83d\udc68\ud83c[\udffb\udffd-\udfff]|\ud83d\udc69\ud83c\udffc\u200d\ud83e\udd1d\u200d\ud83d\udc69\ud83c[\udffb\udffd-\udfff]|\ud83d\udc69\ud83c\udffd\u200d\u2764\ufe0f\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffd\u200d\u2764\ufe0f\u200d\ud83d\udc69\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffd\u200d\ud83e\udd1d\u200d\ud83d\udc68\ud83c[\udffb\udffc\udffe\udfff]|\ud83d\udc69\ud83c\udffd\u200d\ud83e\udd1d\u200d\ud83d\udc69\ud83c[\udffb\udffc\udffe\udfff]|\ud83d\udc69\ud83c\udffe\u200d\u2764\ufe0f\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffe\u200d\u2764\ufe0f\u200d\ud83d\udc69\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffe\u200d\ud83e\udd1d\u200d\ud83d\udc68\ud83c[\udffb-\udffd\udfff]|\ud83d\udc69\ud83c\udffe\u200d\ud83e\udd1d\u200d\ud83d\udc69\ud83c[\udffb-\udffd\udfff]|\ud83d\udc69\ud83c\udfff\u200d\u2764\ufe0f\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udfff\u200d\u2764\ufe0f\u200d\ud83d\udc69\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udfff\u200d\ud83e\udd1d\u200d\ud83d\udc68\ud83c[\udffb-\udffe]|\ud83d\udc69\ud83c\udfff\u200d\ud83e\udd1d\u200d\ud83d\udc69\ud83c[\udffb-\udffe]|\ud83e\uddd1\ud83c\udffb\u200d\u2764\ufe0f\u200d\ud83e\uddd1\ud83c[\udffc-\udfff]|\ud83e\uddd1\ud83c\udffb\u200d\ud83e\udd1d\u200d\ud83e\uddd1\ud83c[\udffb-\udfff]|\ud83e\uddd1\ud83c\udffc\u200d\u2764\ufe0f\u200d\ud83e\uddd1\ud83c[\udffb\udffd-\udfff]|\ud83e\uddd1\ud83c\udffc\u200d\ud83e\udd1d\u200d\ud83e\uddd1\ud83c[\udffb-\udfff]|\ud83e\uddd1\ud83c\udffd\u200d\u2764\ufe0f\u200d\ud83e\uddd1\ud83c[\udffb\udffc\udffe\udfff]|\ud83e\uddd1\ud83c\udffd\u200d\ud83e\udd1d\u200d\ud83e\uddd1\ud83c[\udffb-\udfff]|\ud83e\uddd1\ud83c\udffe\u200d\u2764\ufe0f\u200d\ud83e\uddd1\ud83c[\udffb-\udffd\udfff]|\ud83e\uddd1\ud83c\udffe\u200d\ud83e\udd1d\u200d\ud83e\uddd1\ud83c[\udffb-\udfff]|\ud83e\uddd1\ud83c\udfff\u200d\u2764\ufe0f\u200d\ud83e\uddd1\ud83c[\udffb-\udffe]|\ud83e\uddd1\ud83c\udfff\u200d\ud83e\udd1d\u200d\ud83e\uddd1\ud83c[\udffb-\udfff]|\ud83d\udc68\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68|\ud83d\udc69\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d[\udc68\udc69]|\ud83e\udef1\ud83c\udffb\u200d\ud83e\udef2\ud83c[\udffc-\udfff]|\ud83e\udef1\ud83c\udffc\u200d\ud83e\udef2\ud83c[\udffb\udffd-\udfff]|\ud83e\udef1\ud83c\udffd\u200d\ud83e\udef2\ud83c[\udffb\udffc\udffe\udfff]|\ud83e\udef1\ud83c\udffe\u200d\ud83e\udef2\ud83c[\udffb-\udffd\udfff]|\ud83e\udef1\ud83c\udfff\u200d\ud83e\udef2\ud83c[\udffb-\udffe]|\ud83d\udc68\u200d\u2764\ufe0f\u200d\ud83d\udc68|\ud83d\udc69\u200d\u2764\ufe0f\u200d\ud83d[\udc68\udc69]|\ud83e\uddd1\u200d\ud83e\udd1d\u200d\ud83e\uddd1|\ud83d\udc6b\ud83c[\udffb-\udfff]|\ud83d\udc6c\ud83c[\udffb-\udfff]|\ud83d\udc6d\ud83c[\udffb-\udfff]|\ud83d\udc8f\ud83c[\udffb-\udfff]|\ud83d\udc91\ud83c[\udffb-\udfff]|\ud83e\udd1d\ud83c[\udffb-\udfff]|\ud83d[\udc6b-\udc6d\udc8f\udc91]|\ud83e\udd1d)|(?:\ud83d[\udc68\udc69]|\ud83e\uddd1)(?:\ud83c[\udffb-\udfff])?\u200d(?:\u2695\ufe0f|\u2696\ufe0f|\u2708\ufe0f|\ud83c[\udf3e\udf73\udf7c\udf84\udf93\udfa4\udfa8\udfeb\udfed]|\ud83d[\udcbb\udcbc\udd27\udd2c\ude80\ude92]|\ud83e[\uddaf-\uddb3\uddbc\uddbd])|(?:\ud83c[\udfcb\udfcc]|\ud83d[\udd74\udd75]|\u26f9)((?:\ud83c[\udffb-\udfff]|\ufe0f)\u200d[\u2640\u2642]\ufe0f)|(?:\ud83c[\udfc3\udfc4\udfca]|\ud83d[\udc6e\udc70\udc71\udc73\udc77\udc81\udc82\udc86\udc87\ude45-\ude47\ude4b\ude4d\ude4e\udea3\udeb4-\udeb6]|\ud83e[\udd26\udd35\udd37-\udd39\udd3d\udd3e\uddb8\uddb9\uddcd-\uddcf\uddd4\uddd6-\udddd])(?:\ud83c[\udffb-\udfff])?\u200d[\u2640\u2642]\ufe0f|(?:\ud83d\udc68\u200d\ud83d\udc68\u200d\ud83d\udc66\u200d\ud83d\udc66|\ud83d\udc68\u200d\ud83d\udc68\u200d\ud83d\udc67\u200d\ud83d[\udc66\udc67]|\ud83d\udc68\u200d\ud83d\udc69\u200d\ud83d\udc66\u200d\ud83d\udc66|\ud83d\udc68\u200d\ud83d\udc69\u200d\ud83d\udc67\u200d\ud83d[\udc66\udc67]|\ud83d\udc69\u200d\ud83d\udc69\u200d\ud83d\udc66\u200d\ud83d\udc66|\ud83d\udc69\u200d\ud83d\udc69\u200d\ud83d\udc67\u200d\ud83d[\udc66\udc67]|\ud83d\udc68\u200d\ud83d\udc66\u200d\ud83d\udc66|\ud83d\udc68\u200d\ud83d\udc67\u200d\ud83d[\udc66\udc67]|\ud83d\udc68\u200d\ud83d\udc68\u200d\ud83d[\udc66\udc67]|\ud83d\udc68\u200d\ud83d\udc69\u200d\ud83d[\udc66\udc67]|\ud83d\udc69\u200d\ud83d\udc66\u200d\ud83d\udc66|\ud83d\udc69\u200d\ud83d\udc67\u200d\ud83d[\udc66\udc67]|\ud83d\udc69\u200d\ud83d\udc69\u200d\ud83d[\udc66\udc67]|\ud83c\udff3\ufe0f\u200d\u26a7\ufe0f|\ud83c\udff3\ufe0f\u200d\ud83c\udf08|\ud83d\ude36\u200d\ud83c\udf2b\ufe0f|\u2764\ufe0f\u200d\ud83d\udd25|\u2764\ufe0f\u200d\ud83e\ude79|\ud83c\udff4\u200d\u2620\ufe0f|\ud83d\udc15\u200d\ud83e\uddba|\ud83d\udc3b\u200d\u2744\ufe0f|\ud83d\udc41\u200d\ud83d\udde8|\ud83d\udc68\u200d\ud83d[\udc66\udc67]|\ud83d\udc69\u200d\ud83d[\udc66\udc67]|\ud83d\udc6f\u200d\u2640\ufe0f|\ud83d\udc6f\u200d\u2642\ufe0f|\ud83d\ude2e\u200d\ud83d\udca8|\ud83d\ude35\u200d\ud83d\udcab|\ud83e\udd3c\u200d\u2640\ufe0f|\ud83e\udd3c\u200d\u2642\ufe0f|\ud83e\uddde\u200d\u2640\ufe0f|\ud83e\uddde\u200d\u2642\ufe0f|\ud83e\udddf\u200d\u2640\ufe0f|\ud83e\udddf\u200d\u2642\ufe0f|\ud83d\udc08\u200d\u2b1b)|[#*0-9]\ufe0f?\u20e3|(?:[©®\u2122\u265f]\ufe0f)|(?:\ud83c[\udc04\udd70\udd71\udd7e\udd7f\ude02\ude1a\ude2f\ude37\udf21\udf24-\udf2c\udf36\udf7d\udf96\udf97\udf99-\udf9b\udf9e\udf9f\udfcd\udfce\udfd4-\udfdf\udff3\udff5\udff7]|\ud83d[\udc3f\udc41\udcfd\udd49\udd4a\udd6f\udd70\udd73\udd76-\udd79\udd87\udd8a-\udd8d\udda5\udda8\uddb1\uddb2\uddbc\uddc2-\uddc4\uddd1-\uddd3\udddc-\uddde\udde1\udde3\udde8\uddef\uddf3\uddfa\udecb\udecd-\udecf\udee0-\udee5\udee9\udef0\udef3]|[\u203c\u2049\u2139\u2194-\u2199\u21a9\u21aa\u231a\u231b\u2328\u23cf\u23ed-\u23ef\u23f1\u23f2\u23f8-\u23fa\u24c2\u25aa\u25ab\u25b6\u25c0\u25fb-\u25fe\u2600-\u2604\u260e\u2611\u2614\u2615\u2618\u2620\u2622\u2623\u2626\u262a\u262e\u262f\u2638-\u263a\u2640\u2642\u2648-\u2653\u2660\u2663\u2665\u2666\u2668\u267b\u267f\u2692-\u2697\u2699\u269b\u269c\u26a0\u26a1\u26a7\u26aa\u26ab\u26b0\u26b1\u26bd\u26be\u26c4\u26c5\u26c8\u26cf\u26d1\u26d3\u26d4\u26e9\u26ea\u26f0-\u26f5\u26f8\u26fa\u26fd\u2702\u2708\u2709\u270f\u2712\u2714\u2716\u271d\u2721\u2733\u2734\u2744\u2747\u2757\u2763\u2764\u27a1\u2934\u2935\u2b05-\u2b07\u2b1b\u2b1c\u2b50\u2b55\u3030\u303d\u3297\u3299])(?:\ufe0f|(?!\ufe0e))|(?:(?:\ud83c[\udfcb\udfcc]|\ud83d[\udd74\udd75\udd90]|[\u261d\u26f7\u26f9\u270c\u270d])(?:\ufe0f|(?!\ufe0e))|(?:\ud83c[\udf85\udfc2-\udfc4\udfc7\udfca]|\ud83d[\udc42\udc43\udc46-\udc50\udc66-\udc69\udc6e\udc70-\udc78\udc7c\udc81-\udc83\udc85-\udc87\udcaa\udd7a\udd95\udd96\ude45-\ude47\ude4b-\ude4f\udea3\udeb4-\udeb6\udec0\udecc]|\ud83e[\udd0c\udd0f\udd18-\udd1c\udd1e\udd1f\udd26\udd30-\udd39\udd3d\udd3e\udd77\uddb5\uddb6\uddb8\uddb9\uddbb\uddcd-\uddcf\uddd1-\udddd\udec3-\udec5\udef0-\udef6]|[\u270a\u270b]))(?:\ud83c[\udffb-\udfff])?|(?:\ud83c\udff4\udb40\udc67\udb40\udc62\udb40\udc65\udb40\udc6e\udb40\udc67\udb40\udc7f|\ud83c\udff4\udb40\udc67\udb40\udc62\udb40\udc73\udb40\udc63\udb40\udc74\udb40\udc7f|\ud83c\udff4\udb40\udc67\udb40\udc62\udb40\udc77\udb40\udc6c\udb40\udc73\udb40\udc7f|\ud83c\udde6\ud83c[\udde8-\uddec\uddee\uddf1\uddf2\uddf4\uddf6-\uddfa\uddfc\uddfd\uddff]|\ud83c\udde7\ud83c[\udde6\udde7\udde9-\uddef\uddf1-\uddf4\uddf6-\uddf9\uddfb\uddfc\uddfe\uddff]|\ud83c\udde8\ud83c[\udde6\udde8\udde9\uddeb-\uddee\uddf0-\uddf5\uddf7\uddfa-\uddff]|\ud83c\udde9\ud83c[\uddea\uddec\uddef\uddf0\uddf2\uddf4\uddff]|\ud83c\uddea\ud83c[\udde6\udde8\uddea\uddec\udded\uddf7-\uddfa]|\ud83c\uddeb\ud83c[\uddee-\uddf0\uddf2\uddf4\uddf7]|\ud83c\uddec\ud83c[\udde6\udde7\udde9-\uddee\uddf1-\uddf3\uddf5-\uddfa\uddfc\uddfe]|\ud83c\udded\ud83c[\uddf0\uddf2\uddf3\uddf7\uddf9\uddfa]|\ud83c\uddee\ud83c[\udde8-\uddea\uddf1-\uddf4\uddf6-\uddf9]|\ud83c\uddef\ud83c[\uddea\uddf2\uddf4\uddf5]|\ud83c\uddf0\ud83c[\uddea\uddec-\uddee\uddf2\uddf3\uddf5\uddf7\uddfc\uddfe\uddff]|\ud83c\uddf1\ud83c[\udde6-\udde8\uddee\uddf0\uddf7-\uddfb\uddfe]|\ud83c\uddf2\ud83c[\udde6\udde8-\udded\uddf0-\uddff]|\ud83c\uddf3\ud83c[\udde6\udde8\uddea-\uddec\uddee\uddf1\uddf4\uddf5\uddf7\uddfa\uddff]|\ud83c\uddf4\ud83c\uddf2|\ud83c\uddf5\ud83c[\udde6\uddea-\udded\uddf0-\uddf3\uddf7-\uddf9\uddfc\uddfe]|\ud83c\uddf6\ud83c\udde6|\ud83c\uddf7\ud83c[\uddea\uddf4\uddf8\uddfa\uddfc]|\ud83c\uddf8\ud83c[\udde6-\uddea\uddec-\uddf4\uddf7-\uddf9\uddfb\uddfd-\uddff]|\ud83c\uddf9\ud83c[\udde6\udde8\udde9\uddeb-\udded\uddef-\uddf4\uddf7\uddf9\uddfb\uddfc\uddff]|\ud83c\uddfa\ud83c[\udde6\uddec\uddf2\uddf3\uddf8\uddfe\uddff]|\ud83c\uddfb\ud83c[\udde6\udde8\uddea\uddec\uddee\uddf3\uddfa]|\ud83c\uddfc\ud83c[\uddeb\uddf8]|\ud83c\uddfd\ud83c\uddf0|\ud83c\uddfe\ud83c[\uddea\uddf9]|\ud83c\uddff\ud83c[\udde6\uddf2\uddfc]|\ud83c[\udccf\udd8e\udd91-\udd9a\udde6-\uddff\ude01\ude32-\ude36\ude38-\ude3a\ude50\ude51\udf00-\udf20\udf2d-\udf35\udf37-\udf7c\udf7e-\udf84\udf86-\udf93\udfa0-\udfc1\udfc5\udfc6\udfc8\udfc9\udfcf-\udfd3\udfe0-\udff0\udff4\udff8-\udfff]|\ud83d[\udc00-\udc3e\udc40\udc44\udc45\udc51-\udc65\udc6a\udc6f\udc79-\udc7b\udc7d-\udc80\udc84\udc88-\udc8e\udc90\udc92-\udca9\udcab-\udcfc\udcff-\udd3d\udd4b-\udd4e\udd50-\udd67\udda4\uddfb-\ude44\ude48-\ude4a\ude80-\udea2\udea4-\udeb3\udeb7-\udebf\udec1-\udec5\uded0-\uded2\uded5-\uded7\udedd-\udedf\udeeb\udeec\udef4-\udefc\udfe0-\udfeb\udff0]|\ud83e[\udd0d\udd0e\udd10-\udd17\udd20-\udd25\udd27-\udd2f\udd3a\udd3c\udd3f-\udd45\udd47-\udd76\udd78-\uddb4\uddb7\uddba\uddbc-\uddcc\uddd0\uddde-\uddff\ude70-\ude74\ude78-\ude7c\ude80-\ude86\ude90-\udeac\udeb0-\udeba\udec0-\udec2\uded0-\uded9\udee0-\udee7]|[\u23e9-\u23ec\u23f0\u23f3\u267e\u26ce\u2705\u2728\u274c\u274e\u2753-\u2755\u2795-\u2797\u27b0\u27bf\ue50a])|\ufe0f/g,UFE0Fg=/\uFE0F/g,U200D=String.fromCharCode(8205),rescaper=/[&<>'"]/g,shouldntBeParsed=/^(?:iframe|noframes|noscript|script|select|style|textarea)$/,fromCharCode=String.fromCharCode;return twemoji;function createText(text,clean){return document.createTextNode(clean?text.replace(UFE0Fg,""):text)}function escapeHTML(s){return s.replace(rescaper,replacer)}function defaultImageSrcGenerator(icon,options){return "".concat(options.base,options.size,"/",icon,options.ext)}function grabAllTextNodes(node,allText){var childNodes=node.childNodes,length=childNodes.length,subnode,nodeType;while(length--){subnode=childNodes[length];nodeType=subnode.nodeType;if(nodeType===3){allText.push(subnode);}else if(nodeType===1&&!("ownerSVGElement"in subnode)&&!shouldntBeParsed.test(subnode.nodeName.toLowerCase())){grabAllTextNodes(subnode,allText);}}return allText}function grabTheRightIcon(rawText){return toCodePoint(rawText.indexOf(U200D)<0?rawText.replace(UFE0Fg,""):rawText)}function parseNode(node,options){var allText=grabAllTextNodes(node,[]),length=allText.length,attrib,attrname,modified,fragment,subnode,text,match,i,index,img,rawText,iconId,src;while(length--){modified=false;fragment=document.createDocumentFragment();subnode=allText[length];text=subnode.nodeValue;i=0;while(match=re.exec(text)){index=match.index;if(index!==i){fragment.appendChild(createText(text.slice(i,index),true));}rawText=match[0];iconId=grabTheRightIcon(rawText);i=index+rawText.length;src=options.callback(iconId,options);if(iconId&&src){img=new Image;img.onerror=options.onerror;img.setAttribute("draggable","false");attrib=options.attributes(rawText,iconId);for(attrname in attrib){if(attrib.hasOwnProperty(attrname)&&attrname.indexOf("on")!==0&&!img.hasAttribute(attrname)){img.setAttribute(attrname,attrib[attrname]);}}img.className=options.className;img.alt=rawText;img.src=src;modified=true;fragment.appendChild(img);}if(!img)fragment.appendChild(createText(rawText,false));img=null;}if(modified){if(i<text.length){fragment.appendChild(createText(text.slice(i),true));}subnode.parentNode.replaceChild(fragment,subnode);}}return node}function parseString(str,options){return replace(str,function(rawText){var ret=rawText,iconId=grabTheRightIcon(rawText),src=options.callback(iconId,options),attrib,attrname;if(iconId&&src){ret="<img ".concat('class="',options.className,'" ','draggable="false" ','alt="',rawText,'"',' src="',src,'"');attrib=options.attributes(rawText,iconId);for(attrname in attrib){if(attrib.hasOwnProperty(attrname)&&attrname.indexOf("on")!==0&&ret.indexOf(" "+attrname+"=")===-1){ret=ret.concat(" ",attrname,'="',escapeHTML(attrib[attrname]),'"');}}ret=ret.concat("/>");}return ret})}function replacer(m){return escaper[m]}function returnNull(){return null}function toSizeSquaredAsset(value){return typeof value==="number"?value+"x"+value:value}function fromCodePoint(codepoint){var code=typeof codepoint==="string"?parseInt(codepoint,16):codepoint;if(code<65536){return fromCharCode(code)}code-=65536;return fromCharCode(55296+(code>>10),56320+(code&1023))}function parse(what,how){if(!how||typeof how==="function"){how={callback:how};}return (typeof what==="string"?parseString:parseNode)(what,{callback:how.callback||defaultImageSrcGenerator,attributes:typeof how.attributes==="function"?how.attributes:returnNull,base:typeof how.base==="string"?how.base:twemoji.base,ext:how.ext||twemoji.ext,size:how.folder||toSizeSquaredAsset(how.size||twemoji.size),className:how.className||twemoji.className,onerror:how.onerror||twemoji.onerror})}function replace(text,callback){return String(text).replace(re,callback)}function test(text){re.lastIndex=0;var result=re.test(text);re.lastIndex=0;return result}function toCodePoint(unicodeSurrogates,sep){var r=[],c=0,p=0,i=0;while(i<unicodeSurrogates.length){c=unicodeSurrogates.charCodeAt(i++);if(p){r.push((65536+(p-55296<<10)+(c-56320)).toString(16));p=0;}else if(55296<=c&&c<=56319){p=c;}else {r.push(c.toString(16));}}return r.join(sep||"-")}}();
-
-const Text$3 = styled$1.span `
-  &::selection {
-    background: rgba(46, 170, 220, 0.2);
-  }
-  img.emoji {
-    height: 1em;
-    width: 1em;
-    margin: 0 0.05em 0 0.1em;
-    vertical-align: -0.1em;
-    &::selection {
-      background: rgba(46, 170, 220, 0.2);
-    }
-  }
-  ${({ attributes, formats }) => {
-    return Object.keys(attributes).map((key) => {
-        const styleFormat = `inline/style/${key}`;
-        if (attributes[key] && formats[styleFormat]) {
-            return formats[styleFormat](attributes[key]);
-        }
-        return;
-    });
-}}
-`;
-const Link$1 = styled$1.a `
-  &::selection {
-    background: rgba(46, 170, 220, 0.2);
-  }
-  img.emoji {
-    height: 1em;
-    width: 1em;
-    margin: 0 0.05em 0 0.1em;
-    vertical-align: -0.1em;
-    &::selection {
-      background: rgba(46, 170, 220, 0.2);
-    }
-  }
-  ${({ attributes, formats }) => {
-    return Object.keys(attributes).map((key) => {
-        const styleFormat = `inline/style/${key}`;
-        if (attributes[key] && formats[styleFormat]) {
-            return formats[styleFormat](attributes[key]);
-        }
-        return;
-    });
-}}
-`;
-const InlineText = (_a) => {
-    var { inline, formats, editor, scrollContainer } = _a, props = __rest$1(_a, ["inline", "formats", "editor", "scrollContainer"]);
-    const memoInnerHTML = React__namespace.useMemo(() => {
-        const text = inline.text.replaceAll('\n', '<br>');
-        return {
-            __html: twemoji.parse(text, {
-                folder: 'svg',
-                ext: '.svg',
-                base: 'https://cdn.jsdelivr.net/gh/twitter/twemoji@latest/assets/',
-            }),
-        };
-    }, [inline]);
-    const handleClickLink = React__namespace.useCallback(() => {
-        window.open(inline.attributes['link'], '_blank', 'noreferrer');
-    }, [inline]);
-    return (jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: inline.attributes['link'] ? (jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: jsxRuntimeExports.jsx(Link$1, Object.assign({ href: inline.attributes['link'], target: "_blank", dangerouslySetInnerHTML: memoInnerHTML, formats: formats, attributes: inline.attributes, onClick: handleClickLink }, props)) })) : (jsxRuntimeExports.jsx(Text$3, Object.assign({ dangerouslySetInnerHTML: memoInnerHTML, formats: formats, attributes: inline.attributes }, props))) }));
-};
-
-const Text$2 = styled$1.span `
-  &::selection {
-    background: rgba(46, 170, 220, 0.2);
-  }
-
-  &.token.comment,
-  &.token.prolog,
-  &.token.doctype,
-  &.token.cdata {
-    color: #8292a2;
-  }
-
-  &.token.punctuation {
-    color: #f8f8f2;
-  }
-
-  &.token.namespace {
-    opacity: 0.7;
-  }
-
-  &.token.property,
-  &.token.tag,
-  &.token.constant,
-  &.token.symbol,
-  &.token.deleted {
-    color: #f92672;
-  }
-
-  &.token.boolean,
-  &.token.number {
-    color: #ae81ff;
-  }
-
-  &.token.selector,
-  &.token.attr-name,
-  &.token.string,
-  &.token.char,
-  &.token.builtin,
-  &.token.inserted {
-    color: #a6e22e;
-  }
-
-  &.token.operator,
-  &.token.entity,
-  &.token.url,
-  .language-css &.token.string,
-  .style &.token.string,
-  &.token.variable {
-    color: #f8f8f2;
-  }
-
-  &.token.atrule,
-  &.token.attr-value,
-  &.token.function,
-  &.token.class-name {
-    color: #e6db74;
-  }
-
-  &.token.keyword {
-    color: #66d9ef;
-  }
-
-  &.token.regex,
-  &.token.important {
-    color: #fd971f;
-  }
-
-  &.token.important,
-  &.token.bold {
-    font-weight: bold;
-  }
-  &.token.italic {
-    font-style: italic;
-  }
-
-  &.token.entity {
-    cursor: help;
-  }
-`;
-const CodeToken = (_a) => {
-    var { inline, formats, editor, scrollContainer, attributes } = _a, props = __rest$1(_a, ["inline", "formats", "editor", "scrollContainer", "attributes"]);
-    return (jsxRuntimeExports.jsx(Text$2, Object.assign({ className: `token ${attributes.tokenType}` }, props, { children: inline.text })));
-};
-
-const Bold = () => Ce$1 `
-  font-weight: bold;
-`;
-
-const Underline = () => Ce$1 `
-  border-bottom: 0.05em solid;
-`;
-
-const Strike = () => Ce$1 `
-  text-decoration: line-through;
-`;
-
-const InlineCode = () => Ce$1 `
-  background: rgba(135, 131, 120, 0.15);
-  color: #eb5757;
-  border-radius: 3px;
-  font-size: 85%;
-  padding: 0.2em 0.4em;
-`;
-
-const Italic = () => Ce$1 `
-  transform: skewX(-20deg);
-  display: inline-block;
-`;
-
-const Color = (color) => Ce$1 `
-  ${color && `color: ${color};`}
-`;
-
-const Link = () => Ce$1 `
-  cursor: pointer;
-`;
-
-const FormatAttachment = React__namespace.memo((_a) => {
-    var { size = baseIconProps.size, fill = baseIconProps.fill } = _a; __rest$1(_a, ["size", "fill"]);
-    return (jsxRuntimeExports.jsx(Icon, Object.assign({ width: size, height: size, viewBox: "0 0 20 20", fill: "none", xmlns: "http://www.w3.org/2000/svg" }, { children: jsxRuntimeExports.jsx(Path, { d: "M15.4167 13.3346H5.83333C3.99167 13.3346 2.5 11.843 2.5 10.0013C2.5 8.15964 3.99167 6.66797 5.83333 6.66797H16.25C17.4 6.66797 18.3333 7.6013 18.3333 8.7513C18.3333 9.9013 17.4 10.8346 16.25 10.8346H7.5C7.04167 10.8346 6.66667 10.4596 6.66667 10.0013C6.66667 9.54297 7.04167 9.16797 7.5 9.16797H15.4167V7.91797H7.5C6.35 7.91797 5.41667 8.8513 5.41667 10.0013C5.41667 11.1513 6.35 12.0846 7.5 12.0846H16.25C18.0917 12.0846 19.5833 10.593 19.5833 8.7513C19.5833 6.90964 18.0917 5.41797 16.25 5.41797H5.83333C3.3 5.41797 1.25 7.46797 1.25 10.0013C1.25 12.5346 3.3 14.5846 5.83333 14.5846H15.4167V13.3346Z", fill: "white" }) })));
-});
-
-const Container$3 = styled$1.div `
-  position: fixed;
-  bottom: 12px;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  height: 34px;
-  display: flex;
-  align-items: center;
-  position: absolute;
-  background-color: #18181b;
-  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-  z-index: 1;
-`;
-const Button$1 = styled$1.a `
-  display: flex;
-  padding: 7px;
-  ${({ active }) => active && 'background: rgba(255, 255, 255, 0.15)'};
-  &:hover {
-    background-color: rgba(255, 255, 255, 0.4);
-  }
-`;
-const Divider = styled$1.div `
-  width: 1px;
-  height: 100%;
-  background: #fff;
-  opacity: 0.2;
-`;
-const GlobalToolbar = React__namespace.memo((_a) => {
-    var { editor } = _a, props = __rest$1(_a, ["editor"]);
-    const [formats, setFormats] = React__namespace.useState({});
-    const [blockType, setBlockType] = React__namespace.useState();
-    const [isDisplay, setDisplay] = React__namespace.useState(false);
-    const formatBlock = React__namespace.useCallback((type) => {
-        editor.getModule('toolbar').setUpdating(true);
-        const selectedBlocks = editor.getModule('selector').getSelectedBlocks();
-        if (selectedBlocks.length > 0) {
-            const updateIds = selectedBlocks.map((v) => {
-                return v.id;
-            });
-            editor
-                .getModule('toolbar')
-                .formatMultiBlocks(updateIds, blockType !== type ? type : 'PARAGRAPH');
-            editor.getModule('clipboard').focus();
-        }
-        else {
-            editor.getModule('toolbar').formatBlock(blockType !== type ? type : 'PARAGRAPH');
-        }
-        setTimeout(() => {
-            editor.getModule('toolbar').setUpdating(false);
-        }, 100);
-    }, [formats, blockType]);
-    const handleHeader1 = React__namespace.useCallback((event) => {
-        event.preventDefault();
-        formatBlock('HEADER1');
-    }, [formats, blockType]);
-    const handleHeader2 = React__namespace.useCallback((event) => {
-        event.preventDefault();
-        formatBlock('HEADER2');
-    }, [formats, blockType]);
-    const handleHeader3 = React__namespace.useCallback((event) => {
-        event.preventDefault();
-        formatBlock('HEADER3');
-    }, [formats, blockType]);
-    const handleCodeBlock = React__namespace.useCallback((event) => {
-        event.preventDefault();
-        formatBlock('CODE-BLOCK');
-    }, [formats, blockType]);
-    const handleDecision = React__namespace.useCallback((event) => {
-        event.preventDefault();
-        formatBlock('DECISION');
-    }, [formats, blockType]);
-    const handleTask = React__namespace.useCallback((event) => {
-        event.preventDefault();
-        formatBlock('TASK');
-    }, [formats, blockType]);
-    const handleBlockquote = React__namespace.useCallback((event) => {
-        event.preventDefault();
-        formatBlock('BLOCKQUOTE');
-    }, [formats, blockType]);
-    const handleOrderedList = React__namespace.useCallback((event) => {
-        event.preventDefault();
-        formatBlock('ORDERED-LIST');
-    }, [formats, blockType]);
-    const handleBulletList = React__namespace.useCallback((event) => {
-        event.preventDefault();
-        formatBlock('BULLET-LIST');
-    }, [formats, blockType]);
-    const handleFileUpload = React__namespace.useCallback((event) => {
-        event.preventDefault();
-        const caretPosition = editor.getCaretPosition();
-        if (!caretPosition)
-            return;
-        const fileHolder = document.createElement('input');
-        fileHolder.setAttribute('type', 'file');
-        fileHolder.setAttribute('accept', '*');
-        fileHolder.setAttribute('style', 'visibility:hidden');
-        fileHolder.onchange = () => {
-            var _a;
-            editor
-                .getModule('uploader')
-                .upload(Array.from((_a = fileHolder.files) !== null && _a !== void 0 ? _a : []), caretPosition.blockId);
-        };
-        fileHolder.click();
-        document.body.appendChild(fileHolder);
-        setTimeout(() => {
-            document.body.removeChild(fileHolder);
-        }, 10);
-    }, [formats, blockType, editor]);
+function useChildBlockRenderer({ parentBlockId, blockId, editor }) {
+    const [block, setBlock] = React__namespace.useState(null);
     React__namespace.useEffect(() => {
-        const subs = new Subscription();
+        const parentBlock = editor.getBlock(parentBlockId);
         const eventEmitter = editor.getEventEmitter();
+        if (parentBlock) {
+            const currentBlock = parentBlock.childBlocks.find((v) => v.id === blockId);
+            if (currentBlock) {
+                setBlock(currentBlock);
+            }
+        }
+        const subs = new Subscription();
         subs.add(eventEmitter
-            .select(EditorEvents.EVENT_SELECTION_CHANGE)
-            .pipe(combineLatestWith(eventEmitter.select(EditorEvents.EVENT_BLOCK_SELECTED)))
-            .subscribe((v) => {
-            if (editor.getModule('toolbar').getUpdating())
+            .select(EditorEvents.EVENT_CHILD_BLOCK_RERENDER)
+            .pipe(filter((payload) => payload.affectedIds.includes(blockId)))
+            .subscribe((payload) => {
+            const parentBlock = editor.getBlock(payload.parentBlockId);
+            if (!parentBlock)
                 return;
-            const caret = editor.getCaretPosition();
-            const selectedBlocks = editor.getModule('selector').getSelectedBlocks();
-            if (selectedBlocks.length < 1 && (!caret || !editor.hasFocus())) {
-                setDisplay(false);
+            const currentBlock = parentBlock.childBlocks.find((v) => v.id === blockId);
+            if (!currentBlock)
                 return;
-            }
-            setDisplay(true);
-            if (!caret)
-                return;
-            const targetBlock = editor.getBlock(caret.blockId);
-            if (!targetBlock)
-                return;
-            // setFormats(editor.getFormats(caret.blockId, caret.index, caret.length));
-            setBlockType(targetBlock.type);
+            setBlock(Object.assign(Object.assign({}, currentBlock), { contents: currentBlock.contents.map((v) => {
+                    return Object.assign(Object.assign({}, v), { id: v4() });
+                }) }));
         }));
-        return () => {
-            subs.unsubscribe();
-        };
-    }, []);
-    return ReactDOM.createPortal(jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: isDisplay && (jsxRuntimeExports.jsxs(Container$3, Object.assign({}, props, { children: [jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$1, Object.assign({ href: "#", onClick: handleHeader1, active: blockType === 'HEADER1' }, { children: jsxRuntimeExports.jsx(FormatHeader1, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u898B\u51FA\u3057(\u5927)\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$1, Object.assign({ href: "#", onClick: handleHeader2, active: blockType === 'HEADER2' }, { children: jsxRuntimeExports.jsx(FormatHeader2, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u898B\u51FA\u3057(\u4E2D)\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$1, Object.assign({ href: "#", onClick: handleHeader3, active: blockType === 'HEADER3' }, { children: jsxRuntimeExports.jsx(FormatHeader3, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u898B\u51FA\u3057(\u5C0F)\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Divider, {}), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$1, Object.assign({ href: "#", active: blockType === 'CODE-BLOCK', onClick: handleCodeBlock }, { children: jsxRuntimeExports.jsx(FormatCodeBlock, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u30B3\u30FC\u30C9\u30D6\u30ED\u30C3\u30AF\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$1, Object.assign({ href: "#", active: blockType === 'BLOCKQUOTE', onClick: handleBlockquote }, { children: jsxRuntimeExports.jsx(FormatBlockQuote, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u5F15\u7528\u30D6\u30ED\u30C3\u30AF\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Divider, {}), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$1, Object.assign({ href: "#", active: blockType === 'BULLET-LIST', onClick: handleBulletList }, { children: jsxRuntimeExports.jsx(FormatBulletList, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u7B87\u6761\u66F8\u304D\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$1, Object.assign({ href: "#", active: blockType === 'ORDERED-LIST', onClick: handleOrderedList }, { children: jsxRuntimeExports.jsx(FormatNumberList, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u756A\u53F7\u4ED8\u304D\u30EA\u30B9\u30C8\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Divider, {}), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$1, Object.assign({ href: "#", active: blockType === 'TASK', onClick: handleTask }, { children: jsxRuntimeExports.jsx(FormatTask, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u30BF\u30B9\u30AF\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$1, Object.assign({ href: "#", active: blockType === 'DECISION', onClick: handleDecision }, { children: jsxRuntimeExports.jsx(FormatDecision, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u6C7A\u5B9A\u4E8B\u9805\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Divider, {}), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$1, Object.assign({ href: "#", active: false, onClick: handleFileUpload }, { children: jsxRuntimeExports.jsx(FormatAttachment, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u30D5\u30A1\u30A4\u30EB\u3092\u6DFB\u4ED8" }))] }))) }), document.body);
-});
-
-const TOOLBAR_CHILD_WIDTH = 34;
-const Container$2 = styled$1.div `
-  height: 34px;
-  align-items: center;
-  position: absolute;
-  display: ${({ isDisplay }) => (isDisplay ? 'flex' : 'none')};
-  transform: translateY(-100%);
-  background-color: #18181b;
-  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-  z-index: 1;
-`;
-const Button = styled$1.a `
-  display: flex;
-  padding: 7px;
-  ${({ active }) => active && 'background: rgba(255, 255, 255, 0.15)'};
-  &:hover {
-    background-color: rgba(255, 255, 255, 0.4);
-  }
-`;
-styled$1.div `
-  width: 1px;
-  height: 100%;
-  background: #fff;
-  opacity: 0.2;
-`;
-const BubbleToolbar = React__namespace.memo((_a) => {
-    var _b, _c, _d;
-    var { editor, scrollContainer } = _a, props = __rest$1(_a, ["editor", "scrollContainer"]);
-    const [formats, setFormats] = React__namespace.useState({});
-    const [position, setPosition] = React__namespace.useState();
-    const [isDisplay, setDisplay] = React__namespace.useState(false);
-    const [currentCaretPosition, setCurrentCaretPosition] = React__namespace.useState();
-    const [toolbarWidth, setToolbarWidth] = React__namespace.useState(0);
-    const containerRef = React__namespace.useRef(null);
-    const handleBold = React__namespace.useCallback((event) => {
-        event.preventDefault();
-        editor.getModule('toolbar').setUpdating(true);
-        editor.getModule('toolbar').formatInline({ bold: !(formats === null || formats === void 0 ? void 0 : formats.bold) });
-        setTimeout(() => {
-            editor.getModule('toolbar').setUpdating(false);
-        }, 100);
-    }, [formats]);
-    const handleItalic = React__namespace.useCallback((event) => {
-        event.preventDefault();
-        editor.getModule('toolbar').setUpdating(true);
-        editor.getModule('toolbar').formatInline({ italic: !(formats === null || formats === void 0 ? void 0 : formats.italic) });
-        setTimeout(() => {
-            editor.getModule('toolbar').setUpdating(false);
-        }, 100);
-    }, [formats]);
-    const handleUnderline = React__namespace.useCallback((event) => {
-        event.preventDefault();
-        editor.getModule('toolbar').setUpdating(true);
-        editor.getModule('toolbar').formatInline({ underline: !(formats === null || formats === void 0 ? void 0 : formats.underline) });
-        setTimeout(() => {
-            editor.getModule('toolbar').setUpdating(false);
-        }, 100);
-    }, [formats]);
-    const handleStrike = React__namespace.useCallback((event) => {
-        event.preventDefault();
-        editor.getModule('toolbar').setUpdating(true);
-        editor.getModule('toolbar').formatInline({ strike: !(formats === null || formats === void 0 ? void 0 : formats.strike) });
-        setTimeout(() => {
-            editor.getModule('toolbar').setUpdating(false);
-        }, 100);
-    }, [formats]);
-    const handleLink = React__namespace.useCallback((event) => {
-        event.preventDefault();
-        const eventEmitter = editor.getEventEmitter();
-        eventEmitter.emit(EditorEvents.EVENT_LINK_CLICK, {
-            mode: 'openEnterLink',
-            link: formats === null || formats === void 0 ? void 0 : formats.link,
-            caretPosition: currentCaretPosition,
-        });
-    }, [formats, currentCaretPosition]);
-    const handleInlineCode = React__namespace.useCallback((event) => {
-        event.preventDefault();
-        editor.getModule('toolbar').setUpdating(true);
-        editor.getModule('toolbar').formatInline({ code: !(formats === null || formats === void 0 ? void 0 : formats.code) });
-        setTimeout(() => {
-            editor.getModule('toolbar').setUpdating(false);
-        }, 100);
-    }, [formats]);
-    const handleColor = React__namespace.useCallback((event) => {
-        event.preventDefault();
-        const eventEmitter = editor.getEventEmitter();
-        eventEmitter.emit(EditorEvents.EVENT_PALETTE_CLICK, {
-            caretPosition: currentCaretPosition,
-        });
-    }, [formats, currentCaretPosition]);
-    const handleMouseDown = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-    };
-    React__namespace.useEffect(() => {
-        const subs = new Subscription();
-        const eventEmitter = editor.getEventEmitter();
-        const updatePosition = (caret) => {
-            var _a;
-            const container = getHtmlElement(scrollContainer);
-            if (container) {
-                const containerRect = container.getBoundingClientRect();
-                const top = ((_a = container === null || container === void 0 ? void 0 : container.scrollTop) !== null && _a !== void 0 ? _a : 0) + caret.rect.top - containerRect.top - 4; // ブロックとツールバーの隙間をあける
-                const left = caret.rect.left - containerRect.left - toolbarWidth / 2;
-                setPosition({ top, left });
-            }
-            else {
-                const scrollEl = document.scrollingElement;
-                const top = scrollEl.scrollTop + caret.rect.top - 4;
-                const left = caret.rect.left - toolbarWidth / 2;
-                setPosition({ top, left });
-            }
-        };
-        subs.add(eventEmitter.select(EditorEvents.EVENT_SELECTION_CHANGE).subscribe((v) => {
-            var _a, _b;
-            if (editor.getModule('toolbar').getUpdating())
+        subs.add(eventEmitter
+            .select(EditorEvents.EVENT_CHILD_BLOCK_RERENDER_FORCE)
+            .pipe(filter((payload) => payload.affectedIds.includes(blockId)))
+            .subscribe((payload) => {
+            const parentBlock = editor.getBlock(payload.parentBlockId);
+            if (!parentBlock)
                 return;
-            const caret = editor.getCaretPosition();
-            if (!caret) {
-                setPosition(undefined);
-                setDisplay(false);
+            const currentBlock = parentBlock.childBlocks.find((v) => v.id === blockId);
+            if (!currentBlock)
                 return;
-            }
-            const block = editor.getBlock(caret.blockId);
-            const blockLength = (_b = editor.getBlockLength((_a = caret === null || caret === void 0 ? void 0 : caret.blockId) !== null && _a !== void 0 ? _a : '')) !== null && _b !== void 0 ? _b : 0;
-            const { disableDecorationFormats } = editor.getSettings();
-            if (!block ||
-                disableDecorationFormats.includes(block.type) ||
-                !editor.hasFocus() ||
-                blockLength < 1) {
-                setPosition(undefined);
-                setDisplay(false);
-                return;
-            }
-            updatePosition(caret);
-            setDisplay(!caret.collapsed);
-            setFormats(editor.getFormats(caret.blockId, caret.index, caret.length));
-        }));
-        subs.add(eventEmitter.select(EditorEvents.EVENT_BLOCK_RERENDER).subscribe(() => {
-            var _a;
-            if ((_a = editor.getModule('toolbar')) === null || _a === void 0 ? void 0 : _a.getUpdating())
-                return;
-            setDisplay(false);
-            setTimeout(() => {
-                const caret = editor.getCaretPosition();
-                if (!caret)
-                    return;
-                updatePosition(caret);
-                setDisplay(!caret.collapsed);
+            setBlock((prev) => {
+                setTimeout(() => setBlock(Object.assign(Object.assign({}, currentBlock), { contents: currentBlock.contents.map((v) => {
+                        return Object.assign(Object.assign({}, v), { id: v4() });
+                    }) })));
+                return Object.assign(Object.assign({}, currentBlock), { contents: [] });
             });
         }));
+        subs.add(eventEmitter
+            .select(EditorEvents.EVENT_BLOCK_RERENDER_FORCE)
+            .pipe(filter((affectedIds) => affectedIds.includes(parentBlockId)))
+            .subscribe(() => {
+            const parentBlock = editor.getBlock(parentBlockId);
+            if (!parentBlock)
+                return;
+            const currentBlock = parentBlock.childBlocks.find((v) => v.id === blockId);
+            if (!currentBlock)
+                return;
+            setBlock(Object.assign({}, currentBlock));
+        }));
         return () => {
             subs.unsubscribe();
         };
-    }, [editor, scrollContainer, toolbarWidth]);
-    React__namespace.useEffect(() => {
-        setTimeout(() => {
-            if (!containerRef.current)
-                return;
-            editor.getModule('toolbar').setBubbleToolbarRef(containerRef.current);
-            setToolbarWidth((containerRef.current.children.length - 1) * TOOLBAR_CHILD_WIDTH);
-        });
-    }, [editor]);
-    return ReactDOM.createPortal(jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: jsxRuntimeExports.jsxs(Container$2, Object.assign({ id: "bubble-toolbar", style: {
-                top: (_b = position === null || position === void 0 ? void 0 : position.top) !== null && _b !== void 0 ? _b : 0,
-                left: (_c = position === null || position === void 0 ? void 0 : position.left) !== null && _c !== void 0 ? _c : 0,
-            }, isDisplay: isDisplay, ref: containerRef, onMouseDown: handleMouseDown }, props, { children: [jsxRuntimeExports.jsxs(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button, Object.assign({ href: "#", onClick: handleBold, active: !!(formats === null || formats === void 0 ? void 0 : formats.bold) }, { children: jsxRuntimeExports.jsx(FormatBold, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: ["\u592A\u5B57", jsxRuntimeExports.jsx("br", {}), jsxRuntimeExports.jsx("div", Object.assign({ className: "description" }, { children: "Ctrl + B" }))] })), jsxRuntimeExports.jsxs(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button, Object.assign({ href: "#", onClick: handleItalic, active: !!(formats === null || formats === void 0 ? void 0 : formats.italic) }, { children: jsxRuntimeExports.jsx(FormatItalic, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: ["\u659C\u4F53", jsxRuntimeExports.jsx("br", {}), jsxRuntimeExports.jsx("div", Object.assign({ className: "description" }, { children: "Ctrl + I" }))] })), jsxRuntimeExports.jsxs(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button, Object.assign({ href: "#", onClick: handleUnderline, active: !!(formats === null || formats === void 0 ? void 0 : formats.underline) }, { children: jsxRuntimeExports.jsx(FormatUnderLine, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: ["\u4E0B\u7DDA", jsxRuntimeExports.jsx("br", {}), jsxRuntimeExports.jsx("div", Object.assign({ className: "description" }, { children: "Ctrl + U" }))] })), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button, Object.assign({ href: "#", onClick: handleStrike, active: !!(formats === null || formats === void 0 ? void 0 : formats.strike) }, { children: jsxRuntimeExports.jsx(FormatStrike, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u6253\u6D88\u3057\u7DDA" })), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button, Object.assign({ id: "toolbar-palette", href: "#", onClick: handleColor, active: !!(formats === null || formats === void 0 ? void 0 : formats.color) }, { children: jsxRuntimeExports.jsx(FormatColor, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u6587\u5B57\u8272\u3092\u5909\u66F4" })), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button, Object.assign({ id: "toolbar-link", href: "#", onClick: handleLink, active: !!(formats === null || formats === void 0 ? void 0 : formats.link) }, { children: jsxRuntimeExports.jsx(FormatLink, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u30EA\u30F3\u30AF\u3092\u8FFD\u52A0" })), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button, Object.assign({ href: "#", onClick: handleInlineCode, active: !!(formats === null || formats === void 0 ? void 0 : formats.code) }, { children: jsxRuntimeExports.jsx(FormatCode, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u30A4\u30F3\u30E9\u30A4\u30F3\u30B3\u30FC\u30C9" }))] })) }), (_d = getHtmlElement(scrollContainer)) !== null && _d !== void 0 ? _d : document.body);
-});
-
-var lodash_isequal = {exports: {}};
-
-/**
- * Lodash (Custom Build) <https://lodash.com/>
- * Build: `lodash modularize exports="npm" -o ./`
- * Copyright JS Foundation and other contributors <https://js.foundation/>
- * Released under MIT license <https://lodash.com/license>
- * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
- * Copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
- */
-lodash_isequal.exports;
-
-(function (module, exports) {
-	/** Used as the size to enable large array optimizations. */
-	var LARGE_ARRAY_SIZE = 200;
-
-	/** Used to stand-in for `undefined` hash values. */
-	var HASH_UNDEFINED = '__lodash_hash_undefined__';
-
-	/** Used to compose bitmasks for value comparisons. */
-	var COMPARE_PARTIAL_FLAG = 1,
-	    COMPARE_UNORDERED_FLAG = 2;
-
-	/** Used as references for various `Number` constants. */
-	var MAX_SAFE_INTEGER = 9007199254740991;
-
-	/** `Object#toString` result references. */
-	var argsTag = '[object Arguments]',
-	    arrayTag = '[object Array]',
-	    asyncTag = '[object AsyncFunction]',
-	    boolTag = '[object Boolean]',
-	    dateTag = '[object Date]',
-	    errorTag = '[object Error]',
-	    funcTag = '[object Function]',
-	    genTag = '[object GeneratorFunction]',
-	    mapTag = '[object Map]',
-	    numberTag = '[object Number]',
-	    nullTag = '[object Null]',
-	    objectTag = '[object Object]',
-	    promiseTag = '[object Promise]',
-	    proxyTag = '[object Proxy]',
-	    regexpTag = '[object RegExp]',
-	    setTag = '[object Set]',
-	    stringTag = '[object String]',
-	    symbolTag = '[object Symbol]',
-	    undefinedTag = '[object Undefined]',
-	    weakMapTag = '[object WeakMap]';
-
-	var arrayBufferTag = '[object ArrayBuffer]',
-	    dataViewTag = '[object DataView]',
-	    float32Tag = '[object Float32Array]',
-	    float64Tag = '[object Float64Array]',
-	    int8Tag = '[object Int8Array]',
-	    int16Tag = '[object Int16Array]',
-	    int32Tag = '[object Int32Array]',
-	    uint8Tag = '[object Uint8Array]',
-	    uint8ClampedTag = '[object Uint8ClampedArray]',
-	    uint16Tag = '[object Uint16Array]',
-	    uint32Tag = '[object Uint32Array]';
-
-	/**
-	 * Used to match `RegExp`
-	 * [syntax characters](http://ecma-international.org/ecma-262/7.0/#sec-patterns).
-	 */
-	var reRegExpChar = /[\\^$.*+?()[\]{}|]/g;
-
-	/** Used to detect host constructors (Safari). */
-	var reIsHostCtor = /^\[object .+?Constructor\]$/;
-
-	/** Used to detect unsigned integer values. */
-	var reIsUint = /^(?:0|[1-9]\d*)$/;
-
-	/** Used to identify `toStringTag` values of typed arrays. */
-	var typedArrayTags = {};
-	typedArrayTags[float32Tag] = typedArrayTags[float64Tag] =
-	typedArrayTags[int8Tag] = typedArrayTags[int16Tag] =
-	typedArrayTags[int32Tag] = typedArrayTags[uint8Tag] =
-	typedArrayTags[uint8ClampedTag] = typedArrayTags[uint16Tag] =
-	typedArrayTags[uint32Tag] = true;
-	typedArrayTags[argsTag] = typedArrayTags[arrayTag] =
-	typedArrayTags[arrayBufferTag] = typedArrayTags[boolTag] =
-	typedArrayTags[dataViewTag] = typedArrayTags[dateTag] =
-	typedArrayTags[errorTag] = typedArrayTags[funcTag] =
-	typedArrayTags[mapTag] = typedArrayTags[numberTag] =
-	typedArrayTags[objectTag] = typedArrayTags[regexpTag] =
-	typedArrayTags[setTag] = typedArrayTags[stringTag] =
-	typedArrayTags[weakMapTag] = false;
-
-	/** Detect free variable `global` from Node.js. */
-	var freeGlobal = typeof commonjsGlobal == 'object' && commonjsGlobal && commonjsGlobal.Object === Object && commonjsGlobal;
-
-	/** Detect free variable `self`. */
-	var freeSelf = typeof self == 'object' && self && self.Object === Object && self;
-
-	/** Used as a reference to the global object. */
-	var root = freeGlobal || freeSelf || Function('return this')();
-
-	/** Detect free variable `exports`. */
-	var freeExports = exports && !exports.nodeType && exports;
-
-	/** Detect free variable `module`. */
-	var freeModule = freeExports && 'object' == 'object' && module && !module.nodeType && module;
-
-	/** Detect the popular CommonJS extension `module.exports`. */
-	var moduleExports = freeModule && freeModule.exports === freeExports;
-
-	/** Detect free variable `process` from Node.js. */
-	var freeProcess = moduleExports && freeGlobal.process;
-
-	/** Used to access faster Node.js helpers. */
-	var nodeUtil = (function() {
-	  try {
-	    return freeProcess && freeProcess.binding && freeProcess.binding('util');
-	  } catch (e) {}
-	}());
-
-	/* Node.js helper references. */
-	var nodeIsTypedArray = nodeUtil && nodeUtil.isTypedArray;
-
-	/**
-	 * A specialized version of `_.filter` for arrays without support for
-	 * iteratee shorthands.
-	 *
-	 * @private
-	 * @param {Array} [array] The array to iterate over.
-	 * @param {Function} predicate The function invoked per iteration.
-	 * @returns {Array} Returns the new filtered array.
-	 */
-	function arrayFilter(array, predicate) {
-	  var index = -1,
-	      length = array == null ? 0 : array.length,
-	      resIndex = 0,
-	      result = [];
-
-	  while (++index < length) {
-	    var value = array[index];
-	    if (predicate(value, index, array)) {
-	      result[resIndex++] = value;
-	    }
-	  }
-	  return result;
-	}
-
-	/**
-	 * Appends the elements of `values` to `array`.
-	 *
-	 * @private
-	 * @param {Array} array The array to modify.
-	 * @param {Array} values The values to append.
-	 * @returns {Array} Returns `array`.
-	 */
-	function arrayPush(array, values) {
-	  var index = -1,
-	      length = values.length,
-	      offset = array.length;
-
-	  while (++index < length) {
-	    array[offset + index] = values[index];
-	  }
-	  return array;
-	}
-
-	/**
-	 * A specialized version of `_.some` for arrays without support for iteratee
-	 * shorthands.
-	 *
-	 * @private
-	 * @param {Array} [array] The array to iterate over.
-	 * @param {Function} predicate The function invoked per iteration.
-	 * @returns {boolean} Returns `true` if any element passes the predicate check,
-	 *  else `false`.
-	 */
-	function arraySome(array, predicate) {
-	  var index = -1,
-	      length = array == null ? 0 : array.length;
-
-	  while (++index < length) {
-	    if (predicate(array[index], index, array)) {
-	      return true;
-	    }
-	  }
-	  return false;
-	}
-
-	/**
-	 * The base implementation of `_.times` without support for iteratee shorthands
-	 * or max array length checks.
-	 *
-	 * @private
-	 * @param {number} n The number of times to invoke `iteratee`.
-	 * @param {Function} iteratee The function invoked per iteration.
-	 * @returns {Array} Returns the array of results.
-	 */
-	function baseTimes(n, iteratee) {
-	  var index = -1,
-	      result = Array(n);
-
-	  while (++index < n) {
-	    result[index] = iteratee(index);
-	  }
-	  return result;
-	}
-
-	/**
-	 * The base implementation of `_.unary` without support for storing metadata.
-	 *
-	 * @private
-	 * @param {Function} func The function to cap arguments for.
-	 * @returns {Function} Returns the new capped function.
-	 */
-	function baseUnary(func) {
-	  return function(value) {
-	    return func(value);
-	  };
-	}
-
-	/**
-	 * Checks if a `cache` value for `key` exists.
-	 *
-	 * @private
-	 * @param {Object} cache The cache to query.
-	 * @param {string} key The key of the entry to check.
-	 * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
-	 */
-	function cacheHas(cache, key) {
-	  return cache.has(key);
-	}
-
-	/**
-	 * Gets the value at `key` of `object`.
-	 *
-	 * @private
-	 * @param {Object} [object] The object to query.
-	 * @param {string} key The key of the property to get.
-	 * @returns {*} Returns the property value.
-	 */
-	function getValue(object, key) {
-	  return object == null ? undefined : object[key];
-	}
-
-	/**
-	 * Converts `map` to its key-value pairs.
-	 *
-	 * @private
-	 * @param {Object} map The map to convert.
-	 * @returns {Array} Returns the key-value pairs.
-	 */
-	function mapToArray(map) {
-	  var index = -1,
-	      result = Array(map.size);
-
-	  map.forEach(function(value, key) {
-	    result[++index] = [key, value];
-	  });
-	  return result;
-	}
-
-	/**
-	 * Creates a unary function that invokes `func` with its argument transformed.
-	 *
-	 * @private
-	 * @param {Function} func The function to wrap.
-	 * @param {Function} transform The argument transform.
-	 * @returns {Function} Returns the new function.
-	 */
-	function overArg(func, transform) {
-	  return function(arg) {
-	    return func(transform(arg));
-	  };
-	}
-
-	/**
-	 * Converts `set` to an array of its values.
-	 *
-	 * @private
-	 * @param {Object} set The set to convert.
-	 * @returns {Array} Returns the values.
-	 */
-	function setToArray(set) {
-	  var index = -1,
-	      result = Array(set.size);
-
-	  set.forEach(function(value) {
-	    result[++index] = value;
-	  });
-	  return result;
-	}
-
-	/** Used for built-in method references. */
-	var arrayProto = Array.prototype,
-	    funcProto = Function.prototype,
-	    objectProto = Object.prototype;
-
-	/** Used to detect overreaching core-js shims. */
-	var coreJsData = root['__core-js_shared__'];
-
-	/** Used to resolve the decompiled source of functions. */
-	var funcToString = funcProto.toString;
-
-	/** Used to check objects for own properties. */
-	var hasOwnProperty = objectProto.hasOwnProperty;
-
-	/** Used to detect methods masquerading as native. */
-	var maskSrcKey = (function() {
-	  var uid = /[^.]+$/.exec(coreJsData && coreJsData.keys && coreJsData.keys.IE_PROTO || '');
-	  return uid ? ('Symbol(src)_1.' + uid) : '';
-	}());
-
-	/**
-	 * Used to resolve the
-	 * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
-	 * of values.
-	 */
-	var nativeObjectToString = objectProto.toString;
-
-	/** Used to detect if a method is native. */
-	var reIsNative = RegExp('^' +
-	  funcToString.call(hasOwnProperty).replace(reRegExpChar, '\\$&')
-	  .replace(/hasOwnProperty|(function).*?(?=\\\()| for .+?(?=\\\])/g, '$1.*?') + '$'
-	);
-
-	/** Built-in value references. */
-	var Buffer = moduleExports ? root.Buffer : undefined,
-	    Symbol = root.Symbol,
-	    Uint8Array = root.Uint8Array,
-	    propertyIsEnumerable = objectProto.propertyIsEnumerable,
-	    splice = arrayProto.splice,
-	    symToStringTag = Symbol ? Symbol.toStringTag : undefined;
-
-	/* Built-in method references for those with the same name as other `lodash` methods. */
-	var nativeGetSymbols = Object.getOwnPropertySymbols,
-	    nativeIsBuffer = Buffer ? Buffer.isBuffer : undefined,
-	    nativeKeys = overArg(Object.keys, Object);
-
-	/* Built-in method references that are verified to be native. */
-	var DataView = getNative(root, 'DataView'),
-	    Map = getNative(root, 'Map'),
-	    Promise = getNative(root, 'Promise'),
-	    Set = getNative(root, 'Set'),
-	    WeakMap = getNative(root, 'WeakMap'),
-	    nativeCreate = getNative(Object, 'create');
-
-	/** Used to detect maps, sets, and weakmaps. */
-	var dataViewCtorString = toSource(DataView),
-	    mapCtorString = toSource(Map),
-	    promiseCtorString = toSource(Promise),
-	    setCtorString = toSource(Set),
-	    weakMapCtorString = toSource(WeakMap);
-
-	/** Used to convert symbols to primitives and strings. */
-	var symbolProto = Symbol ? Symbol.prototype : undefined,
-	    symbolValueOf = symbolProto ? symbolProto.valueOf : undefined;
-
-	/**
-	 * Creates a hash object.
-	 *
-	 * @private
-	 * @constructor
-	 * @param {Array} [entries] The key-value pairs to cache.
-	 */
-	function Hash(entries) {
-	  var index = -1,
-	      length = entries == null ? 0 : entries.length;
-
-	  this.clear();
-	  while (++index < length) {
-	    var entry = entries[index];
-	    this.set(entry[0], entry[1]);
-	  }
-	}
-
-	/**
-	 * Removes all key-value entries from the hash.
-	 *
-	 * @private
-	 * @name clear
-	 * @memberOf Hash
-	 */
-	function hashClear() {
-	  this.__data__ = nativeCreate ? nativeCreate(null) : {};
-	  this.size = 0;
-	}
-
-	/**
-	 * Removes `key` and its value from the hash.
-	 *
-	 * @private
-	 * @name delete
-	 * @memberOf Hash
-	 * @param {Object} hash The hash to modify.
-	 * @param {string} key The key of the value to remove.
-	 * @returns {boolean} Returns `true` if the entry was removed, else `false`.
-	 */
-	function hashDelete(key) {
-	  var result = this.has(key) && delete this.__data__[key];
-	  this.size -= result ? 1 : 0;
-	  return result;
-	}
-
-	/**
-	 * Gets the hash value for `key`.
-	 *
-	 * @private
-	 * @name get
-	 * @memberOf Hash
-	 * @param {string} key The key of the value to get.
-	 * @returns {*} Returns the entry value.
-	 */
-	function hashGet(key) {
-	  var data = this.__data__;
-	  if (nativeCreate) {
-	    var result = data[key];
-	    return result === HASH_UNDEFINED ? undefined : result;
-	  }
-	  return hasOwnProperty.call(data, key) ? data[key] : undefined;
-	}
-
-	/**
-	 * Checks if a hash value for `key` exists.
-	 *
-	 * @private
-	 * @name has
-	 * @memberOf Hash
-	 * @param {string} key The key of the entry to check.
-	 * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
-	 */
-	function hashHas(key) {
-	  var data = this.__data__;
-	  return nativeCreate ? (data[key] !== undefined) : hasOwnProperty.call(data, key);
-	}
-
-	/**
-	 * Sets the hash `key` to `value`.
-	 *
-	 * @private
-	 * @name set
-	 * @memberOf Hash
-	 * @param {string} key The key of the value to set.
-	 * @param {*} value The value to set.
-	 * @returns {Object} Returns the hash instance.
-	 */
-	function hashSet(key, value) {
-	  var data = this.__data__;
-	  this.size += this.has(key) ? 0 : 1;
-	  data[key] = (nativeCreate && value === undefined) ? HASH_UNDEFINED : value;
-	  return this;
-	}
-
-	// Add methods to `Hash`.
-	Hash.prototype.clear = hashClear;
-	Hash.prototype['delete'] = hashDelete;
-	Hash.prototype.get = hashGet;
-	Hash.prototype.has = hashHas;
-	Hash.prototype.set = hashSet;
-
-	/**
-	 * Creates an list cache object.
-	 *
-	 * @private
-	 * @constructor
-	 * @param {Array} [entries] The key-value pairs to cache.
-	 */
-	function ListCache(entries) {
-	  var index = -1,
-	      length = entries == null ? 0 : entries.length;
-
-	  this.clear();
-	  while (++index < length) {
-	    var entry = entries[index];
-	    this.set(entry[0], entry[1]);
-	  }
-	}
-
-	/**
-	 * Removes all key-value entries from the list cache.
-	 *
-	 * @private
-	 * @name clear
-	 * @memberOf ListCache
-	 */
-	function listCacheClear() {
-	  this.__data__ = [];
-	  this.size = 0;
-	}
-
-	/**
-	 * Removes `key` and its value from the list cache.
-	 *
-	 * @private
-	 * @name delete
-	 * @memberOf ListCache
-	 * @param {string} key The key of the value to remove.
-	 * @returns {boolean} Returns `true` if the entry was removed, else `false`.
-	 */
-	function listCacheDelete(key) {
-	  var data = this.__data__,
-	      index = assocIndexOf(data, key);
-
-	  if (index < 0) {
-	    return false;
-	  }
-	  var lastIndex = data.length - 1;
-	  if (index == lastIndex) {
-	    data.pop();
-	  } else {
-	    splice.call(data, index, 1);
-	  }
-	  --this.size;
-	  return true;
-	}
-
-	/**
-	 * Gets the list cache value for `key`.
-	 *
-	 * @private
-	 * @name get
-	 * @memberOf ListCache
-	 * @param {string} key The key of the value to get.
-	 * @returns {*} Returns the entry value.
-	 */
-	function listCacheGet(key) {
-	  var data = this.__data__,
-	      index = assocIndexOf(data, key);
-
-	  return index < 0 ? undefined : data[index][1];
-	}
-
-	/**
-	 * Checks if a list cache value for `key` exists.
-	 *
-	 * @private
-	 * @name has
-	 * @memberOf ListCache
-	 * @param {string} key The key of the entry to check.
-	 * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
-	 */
-	function listCacheHas(key) {
-	  return assocIndexOf(this.__data__, key) > -1;
-	}
-
-	/**
-	 * Sets the list cache `key` to `value`.
-	 *
-	 * @private
-	 * @name set
-	 * @memberOf ListCache
-	 * @param {string} key The key of the value to set.
-	 * @param {*} value The value to set.
-	 * @returns {Object} Returns the list cache instance.
-	 */
-	function listCacheSet(key, value) {
-	  var data = this.__data__,
-	      index = assocIndexOf(data, key);
-
-	  if (index < 0) {
-	    ++this.size;
-	    data.push([key, value]);
-	  } else {
-	    data[index][1] = value;
-	  }
-	  return this;
-	}
-
-	// Add methods to `ListCache`.
-	ListCache.prototype.clear = listCacheClear;
-	ListCache.prototype['delete'] = listCacheDelete;
-	ListCache.prototype.get = listCacheGet;
-	ListCache.prototype.has = listCacheHas;
-	ListCache.prototype.set = listCacheSet;
-
-	/**
-	 * Creates a map cache object to store key-value pairs.
-	 *
-	 * @private
-	 * @constructor
-	 * @param {Array} [entries] The key-value pairs to cache.
-	 */
-	function MapCache(entries) {
-	  var index = -1,
-	      length = entries == null ? 0 : entries.length;
-
-	  this.clear();
-	  while (++index < length) {
-	    var entry = entries[index];
-	    this.set(entry[0], entry[1]);
-	  }
-	}
-
-	/**
-	 * Removes all key-value entries from the map.
-	 *
-	 * @private
-	 * @name clear
-	 * @memberOf MapCache
-	 */
-	function mapCacheClear() {
-	  this.size = 0;
-	  this.__data__ = {
-	    'hash': new Hash,
-	    'map': new (Map || ListCache),
-	    'string': new Hash
-	  };
-	}
-
-	/**
-	 * Removes `key` and its value from the map.
-	 *
-	 * @private
-	 * @name delete
-	 * @memberOf MapCache
-	 * @param {string} key The key of the value to remove.
-	 * @returns {boolean} Returns `true` if the entry was removed, else `false`.
-	 */
-	function mapCacheDelete(key) {
-	  var result = getMapData(this, key)['delete'](key);
-	  this.size -= result ? 1 : 0;
-	  return result;
-	}
-
-	/**
-	 * Gets the map value for `key`.
-	 *
-	 * @private
-	 * @name get
-	 * @memberOf MapCache
-	 * @param {string} key The key of the value to get.
-	 * @returns {*} Returns the entry value.
-	 */
-	function mapCacheGet(key) {
-	  return getMapData(this, key).get(key);
-	}
-
-	/**
-	 * Checks if a map value for `key` exists.
-	 *
-	 * @private
-	 * @name has
-	 * @memberOf MapCache
-	 * @param {string} key The key of the entry to check.
-	 * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
-	 */
-	function mapCacheHas(key) {
-	  return getMapData(this, key).has(key);
-	}
-
-	/**
-	 * Sets the map `key` to `value`.
-	 *
-	 * @private
-	 * @name set
-	 * @memberOf MapCache
-	 * @param {string} key The key of the value to set.
-	 * @param {*} value The value to set.
-	 * @returns {Object} Returns the map cache instance.
-	 */
-	function mapCacheSet(key, value) {
-	  var data = getMapData(this, key),
-	      size = data.size;
-
-	  data.set(key, value);
-	  this.size += data.size == size ? 0 : 1;
-	  return this;
-	}
-
-	// Add methods to `MapCache`.
-	MapCache.prototype.clear = mapCacheClear;
-	MapCache.prototype['delete'] = mapCacheDelete;
-	MapCache.prototype.get = mapCacheGet;
-	MapCache.prototype.has = mapCacheHas;
-	MapCache.prototype.set = mapCacheSet;
-
-	/**
-	 *
-	 * Creates an array cache object to store unique values.
-	 *
-	 * @private
-	 * @constructor
-	 * @param {Array} [values] The values to cache.
-	 */
-	function SetCache(values) {
-	  var index = -1,
-	      length = values == null ? 0 : values.length;
-
-	  this.__data__ = new MapCache;
-	  while (++index < length) {
-	    this.add(values[index]);
-	  }
-	}
-
-	/**
-	 * Adds `value` to the array cache.
-	 *
-	 * @private
-	 * @name add
-	 * @memberOf SetCache
-	 * @alias push
-	 * @param {*} value The value to cache.
-	 * @returns {Object} Returns the cache instance.
-	 */
-	function setCacheAdd(value) {
-	  this.__data__.set(value, HASH_UNDEFINED);
-	  return this;
-	}
-
-	/**
-	 * Checks if `value` is in the array cache.
-	 *
-	 * @private
-	 * @name has
-	 * @memberOf SetCache
-	 * @param {*} value The value to search for.
-	 * @returns {number} Returns `true` if `value` is found, else `false`.
-	 */
-	function setCacheHas(value) {
-	  return this.__data__.has(value);
-	}
-
-	// Add methods to `SetCache`.
-	SetCache.prototype.add = SetCache.prototype.push = setCacheAdd;
-	SetCache.prototype.has = setCacheHas;
-
-	/**
-	 * Creates a stack cache object to store key-value pairs.
-	 *
-	 * @private
-	 * @constructor
-	 * @param {Array} [entries] The key-value pairs to cache.
-	 */
-	function Stack(entries) {
-	  var data = this.__data__ = new ListCache(entries);
-	  this.size = data.size;
-	}
-
-	/**
-	 * Removes all key-value entries from the stack.
-	 *
-	 * @private
-	 * @name clear
-	 * @memberOf Stack
-	 */
-	function stackClear() {
-	  this.__data__ = new ListCache;
-	  this.size = 0;
-	}
-
-	/**
-	 * Removes `key` and its value from the stack.
-	 *
-	 * @private
-	 * @name delete
-	 * @memberOf Stack
-	 * @param {string} key The key of the value to remove.
-	 * @returns {boolean} Returns `true` if the entry was removed, else `false`.
-	 */
-	function stackDelete(key) {
-	  var data = this.__data__,
-	      result = data['delete'](key);
-
-	  this.size = data.size;
-	  return result;
-	}
-
-	/**
-	 * Gets the stack value for `key`.
-	 *
-	 * @private
-	 * @name get
-	 * @memberOf Stack
-	 * @param {string} key The key of the value to get.
-	 * @returns {*} Returns the entry value.
-	 */
-	function stackGet(key) {
-	  return this.__data__.get(key);
-	}
-
-	/**
-	 * Checks if a stack value for `key` exists.
-	 *
-	 * @private
-	 * @name has
-	 * @memberOf Stack
-	 * @param {string} key The key of the entry to check.
-	 * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
-	 */
-	function stackHas(key) {
-	  return this.__data__.has(key);
-	}
-
-	/**
-	 * Sets the stack `key` to `value`.
-	 *
-	 * @private
-	 * @name set
-	 * @memberOf Stack
-	 * @param {string} key The key of the value to set.
-	 * @param {*} value The value to set.
-	 * @returns {Object} Returns the stack cache instance.
-	 */
-	function stackSet(key, value) {
-	  var data = this.__data__;
-	  if (data instanceof ListCache) {
-	    var pairs = data.__data__;
-	    if (!Map || (pairs.length < LARGE_ARRAY_SIZE - 1)) {
-	      pairs.push([key, value]);
-	      this.size = ++data.size;
-	      return this;
-	    }
-	    data = this.__data__ = new MapCache(pairs);
-	  }
-	  data.set(key, value);
-	  this.size = data.size;
-	  return this;
-	}
-
-	// Add methods to `Stack`.
-	Stack.prototype.clear = stackClear;
-	Stack.prototype['delete'] = stackDelete;
-	Stack.prototype.get = stackGet;
-	Stack.prototype.has = stackHas;
-	Stack.prototype.set = stackSet;
-
-	/**
-	 * Creates an array of the enumerable property names of the array-like `value`.
-	 *
-	 * @private
-	 * @param {*} value The value to query.
-	 * @param {boolean} inherited Specify returning inherited property names.
-	 * @returns {Array} Returns the array of property names.
-	 */
-	function arrayLikeKeys(value, inherited) {
-	  var isArr = isArray(value),
-	      isArg = !isArr && isArguments(value),
-	      isBuff = !isArr && !isArg && isBuffer(value),
-	      isType = !isArr && !isArg && !isBuff && isTypedArray(value),
-	      skipIndexes = isArr || isArg || isBuff || isType,
-	      result = skipIndexes ? baseTimes(value.length, String) : [],
-	      length = result.length;
-
-	  for (var key in value) {
-	    if ((inherited || hasOwnProperty.call(value, key)) &&
-	        !(skipIndexes && (
-	           // Safari 9 has enumerable `arguments.length` in strict mode.
-	           key == 'length' ||
-	           // Node.js 0.10 has enumerable non-index properties on buffers.
-	           (isBuff && (key == 'offset' || key == 'parent')) ||
-	           // PhantomJS 2 has enumerable non-index properties on typed arrays.
-	           (isType && (key == 'buffer' || key == 'byteLength' || key == 'byteOffset')) ||
-	           // Skip index properties.
-	           isIndex(key, length)
-	        ))) {
-	      result.push(key);
-	    }
-	  }
-	  return result;
-	}
-
-	/**
-	 * Gets the index at which the `key` is found in `array` of key-value pairs.
-	 *
-	 * @private
-	 * @param {Array} array The array to inspect.
-	 * @param {*} key The key to search for.
-	 * @returns {number} Returns the index of the matched value, else `-1`.
-	 */
-	function assocIndexOf(array, key) {
-	  var length = array.length;
-	  while (length--) {
-	    if (eq(array[length][0], key)) {
-	      return length;
-	    }
-	  }
-	  return -1;
-	}
-
-	/**
-	 * The base implementation of `getAllKeys` and `getAllKeysIn` which uses
-	 * `keysFunc` and `symbolsFunc` to get the enumerable property names and
-	 * symbols of `object`.
-	 *
-	 * @private
-	 * @param {Object} object The object to query.
-	 * @param {Function} keysFunc The function to get the keys of `object`.
-	 * @param {Function} symbolsFunc The function to get the symbols of `object`.
-	 * @returns {Array} Returns the array of property names and symbols.
-	 */
-	function baseGetAllKeys(object, keysFunc, symbolsFunc) {
-	  var result = keysFunc(object);
-	  return isArray(object) ? result : arrayPush(result, symbolsFunc(object));
-	}
-
-	/**
-	 * The base implementation of `getTag` without fallbacks for buggy environments.
-	 *
-	 * @private
-	 * @param {*} value The value to query.
-	 * @returns {string} Returns the `toStringTag`.
-	 */
-	function baseGetTag(value) {
-	  if (value == null) {
-	    return value === undefined ? undefinedTag : nullTag;
-	  }
-	  return (symToStringTag && symToStringTag in Object(value))
-	    ? getRawTag(value)
-	    : objectToString(value);
-	}
-
-	/**
-	 * The base implementation of `_.isArguments`.
-	 *
-	 * @private
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is an `arguments` object,
-	 */
-	function baseIsArguments(value) {
-	  return isObjectLike(value) && baseGetTag(value) == argsTag;
-	}
-
-	/**
-	 * The base implementation of `_.isEqual` which supports partial comparisons
-	 * and tracks traversed objects.
-	 *
-	 * @private
-	 * @param {*} value The value to compare.
-	 * @param {*} other The other value to compare.
-	 * @param {boolean} bitmask The bitmask flags.
-	 *  1 - Unordered comparison
-	 *  2 - Partial comparison
-	 * @param {Function} [customizer] The function to customize comparisons.
-	 * @param {Object} [stack] Tracks traversed `value` and `other` objects.
-	 * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
-	 */
-	function baseIsEqual(value, other, bitmask, customizer, stack) {
-	  if (value === other) {
-	    return true;
-	  }
-	  if (value == null || other == null || (!isObjectLike(value) && !isObjectLike(other))) {
-	    return value !== value && other !== other;
-	  }
-	  return baseIsEqualDeep(value, other, bitmask, customizer, baseIsEqual, stack);
-	}
-
-	/**
-	 * A specialized version of `baseIsEqual` for arrays and objects which performs
-	 * deep comparisons and tracks traversed objects enabling objects with circular
-	 * references to be compared.
-	 *
-	 * @private
-	 * @param {Object} object The object to compare.
-	 * @param {Object} other The other object to compare.
-	 * @param {number} bitmask The bitmask flags. See `baseIsEqual` for more details.
-	 * @param {Function} customizer The function to customize comparisons.
-	 * @param {Function} equalFunc The function to determine equivalents of values.
-	 * @param {Object} [stack] Tracks traversed `object` and `other` objects.
-	 * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
-	 */
-	function baseIsEqualDeep(object, other, bitmask, customizer, equalFunc, stack) {
-	  var objIsArr = isArray(object),
-	      othIsArr = isArray(other),
-	      objTag = objIsArr ? arrayTag : getTag(object),
-	      othTag = othIsArr ? arrayTag : getTag(other);
-
-	  objTag = objTag == argsTag ? objectTag : objTag;
-	  othTag = othTag == argsTag ? objectTag : othTag;
-
-	  var objIsObj = objTag == objectTag,
-	      othIsObj = othTag == objectTag,
-	      isSameTag = objTag == othTag;
-
-	  if (isSameTag && isBuffer(object)) {
-	    if (!isBuffer(other)) {
-	      return false;
-	    }
-	    objIsArr = true;
-	    objIsObj = false;
-	  }
-	  if (isSameTag && !objIsObj) {
-	    stack || (stack = new Stack);
-	    return (objIsArr || isTypedArray(object))
-	      ? equalArrays(object, other, bitmask, customizer, equalFunc, stack)
-	      : equalByTag(object, other, objTag, bitmask, customizer, equalFunc, stack);
-	  }
-	  if (!(bitmask & COMPARE_PARTIAL_FLAG)) {
-	    var objIsWrapped = objIsObj && hasOwnProperty.call(object, '__wrapped__'),
-	        othIsWrapped = othIsObj && hasOwnProperty.call(other, '__wrapped__');
-
-	    if (objIsWrapped || othIsWrapped) {
-	      var objUnwrapped = objIsWrapped ? object.value() : object,
-	          othUnwrapped = othIsWrapped ? other.value() : other;
-
-	      stack || (stack = new Stack);
-	      return equalFunc(objUnwrapped, othUnwrapped, bitmask, customizer, stack);
-	    }
-	  }
-	  if (!isSameTag) {
-	    return false;
-	  }
-	  stack || (stack = new Stack);
-	  return equalObjects(object, other, bitmask, customizer, equalFunc, stack);
-	}
-
-	/**
-	 * The base implementation of `_.isNative` without bad shim checks.
-	 *
-	 * @private
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is a native function,
-	 *  else `false`.
-	 */
-	function baseIsNative(value) {
-	  if (!isObject(value) || isMasked(value)) {
-	    return false;
-	  }
-	  var pattern = isFunction(value) ? reIsNative : reIsHostCtor;
-	  return pattern.test(toSource(value));
-	}
-
-	/**
-	 * The base implementation of `_.isTypedArray` without Node.js optimizations.
-	 *
-	 * @private
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is a typed array, else `false`.
-	 */
-	function baseIsTypedArray(value) {
-	  return isObjectLike(value) &&
-	    isLength(value.length) && !!typedArrayTags[baseGetTag(value)];
-	}
-
-	/**
-	 * The base implementation of `_.keys` which doesn't treat sparse arrays as dense.
-	 *
-	 * @private
-	 * @param {Object} object The object to query.
-	 * @returns {Array} Returns the array of property names.
-	 */
-	function baseKeys(object) {
-	  if (!isPrototype(object)) {
-	    return nativeKeys(object);
-	  }
-	  var result = [];
-	  for (var key in Object(object)) {
-	    if (hasOwnProperty.call(object, key) && key != 'constructor') {
-	      result.push(key);
-	    }
-	  }
-	  return result;
-	}
-
-	/**
-	 * A specialized version of `baseIsEqualDeep` for arrays with support for
-	 * partial deep comparisons.
-	 *
-	 * @private
-	 * @param {Array} array The array to compare.
-	 * @param {Array} other The other array to compare.
-	 * @param {number} bitmask The bitmask flags. See `baseIsEqual` for more details.
-	 * @param {Function} customizer The function to customize comparisons.
-	 * @param {Function} equalFunc The function to determine equivalents of values.
-	 * @param {Object} stack Tracks traversed `array` and `other` objects.
-	 * @returns {boolean} Returns `true` if the arrays are equivalent, else `false`.
-	 */
-	function equalArrays(array, other, bitmask, customizer, equalFunc, stack) {
-	  var isPartial = bitmask & COMPARE_PARTIAL_FLAG,
-	      arrLength = array.length,
-	      othLength = other.length;
-
-	  if (arrLength != othLength && !(isPartial && othLength > arrLength)) {
-	    return false;
-	  }
-	  // Assume cyclic values are equal.
-	  var stacked = stack.get(array);
-	  if (stacked && stack.get(other)) {
-	    return stacked == other;
-	  }
-	  var index = -1,
-	      result = true,
-	      seen = (bitmask & COMPARE_UNORDERED_FLAG) ? new SetCache : undefined;
-
-	  stack.set(array, other);
-	  stack.set(other, array);
-
-	  // Ignore non-index properties.
-	  while (++index < arrLength) {
-	    var arrValue = array[index],
-	        othValue = other[index];
-
-	    if (customizer) {
-	      var compared = isPartial
-	        ? customizer(othValue, arrValue, index, other, array, stack)
-	        : customizer(arrValue, othValue, index, array, other, stack);
-	    }
-	    if (compared !== undefined) {
-	      if (compared) {
-	        continue;
-	      }
-	      result = false;
-	      break;
-	    }
-	    // Recursively compare arrays (susceptible to call stack limits).
-	    if (seen) {
-	      if (!arraySome(other, function(othValue, othIndex) {
-	            if (!cacheHas(seen, othIndex) &&
-	                (arrValue === othValue || equalFunc(arrValue, othValue, bitmask, customizer, stack))) {
-	              return seen.push(othIndex);
-	            }
-	          })) {
-	        result = false;
-	        break;
-	      }
-	    } else if (!(
-	          arrValue === othValue ||
-	            equalFunc(arrValue, othValue, bitmask, customizer, stack)
-	        )) {
-	      result = false;
-	      break;
-	    }
-	  }
-	  stack['delete'](array);
-	  stack['delete'](other);
-	  return result;
-	}
-
-	/**
-	 * A specialized version of `baseIsEqualDeep` for comparing objects of
-	 * the same `toStringTag`.
-	 *
-	 * **Note:** This function only supports comparing values with tags of
-	 * `Boolean`, `Date`, `Error`, `Number`, `RegExp`, or `String`.
-	 *
-	 * @private
-	 * @param {Object} object The object to compare.
-	 * @param {Object} other The other object to compare.
-	 * @param {string} tag The `toStringTag` of the objects to compare.
-	 * @param {number} bitmask The bitmask flags. See `baseIsEqual` for more details.
-	 * @param {Function} customizer The function to customize comparisons.
-	 * @param {Function} equalFunc The function to determine equivalents of values.
-	 * @param {Object} stack Tracks traversed `object` and `other` objects.
-	 * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
-	 */
-	function equalByTag(object, other, tag, bitmask, customizer, equalFunc, stack) {
-	  switch (tag) {
-	    case dataViewTag:
-	      if ((object.byteLength != other.byteLength) ||
-	          (object.byteOffset != other.byteOffset)) {
-	        return false;
-	      }
-	      object = object.buffer;
-	      other = other.buffer;
-
-	    case arrayBufferTag:
-	      if ((object.byteLength != other.byteLength) ||
-	          !equalFunc(new Uint8Array(object), new Uint8Array(other))) {
-	        return false;
-	      }
-	      return true;
-
-	    case boolTag:
-	    case dateTag:
-	    case numberTag:
-	      // Coerce booleans to `1` or `0` and dates to milliseconds.
-	      // Invalid dates are coerced to `NaN`.
-	      return eq(+object, +other);
-
-	    case errorTag:
-	      return object.name == other.name && object.message == other.message;
-
-	    case regexpTag:
-	    case stringTag:
-	      // Coerce regexes to strings and treat strings, primitives and objects,
-	      // as equal. See http://www.ecma-international.org/ecma-262/7.0/#sec-regexp.prototype.tostring
-	      // for more details.
-	      return object == (other + '');
-
-	    case mapTag:
-	      var convert = mapToArray;
-
-	    case setTag:
-	      var isPartial = bitmask & COMPARE_PARTIAL_FLAG;
-	      convert || (convert = setToArray);
-
-	      if (object.size != other.size && !isPartial) {
-	        return false;
-	      }
-	      // Assume cyclic values are equal.
-	      var stacked = stack.get(object);
-	      if (stacked) {
-	        return stacked == other;
-	      }
-	      bitmask |= COMPARE_UNORDERED_FLAG;
-
-	      // Recursively compare objects (susceptible to call stack limits).
-	      stack.set(object, other);
-	      var result = equalArrays(convert(object), convert(other), bitmask, customizer, equalFunc, stack);
-	      stack['delete'](object);
-	      return result;
-
-	    case symbolTag:
-	      if (symbolValueOf) {
-	        return symbolValueOf.call(object) == symbolValueOf.call(other);
-	      }
-	  }
-	  return false;
-	}
-
-	/**
-	 * A specialized version of `baseIsEqualDeep` for objects with support for
-	 * partial deep comparisons.
-	 *
-	 * @private
-	 * @param {Object} object The object to compare.
-	 * @param {Object} other The other object to compare.
-	 * @param {number} bitmask The bitmask flags. See `baseIsEqual` for more details.
-	 * @param {Function} customizer The function to customize comparisons.
-	 * @param {Function} equalFunc The function to determine equivalents of values.
-	 * @param {Object} stack Tracks traversed `object` and `other` objects.
-	 * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
-	 */
-	function equalObjects(object, other, bitmask, customizer, equalFunc, stack) {
-	  var isPartial = bitmask & COMPARE_PARTIAL_FLAG,
-	      objProps = getAllKeys(object),
-	      objLength = objProps.length,
-	      othProps = getAllKeys(other),
-	      othLength = othProps.length;
-
-	  if (objLength != othLength && !isPartial) {
-	    return false;
-	  }
-	  var index = objLength;
-	  while (index--) {
-	    var key = objProps[index];
-	    if (!(isPartial ? key in other : hasOwnProperty.call(other, key))) {
-	      return false;
-	    }
-	  }
-	  // Assume cyclic values are equal.
-	  var stacked = stack.get(object);
-	  if (stacked && stack.get(other)) {
-	    return stacked == other;
-	  }
-	  var result = true;
-	  stack.set(object, other);
-	  stack.set(other, object);
-
-	  var skipCtor = isPartial;
-	  while (++index < objLength) {
-	    key = objProps[index];
-	    var objValue = object[key],
-	        othValue = other[key];
-
-	    if (customizer) {
-	      var compared = isPartial
-	        ? customizer(othValue, objValue, key, other, object, stack)
-	        : customizer(objValue, othValue, key, object, other, stack);
-	    }
-	    // Recursively compare objects (susceptible to call stack limits).
-	    if (!(compared === undefined
-	          ? (objValue === othValue || equalFunc(objValue, othValue, bitmask, customizer, stack))
-	          : compared
-	        )) {
-	      result = false;
-	      break;
-	    }
-	    skipCtor || (skipCtor = key == 'constructor');
-	  }
-	  if (result && !skipCtor) {
-	    var objCtor = object.constructor,
-	        othCtor = other.constructor;
-
-	    // Non `Object` object instances with different constructors are not equal.
-	    if (objCtor != othCtor &&
-	        ('constructor' in object && 'constructor' in other) &&
-	        !(typeof objCtor == 'function' && objCtor instanceof objCtor &&
-	          typeof othCtor == 'function' && othCtor instanceof othCtor)) {
-	      result = false;
-	    }
-	  }
-	  stack['delete'](object);
-	  stack['delete'](other);
-	  return result;
-	}
-
-	/**
-	 * Creates an array of own enumerable property names and symbols of `object`.
-	 *
-	 * @private
-	 * @param {Object} object The object to query.
-	 * @returns {Array} Returns the array of property names and symbols.
-	 */
-	function getAllKeys(object) {
-	  return baseGetAllKeys(object, keys, getSymbols);
-	}
-
-	/**
-	 * Gets the data for `map`.
-	 *
-	 * @private
-	 * @param {Object} map The map to query.
-	 * @param {string} key The reference key.
-	 * @returns {*} Returns the map data.
-	 */
-	function getMapData(map, key) {
-	  var data = map.__data__;
-	  return isKeyable(key)
-	    ? data[typeof key == 'string' ? 'string' : 'hash']
-	    : data.map;
-	}
-
-	/**
-	 * Gets the native function at `key` of `object`.
-	 *
-	 * @private
-	 * @param {Object} object The object to query.
-	 * @param {string} key The key of the method to get.
-	 * @returns {*} Returns the function if it's native, else `undefined`.
-	 */
-	function getNative(object, key) {
-	  var value = getValue(object, key);
-	  return baseIsNative(value) ? value : undefined;
-	}
-
-	/**
-	 * A specialized version of `baseGetTag` which ignores `Symbol.toStringTag` values.
-	 *
-	 * @private
-	 * @param {*} value The value to query.
-	 * @returns {string} Returns the raw `toStringTag`.
-	 */
-	function getRawTag(value) {
-	  var isOwn = hasOwnProperty.call(value, symToStringTag),
-	      tag = value[symToStringTag];
-
-	  try {
-	    value[symToStringTag] = undefined;
-	    var unmasked = true;
-	  } catch (e) {}
-
-	  var result = nativeObjectToString.call(value);
-	  if (unmasked) {
-	    if (isOwn) {
-	      value[symToStringTag] = tag;
-	    } else {
-	      delete value[symToStringTag];
-	    }
-	  }
-	  return result;
-	}
-
-	/**
-	 * Creates an array of the own enumerable symbols of `object`.
-	 *
-	 * @private
-	 * @param {Object} object The object to query.
-	 * @returns {Array} Returns the array of symbols.
-	 */
-	var getSymbols = !nativeGetSymbols ? stubArray : function(object) {
-	  if (object == null) {
-	    return [];
-	  }
-	  object = Object(object);
-	  return arrayFilter(nativeGetSymbols(object), function(symbol) {
-	    return propertyIsEnumerable.call(object, symbol);
-	  });
-	};
-
-	/**
-	 * Gets the `toStringTag` of `value`.
-	 *
-	 * @private
-	 * @param {*} value The value to query.
-	 * @returns {string} Returns the `toStringTag`.
-	 */
-	var getTag = baseGetTag;
-
-	// Fallback for data views, maps, sets, and weak maps in IE 11 and promises in Node.js < 6.
-	if ((DataView && getTag(new DataView(new ArrayBuffer(1))) != dataViewTag) ||
-	    (Map && getTag(new Map) != mapTag) ||
-	    (Promise && getTag(Promise.resolve()) != promiseTag) ||
-	    (Set && getTag(new Set) != setTag) ||
-	    (WeakMap && getTag(new WeakMap) != weakMapTag)) {
-	  getTag = function(value) {
-	    var result = baseGetTag(value),
-	        Ctor = result == objectTag ? value.constructor : undefined,
-	        ctorString = Ctor ? toSource(Ctor) : '';
-
-	    if (ctorString) {
-	      switch (ctorString) {
-	        case dataViewCtorString: return dataViewTag;
-	        case mapCtorString: return mapTag;
-	        case promiseCtorString: return promiseTag;
-	        case setCtorString: return setTag;
-	        case weakMapCtorString: return weakMapTag;
-	      }
-	    }
-	    return result;
-	  };
-	}
-
-	/**
-	 * Checks if `value` is a valid array-like index.
-	 *
-	 * @private
-	 * @param {*} value The value to check.
-	 * @param {number} [length=MAX_SAFE_INTEGER] The upper bounds of a valid index.
-	 * @returns {boolean} Returns `true` if `value` is a valid index, else `false`.
-	 */
-	function isIndex(value, length) {
-	  length = length == null ? MAX_SAFE_INTEGER : length;
-	  return !!length &&
-	    (typeof value == 'number' || reIsUint.test(value)) &&
-	    (value > -1 && value % 1 == 0 && value < length);
-	}
-
-	/**
-	 * Checks if `value` is suitable for use as unique object key.
-	 *
-	 * @private
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is suitable, else `false`.
-	 */
-	function isKeyable(value) {
-	  var type = typeof value;
-	  return (type == 'string' || type == 'number' || type == 'symbol' || type == 'boolean')
-	    ? (value !== '__proto__')
-	    : (value === null);
-	}
-
-	/**
-	 * Checks if `func` has its source masked.
-	 *
-	 * @private
-	 * @param {Function} func The function to check.
-	 * @returns {boolean} Returns `true` if `func` is masked, else `false`.
-	 */
-	function isMasked(func) {
-	  return !!maskSrcKey && (maskSrcKey in func);
-	}
-
-	/**
-	 * Checks if `value` is likely a prototype object.
-	 *
-	 * @private
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is a prototype, else `false`.
-	 */
-	function isPrototype(value) {
-	  var Ctor = value && value.constructor,
-	      proto = (typeof Ctor == 'function' && Ctor.prototype) || objectProto;
-
-	  return value === proto;
-	}
-
-	/**
-	 * Converts `value` to a string using `Object.prototype.toString`.
-	 *
-	 * @private
-	 * @param {*} value The value to convert.
-	 * @returns {string} Returns the converted string.
-	 */
-	function objectToString(value) {
-	  return nativeObjectToString.call(value);
-	}
-
-	/**
-	 * Converts `func` to its source code.
-	 *
-	 * @private
-	 * @param {Function} func The function to convert.
-	 * @returns {string} Returns the source code.
-	 */
-	function toSource(func) {
-	  if (func != null) {
-	    try {
-	      return funcToString.call(func);
-	    } catch (e) {}
-	    try {
-	      return (func + '');
-	    } catch (e) {}
-	  }
-	  return '';
-	}
-
-	/**
-	 * Performs a
-	 * [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
-	 * comparison between two values to determine if they are equivalent.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 4.0.0
-	 * @category Lang
-	 * @param {*} value The value to compare.
-	 * @param {*} other The other value to compare.
-	 * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
-	 * @example
-	 *
-	 * var object = { 'a': 1 };
-	 * var other = { 'a': 1 };
-	 *
-	 * _.eq(object, object);
-	 * // => true
-	 *
-	 * _.eq(object, other);
-	 * // => false
-	 *
-	 * _.eq('a', 'a');
-	 * // => true
-	 *
-	 * _.eq('a', Object('a'));
-	 * // => false
-	 *
-	 * _.eq(NaN, NaN);
-	 * // => true
-	 */
-	function eq(value, other) {
-	  return value === other || (value !== value && other !== other);
-	}
-
-	/**
-	 * Checks if `value` is likely an `arguments` object.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 0.1.0
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is an `arguments` object,
-	 *  else `false`.
-	 * @example
-	 *
-	 * _.isArguments(function() { return arguments; }());
-	 * // => true
-	 *
-	 * _.isArguments([1, 2, 3]);
-	 * // => false
-	 */
-	var isArguments = baseIsArguments(function() { return arguments; }()) ? baseIsArguments : function(value) {
-	  return isObjectLike(value) && hasOwnProperty.call(value, 'callee') &&
-	    !propertyIsEnumerable.call(value, 'callee');
-	};
-
-	/**
-	 * Checks if `value` is classified as an `Array` object.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 0.1.0
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is an array, else `false`.
-	 * @example
-	 *
-	 * _.isArray([1, 2, 3]);
-	 * // => true
-	 *
-	 * _.isArray(document.body.children);
-	 * // => false
-	 *
-	 * _.isArray('abc');
-	 * // => false
-	 *
-	 * _.isArray(_.noop);
-	 * // => false
-	 */
-	var isArray = Array.isArray;
-
-	/**
-	 * Checks if `value` is array-like. A value is considered array-like if it's
-	 * not a function and has a `value.length` that's an integer greater than or
-	 * equal to `0` and less than or equal to `Number.MAX_SAFE_INTEGER`.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 4.0.0
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is array-like, else `false`.
-	 * @example
-	 *
-	 * _.isArrayLike([1, 2, 3]);
-	 * // => true
-	 *
-	 * _.isArrayLike(document.body.children);
-	 * // => true
-	 *
-	 * _.isArrayLike('abc');
-	 * // => true
-	 *
-	 * _.isArrayLike(_.noop);
-	 * // => false
-	 */
-	function isArrayLike(value) {
-	  return value != null && isLength(value.length) && !isFunction(value);
-	}
-
-	/**
-	 * Checks if `value` is a buffer.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 4.3.0
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is a buffer, else `false`.
-	 * @example
-	 *
-	 * _.isBuffer(new Buffer(2));
-	 * // => true
-	 *
-	 * _.isBuffer(new Uint8Array(2));
-	 * // => false
-	 */
-	var isBuffer = nativeIsBuffer || stubFalse;
-
-	/**
-	 * Performs a deep comparison between two values to determine if they are
-	 * equivalent.
-	 *
-	 * **Note:** This method supports comparing arrays, array buffers, booleans,
-	 * date objects, error objects, maps, numbers, `Object` objects, regexes,
-	 * sets, strings, symbols, and typed arrays. `Object` objects are compared
-	 * by their own, not inherited, enumerable properties. Functions and DOM
-	 * nodes are compared by strict equality, i.e. `===`.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 0.1.0
-	 * @category Lang
-	 * @param {*} value The value to compare.
-	 * @param {*} other The other value to compare.
-	 * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
-	 * @example
-	 *
-	 * var object = { 'a': 1 };
-	 * var other = { 'a': 1 };
-	 *
-	 * _.isEqual(object, other);
-	 * // => true
-	 *
-	 * object === other;
-	 * // => false
-	 */
-	function isEqual(value, other) {
-	  return baseIsEqual(value, other);
-	}
-
-	/**
-	 * Checks if `value` is classified as a `Function` object.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 0.1.0
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is a function, else `false`.
-	 * @example
-	 *
-	 * _.isFunction(_);
-	 * // => true
-	 *
-	 * _.isFunction(/abc/);
-	 * // => false
-	 */
-	function isFunction(value) {
-	  if (!isObject(value)) {
-	    return false;
-	  }
-	  // The use of `Object#toString` avoids issues with the `typeof` operator
-	  // in Safari 9 which returns 'object' for typed arrays and other constructors.
-	  var tag = baseGetTag(value);
-	  return tag == funcTag || tag == genTag || tag == asyncTag || tag == proxyTag;
-	}
-
-	/**
-	 * Checks if `value` is a valid array-like length.
-	 *
-	 * **Note:** This method is loosely based on
-	 * [`ToLength`](http://ecma-international.org/ecma-262/7.0/#sec-tolength).
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 4.0.0
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is a valid length, else `false`.
-	 * @example
-	 *
-	 * _.isLength(3);
-	 * // => true
-	 *
-	 * _.isLength(Number.MIN_VALUE);
-	 * // => false
-	 *
-	 * _.isLength(Infinity);
-	 * // => false
-	 *
-	 * _.isLength('3');
-	 * // => false
-	 */
-	function isLength(value) {
-	  return typeof value == 'number' &&
-	    value > -1 && value % 1 == 0 && value <= MAX_SAFE_INTEGER;
-	}
-
-	/**
-	 * Checks if `value` is the
-	 * [language type](http://www.ecma-international.org/ecma-262/7.0/#sec-ecmascript-language-types)
-	 * of `Object`. (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 0.1.0
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is an object, else `false`.
-	 * @example
-	 *
-	 * _.isObject({});
-	 * // => true
-	 *
-	 * _.isObject([1, 2, 3]);
-	 * // => true
-	 *
-	 * _.isObject(_.noop);
-	 * // => true
-	 *
-	 * _.isObject(null);
-	 * // => false
-	 */
-	function isObject(value) {
-	  var type = typeof value;
-	  return value != null && (type == 'object' || type == 'function');
-	}
-
-	/**
-	 * Checks if `value` is object-like. A value is object-like if it's not `null`
-	 * and has a `typeof` result of "object".
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 4.0.0
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
-	 * @example
-	 *
-	 * _.isObjectLike({});
-	 * // => true
-	 *
-	 * _.isObjectLike([1, 2, 3]);
-	 * // => true
-	 *
-	 * _.isObjectLike(_.noop);
-	 * // => false
-	 *
-	 * _.isObjectLike(null);
-	 * // => false
-	 */
-	function isObjectLike(value) {
-	  return value != null && typeof value == 'object';
-	}
-
-	/**
-	 * Checks if `value` is classified as a typed array.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 3.0.0
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is a typed array, else `false`.
-	 * @example
-	 *
-	 * _.isTypedArray(new Uint8Array);
-	 * // => true
-	 *
-	 * _.isTypedArray([]);
-	 * // => false
-	 */
-	var isTypedArray = nodeIsTypedArray ? baseUnary(nodeIsTypedArray) : baseIsTypedArray;
-
-	/**
-	 * Creates an array of the own enumerable property names of `object`.
-	 *
-	 * **Note:** Non-object values are coerced to objects. See the
-	 * [ES spec](http://ecma-international.org/ecma-262/7.0/#sec-object.keys)
-	 * for more details.
-	 *
-	 * @static
-	 * @since 0.1.0
-	 * @memberOf _
-	 * @category Object
-	 * @param {Object} object The object to query.
-	 * @returns {Array} Returns the array of property names.
-	 * @example
-	 *
-	 * function Foo() {
-	 *   this.a = 1;
-	 *   this.b = 2;
-	 * }
-	 *
-	 * Foo.prototype.c = 3;
-	 *
-	 * _.keys(new Foo);
-	 * // => ['a', 'b'] (iteration order is not guaranteed)
-	 *
-	 * _.keys('hi');
-	 * // => ['0', '1']
-	 */
-	function keys(object) {
-	  return isArrayLike(object) ? arrayLikeKeys(object) : baseKeys(object);
-	}
-
-	/**
-	 * This method returns a new empty array.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 4.13.0
-	 * @category Util
-	 * @returns {Array} Returns the new empty array.
-	 * @example
-	 *
-	 * var arrays = _.times(2, _.stubArray);
-	 *
-	 * console.log(arrays);
-	 * // => [[], []]
-	 *
-	 * console.log(arrays[0] === arrays[1]);
-	 * // => false
-	 */
-	function stubArray() {
-	  return [];
-	}
-
-	/**
-	 * This method returns `false`.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 4.13.0
-	 * @category Util
-	 * @returns {boolean} Returns `false`.
-	 * @example
-	 *
-	 * _.times(2, _.stubFalse);
-	 * // => [false, false]
-	 */
-	function stubFalse() {
-	  return false;
-	}
-
-	module.exports = isEqual; 
-} (lodash_isequal, lodash_isequal.exports));
-
-var lodash_isequalExports = lodash_isequal.exports;
-var isEqual = /*@__PURE__*/getDefaultExportFromCjs(lodash_isequalExports);
+    }, [blockId]);
+    return block;
+}
 
 /* eslint-disable no-undefined,no-param-reassign,no-shadow */
 
@@ -21229,1164 +22045,6 @@ var diffMatchPatch = {exports: {}};
 var diffMatchPatchExports = diffMatchPatch.exports;
 var DiffMatchPatch = /*@__PURE__*/getDefaultExportFromCjs(diffMatchPatchExports);
 
-function ansiRegex({onlyFirst = false} = {}) {
-	const pattern = [
-	    '[\\u001B\\u009B][[\\]()#;?]*(?:(?:(?:(?:;[-a-zA-Z\\d\\/#&.:=?%@~_]+)*|[a-zA-Z\\d]+(?:;[-a-zA-Z\\d\\/#&.:=?%@~_]*)*)?\\u0007)',
-		'(?:(?:\\d{1,4}(?:;\\d{0,4})*)?[\\dA-PR-TZcf-ntqry=><~]))'
-	].join('|');
-
-	return new RegExp(pattern, onlyFirst ? undefined : 'g');
-}
-
-function stripAnsi(string) {
-	if (typeof string !== 'string') {
-		throw new TypeError(`Expected a \`string\`, got \`${typeof string}\``);
-	}
-
-	return string.replace(ansiRegex(), '');
-}
-
-// Based on https://github.com/lodash/lodash/blob/6018350ac10d5ce6a5b7db625140b82aeab804df/.internal/unicodeSize.js
-
-function charRegex() {
-	// Used to compose unicode character classes.
-	const astralRange = "\\ud800-\\udfff";
-	const comboMarksRange = "\\u0300-\\u036f";
-	const comboHalfMarksRange = "\\ufe20-\\ufe2f";
-	const comboSymbolsRange = "\\u20d0-\\u20ff";
-	const comboMarksExtendedRange = "\\u1ab0-\\u1aff";
-	const comboMarksSupplementRange = "\\u1dc0-\\u1dff";
-	const comboRange = comboMarksRange + comboHalfMarksRange + comboSymbolsRange + comboMarksExtendedRange + comboMarksSupplementRange;
-	const varRange = "\\ufe0e\\ufe0f";
-
-	// Used to compose unicode capture groups.
-	const astral = `[${astralRange}]`;
-	const combo = `[${comboRange}]`;
-	const fitz = "\\ud83c[\\udffb-\\udfff]";
-	const modifier = `(?:${combo}|${fitz})`;
-	const nonAstral = `[^${astralRange}]`;
-	const regional = "(?:\\ud83c[\\udde6-\\uddff]){2}";
-	const surrogatePair = "[\\ud800-\\udbff][\\udc00-\\udfff]";
-	const zeroWidthJoiner = "\\u200d";
-	const blackFlag = "(?:\\ud83c\\udff4\\udb40\\udc67\\udb40\\udc62\\udb40(?:\\udc65|\\udc73|\\udc77)\\udb40(?:\\udc6e|\\udc63|\\udc6c)\\udb40(?:\\udc67|\\udc74|\\udc73)\\udb40\\udc7f)";
-
-	// Used to compose unicode regexes.
-	const optModifier = `${modifier}?`;
-	const optVar = `[${varRange}]?`;
-	const optJoin = `(?:${zeroWidthJoiner}(?:${[nonAstral, regional, surrogatePair].join("|")})${optVar + optModifier})*`;
-	const seq = optVar + optModifier + optJoin;
-	const nonAstralCombo = `${nonAstral}${combo}?`;
-	const symbol = `(?:${[blackFlag, nonAstralCombo, combo, regional, surrogatePair, astral].join("|")})`;
-
-	// Used to match [string symbols](https://mathiasbynens.be/notes/javascript-unicode).
-	return new RegExp(`${fitz}(?=${fitz})|${symbol + seq}`, "g")
-}
-
-function stringLength(string, {countAnsiEscapeCodes = false} = {}) {
-	if (string === '') {
-		return 0;
-	}
-
-	if (!countAnsiEscapeCodes) {
-		string = stripAnsi(string);
-	}
-
-	if (string === '') {
-		return 0;
-	}
-
-	return string.match(charRegex()).length;
-}
-
-var dist = {};
-
-const strPosToUni = (s, strOffset = s.length) => {
-    let pairs = 0;
-    let i = 0;
-    for (; i < strOffset; i++) {
-        const code = s.charCodeAt(i);
-        if (code >= 0xd800 && code <= 0xdfff) {
-            pairs++;
-            i++; // Skip the second part of the pair.
-        }
-    }
-    if (i !== strOffset)
-        throw Error('Invalid offset - splits unicode bytes');
-    return i - pairs;
-};
-const uniToStrPos = (s, uniOffset) => {
-    let pos = 0;
-    for (; uniOffset > 0; uniOffset--) {
-        const code = s.charCodeAt(pos);
-        pos += code >= 0xd800 && code <= 0xdfff ? 2 : 1;
-    }
-    return pos;
-};
-
-var unicount = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    strPosToUni: strPosToUni,
-    uniToStrPos: uniToStrPos
-});
-
-var require$$0 = /*@__PURE__*/getAugmentedNamespace(unicount);
-
-var type = {};
-
-(function (exports) {
-	/* Text OT!
-	 *
-	 * This is an OT implementation for text. It is the standard implementation of
-	 * text used by ShareJS.
-	 *
-	 * This type is composable and by default non-invertable (operations do not by
-	 * default contain enough information to invert them). Its similar to ShareJS's
-	 * old text-composable type, but its not invertable and its very similar to the
-	 * text-tp2 implementation but it doesn't support tombstones or purging.
-	 *
-	 * Ops are lists of components which iterate over the document. Components are
-	 * either:
-	 *
-	 * - A number N: Skip N characters in the original document
-	 * - "str": Insert "str" at the current position in the document
-	 * - {d:N}: Delete N characters at the current position in the document
-	 * - {d:"str"}: Delete "str" at the current position in the document. This is
-	 *   equivalent to {d:N} but provides extra information for operation
-	 *   invertability.
-	 *
-	 * Eg: [3, 'hi', 5, {d:8}]
-	 *
-	 * The operation does not have to skip the last characters in the document.
-	 *
-	 * Snapshots are by default strings.
-	 *
-	 * Cursors are either a single number (which is the cursor position) or a pair
-	 * of [anchor, focus] (aka [start, end]). Be aware that end can be before start.
-	 *
-	 * The actual string type is configurable. The OG default exposed text type uses
-	 * raw javascript strings, but they're not compatible with OT implementations in
-	 * other languages because string.length returns the wrong value for unicode
-	 * characters that don't fit in 2 bytes. And JS strings are quite an inefficient
-	 * data structure for manipulating lines & UTF8 offsets. For this reason, you
-	 * can use your own data structure underneath the text OT code.
-	 *
-	 * Note that insert operations themselves are always raw strings. Its just
-	 * snapshots that are configurable.
-	 */
-	Object.defineProperty(exports, "__esModule", { value: true });
-	exports.uniSlice = exports.dlen = exports.eachOp = void 0;
-	const unicount_1 = require$$0;
-	/** Check the operation is valid. Throws if not valid. */
-	const checkOp = (op) => {
-	    if (!Array.isArray(op))
-	        throw Error('Op must be an array of components');
-	    let last = null;
-	    for (let i = 0; i < op.length; i++) {
-	        const c = op[i];
-	        switch (typeof c) {
-	            case 'object':
-	                // The only valid objects are {d:X} for +ive values of X or non-empty strings.
-	                if (typeof c.d !== 'number' && typeof c.d !== 'string')
-	                    throw Error('Delete must be number or string');
-	                if (exports.dlen(c.d) <= 0)
-	                    throw Error('Deletes must not be empty');
-	                break;
-	            case 'string':
-	                // Strings are inserts.
-	                if (!(c.length > 0))
-	                    throw Error('Inserts cannot be empty');
-	                break;
-	            case 'number':
-	                // Numbers must be skips. They have to be +ive numbers.
-	                if (!(c > 0))
-	                    throw Error('Skip components must be >0');
-	                if (typeof last === 'number')
-	                    throw Error('Adjacent skip components should be combined');
-	                break;
-	        }
-	        last = c;
-	    }
-	    if (typeof last === 'number')
-	        throw Error('Op has a trailing skip');
-	};
-	// TODO: Consider exposing this at the library level.
-	// TODO: Also consider rewriting this to use es iterators instead of callback-passing style.
-	function eachOp(op, fn) {
-	    let prePos = 0, postPos = 0;
-	    for (let i = 0; i < op.length; i++) {
-	        const c = op[i];
-	        fn(c, prePos, postPos);
-	        switch (typeof c) {
-	            case 'object': // Delete
-	                prePos += exports.dlen(c.d);
-	                break;
-	            case 'string': // Insert
-	                postPos += unicount_1.strPosToUni(c);
-	                break;
-	            case 'number': // Skip
-	                prePos += c;
-	                postPos += c;
-	                break;
-	        }
-	    }
-	}
-	exports.eachOp = eachOp;
-	function mapOp(op, fn) {
-	    const newOp = [];
-	    const append = makeAppend(newOp);
-	    eachOp(op, (c, prePos, postPos) => {
-	        append(fn(c, prePos, postPos));
-	    });
-	    return trim(newOp);
-	}
-	const id = (x) => x;
-	const normalize = (op) => {
-	    return mapOp(op, id);
-	};
-	exports.dlen = (d) => typeof d === 'number' ? d : unicount_1.strPosToUni(d);
-	/** Make a function that appends to the given operation. */
-	const makeAppend = (op) => (component) => {
-	    if (!component || component.d === 0 || component.d === '') ;
-	    else if (op.length === 0) {
-	        op.push(component);
-	    }
-	    else if (typeof component === typeof op[op.length - 1]) {
-	        if (typeof component === 'object') {
-	            // Concatenate deletes. This is annoying because the op or component could
-	            // contain strings or numbers.
-	            const last = op[op.length - 1];
-	            last.d = typeof last.d === 'string' && typeof component.d === 'string'
-	                ? last.d + component.d // Preserve invert information
-	                : exports.dlen(last.d) + exports.dlen(component.d); // Discard invert information, if any.
-	            // (op[op.length - 1] as {d:number}).d += component.d
-	        }
-	        else {
-	            // Concat strings / inserts. TSC should be smart enough for this :p
-	            op[op.length - 1] += component;
-	        }
-	    }
-	    else {
-	        op.push(component);
-	    }
-	};
-	/** Get the length of a component */
-	const componentLength = (c) => (typeof c === 'number' ? c
-	    : typeof c === 'string' ? unicount_1.strPosToUni(c)
-	        : typeof c.d === 'number' ? c.d
-	            : unicount_1.strPosToUni(c.d));
-	// Does not support negative numbers.
-	exports.uniSlice = (s, startUni, endUni) => {
-	    const start = unicount_1.uniToStrPos(s, startUni);
-	    const end = endUni == null ? Infinity : unicount_1.uniToStrPos(s, endUni);
-	    return s.slice(start, end);
-	};
-	const dslice = (d, start, end) => (typeof d === 'number'
-	    ? (end == null) ? d - start : Math.min(d, end) - start
-	    : exports.uniSlice(d, start, end));
-	/** Makes and returns utility functions take and peek.
-	 */
-	const makeTake = (op) => {
-	    // TODO: Rewrite this by passing a context, like the rust code does. Its cleaner that way.
-	    // The index of the next component to take
-	    let idx = 0;
-	    // The offset into the component. For strings this is in UCS2 length, not
-	    // unicode codepoints.
-	    let offset = 0;
-	    // Take up to length n from the front of op. If n is -1, take the entire next
-	    // op component. If indivisableField == 'd', delete components won't be separated.
-	    // If indivisableField == 'i', insert components won't be separated.
-	    const take = (n, indivisableField) => {
-	        // We're at the end of the operation. The op has skips, forever. Infinity
-	        // might make more sense than null here.
-	        if (idx === op.length)
-	            return n === -1 ? null : n;
-	        const c = op[idx];
-	        let part;
-	        if (typeof c === 'number') {
-	            // Skip
-	            if (n === -1 || c - offset <= n) {
-	                part = c - offset;
-	                ++idx;
-	                offset = 0;
-	                return part;
-	            }
-	            else {
-	                offset += n;
-	                return n;
-	            }
-	        }
-	        else if (typeof c === 'string') {
-	            // Insert
-	            if (n === -1 || indivisableField === 'i' || unicount_1.strPosToUni(c.slice(offset)) <= n) {
-	                part = c.slice(offset);
-	                ++idx;
-	                offset = 0;
-	                return part;
-	            }
-	            else {
-	                const offset2 = offset + unicount_1.uniToStrPos(c.slice(offset), n);
-	                part = c.slice(offset, offset2);
-	                offset = offset2;
-	                return part;
-	            }
-	        }
-	        else {
-	            // Delete
-	            //
-	            // So this is a little weird - the insert case uses UCS2 length offsets
-	            // directly instead of counting in codepoints. Thats more efficient, but
-	            // more complicated. It only matters for non-invertable ops with huge
-	            // deletes being composed / transformed by other very complicated ops.
-	            // Probably not common enough to optimize for. Esp since this is a little
-	            // bit of a mess anyway, and the tests should iron out any problems.
-	            if (n === -1 || indivisableField === 'd' || exports.dlen(c.d) - offset <= n) {
-	                // Emit the remainder of the delete.
-	                part = { d: dslice(c.d, offset) };
-	                // part = {d: dlen(c.d) - offset}
-	                ++idx;
-	                offset = 0;
-	                return part;
-	            }
-	            else {
-	                // Slice into the delete content
-	                let result = dslice(c.d, offset, offset + n);
-	                offset += n;
-	                return { d: result };
-	            }
-	        }
-	    };
-	    // Peek at the next op that will be returned.
-	    const peek = () => op[idx];
-	    return { take, peek };
-	};
-	/** Trim any excess skips from the end of an operation.
-	 *
-	 * There should only be at most one, because the operation was made with append.
-	 */
-	const trim = (op) => {
-	    if (op.length > 0 && typeof op[op.length - 1] === 'number') {
-	        op.pop();
-	    }
-	    return op;
-	};
-	/** Transform op by otherOp.
-	 *
-	 * @param op - The operation to transform
-	 * @param otherOp - Operation to transform it by
-	 * @param side - Either 'left' or 'right'
-	 */
-	function transform(op1, op2, side) {
-	    if (side !== 'left' && side !== 'right') {
-	        throw Error("side (" + side + ") must be 'left' or 'right'");
-	    }
-	    checkOp(op1);
-	    checkOp(op2);
-	    const newOp = [];
-	    const append = makeAppend(newOp);
-	    const { take, peek } = makeTake(op1);
-	    for (let i = 0; i < op2.length; i++) {
-	        const c2 = op2[i];
-	        let length, c1;
-	        switch (typeof c2) {
-	            case 'number': // Skip
-	                length = c2;
-	                while (length > 0) {
-	                    c1 = take(length, 'i');
-	                    append(c1);
-	                    if (typeof c1 !== 'string') {
-	                        length -= componentLength(c1);
-	                    }
-	                }
-	                break;
-	            case 'string': // Insert
-	                if (side === 'left') {
-	                    // The left insert should go first.
-	                    if (typeof peek() === 'string') {
-	                        append(take(-1));
-	                    }
-	                }
-	                // Otherwise skip the inserted text.
-	                append(unicount_1.strPosToUni(c2));
-	                break;
-	            case 'object': // Delete
-	                length = exports.dlen(c2.d);
-	                while (length > 0) {
-	                    c1 = take(length, 'i');
-	                    switch (typeof c1) {
-	                        case 'number':
-	                            length -= c1;
-	                            break;
-	                        case 'string':
-	                            append(c1);
-	                            break;
-	                        case 'object':
-	                            // The delete is unnecessary now - the text has already been deleted.
-	                            length -= exports.dlen(c1.d);
-	                    }
-	                }
-	                break;
-	        }
-	    }
-	    // Append any extra data in op1.
-	    let c;
-	    while ((c = take(-1)))
-	        append(c);
-	    return trim(newOp);
-	}
-	/** Compose op1 and op2 together and return the result */
-	function compose(op1, op2) {
-	    checkOp(op1);
-	    checkOp(op2);
-	    const result = [];
-	    const append = makeAppend(result);
-	    const { take } = makeTake(op1);
-	    for (let i = 0; i < op2.length; i++) {
-	        const component = op2[i];
-	        let length, chunk;
-	        switch (typeof component) {
-	            case 'number': // Skip
-	                length = component;
-	                while (length > 0) {
-	                    chunk = take(length, 'd');
-	                    append(chunk);
-	                    if (typeof chunk !== 'object') {
-	                        length -= componentLength(chunk);
-	                    }
-	                }
-	                break;
-	            case 'string': // Insert
-	                append(component);
-	                break;
-	            case 'object': // Delete
-	                length = exports.dlen(component.d); // Length of the delete we're doing
-	                let offset = 0; // Offset into our deleted content
-	                while (offset < length) {
-	                    chunk = take(length - offset, 'd');
-	                    switch (typeof chunk) {
-	                        case 'number':
-	                            // We're deleting the skipped characters.
-	                            append({ d: dslice(component.d, offset, offset + chunk) });
-	                            offset += chunk;
-	                            break;
-	                        case 'string':
-	                            offset += unicount_1.strPosToUni(chunk);
-	                            break;
-	                        case 'object':
-	                            append(chunk);
-	                    }
-	                }
-	                break;
-	        }
-	    }
-	    let c;
-	    while ((c = take(-1)))
-	        append(c);
-	    return trim(result);
-	}
-	// This operates in unicode offsets to make it consistent with the equivalent
-	// methods in other languages / systems.
-	const transformPosition = (cursor, op) => {
-	    let pos = 0;
-	    for (let i = 0; i < op.length && cursor > pos; i++) {
-	        const c = op[i];
-	        // I could actually use the op_iter stuff above - but I think its simpler
-	        // like this.
-	        switch (typeof c) {
-	            case 'number': { // skip
-	                pos += c;
-	                break;
-	            }
-	            case 'string': // insert
-	                // Its safe to use c.length here because they're both utf16 offsets.
-	                // Ignoring pos because the doc doesn't know about the insert yet.
-	                const offset = unicount_1.strPosToUni(c);
-	                pos += offset;
-	                cursor += offset;
-	                break;
-	            case 'object': // delete
-	                cursor -= Math.min(exports.dlen(c.d), cursor - pos);
-	                break;
-	        }
-	    }
-	    return cursor;
-	};
-	const transformSelection = (selection, op) => (typeof selection === 'number'
-	    ? transformPosition(selection, op)
-	    : selection.map(s => transformPosition(s, op)));
-	function makeInvertible(op, doc, ropeImpl) {
-	    return mapOp(op, (c, prePos) => ((typeof c === 'object' && typeof c.d === 'number') // Delete
-	        ? { d: ropeImpl.slice(doc, prePos, prePos + c.d) }
-	        : c));
-	}
-	/** Attempt to invert the operation. Operations with {d:N} components cannot be inverted, and this method will throw. */
-	function invert(op) {
-	    return mapOp(op, c => {
-	        switch (typeof c) {
-	            case 'object': // Delete
-	                if (typeof c.d === 'number') {
-	                    throw Error('Cannot invert text op: Deleted characters missing from operation. makeInvertible must be called first.');
-	                }
-	                else
-	                    return c.d; // delete -> insert
-	            case 'string': return { d: c }; // Insert -> delete
-	            case 'number': return c; // skip -> skip
-	        }
-	    });
-	}
-	/** Strip extraneous invertibility information from the operation */
-	function stripInvertible(op) {
-	    return mapOp(op, c => ((typeof c === 'object' && typeof c.d === 'string')
-	        ? { d: unicount_1.strPosToUni(c.d) }
-	        : c));
-	}
-	/** Helper method. returns true if the operation can be successfully inverted. */
-	function isInvertible(op) {
-	    let invertible = true;
-	    eachOp(op, c => {
-	        if (typeof c === 'object' && typeof c.d === 'number')
-	            invertible = false;
-	    });
-	    return invertible;
-	}
-	function makeType(ropeImpl) {
-	    return {
-	        name: 'text-unicode',
-	        uri: 'http://sharejs.org/types/text-unicode',
-	        trim,
-	        normalize,
-	        checkOp,
-	        /** Create a new text snapshot.
-	         *
-	         * @param {string} initial - initial snapshot data. Optional. Defaults to ''.
-	         * @returns {Snap} Initial document snapshot object
-	         */
-	        create(initial = '') {
-	            if (typeof initial !== 'string') {
-	                throw Error('Initial data must be a string');
-	            }
-	            return ropeImpl.create(initial);
-	        },
-	        /** Apply an operation to a document snapshot
-	         */
-	        apply(str, op) {
-	            checkOp(op);
-	            const builder = ropeImpl.builder(str);
-	            for (let i = 0; i < op.length; i++) {
-	                const component = op[i];
-	                switch (typeof component) {
-	                    case 'number':
-	                        builder.skip(component);
-	                        break;
-	                    case 'string':
-	                        builder.append(component);
-	                        break;
-	                    case 'object':
-	                        builder.del(exports.dlen(component.d));
-	                        break;
-	                }
-	            }
-	            return builder.build();
-	        },
-	        transform,
-	        compose,
-	        transformPosition,
-	        transformSelection,
-	        isInvertible,
-	        makeInvertible(op, doc) { return makeInvertible(op, doc, ropeImpl); },
-	        stripInvertible,
-	        invert,
-	        invertWithDoc(op, doc) { return invert(makeInvertible(op, doc, ropeImpl)); },
-	        isNoop: (op) => op.length === 0
-	    };
-	}
-	exports.default = makeType; 
-} (type));
-
-var api$1 = {};
-
-Object.defineProperty(api$1, "__esModule", { value: true });
-// Text document API for the 'text' type. This implements some standard API
-// methods for any text-like type, so you can easily bind a textarea or
-// something without being fussy about the underlying OT implementation.
-//
-// The API is desigend as a set of functions to be mixed in to some context
-// object as part of its lifecycle. It expects that object to have getSnapshot
-// and submitOp methods, and call _onOp when an operation is received.
-//
-// This API defines:
-//
-// - getLength() returns the length of the document in characters
-// - getText() returns a string of the document
-// - insert(pos, text, [callback]) inserts text at position pos in the document
-// - remove(pos, length, [callback]) removes length characters at position pos
-//
-// A user can define:
-// - onInsert(pos, text): Called when text is inserted.
-// - onRemove(pos, length): Called when text is removed.
-const type_1 = type;
-const unicount_1 = require$$0;
-function api(getSnapshot, submitOp) {
-    return {
-        // Returns the text content of the document
-        get: getSnapshot,
-        // Returns the number of characters in the string
-        getLength() { return getSnapshot().length; },
-        // Insert the specified text at the given position in the document
-        insert(pos, text, callback) {
-            const uniPos = unicount_1.strPosToUni(getSnapshot(), pos);
-            return submitOp([uniPos, text], callback);
-        },
-        remove(pos, lengthOrContent, callback) {
-            const uniPos = unicount_1.strPosToUni(getSnapshot(), pos);
-            return submitOp([uniPos, { d: lengthOrContent }], callback);
-        },
-        // When you use this API, you should implement these two methods
-        // in your editing context.
-        //onInsert: function(pos, text) {},
-        //onRemove: function(pos, removedLength) {},
-        _onOp(op) {
-            type_1.eachOp(op, (component, prePos, postPos) => {
-                switch (typeof component) {
-                    case 'string':
-                        if (this.onInsert)
-                            this.onInsert(postPos, component);
-                        break;
-                    case 'object':
-                        const dl = type_1.dlen(component.d);
-                        if (this.onRemove)
-                            this.onRemove(postPos, dl);
-                }
-            });
-        },
-        onInsert: null,
-        onRemove: null,
-    };
-}
-api$1.default = api;
-api.provides = { text: true };
-
-(function (exports) {
-	var __createBinding = (commonjsGlobal && commonjsGlobal.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-	    if (k2 === undefined) k2 = k;
-	    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
-	}) : (function(o, m, k, k2) {
-	    if (k2 === undefined) k2 = k;
-	    o[k2] = m[k];
-	}));
-	var __setModuleDefault = (commonjsGlobal && commonjsGlobal.__setModuleDefault) || (Object.create ? (function(o, v) {
-	    Object.defineProperty(o, "default", { enumerable: true, value: v });
-	}) : function(o, v) {
-	    o["default"] = v;
-	});
-	var __importStar = (commonjsGlobal && commonjsGlobal.__importStar) || function (mod) {
-	    if (mod && mod.__esModule) return mod;
-	    var result = {};
-	    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-	    __setModuleDefault(result, mod);
-	    return result;
-	};
-	var __importDefault = (commonjsGlobal && commonjsGlobal.__importDefault) || function (mod) {
-	    return (mod && mod.__esModule) ? mod : { "default": mod };
-	};
-	Object.defineProperty(exports, "__esModule", { value: true });
-	exports.type = exports.remove = exports.insert = void 0;
-	// This is an implementation of the text OT type built on top of JS strings.
-	// You would think this would be horribly inefficient, but its surpringly
-	// good. JS strings are magic.
-	const unicount_1 = require$$0;
-	const type_1 = __importStar(type);
-	const api_1 = __importDefault(api$1);
-	const ropeImplUnicodeString = {
-	    create(s) { return s; },
-	    toString(s) { return s; },
-	    builder(oldDoc) {
-	        if (typeof oldDoc !== 'string')
-	            throw Error('Invalid document snapshot: ' + oldDoc);
-	        const newDoc = [];
-	        return {
-	            skip(n) {
-	                let offset = unicount_1.uniToStrPos(oldDoc, n);
-	                if (offset > oldDoc.length)
-	                    throw Error('The op is too long for this document');
-	                newDoc.push(oldDoc.slice(0, offset));
-	                oldDoc = oldDoc.slice(offset);
-	            },
-	            append(s) {
-	                newDoc.push(s);
-	            },
-	            del(n) {
-	                oldDoc = oldDoc.slice(unicount_1.uniToStrPos(oldDoc, n));
-	            },
-	            build() { return newDoc.join('') + oldDoc; },
-	        };
-	    },
-	    slice: type_1.uniSlice,
-	};
-	const textString = type_1.default(ropeImplUnicodeString);
-	const type$1 = Object.assign(Object.assign({}, textString), { api: api_1.default });
-	exports.type = type$1;
-	exports.insert = (pos, text) => (text.length === 0
-	    ? []
-	    : pos === 0 ? [text] : [pos, text]);
-	exports.remove = (pos, textOrLen) => (type_1.dlen(textOrLen) === 0
-	    ? []
-	    : pos === 0 ? [{ d: textOrLen }] : [pos, { d: textOrLen }]);
-	var type_2 = type;
-	Object.defineProperty(exports, "makeType", { enumerable: true, get: function () { return type_2.default; } }); 
-} (dist));
-
-function createBlock(type, contents = [], attributes, meta) {
-    return {
-        id: v4(),
-        contents: contents.length < 1 ? [createInline('TEXT')] : contents,
-        attributes: attributes !== null && attributes !== void 0 ? attributes : {},
-        meta: meta !== null && meta !== void 0 ? meta : {},
-        type,
-    };
-}
-function getBlockId(node) {
-    var _a;
-    if ((_a = node.dataset) === null || _a === void 0 ? void 0 : _a.blockId) {
-        return [node.dataset.blockId, node];
-    }
-    if (!node.parentElement) {
-        return [];
-    }
-    return getBlockId(node.parentElement);
-}
-function getBlockElementById(blockId) {
-    const element = document.querySelector('[data-block-id="' + blockId + '"]');
-    if (!element)
-        return null;
-    return element;
-}
-function getOuter(node) {
-    if (node.classList.contains('shibuya-block-outer')) {
-        return node;
-    }
-    if (!node.parentElement) {
-        return null;
-    }
-    return getOuter(node.parentElement);
-}
-function getBlockOuterElementById(blockId) {
-    const element = document.querySelector('[data-block-id="' + blockId + '"]');
-    if (!element)
-        return null;
-    const outerEl = getOuter(element);
-    if (!outerEl)
-        return null;
-    return outerEl;
-}
-function getBlockLength(block) {
-    var _a;
-    const element = block instanceof HTMLElement ? block : getBlockElementById(block);
-    if (!element)
-        return null;
-    let cumulativeLength = 0;
-    for (let i = 0; i < element.children.length; i++) {
-        const targetElement = element.children[i];
-        const format = (_a = targetElement.dataset.format) === null || _a === void 0 ? void 0 : _a.replace(/^inline\//, '').toUpperCase();
-        const inlineLength = isEmbed(format)
-            ? 1
-            : stringLength(getInlineText(targetElement).replaceAll(/\uFEFF/gi, ''));
-        cumulativeLength += inlineLength;
-    }
-    return cumulativeLength;
-}
-function convertHTMLtoInlines(block) {
-    const element = block instanceof HTMLElement ? block : getBlockElementById(block);
-    let affectedLength = 0;
-    let affected = false;
-    if (!element)
-        return { contents: [], affectedLength, affected };
-    const contents = Array.from(element.childNodes).reduce((r, inline, currentIndex) => {
-        var _a, _b;
-        if (inline instanceof Text) {
-            element.removeChild(inline);
-            if (!(inline === null || inline === void 0 ? void 0 : inline.textContent))
-                return r;
-            affectedLength += inline.length;
-            affected = true;
-            return [...r, createInline('TEXT', inline.textContent)];
-        }
-        const inlineText = getInlineText(inline);
-        const format = (_a = inline.dataset.format) === null || _a === void 0 ? void 0 : _a.replace(/^inline\//, '').toUpperCase();
-        if (!format || !inline.dataset.inlineId)
-            return r;
-        if (inlineText.match(/\uFEFF$/i)) {
-            affected = true;
-        }
-        if (inlineText.match(/^\uFEFF/i)) {
-            affectedLength -= 1;
-            affected = true;
-        }
-        let text = inlineText.replaceAll(/\uFEFF/gi, '');
-        text = currentIndex === 0 && text.length < 1 ? '\uFEFF' : text;
-        return [
-            ...r,
-            {
-                id: inline.dataset.inlineId,
-                attributes: JSON.parse((_b = inline.dataset.attributes) !== null && _b !== void 0 ? _b : ''),
-                text,
-                type: format,
-                isEmbed: isEmbed(format),
-            },
-        ];
-    }, []);
-    return { contents, affectedLength, affected };
-}
-// convert block index to native index
-function getNativeIndexFromBlockIndex(block, index) {
-    var _a, _b;
-    const element = block instanceof HTMLElement ? block : getBlockElementById(block);
-    if (!element)
-        return null;
-    let cumulativeLength = 0;
-    for (let i = 0; i < element.children.length; i++) {
-        const targetElement = element.children[i];
-        const format = (_a = targetElement.dataset.format) === null || _a === void 0 ? void 0 : _a.replace(/^inline\//, '').toUpperCase();
-        if (format) {
-            if (isEmbed(format)) {
-                cumulativeLength += 1;
-            }
-            else {
-                const childNodes = targetElement.childNodes;
-                for (let j = 0; j < childNodes.length; j++) {
-                    const node = childNodes[j];
-                    let nodeLength = stringLength((_b = node.textContent) !== null && _b !== void 0 ? _b : '');
-                    nodeLength = nodeLength > 0 ? nodeLength : 1;
-                    if (index <= cumulativeLength + nodeLength) {
-                        if (node instanceof Image) {
-                            if (index === cumulativeLength + nodeLength) {
-                                return {
-                                    node: targetElement,
-                                    index: j + 1,
-                                };
-                            }
-                            return {
-                                node: targetElement,
-                                index: j,
-                            };
-                        }
-                        if (node.tagName === 'BR') {
-                            return targetElement.nextSibling
-                                ? {
-                                    node: targetElement.nextSibling,
-                                    index: 0,
-                                }
-                                : {
-                                    node: targetElement,
-                                    index: j,
-                                };
-                        }
-                        return {
-                            node: node instanceof Text ? node : targetElement,
-                            index: index - cumulativeLength,
-                        };
-                    }
-                    cumulativeLength += nodeLength;
-                }
-            }
-        }
-    }
-    return null;
-}
-function getBlockIndexFromNativeIndex(ChildNode, offset) {
-    var _a, _b, _c;
-    const [inlineId, inlineElement] = getInlineId(ChildNode);
-    const [blockId, blockElement] = getBlockId(ChildNode);
-    if (!inlineId || !inlineElement || !blockElement || !blockId)
-        return null;
-    let cumulativeLength = 0;
-    for (let i = 0; i < blockElement.children.length; i++) {
-        const targetElement = blockElement.children[i];
-        const format = (_a = targetElement.dataset.format) === null || _a === void 0 ? void 0 : _a.replace(/^inline\//, '').toUpperCase();
-        if (format) {
-            const inlineLength = isEmbed(format)
-                ? 1
-                : stringLength(getInlineText(targetElement));
-            if (targetElement === inlineElement) {
-                const childNodes = Array.from(inlineElement.childNodes);
-                let normalizedOffset = 0;
-                for (let j = 0; j < childNodes.length; j++) {
-                    if (childNodes[j] === ChildNode) {
-                        const offestText = (_b = childNodes[j].textContent) !== null && _b !== void 0 ? _b : '';
-                        // emoji support
-                        const offsetTextIndex = stringLength(offestText.slice(0, offset));
-                        normalizedOffset += offsetTextIndex;
-                        break;
-                    }
-                    if (ChildNode.contains(childNodes[j]) && j === offset) {
-                        break;
-                    }
-                    // <br> only line support
-                    if (ChildNode === inlineElement && j === offset) {
-                        normalizedOffset += 1;
-                        break;
-                    }
-                    let nodeLength = stringLength((_c = childNodes[j].textContent) !== null && _c !== void 0 ? _c : '');
-                    nodeLength = nodeLength > 0 ? nodeLength : 1;
-                    normalizedOffset += nodeLength;
-                }
-                return { blockId, index: cumulativeLength + normalizedOffset };
-            }
-            cumulativeLength += inlineLength;
-        }
-    }
-    return null;
-}
-// index is the position to start deleting, and length is the number of characters to delete (default is 1).
-function deleteInlineContents(contents, index, length = 1) {
-    let startIndex = index;
-    let endIndex = index + length;
-    const destContents = [];
-    let cumulativeLength = 0;
-    for (let i = 0; i < contents.length; i++) {
-        const inlineLength = contents[i].isEmbed ? 1 : stringLength(contents[i].text);
-        if (length > 0 &&
-            endIndex >= cumulativeLength &&
-            startIndex < cumulativeLength + inlineLength) {
-            if (!contents[i].isEmbed) {
-                let deleteIndex = startIndex - cumulativeLength;
-                deleteIndex = deleteIndex > 0 ? deleteIndex : 0;
-                const textlength = stringLength(contents[i].text) - deleteIndex;
-                const deletelength = textlength - length >= 0 ? length : textlength;
-                length -= deletelength;
-                const removeOp = dist.remove(deleteIndex, deletelength);
-                const text = dist.type.apply(contents[i].text, removeOp);
-                if (stringLength(text) > 0) {
-                    destContents.push(Object.assign(Object.assign({}, contents[i]), { text }));
-                }
-            }
-            else {
-                length--;
-            }
-        }
-        else {
-            destContents.push(contents[i]);
-        }
-        cumulativeLength += inlineLength;
-    }
-    if (destContents.length < 1) {
-        destContents.push(createInline('TEXT'));
-    }
-    return destContents;
-}
-function insertTextInlineContents(contents, text, index) {
-    const destContents = [];
-    let processedIndex = 0;
-    for (let i = 0; i < contents.length; i++) {
-        const inlineLength = contents[i].isEmbed ? 1 : stringLength(contents[i].text);
-        if (index > processedIndex && index <= processedIndex + inlineLength) {
-            const insertIndex = index - processedIndex;
-            const insertOp = dist.insert(insertIndex, text);
-            const insertedText = dist.type.apply(contents[i].text, insertOp);
-            if (stringLength(insertedText) > 0) {
-                destContents.push(Object.assign(Object.assign({}, contents[i]), { text: insertedText }));
-            }
-        }
-        else {
-            destContents.push(contents[i]);
-        }
-        processedIndex += inlineLength;
-    }
-    return destContents;
-}
-function setAttributesForInlineContents(contents, attributes, index, length = 1) {
-    let startIndex = index;
-    let endIndex = index + length;
-    const destContents = [];
-    let cumulativeLength = 0;
-    for (let i = 0; i < contents.length; i++) {
-        const inlineLength = contents[i].isEmbed ? 1 : stringLength(contents[i].text);
-        if (length > 0 &&
-            endIndex >= cumulativeLength &&
-            startIndex < cumulativeLength + inlineLength) {
-            if (!contents[i].isEmbed) {
-                let formatIndex = startIndex - cumulativeLength;
-                formatIndex = formatIndex > 0 ? formatIndex : 0;
-                const textlength = stringLength(contents[i].text) - formatIndex;
-                const formatlength = textlength - length >= 0 ? length : textlength;
-                length -= formatlength;
-                const firstText = dist.type.apply(contents[i].text, dist.remove(formatIndex, textlength));
-                const middleText = dist.type.apply(contents[i].text, dist.type.compose(dist.remove(0, formatIndex), dist.remove(formatlength, stringLength(contents[i].text) - (formatIndex + formatlength))));
-                const lastText = dist.type.apply(contents[i].text, dist.remove(0, formatIndex + formatlength));
-                if (firstText.length > 0) {
-                    destContents.push(Object.assign(Object.assign({}, contents[i]), { id: v4(), text: firstText }));
-                }
-                if (middleText.length > 0) {
-                    const mergedAttributes = Object.assign(Object.assign({}, contents[i].attributes), attributes);
-                    Object.keys(mergedAttributes).forEach((key) => {
-                        if (typeof mergedAttributes[key] === 'boolean' && !mergedAttributes[key]) {
-                            delete mergedAttributes[key];
-                        }
-                    });
-                    destContents.push(Object.assign(Object.assign({}, contents[i]), { id: v4(), text: middleText, attributes: mergedAttributes }));
-                }
-                if (lastText.length > 0) {
-                    destContents.push(Object.assign(Object.assign({}, contents[i]), { id: v4(), text: lastText }));
-                }
-            }
-            else {
-                length--;
-            }
-        }
-        else {
-            destContents.push(contents[i]);
-        }
-        cumulativeLength += inlineLength;
-    }
-    if (destContents.length < 1) {
-        destContents.push(createInline('TEXT'));
-    }
-    return destContents;
-}
-// length is the string currently selected by the user and to be deleted when splitting.
-function splitInlineContents(contents, index) {
-    const startIndex = index;
-    const firstContents = [];
-    const lastContents = [];
-    let cumulativeLength = 0;
-    for (let i = 0; i < contents.length; i++) {
-        const inlineLength = contents[i].isEmbed ? 1 : stringLength(contents[i].text);
-        if (startIndex >= cumulativeLength && startIndex < cumulativeLength + inlineLength) {
-            if (!contents[i].isEmbed) {
-                const sliceIndex = startIndex - cumulativeLength;
-                const firstText = dist.type.apply(contents[i].text, dist.remove(sliceIndex, stringLength(contents[i].text) - sliceIndex));
-                const lastText = dist.type.apply(contents[i].text, dist.remove(0, sliceIndex));
-                if (firstText.length > 0) {
-                    firstContents.push(Object.assign(Object.assign({}, contents[i]), { text: firstText }));
-                }
-                if (lastText.length > 0) {
-                    lastContents.push(Object.assign(Object.assign({}, contents[i]), { id: v4(), text: lastText }));
-                }
-            }
-            else {
-                lastContents.push(contents[i]);
-            }
-        }
-        else {
-            if (startIndex > cumulativeLength) {
-                firstContents.push(contents[i]);
-            }
-            else {
-                lastContents.push(contents[i]);
-            }
-        }
-        cumulativeLength += inlineLength;
-    }
-    return [firstContents, lastContents];
-}
-function optimizeInlineContents(contents) {
-    let prevAttributes = {};
-    const dest = contents.reduce((r, v, i) => {
-        if (v.text === '\uFEFF') {
-            prevAttributes = Object.assign({}, v.attributes);
-            return r;
-        }
-        if (v.text === '' && !v.isEmbed) {
-            return r;
-        }
-        if (r.length > 0 && isEqual(v.attributes, prevAttributes)) {
-            prevAttributes = Object.assign({}, v.attributes);
-            r[r.length - 1].text += v.text;
-            return [...r];
-        }
-        prevAttributes = Object.assign({}, v.attributes);
-        return [...r, v];
-    }, []);
-    if (dest.length < 1) {
-        dest.push(createInline('TEXT'));
-    }
-    return dest;
-}
-function getInlineContents(contents, index, length = 0) {
-    let startIndex = index;
-    let endIndex = index + length;
-    const destContents = [];
-    let cumulativeLength = 0;
-    for (let i = 0; i < contents.length; i++) {
-        const inlineLength = contents[i].isEmbed ? 1 : stringLength(contents[i].text);
-        if (length > 0 &&
-            endIndex >= cumulativeLength &&
-            startIndex < cumulativeLength + inlineLength) {
-            if (!contents[i].isEmbed) {
-                let selectedIndex = startIndex - cumulativeLength;
-                selectedIndex = selectedIndex > 0 ? selectedIndex : 0;
-                const textlength = stringLength(contents[i].text);
-                const deleteTextlength = textlength - selectedIndex;
-                const selectedLength = textlength - length >= 0 ? length : textlength;
-                const deletelength = deleteTextlength - length >= 0 ? length : deleteTextlength;
-                length -= deletelength;
-                let text = contents[i].text;
-                if (textlength - (selectedIndex + selectedLength) > 0) {
-                    const removeLast = dist.remove(selectedIndex + selectedLength, textlength - (selectedIndex + selectedLength));
-                    text = dist.type.apply(text, removeLast);
-                }
-                const removeFirst = dist.remove(0, selectedIndex);
-                text = dist.type.apply(text, removeFirst);
-                if (stringLength(text) > 0) {
-                    destContents.push(Object.assign(Object.assign({}, contents[i]), { text }));
-                }
-            }
-            else {
-                length--;
-            }
-        }
-        cumulativeLength += inlineLength;
-    }
-    return destContents;
-}
-function getDuplicateAttributes(contents, index, length = 0) {
-    let startIndex = index;
-    let endIndex = index + length;
-    const destContents = [];
-    let cumulativeLength = 0;
-    for (let i = 0; i < contents.length; i++) {
-        const inlineLength = contents[i].isEmbed ? 1 : stringLength(contents[i].text);
-        if (length < 1) {
-            break;
-        }
-        if (endIndex >= cumulativeLength && startIndex < cumulativeLength + inlineLength) {
-            if (!contents[i].isEmbed) {
-                let selectedIndex = startIndex - cumulativeLength;
-                selectedIndex = selectedIndex > 0 ? selectedIndex : 0;
-                const textlength = stringLength(contents[i].text) - selectedIndex;
-                const selectedlength = textlength - length >= 0 ? length : textlength;
-                length -= selectedlength;
-                const text = dist.type.apply(contents[i].text, dist.remove(selectedIndex + selectedlength, stringLength(contents[i].text) - (selectedIndex + selectedlength)));
-                if (stringLength(text) > 0) {
-                    destContents.push(Object.assign({}, contents[i].attributes));
-                }
-            }
-            else {
-                length--;
-            }
-        }
-        cumulativeLength += inlineLength;
-    }
-    const duplicateAttributes = destContents.reduce((r, v, i) => {
-        if (i === 0) {
-            return Object.assign({}, v);
-        }
-        const attributes = Object.assign({}, r);
-        Object.keys(attributes).forEach((attr) => {
-            if (!Object.prototype.hasOwnProperty.call(v, attr)) {
-                delete attributes[attr];
-            }
-        });
-        return attributes;
-    }, {});
-    return duplicateAttributes;
-}
-function convertBlocksToText(blocks) {
-    const text = blocks.reduce((r, block) => {
-        return `${r}${block.contents.map((content) => content.text).join('')}\n`;
-    }, '');
-    return text.replaceAll(/\uFEFF/gi, '');
-}
-
 function caretRangeFromPoint(x, y) {
     // for chrome & safari & edge
     if (document.caretRangeFromPoint) {
@@ -22437,8 +22095,8 @@ function copyObject(object) {
 const json0diff = require('json0-ot-diff');
 function useEditor({ settings, eventEmitter, }) {
     const editorRef = React__namespace.useRef(null);
-    const lastCaretPositionRef = React__namespace.useRef();
-    const lastCaretRectRef = React__namespace.useRef();
+    const lastCaretPositionRef = React__namespace.useRef(null);
+    const lastCaretRectRef = React__namespace.useRef(null);
     const blocksRef = React__namespace.useRef([]);
     const modulesRef = React__namespace.useRef({});
     const focus = React__namespace.useCallback(() => {
@@ -22476,7 +22134,7 @@ function useEditor({ settings, eventEmitter, }) {
         return editorRef.current.contains(selection.focusNode);
     }, []);
     const prev = React__namespace.useCallback(({ index, margin = 10, blockId } = {}) => {
-        var _a, _b, _c, _d, _e;
+        var _a, _b, _c, _d, _e, _f;
         const position = lastCaretPositionRef.current;
         const currentIndex = blocksRef.current.findIndex((v) => v.id === (blockId !== null && blockId !== void 0 ? blockId : position === null || position === void 0 ? void 0 : position.blockId));
         if (currentIndex < 1 || !blocksRef.current[currentIndex - 1])
@@ -22492,8 +22150,22 @@ function useEditor({ settings, eventEmitter, }) {
         const prevBlock = getBlockElementById(blocksRef.current[currentIndex - 1].id);
         if (!prevBlock)
             return false;
-        // for embedded elements
-        if (prevBlock.contentEditable === 'false') {
+        // 埋め込み要素対応
+        if (blocksRef.current[currentIndex - 1].type === 'TABLE') {
+            const tableBlock = blocksRef.current[currentIndex - 1];
+            const tableLastChild = tableBlock.childBlocks.find((v) => v.name === `r${tableBlock.attributes.tableR - 1}-c${tableBlock.attributes.tableC - 1}`);
+            if (!tableLastChild)
+                return false;
+            const tableLastChildLength = (_a = getChildBlockLength(tableLastChild.id)) !== null && _a !== void 0 ? _a : 0;
+            setCaretPosition({
+                blockId: tableBlock.id,
+                childBlockId: tableLastChild.id,
+                index: tableLastChildLength,
+                nextElementDirection: 'up',
+            });
+            return true;
+        }
+        else if (prevBlock.contentEditable === 'false') {
             return prev({ blockId: prevBlock.dataset.blockId });
         }
         let prevRect = prevBlock.getBoundingClientRect();
@@ -22502,9 +22174,9 @@ function useEditor({ settings, eventEmitter, }) {
         if (container) {
             if (prevRect.top <= containerOffsetTop + settings.scrollMarginTop) {
                 const outerEl = getOuter(prevBlock);
-                const offsetTop = ((_c = (_b = (_a = editorRef.current) === null || _a === void 0 ? void 0 : _a.parentElement) === null || _b === void 0 ? void 0 : _b.offsetTop) !== null && _c !== void 0 ? _c : 0) -
+                const offsetTop = ((_d = (_c = (_b = editorRef.current) === null || _b === void 0 ? void 0 : _b.parentElement) === null || _c === void 0 ? void 0 : _c.offsetTop) !== null && _d !== void 0 ? _d : 0) -
                     containerOffsetTop +
-                    ((_d = outerEl === null || outerEl === void 0 ? void 0 : outerEl.offsetTop) !== null && _d !== void 0 ? _d : 0);
+                    ((_e = outerEl === null || outerEl === void 0 ? void 0 : outerEl.offsetTop) !== null && _e !== void 0 ? _e : 0);
                 if (currentIndex - 1 < 1) {
                     container.scrollTop = settings.scrollMarginTop;
                 }
@@ -22539,7 +22211,7 @@ function useEditor({ settings, eventEmitter, }) {
         // rangeがブロック外に飛んでいる場合は要素の最後に飛ばす
         const [rangeBlockId] = getBlockId(range.commonAncestorContainer);
         if (!rangeBlockId) {
-            const nextBlockLength = (_e = getBlockLength$1(blocksRef.current[currentIndex - 1].id)) !== null && _e !== void 0 ? _e : 0;
+            const nextBlockLength = (_f = getBlockLength$1(blocksRef.current[currentIndex - 1].id)) !== null && _f !== void 0 ? _f : 0;
             setCaretPosition({
                 blockId: blocksRef.current[currentIndex - 1].id,
                 index: nextBlockLength,
@@ -22549,12 +22221,6 @@ function useEditor({ settings, eventEmitter, }) {
             return true;
         }
         selection.setBaseAndExtent(range.startContainer, range.startOffset, range.startContainer, range.startOffset);
-        const nativeRange = getNativeRange();
-        if (!nativeRange)
-            return false;
-        const newCaretPosition = normalizeRange(nativeRange);
-        if (!newCaretPosition)
-            return false;
         updateCaretPositionRef();
         return true;
     }, []);
@@ -22576,15 +22242,28 @@ function useEditor({ settings, eventEmitter, }) {
         const nextBlock = getBlockElementById(blocksRef.current[currentIndex + 1].id);
         if (!nextBlock)
             return false;
-        // for embedded elements
-        if (nextBlock.contentEditable === 'false') {
+        // 埋め込み要素対応
+        if (blocksRef.current[currentIndex + 1].type === 'TABLE') {
+            const tableBlock = blocksRef.current[currentIndex + 1];
+            const tableFirstChild = tableBlock.childBlocks.find((v) => v.name === `r0-c0`);
+            if (!tableFirstChild)
+                return false;
+            const tableFirstChildLength = (_a = getChildBlockLength(tableFirstChild.id)) !== null && _a !== void 0 ? _a : 0;
+            setCaretPosition({
+                blockId: tableBlock.id,
+                childBlockId: tableFirstChild.id,
+                index: tableFirstChildLength,
+            });
+            return true;
+        }
+        else if (nextBlock.contentEditable === 'false') {
             return next({ blockId: nextBlock.dataset.blockId });
         }
         let nextRect = nextBlock.getBoundingClientRect();
         const container = getHtmlElement(settings.scrollContainer);
-        const scrollHeight = (_a = container === null || container === void 0 ? void 0 : container.clientHeight) !== null && _a !== void 0 ? _a : window.innerHeight;
+        const scrollHeight = (_b = container === null || container === void 0 ? void 0 : container.clientHeight) !== null && _b !== void 0 ? _b : window.innerHeight;
         if (container) {
-            const containerRect = (_b = container.getBoundingClientRect()) !== null && _b !== void 0 ? _b : 0;
+            const containerRect = container.getBoundingClientRect();
             if (nextRect.top + nextRect.height >=
                 containerRect.top + containerRect.height - settings.scrollMarginBottom) {
                 const outerEl = getOuter(nextBlock);
@@ -22624,12 +22303,6 @@ function useEditor({ settings, eventEmitter, }) {
             return true;
         }
         selection.setBaseAndExtent(range.startContainer, range.startOffset, range.startContainer, range.startOffset);
-        const nativeRange = getNativeRange();
-        if (!nativeRange)
-            return false;
-        const newCaretPosition = normalizeRange(nativeRange);
-        if (!newCaretPosition)
-            return false;
         updateCaretPositionRef();
         return true;
     }, []);
@@ -22650,6 +22323,17 @@ function useEditor({ settings, eventEmitter, }) {
         const contents = setAttributesForInlineContents(copyObject(block.contents), attributes, index, length);
         updateBlock(Object.assign(Object.assign({}, block), { contents }));
     }, []);
+    const formatChildBlockText = React__namespace.useCallback((blockId, childBlockId, index, length, attributes = {}) => {
+        const parentBlockIndex = blocksRef.current.findIndex((v) => v.id === blockId);
+        if (parentBlockIndex === -1)
+            return null;
+        const childBlockIndex = blocksRef.current[parentBlockIndex].childBlocks.findIndex((v) => v.id === childBlockId);
+        if (childBlockIndex === -1)
+            return null;
+        const childBlock = copyObject(blocksRef.current[parentBlockIndex].childBlocks[childBlockIndex]);
+        const contents = setAttributesForInlineContents(childBlock.contents, attributes, index, length);
+        updateChildBlock(blockId, Object.assign(Object.assign({}, childBlock), { contents }));
+    }, []);
     const setBlocks = React__namespace.useCallback((blocks) => {
         blocksRef.current = blocks.map((block) => {
             return Object.assign(Object.assign({}, block), { contents: optimizeInlineContents(block.contents) });
@@ -22669,6 +22353,12 @@ function useEditor({ settings, eventEmitter, }) {
         if (!element)
             return null;
         return getBlockLength(element);
+    }, []);
+    const getChildBlockLength = React__namespace.useCallback((blockId) => {
+        const element = getBlockElementById(blockId, true);
+        if (!element)
+            return null;
+        return getBlockLength(element, true);
     }, []);
     const getCaretPosition = React__namespace.useCallback(() => {
         const nativeRange = getNativeRange();
@@ -22704,6 +22394,9 @@ function useEditor({ settings, eventEmitter, }) {
         }
         return lastCaretRectRef.current;
     }, []);
+    const getLastCaretRect = React__namespace.useCallback(() => {
+        return lastCaretRectRef.current;
+    }, []);
     const getNativeRange = React__namespace.useCallback(() => {
         const selection = document.getSelection();
         if (!selection || selection.rangeCount < 1)
@@ -22713,19 +22406,51 @@ function useEditor({ settings, eventEmitter, }) {
             return null;
         return range;
     }, []);
-    const setCaretPosition = React__namespace.useCallback(({ blockId = '', index = 0, length = 0, nextElementDirection = 'down', }) => {
-        var _a, _b, _c, _d;
+    const setCaretPosition = React__namespace.useCallback(({ blockId = '', childBlockId = null, index = 0, length = 0, nextElementDirection = 'down', }) => {
+        var _a, _b, _c, _d, _e;
         const element = getBlockElementById(blockId);
         if (!element)
             return;
+        // ネストされた要素の場合
+        if (childBlockId) {
+            const selection = document.getSelection();
+            if (!selection)
+                return;
+            const element = getBlockElementById(childBlockId, true);
+            if (!element)
+                return null;
+            const blockLength = (_a = getBlockLength(element)) !== null && _a !== void 0 ? _a : 0;
+            if (index < 0) {
+                index = 0;
+            }
+            if (index > blockLength) {
+                index = blockLength;
+            }
+            try {
+                const range = document.createRange();
+                const start = getNativeIndexFromBlockIndex(element, index);
+                const end = getNativeIndexFromBlockIndex(element, index + length);
+                if (!start || !end)
+                    return;
+                range.setStart(start.node, start.index);
+                range.setEnd(end.node, end.index);
+                selection.removeAllRanges();
+                selection.addRange(range);
+                updateCaretPositionRef();
+            }
+            catch (e) {
+                eventEmitter.warning('Invalid Range', e);
+            }
+            return;
+        }
         // for embedded elements
         if (element.contentEditable === 'false') {
             const nextBlockId = nextElementDirection === 'up'
-                ? ((_a = element.parentElement) === null || _a === void 0 ? void 0 : _a.previousElementSibling).dataset.id
-                : ((_b = element.parentElement) === null || _b === void 0 ? void 0 : _b.nextElementSibling).dataset.id;
+                ? ((_b = element.parentElement) === null || _b === void 0 ? void 0 : _b.previousElementSibling).dataset.id
+                : ((_c = element.parentElement) === null || _c === void 0 ? void 0 : _c.nextElementSibling).dataset.id;
             if (!nextBlockId)
                 return;
-            const nextBlockLength = nextElementDirection === 'up' ? (_c = getBlockLength$1(nextBlockId)) !== null && _c !== void 0 ? _c : 0 : 0;
+            const nextBlockLength = nextElementDirection === 'up' ? (_d = getBlockLength$1(nextBlockId)) !== null && _d !== void 0 ? _d : 0 : 0;
             setCaretPosition({
                 blockId: nextBlockId,
                 index: nextBlockLength,
@@ -22737,7 +22462,7 @@ function useEditor({ settings, eventEmitter, }) {
         const selection = document.getSelection();
         if (!selection)
             return;
-        const blockLength = (_d = getBlockLength$1(blockId)) !== null && _d !== void 0 ? _d : 0;
+        const blockLength = (_e = getBlockLength$1(blockId)) !== null && _e !== void 0 ? _e : 0;
         if (index < 0) {
             index = 0;
         }
@@ -22760,70 +22485,59 @@ function useEditor({ settings, eventEmitter, }) {
             eventEmitter.warning('Invalid Range', e);
         }
     }, []);
-    const scrollIntoView = React__namespace.useCallback((blockId) => {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
-        blockId = (_b = blockId !== null && blockId !== void 0 ? blockId : (_a = lastCaretPositionRef.current) === null || _a === void 0 ? void 0 : _a.blockId) !== null && _b !== void 0 ? _b : '';
-        const element = getBlockElementById(blockId);
-        if (!element)
-            return;
-        let nextRect = (_d = (_c = element.parentElement) === null || _c === void 0 ? void 0 : _c.getBoundingClientRect()) !== null && _d !== void 0 ? _d : element.getBoundingClientRect();
-        const container = getHtmlElement(settings.scrollContainer);
-        const scrollHeight = (_e = container === null || container === void 0 ? void 0 : container.clientHeight) !== null && _e !== void 0 ? _e : window.innerHeight;
-        if (container) {
-            const containerRect = (_f = container.getBoundingClientRect()) !== null && _f !== void 0 ? _f : 0;
-            if (nextRect.top + nextRect.height >=
-                containerRect.top + containerRect.height - settings.scrollMarginBottom) {
-                const scrollTop = ((_h = (_g = element.parentElement) === null || _g === void 0 ? void 0 : _g.offsetTop) !== null && _h !== void 0 ? _h : 0) -
-                    container.clientHeight +
-                    settings.scrollMarginBottom;
-                if (container.scrollHeight > scrollTop + container.clientHeight) {
-                    container.scrollTop = scrollTop;
-                }
-                else {
-                    container.scrollTop = container.scrollHeight - container.clientHeight;
-                }
-                nextRect =
-                    (_k = (_j = element.parentElement) === null || _j === void 0 ? void 0 : _j.getBoundingClientRect()) !== null && _k !== void 0 ? _k : element.getBoundingClientRect();
-            }
-        }
-        else if (nextRect.top + nextRect.height >= scrollHeight - settings.scrollMarginBottom) {
-            if (document.scrollingElement) {
-                const nextTop = document.scrollingElement.scrollTop + nextRect.top;
-                const p = nextTop - window.innerHeight + settings.scrollMarginBottom;
-                document.scrollingElement.scrollTop = p;
-            }
-        }
-    }, []);
     const normalizeRange = React__namespace.useCallback((nativeRange) => {
         var _a;
         const [startInlineId, startInlineElement] = getInlineId(nativeRange.startContainer);
         const [endInlineId, endInlineElement] = getInlineId(nativeRange.endContainer);
+        const [childBlockId, childBlockKey, childBlockElement] = getChildBlockId(nativeRange.startContainer);
         const [blockId, blockElement] = getBlockId(nativeRange.startContainer);
         if (!editorRef.current || !startInlineId || !endInlineId || !blockId || !blockElement) {
             return null;
         }
-        const start = getBlockIndexFromNativeIndex(nativeRange.startContainer, nativeRange.startOffset);
-        const end = getBlockIndexFromNativeIndex(nativeRange.endContainer, nativeRange.endOffset);
         const caretRect = getRectByRange(nativeRange);
         if (!caretRect)
             return null;
-        const blockRect = blockElement.getBoundingClientRect();
+        // ネストされた要素の場合
+        let start, end, isTop, isBottom;
+        if (childBlockId && childBlockElement) {
+            start = getChildBlockIndexFromNativeIndex(nativeRange.startContainer, nativeRange.startOffset);
+            end = getChildBlockIndexFromNativeIndex(nativeRange.endContainer, nativeRange.endOffset);
+            const blockRect = childBlockElement.getBoundingClientRect();
+            const paddingTopText = getComputedStyle(childBlockElement).paddingTop;
+            const paddingTop = paddingTopText.match(/^[0-9]+px$/) ? parseInt(paddingTopText) : 0;
+            const scrollbarHeight = blockRect.height - childBlockElement.clientHeight;
+            isTop = caretRect.y - (blockRect.y + paddingTop) < 10;
+            isBottom =
+                blockRect.y +
+                    blockRect.height -
+                    (caretRect.y + caretRect.height + paddingTop + scrollbarHeight) <
+                    10;
+        }
+        else {
+            start = getBlockIndexFromNativeIndex(nativeRange.startContainer, nativeRange.startOffset);
+            end = getBlockIndexFromNativeIndex(nativeRange.endContainer, nativeRange.endOffset);
+            const blockRect = blockElement.getBoundingClientRect();
+            const paddingTopText = getComputedStyle(blockElement).paddingTop;
+            const paddingTop = paddingTopText.match(/^[0-9]+px$/) ? parseInt(paddingTopText) : 0;
+            const scrollbarHeight = blockRect.height - blockElement.clientHeight;
+            isTop = caretRect.y - (blockRect.y + paddingTop) < 10;
+            isBottom =
+                blockRect.y +
+                    blockRect.height -
+                    (caretRect.y + caretRect.height + paddingTop + scrollbarHeight) <
+                    10;
+        }
         if (!start || !end)
             return null;
-        const paddingTopText = getComputedStyle(blockElement).paddingTop;
-        const paddingTop = paddingTopText.match(/^[0-9]+px$/) ? parseInt(paddingTopText) : 0;
-        const scrollbarHeight = blockRect.height - blockElement.clientHeight;
         const range = {
             blockId,
+            childBlockId: childBlockId !== null && childBlockId !== void 0 ? childBlockId : null,
             blockFormat: (_a = blockElement === null || blockElement === void 0 ? void 0 : blockElement.dataset.format) !== null && _a !== void 0 ? _a : '',
             index: start.index,
             length: end.index - start.index,
             collapsed: nativeRange.collapsed,
-            isTop: caretRect.y - (blockRect.y + paddingTop) < 10,
-            isBottom: blockRect.y +
-                blockRect.height -
-                (caretRect.y + caretRect.height + paddingTop + scrollbarHeight) <
-                10,
+            isTop,
+            isBottom,
             rect: caretRect,
         };
         return range;
@@ -22885,9 +22599,9 @@ function useEditor({ settings, eventEmitter, }) {
         updateCaretPositionRef();
         if (isEqual(block.contents, contents))
             return;
-        const blockText = contents.map((v) => v.text).join('');
         // code-block対応(差分を1つにまとめる)
         if (block.type === 'CODE-BLOCK') {
+            const blockText = contents.map((v) => v.text).join('');
             contents = [createInline('TEXT', blockText)];
         }
         updateBlock(Object.assign(Object.assign({}, block), { contents }));
@@ -22909,6 +22623,56 @@ function useEditor({ settings, eventEmitter, }) {
             }
             const blockLength = (_a = getBlockLength(blockElement)) !== null && _a !== void 0 ? _a : 0;
             let caretIndex = (_b = newCaretPosition === null || newCaretPosition === void 0 ? void 0 : newCaretPosition.index) !== null && _b !== void 0 ? _b : 0;
+            caretIndex += affectedLength;
+            if (blockLength < caretIndex) {
+                caretIndex = blockLength;
+            }
+            blur();
+            setTimeout(() => {
+                setCaretPosition(Object.assign(Object.assign({}, newCaretPosition), { index: caretIndex >= 0 ? caretIndex : 0 }));
+                updateCaretRect();
+            }, 10);
+        }
+        else {
+            updateCaretRect();
+        }
+    }, []);
+    const syncChildBlock = React__namespace.useCallback((parentBlockId, blockId, blockKey, blockElement, forceUpdate = false) => {
+        var _a, _b, _c, _d;
+        const parentBlock = blocksRef.current.find((v) => v.id === parentBlockId);
+        const composing = getModule('keyboard').composing;
+        if (!parentBlock || !blockId || !blockElement || composing)
+            return;
+        let { contents, affected, affectedLength } = convertHTMLtoInlines(blockElement);
+        let childBlocks = copyObject((_a = parentBlock.childBlocks) !== null && _a !== void 0 ? _a : []);
+        let childBlockIndex = childBlocks.findIndex((v) => v.id === blockId);
+        if (childBlockIndex === -1) {
+            // Todo:: ここにブロック追加処理を
+            // { ...blockUtils.createBlock('PARAGRAPH', contents), id: blockId, name: blockKey },
+            return;
+        }
+        if (isEqual((_b = childBlocks[childBlockIndex]) === null || _b === void 0 ? void 0 : _b.contents, contents))
+            return;
+        updateCaretPositionRef();
+        updateChildBlock(parentBlock.id, Object.assign(Object.assign({}, childBlocks[childBlockIndex]), { contents }));
+        if (affected || forceUpdate) {
+            renderChild(parentBlockId, [childBlocks[childBlockIndex].id]);
+            let newCaretPosition = lastCaretPositionRef.current;
+            if (!newCaretPosition) {
+                if (!lastCaretRectRef.current)
+                    return;
+                const range = caretRangeFromPoint(lastCaretRectRef.current.x, lastCaretRectRef.current.y);
+                const selection = document.getSelection();
+                if (!selection || !range)
+                    return;
+                selection.setBaseAndExtent(range.startContainer, range.startOffset, range.startContainer, range.startOffset);
+                const nativeRange = getNativeRange();
+                if (!nativeRange)
+                    return;
+                newCaretPosition = normalizeRange(nativeRange);
+            }
+            const blockLength = (_c = getBlockLength(blockElement)) !== null && _c !== void 0 ? _c : 0;
+            let caretIndex = (_d = newCaretPosition === null || newCaretPosition === void 0 ? void 0 : newCaretPosition.index) !== null && _d !== void 0 ? _d : 0;
             caretIndex += affectedLength;
             if (blockLength < caretIndex) {
                 caretIndex = blockLength;
@@ -22947,6 +22711,26 @@ function useEditor({ settings, eventEmitter, }) {
             : type === 'prepend'
                 ? [appendBlock, ...blocksRef.current]
                 : [...blocksRef.current, appendBlock]);
+    }, []);
+    const createChildBlocks = React__namespace.useCallback((parentBlockId, appendBlocks, source = EventSources.USER) => {
+        const currentIndex = blocksRef.current.findIndex((v) => v.id === parentBlockId);
+        const blocks = copyObject(appendBlocks);
+        eventEmitter.emit(EditorEvents.EVENT_EDITOR_HISTORY_PUSH, {
+            payload: blocks.map((block) => {
+                return {
+                    type: HistoryType.CHILD_BLOCK_ADD_BLOCK,
+                    parentBlockId,
+                    blockId: block.id,
+                    block,
+                };
+            }),
+            source,
+        });
+        blocksRef.current = [
+            ...blocksRef.current.slice(0, currentIndex),
+            Object.assign(Object.assign({}, blocksRef.current[currentIndex]), { childBlocks: [...blocksRef.current[currentIndex].childBlocks, ...blocks] }),
+            ...blocksRef.current.slice(currentIndex + 1),
+        ];
     }, []);
     const updateBlocks = React__namespace.useCallback((blocks) => {
         blocksRef.current = blocks;
@@ -22990,12 +22774,73 @@ function useEditor({ settings, eventEmitter, }) {
                     isEmbed: content.isEmbed,
                 };
             }) });
+        delete prevBlock.childBlocks;
+        delete currentBlock.childBlocks;
         const redo = json0diff(prevBlock, currentBlock, DiffMatchPatch);
         const undo = json0diff(currentBlock, prevBlock, DiffMatchPatch);
         if (redo && undo) {
             eventEmitter.emit(EditorEvents.EVENT_EDITOR_HISTORY_PUSH, {
                 payload: {
                     type: HistoryType.UPDATE_CONTENTS,
+                    blockId: block.id,
+                    undo,
+                    redo,
+                },
+                source,
+            });
+        }
+    }, []);
+    const updateChildBlock = React__namespace.useCallback((parentBlockId, targetBlock, source = EventSources.USER) => {
+        const parentIndex = blocksRef.current.findIndex((v) => v.id === parentBlockId);
+        if (parentIndex === -1)
+            return;
+        const currentIndex = blocksRef.current[parentIndex].childBlocks.findIndex((v) => v.id === targetBlock.id);
+        if (currentIndex === -1)
+            return;
+        const block = copyObject(targetBlock);
+        const prev = copyObject(blocksRef.current[parentIndex].childBlocks[currentIndex]);
+        Object.keys(block.attributes).forEach((key) => {
+            if (typeof block.attributes[key] === 'boolean' && !block.attributes[key]) {
+                delete block.attributes[key];
+            }
+        });
+        const contents = optimizeInlineContents(block.contents);
+        blocksRef.current[parentIndex].childBlocks = [
+            ...blocksRef.current[parentIndex].childBlocks.slice(0, currentIndex),
+            Object.assign(Object.assign(Object.assign({}, blocksRef.current[parentIndex].childBlocks[currentIndex]), block), { contents }),
+            ...blocksRef.current[parentIndex].childBlocks.slice(currentIndex + 1),
+        ];
+        if (block.meta) {
+            delete block.meta;
+        }
+        if (prev.meta) {
+            delete prev.meta;
+        }
+        const prevBlock = Object.assign(Object.assign({}, prev), { contents: prev.contents.map((content) => {
+                return {
+                    attributes: content.attributes,
+                    text: content.text,
+                    type: content.type,
+                    isEmbed: content.isEmbed,
+                };
+            }) });
+        const currentBlock = Object.assign(Object.assign({}, block), { contents: contents.map((content) => {
+                return {
+                    attributes: content.attributes,
+                    text: content.text,
+                    type: content.type,
+                    isEmbed: content.isEmbed,
+                };
+            }) });
+        delete prevBlock.childBlocks;
+        delete currentBlock.childBlocks;
+        const redo = json0diff(prevBlock, currentBlock, DiffMatchPatch);
+        const undo = json0diff(currentBlock, prevBlock, DiffMatchPatch);
+        if (redo && undo) {
+            eventEmitter.emit(EditorEvents.EVENT_EDITOR_HISTORY_PUSH, {
+                payload: {
+                    type: HistoryType.CHILD_BLOCK_UPDATE_CONTENTS,
+                    parentBlockId: parentBlockId,
                     blockId: block.id,
                     undo,
                     redo,
@@ -23039,12 +22884,58 @@ function useEditor({ settings, eventEmitter, }) {
         });
         updateBlocks(blocksRef.current.filter((v) => !blockIds.includes(v.id)));
     }, []);
+    const deleteChildBlocks = React__namespace.useCallback((parentBlockId, blockIds, source = EventSources.USER) => {
+        const currentIndex = blocksRef.current.findIndex((v) => v.id === parentBlockId);
+        if (currentIndex === -1)
+            return;
+        const deleteBlocks = blocksRef.current[currentIndex].childBlocks.filter((v) => blockIds.includes(v.id));
+        if (deleteBlocks.length < 1)
+            return;
+        eventEmitter.emit(EditorEvents.EVENT_EDITOR_HISTORY_PUSH, {
+            payload: deleteBlocks.map((block) => {
+                return {
+                    type: HistoryType.CHILD_BLOCK_REMOVE_BLOCK,
+                    blockId: block.id,
+                    block: copyObject(block),
+                    parentBlockId,
+                };
+            }),
+            source,
+        });
+        blocksRef.current = [
+            ...blocksRef.current.slice(0, currentIndex),
+            Object.assign(Object.assign({}, blocksRef.current[currentIndex]), { childBlocks: blocksRef.current[currentIndex].childBlocks.filter((v) => !blockIds.includes(v.id)) }),
+            ...blocksRef.current.slice(currentIndex + 1),
+        ];
+    }, []);
     const render = React__namespace.useCallback((affectedIds = [], isForce = false) => {
+        // 埋め込み要素が最後だったら空行を追加
+        const lastIndex = blocksRef.current.length - 1;
+        const { embeddedBlocks } = getSettings();
+        if (embeddedBlocks.includes(blocksRef.current[lastIndex].type)) {
+            const createdBlock = getModule('editor').createBlock({
+                prevId: blocksRef.current[lastIndex].id,
+                type: 'PARAGRAPH',
+            });
+            render([...affectedIds, createdBlock.id]);
+            return;
+        }
         if (isForce) {
             eventEmitter.emit(EditorEvents.EVENT_BLOCK_RERENDER_FORCE, affectedIds);
         }
         else {
             eventEmitter.emit(EditorEvents.EVENT_BLOCK_RERENDER, affectedIds);
+        }
+    }, []);
+    const renderChild = React__namespace.useCallback((parentBlockId, affectedIds = [], isForce = false) => {
+        if (isForce) {
+            eventEmitter.emit(EditorEvents.EVENT_CHILD_BLOCK_RERENDER_FORCE, {
+                parentBlockId,
+                affectedIds,
+            });
+        }
+        else {
+            eventEmitter.emit(EditorEvents.EVENT_CHILD_BLOCK_RERENDER, { parentBlockId, affectedIds });
         }
     }, []);
     const numberingList = React__namespace.useCallback(() => {
@@ -23089,26 +22980,33 @@ function useEditor({ settings, eventEmitter, }) {
             hasFocus,
             getFormats,
             formatText,
+            formatChildBlockText,
             setBlocks,
             getBlocks,
             getBlock,
             getBlockLength: getBlockLength$1,
+            getChildBlockLength,
             createBlock,
             updateBlock,
             updateBlocks,
             deleteBlock,
             deleteBlocks,
+            createChildBlocks,
+            updateChildBlock,
+            deleteChildBlocks,
             sync,
+            syncChildBlock,
             getCaretPosition,
             setCaretPosition,
             updateCaretPositionRef,
             updateCaretRect,
-            scrollIntoView,
+            getLastCaretRect,
             getNativeRange,
             prev,
             next,
             numberingList,
             render,
+            renderChild,
             addModule,
             addModules,
             getModule,
@@ -23130,9 +23028,44 @@ function useEditor({ settings, eventEmitter, }) {
     //         text: 'あ' + block.contents[block.contents.length - 1].text,
     //       },
     //     ];
-    //     console.log(JSON.stringify(contents));
     //     updateBlock({ ...block, contents }, EventSources.COLLABORATOR);
     //     render([block.id]);
+    //   }, 4000);
+    //   return () => {
+    //     clearInterval(interval);
+    //   };
+    // }, []);
+    //real-time collaborative test(table)
+    // React.useEffect(() => {
+    //   const interval = setInterval(() => {
+    //     const blocks = getBlocks();
+    //     const block = blocks.find((v) => v.type === 'TABLE');
+    //     if (!block) return;
+    //     const childBlockIndex = block.childBlocks.findIndex((v) => v.name === 'r0-c0');
+    //     if (childBlockIndex === -1) return;
+    //     const childBlockContents = copyObject(block.childBlocks[childBlockIndex].contents);
+    //     const contents = [
+    //       ...childBlockContents.slice(0, childBlockContents.length - 1),
+    //       {
+    //         ...childBlockContents[childBlockContents.length - 1],
+    //         text: 'あ' + childBlockContents[childBlockContents.length - 1].text,
+    //       },
+    //     ];
+    //     updateBlock(
+    //       {
+    //         ...block,
+    //         childBlocks: [
+    //           ...block.childBlocks.slice(0, childBlockIndex),
+    //           {
+    //             ...block.childBlocks[childBlockIndex],
+    //             contents,
+    //           },
+    //           ...block.childBlocks.slice(childBlockIndex + 1),
+    //         ],
+    //       },
+    //       EventSources.COLLABORATOR,
+    //     );
+    //     renderChild(block.id, [block.childBlocks[childBlockIndex].id]);
     //   }, 4000);
     //   return () => {
     //     clearInterval(interval);
@@ -23200,6 +23133,984 @@ function useEventEmitter() {
     }, []);
     return [eventEmitter, { on, removeAll }];
 }
+
+const Container$4 = styled$1.div `
+  outline: none;
+  display: flex;
+  margin: 0;
+  padding: 12px 0;
+  justify-content: center;
+`;
+const StyledTable = styled$1.table `
+  border: 1px solid #c1c7cd;
+  border-spacing: 0;
+  border-collapse: collapse;
+`;
+const StyledTr = styled$1.tr ``;
+const StyledTd = styled$1.td `
+  border: 1px solid #c1c7cd;
+  border-inline-end-width: 0;
+  border-bottom-width: 0;
+  vertical-align: top;
+  background-clip: padding-box;
+  position: relative;
+  user-drag: none;
+  box-sizing: border-box;
+}
+`;
+const TableContent = styled$1.div `
+  outline: none;
+  padding: 8px;
+`;
+const Resizer = styled$1.div `
+  position: absolute;
+  width: 5px;
+  top: 0;
+  right: -2px;
+  height: 100%;
+  z-index: 1;
+  transition: background 150ms ease 50ms;
+  cursor: col-resize;
+  user-drag: none;
+`;
+const AddColumn = styled$1.div `
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  top: -12px;
+  right: -14px;
+  z-index: 1;
+  background: #fff;
+  border-radius: 50%;
+  border: 1px solid #c1c7cd;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 300ms ease 100ms;
+  &:hover {
+    opacity: 1;
+  }
+`;
+const AddRow = styled$1.div `
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  bottom: -12px;
+  left: -32px;
+  z-index: 1;
+  background: #fff;
+  border-radius: 50%;
+  border: 1px solid #c1c7cd;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 300ms ease 100ms;
+  &:hover {
+    opacity: 1;
+  }
+`;
+const RemoveColumn = styled$1.div `
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  top: -12px;
+  left: 50%;
+  z-index: 1;
+  transform: translateX(-50%);
+  background: #fff;
+  border-radius: 50%;
+  border: 1px solid #c1c7cd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 300ms ease 100ms;
+  &:hover {
+    opacity: 1;
+  }
+  cursor: pointer;
+`;
+const RemoveRow = styled$1.div `
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  left: -32px;
+  top: 50%;
+  z-index: 1;
+  transform: translateY(-50%);
+  background: #fff;
+  border-radius: 50%;
+  border: 1px solid #c1c7cd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 300ms ease 100ms;
+  &:hover {
+    opacity: 1;
+  }
+  cursor: pointer;
+`;
+const Table = React__namespace.memo((_a) => {
+    var { blockId, contents, formats, attributes: { tableR, tableC, tableSettings = {} }, childBlocks = [], scrollContainer, editor } = _a, props = __rest$1(_a, ["blockId", "contents", "formats", "attributes", "childBlocks", "scrollContainer", "editor"]);
+    const tableRef = React__namespace.useRef(null);
+    const [hoverResizeCol, setHoverResizeCol] = React__namespace.useState();
+    const [dragParams, setDragParams] = React__namespace.useState();
+    const handleInput = React__namespace.useCallback((e) => {
+        e.stopPropagation();
+        const keyboard = editor.getModule('keyboard');
+        if (keyboard) {
+            keyboard.onInputChildBlock(blockId, e);
+        }
+    }, [blockId]);
+    const handleResizeMouseOver = React__namespace.useCallback((col) => (e) => {
+        setHoverResizeCol(col);
+    }, []);
+    const handleResizeMouseLeave = React__namespace.useCallback((e) => {
+        setHoverResizeCol(undefined);
+    }, []);
+    const handleMouseDown = React__namespace.useCallback((col) => (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const block = childBlocks.find((v) => v.name === `r0-c${col}`);
+        if (!block)
+            return;
+        const el = getBlockElementById(block.id, true);
+        if (!el)
+            return;
+        setDragParams({ col, left: e.clientX, width: el.clientWidth });
+    }, [tableSettings]);
+    const handleAddColumn = React__namespace.useCallback((colIndex) => (e) => {
+        var _a;
+        const currentBlock = editor.getBlock(blockId);
+        if (!currentBlock)
+            return;
+        // 拡縮情報を更新
+        const prevSettings = copyObject(tableSettings);
+        const nextSettings = {};
+        for (let c = 0; c < currentBlock.attributes.tableC + 1; c++) {
+            if (c > colIndex) {
+                if (!prevSettings[`c${c - 1}-width`])
+                    continue;
+                nextSettings[`c${c}-width`] = prevSettings[`c${c - 1}-width`];
+            }
+            else if (c < colIndex) {
+                if (!prevSettings[`c${c}-width`])
+                    continue;
+                nextSettings[`c${c}-width`] = prevSettings[`c${c}-width`];
+            }
+        }
+        editor.updateBlock(Object.assign(Object.assign({}, currentBlock), { attributes: Object.assign(Object.assign({}, currentBlock.attributes), { tableC: currentBlock.attributes.tableC + 1, tableSettings: nextSettings }) }));
+        // 追加されたカラム位置より後のブロックを採番しなおす
+        let createdBlocks = [];
+        let updatedBlockIds = [];
+        for (let r = 0; r < currentBlock.attributes.tableR; r++) {
+            for (let c = 0; c < currentBlock.attributes.tableC + 1; c++) {
+                if (c === colIndex) {
+                    createdBlocks = [
+                        ...createdBlocks,
+                        Object.assign(Object.assign({}, createBlock('PARAGRAPH')), { name: `r${r}-c${c}` }),
+                    ];
+                }
+                if (c > colIndex) {
+                    const childBlock = currentBlock.childBlocks.find((v) => v.name === `r${r}-c${c - 1}`);
+                    if (!childBlock) {
+                        const appendBlock = Object.assign(Object.assign({}, createBlock('PARAGRAPH')), { name: `r${r}-c${c}` });
+                        createdBlocks = [...createdBlocks, appendBlock];
+                    }
+                    else {
+                        editor.updateChildBlock(blockId, Object.assign(Object.assign({}, childBlock), { name: `r${r}-c${c}` }));
+                        updatedBlockIds = [...updatedBlockIds, childBlock.id];
+                    }
+                }
+            }
+        }
+        editor.createChildBlocks(blockId, createdBlocks);
+        (_a = editor.getModule('history')) === null || _a === void 0 ? void 0 : _a.optimizeOp();
+        editor.render([blockId]);
+        editor.renderChild(blockId, updatedBlockIds);
+    }, [blockId, editor, tableSettings]);
+    const handleRemoveColumn = React__namespace.useCallback((colIndex) => (e) => {
+        var _a;
+        colIndex--;
+        const currentBlock = editor.getBlock(blockId);
+        if (!currentBlock)
+            return;
+        if (currentBlock.attributes.tableC <= 1)
+            return;
+        // 拡縮情報を更新
+        const prevSettings = copyObject(tableSettings);
+        const nextSettings = {};
+        for (let c = 0; c < currentBlock.attributes.tableC; c++) {
+            if (c > colIndex) {
+                if (!prevSettings[`c${c}-width`])
+                    continue;
+                nextSettings[`c${c - 1}-width`] = prevSettings[`c${c}-width`];
+            }
+            else if (c < colIndex) {
+                if (!prevSettings[`c${c}-width`])
+                    continue;
+                nextSettings[`c${c}-width`] = prevSettings[`c${c}-width`];
+            }
+        }
+        editor.updateBlock(Object.assign(Object.assign({}, currentBlock), { attributes: Object.assign(Object.assign({}, currentBlock.attributes), { tableC: currentBlock.attributes.tableC - 1, tableSettings: nextSettings }) }));
+        // 削除されたカラム位置より後のブロックを採番しなおす
+        let removedBlockIds = [];
+        let createdBlocks = [];
+        let updatedBlockIds = [];
+        for (let r = 0; r < currentBlock.attributes.tableR; r++) {
+            for (let c = 0; c < currentBlock.attributes.tableC; c++) {
+                if (c === colIndex) {
+                    const childBlock = currentBlock.childBlocks.find((v) => v.name === `r${r}-c${c}`);
+                    if (childBlock) {
+                        removedBlockIds = [...removedBlockIds, childBlock.id];
+                    }
+                }
+                if (c > colIndex) {
+                    const childBlock = currentBlock.childBlocks.find((v) => v.name === `r${r}-c${c}`);
+                    if (!childBlock) {
+                        const appendBlock = Object.assign(Object.assign({}, createBlock('PARAGRAPH')), { name: `r${r}-c${c - 1}` });
+                        createdBlocks = [...createdBlocks, appendBlock];
+                    }
+                    else {
+                        editor.updateChildBlock(blockId, Object.assign(Object.assign({}, childBlock), { name: `r${r}-c${c - 1}` }));
+                        updatedBlockIds = [...updatedBlockIds, childBlock.id];
+                    }
+                }
+            }
+        }
+        if (createdBlocks.length > 0) {
+            editor.createChildBlocks(blockId, createdBlocks);
+        }
+        editor.deleteChildBlocks(blockId, removedBlockIds);
+        (_a = editor.getModule('history')) === null || _a === void 0 ? void 0 : _a.optimizeOp();
+        editor.render([blockId]);
+        editor.renderChild(blockId, updatedBlockIds);
+    }, [blockId, editor, tableSettings]);
+    const handleAddRow = React__namespace.useCallback((rowIndex) => (e) => {
+        var _a;
+        const currentBlock = editor.getBlock(blockId);
+        if (!currentBlock)
+            return;
+        editor.updateBlock(Object.assign(Object.assign({}, currentBlock), { attributes: Object.assign(Object.assign({}, currentBlock.attributes), { tableR: currentBlock.attributes.tableR + 1 }) }));
+        // 追加されたカラム位置より後のブロックを採番しなおす
+        let createdBlocks = [];
+        let updatedBlockIds = [];
+        for (let r = 0; r < currentBlock.attributes.tableR + 1; r++) {
+            for (let c = 0; c < currentBlock.attributes.tableC; c++) {
+                if (r === rowIndex) {
+                    createdBlocks = [
+                        ...createdBlocks,
+                        Object.assign(Object.assign({}, createBlock('PARAGRAPH')), { name: `r${r}-c${c}` }),
+                    ];
+                }
+                if (r > rowIndex) {
+                    const childBlock = currentBlock.childBlocks.find((v) => v.name === `r${r - 1}-c${c}`);
+                    if (!childBlock) {
+                        const appendBlock = Object.assign(Object.assign({}, createBlock('PARAGRAPH')), { name: `r${r}-c${c}` });
+                        createdBlocks = [...createdBlocks, appendBlock];
+                    }
+                    else {
+                        editor.updateChildBlock(blockId, Object.assign(Object.assign({}, childBlock), { name: `r${r}-c${c}` }));
+                        updatedBlockIds = [...updatedBlockIds, childBlock.id];
+                    }
+                }
+            }
+        }
+        editor.createChildBlocks(blockId, createdBlocks);
+        (_a = editor.getModule('history')) === null || _a === void 0 ? void 0 : _a.optimizeOp();
+        editor.render([blockId]);
+        editor.renderChild(blockId, updatedBlockIds);
+    }, [blockId, editor, tableSettings]);
+    const handleRemoveRow = React__namespace.useCallback((rowIndex) => (e) => {
+        var _a;
+        rowIndex--;
+        const currentBlock = editor.getBlock(blockId);
+        if (!currentBlock)
+            return;
+        if (currentBlock.attributes.tableR <= 1)
+            return;
+        editor.updateBlock(Object.assign(Object.assign({}, currentBlock), { attributes: Object.assign(Object.assign({}, currentBlock.attributes), { tableR: currentBlock.attributes.tableR - 1 }) }));
+        // 削除されたカラム位置より後のブロックを採番しなおす
+        let removedBlockIds = [];
+        let createdBlocks = [];
+        let updatedBlockIds = [];
+        for (let r = 0; r < currentBlock.attributes.tableR; r++) {
+            for (let c = 0; c < currentBlock.attributes.tableC; c++) {
+                if (r === rowIndex) {
+                    const childBlock = currentBlock.childBlocks.find((v) => v.name === `r${r}-c${c}`);
+                    if (childBlock) {
+                        removedBlockIds = [...removedBlockIds, childBlock.id];
+                    }
+                }
+                if (r > rowIndex) {
+                    const childBlock = currentBlock.childBlocks.find((v) => v.name === `r${r}-c${c}`);
+                    if (!childBlock) {
+                        const appendBlock = Object.assign(Object.assign({}, createBlock('PARAGRAPH')), { name: `r${r - 1}-c${c}` });
+                        createdBlocks = [...createdBlocks, appendBlock];
+                    }
+                    else {
+                        editor.updateChildBlock(blockId, Object.assign(Object.assign({}, childBlock), { name: `r${r - 1}-c${c}` }));
+                        updatedBlockIds = [...updatedBlockIds, childBlock.id];
+                    }
+                }
+            }
+        }
+        if (createdBlocks.length > 0) {
+            editor.createChildBlocks(blockId, createdBlocks);
+        }
+        editor.deleteChildBlocks(blockId, removedBlockIds);
+        (_a = editor.getModule('history')) === null || _a === void 0 ? void 0 : _a.optimizeOp();
+        editor.render([blockId]);
+        editor.renderChild(blockId, updatedBlockIds);
+    }, [blockId, editor, tableSettings]);
+    const memoTableRows = React__namespace.useMemo(() => {
+        if (!tableR || !tableC)
+            return [];
+        let margedRows = [];
+        for (let r = 0; r < tableR; r++) {
+            margedRows[r] = [];
+            for (let c = 0; c < tableC; c++) {
+                const cellBlock = childBlocks.find((v) => (v === null || v === void 0 ? void 0 : v.name) === `r${r}-c${c}`);
+                margedRows[r][c] = cellBlock !== null && cellBlock !== void 0 ? cellBlock : createBlock('PARAGRAPH');
+            }
+        }
+        return margedRows;
+    }, [childBlocks, tableR, tableC]);
+    const memoTableWidths = React__namespace.useMemo(() => {
+        let widths = [];
+        for (let c = 0; c < tableC; c++) {
+            widths[c] = Object.prototype.hasOwnProperty.call(tableSettings, `c${c}-width`)
+                ? tableSettings[`c${c}-width`]
+                : null;
+        }
+        return widths;
+    }, [tableSettings]);
+    const memoContents = React__namespace.useMemo(() => {
+        return (jsxRuntimeExports.jsx("tbody", { children: memoTableRows === null || memoTableRows === void 0 ? void 0 : memoTableRows.map((row, rIndex) => {
+                return (jsxRuntimeExports.jsx(StyledTr, { children: row.map((column, cIndex) => {
+                        return (jsxRuntimeExports.jsxs(StyledTd, Object.assign({ "data-child-block-name": memoTableRows[rIndex][cIndex].name, style: {
+                                minWidth: memoTableWidths[cIndex] && rIndex === 0
+                                    ? `${memoTableWidths[cIndex]}px`
+                                    : '120px',
+                                maxWidth: memoTableWidths[cIndex] && rIndex === 0
+                                    ? `${memoTableWidths[cIndex]}px`
+                                    : '120px',
+                            } }, { children: [jsxRuntimeExports.jsx(TableCell, { formats: formats, editor: editor, scrollContainer: scrollContainer, parentBlockId: blockId, blockId: memoTableRows[rIndex][cIndex].id }), jsxRuntimeExports.jsx(Resizer, { style: {
+                                        backgroundColor: cIndex === hoverResizeCol || cIndex === (dragParams === null || dragParams === void 0 ? void 0 : dragParams.col)
+                                            ? 'red'
+                                            : 'transparent',
+                                    }, onMouseOver: handleResizeMouseOver(cIndex), onMouseLeave: handleResizeMouseLeave, onMouseDown: handleMouseDown(cIndex), draggable: "false" }), rIndex === 0 && cIndex === 0 && (jsxRuntimeExports.jsx(AddColumn, Object.assign({ onClick: handleAddColumn(cIndex), style: { right: 'auto', left: '-14px' } }, { children: "+" }))), rIndex === 0 && (jsxRuntimeExports.jsx(AddColumn, Object.assign({ onClick: handleAddColumn(cIndex + 1) }, { children: "+" }))), rIndex === 0 && (jsxRuntimeExports.jsx(RemoveColumn, Object.assign({ onClick: handleRemoveColumn(cIndex + 1) }, { children: "-" }))), cIndex === 0 && jsxRuntimeExports.jsx(AddRow, Object.assign({ onClick: handleAddRow(rIndex + 1) }, { children: "+" })), cIndex === 0 && (jsxRuntimeExports.jsx(RemoveRow, Object.assign({ onClick: handleRemoveRow(rIndex + 1) }, { children: "-" })))] }), memoTableRows[rIndex][cIndex].id));
+                    }) }, rIndex));
+            }) }));
+    }, [
+        memoTableRows,
+        memoTableWidths,
+        formats,
+        scrollContainer,
+        editor,
+        hoverResizeCol,
+        dragParams,
+    ]);
+    React__namespace.useEffect(() => {
+        if (!editor || !dragParams)
+            return;
+        const handleMouseMove = (e) => {
+            let width = 0;
+            if (e.clientX > dragParams.left) {
+                width = dragParams.width + (e.clientX - dragParams.left);
+            }
+            else {
+                width = dragParams.width - (dragParams.left - e.clientX);
+            }
+            if (width < 120) {
+                width = 120;
+            }
+            const block = childBlocks.find((v) => v.name === `r0-c${dragParams.col}`);
+            if (!block)
+                return;
+            const el = getBlockElementById(block.id, true);
+            if (!(el === null || el === void 0 ? void 0 : el.parentElement))
+                return;
+            el.parentElement.style.minWidth = `${width}px`;
+            el.parentElement.style.maxWidth = `${width}px`;
+        };
+        const handleMouseUp = (e) => {
+            var _a;
+            const block = childBlocks.find((v) => v.name === `r0-c${dragParams.col}`);
+            if (!block)
+                return;
+            const el = getBlockElementById(block.id, true);
+            if (!(el === null || el === void 0 ? void 0 : el.parentElement))
+                return;
+            setDragParams(undefined);
+            const currentBlock = editor.getBlock(blockId);
+            if (!currentBlock)
+                return;
+            const _settings = copyObject(tableSettings);
+            _settings[`c${dragParams.col}-width`] = el.parentElement.getBoundingClientRect().width;
+            editor.updateBlock(Object.assign(Object.assign({}, currentBlock), { attributes: Object.assign(Object.assign({}, currentBlock.attributes), { tableSettings: Object.assign(Object.assign({}, ((_a = currentBlock.attributes.tableSettings) !== null && _a !== void 0 ? _a : {})), _settings) }) }));
+            editor.render([blockId]);
+        };
+        window.addEventListener('mousemove', handleMouseMove, true);
+        window.addEventListener('mouseup', handleMouseUp, true);
+        return () => {
+            window.removeEventListener('mousemove', handleMouseMove, true);
+            window.removeEventListener('mouseup', handleMouseUp, true);
+        };
+    }, [dragParams, childBlocks, tableSettings]);
+    return (jsxRuntimeExports.jsx(Container$4, Object.assign({}, props, { contentEditable: false, draggable: "false", onBeforeInput: handleInput }, { children: jsxRuntimeExports.jsx(StyledTable, Object.assign({ ref: tableRef }, { children: memoContents })) })));
+});
+const TableCell = React__namespace.memo(({ parentBlockId, blockId, formats, scrollContainer, editor }) => {
+    const block = useChildBlockRenderer({ parentBlockId, blockId, editor });
+    const memoContent = React__namespace.useMemo(() => {
+        var _a;
+        return (jsxRuntimeExports.jsx(TableContent, Object.assign({ suppressContentEditableWarning: true, contentEditable: true, "data-child-block-id": block === null || block === void 0 ? void 0 : block.id }, { children: InlineContainer({
+                contents: (_a = block === null || block === void 0 ? void 0 : block.contents) !== null && _a !== void 0 ? _a : [],
+                formats,
+                editor,
+                scrollContainer,
+            }) })));
+    }, [block === null || block === void 0 ? void 0 : block.id, block === null || block === void 0 ? void 0 : block.contents, editor, scrollContainer]);
+    return jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: memoContent });
+});
+
+/*! Copyright Twitter Inc. and other contributors. Licensed under MIT */
+var twemoji=function(){var twemoji={base:"https://twemoji.maxcdn.com/v/14.0.2/",ext:".png",size:"72x72",className:"emoji",convert:{fromCodePoint:fromCodePoint,toCodePoint:toCodePoint},onerror:function onerror(){if(this.parentNode){this.parentNode.replaceChild(createText(this.alt,false),this);}},parse:parse,replace:replace,test:test},escaper={"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"},re=/(?:\ud83d\udc68\ud83c\udffb\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc68\ud83c\udffc\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc68\ud83c\udffd\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc68\ud83c\udffe\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc68\ud83c\udfff\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffb\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffb\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc69\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffc\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffc\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc69\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffd\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffd\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc69\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffe\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffe\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc69\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udfff\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udfff\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc69\ud83c[\udffb-\udfff]|\ud83e\uddd1\ud83c\udffb\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83e\uddd1\ud83c[\udffc-\udfff]|\ud83e\uddd1\ud83c\udffc\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83e\uddd1\ud83c[\udffb\udffd-\udfff]|\ud83e\uddd1\ud83c\udffd\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83e\uddd1\ud83c[\udffb\udffc\udffe\udfff]|\ud83e\uddd1\ud83c\udffe\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83e\uddd1\ud83c[\udffb-\udffd\udfff]|\ud83e\uddd1\ud83c\udfff\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83e\uddd1\ud83c[\udffb-\udffe]|\ud83d\udc68\ud83c\udffb\u200d\u2764\ufe0f\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc68\ud83c\udffb\u200d\ud83e\udd1d\u200d\ud83d\udc68\ud83c[\udffc-\udfff]|\ud83d\udc68\ud83c\udffc\u200d\u2764\ufe0f\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc68\ud83c\udffc\u200d\ud83e\udd1d\u200d\ud83d\udc68\ud83c[\udffb\udffd-\udfff]|\ud83d\udc68\ud83c\udffd\u200d\u2764\ufe0f\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc68\ud83c\udffd\u200d\ud83e\udd1d\u200d\ud83d\udc68\ud83c[\udffb\udffc\udffe\udfff]|\ud83d\udc68\ud83c\udffe\u200d\u2764\ufe0f\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc68\ud83c\udffe\u200d\ud83e\udd1d\u200d\ud83d\udc68\ud83c[\udffb-\udffd\udfff]|\ud83d\udc68\ud83c\udfff\u200d\u2764\ufe0f\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc68\ud83c\udfff\u200d\ud83e\udd1d\u200d\ud83d\udc68\ud83c[\udffb-\udffe]|\ud83d\udc69\ud83c\udffb\u200d\u2764\ufe0f\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffb\u200d\u2764\ufe0f\u200d\ud83d\udc69\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffb\u200d\ud83e\udd1d\u200d\ud83d\udc68\ud83c[\udffc-\udfff]|\ud83d\udc69\ud83c\udffb\u200d\ud83e\udd1d\u200d\ud83d\udc69\ud83c[\udffc-\udfff]|\ud83d\udc69\ud83c\udffc\u200d\u2764\ufe0f\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffc\u200d\u2764\ufe0f\u200d\ud83d\udc69\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffc\u200d\ud83e\udd1d\u200d\ud83d\udc68\ud83c[\udffb\udffd-\udfff]|\ud83d\udc69\ud83c\udffc\u200d\ud83e\udd1d\u200d\ud83d\udc69\ud83c[\udffb\udffd-\udfff]|\ud83d\udc69\ud83c\udffd\u200d\u2764\ufe0f\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffd\u200d\u2764\ufe0f\u200d\ud83d\udc69\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffd\u200d\ud83e\udd1d\u200d\ud83d\udc68\ud83c[\udffb\udffc\udffe\udfff]|\ud83d\udc69\ud83c\udffd\u200d\ud83e\udd1d\u200d\ud83d\udc69\ud83c[\udffb\udffc\udffe\udfff]|\ud83d\udc69\ud83c\udffe\u200d\u2764\ufe0f\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffe\u200d\u2764\ufe0f\u200d\ud83d\udc69\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udffe\u200d\ud83e\udd1d\u200d\ud83d\udc68\ud83c[\udffb-\udffd\udfff]|\ud83d\udc69\ud83c\udffe\u200d\ud83e\udd1d\u200d\ud83d\udc69\ud83c[\udffb-\udffd\udfff]|\ud83d\udc69\ud83c\udfff\u200d\u2764\ufe0f\u200d\ud83d\udc68\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udfff\u200d\u2764\ufe0f\u200d\ud83d\udc69\ud83c[\udffb-\udfff]|\ud83d\udc69\ud83c\udfff\u200d\ud83e\udd1d\u200d\ud83d\udc68\ud83c[\udffb-\udffe]|\ud83d\udc69\ud83c\udfff\u200d\ud83e\udd1d\u200d\ud83d\udc69\ud83c[\udffb-\udffe]|\ud83e\uddd1\ud83c\udffb\u200d\u2764\ufe0f\u200d\ud83e\uddd1\ud83c[\udffc-\udfff]|\ud83e\uddd1\ud83c\udffb\u200d\ud83e\udd1d\u200d\ud83e\uddd1\ud83c[\udffb-\udfff]|\ud83e\uddd1\ud83c\udffc\u200d\u2764\ufe0f\u200d\ud83e\uddd1\ud83c[\udffb\udffd-\udfff]|\ud83e\uddd1\ud83c\udffc\u200d\ud83e\udd1d\u200d\ud83e\uddd1\ud83c[\udffb-\udfff]|\ud83e\uddd1\ud83c\udffd\u200d\u2764\ufe0f\u200d\ud83e\uddd1\ud83c[\udffb\udffc\udffe\udfff]|\ud83e\uddd1\ud83c\udffd\u200d\ud83e\udd1d\u200d\ud83e\uddd1\ud83c[\udffb-\udfff]|\ud83e\uddd1\ud83c\udffe\u200d\u2764\ufe0f\u200d\ud83e\uddd1\ud83c[\udffb-\udffd\udfff]|\ud83e\uddd1\ud83c\udffe\u200d\ud83e\udd1d\u200d\ud83e\uddd1\ud83c[\udffb-\udfff]|\ud83e\uddd1\ud83c\udfff\u200d\u2764\ufe0f\u200d\ud83e\uddd1\ud83c[\udffb-\udffe]|\ud83e\uddd1\ud83c\udfff\u200d\ud83e\udd1d\u200d\ud83e\uddd1\ud83c[\udffb-\udfff]|\ud83d\udc68\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68|\ud83d\udc69\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d[\udc68\udc69]|\ud83e\udef1\ud83c\udffb\u200d\ud83e\udef2\ud83c[\udffc-\udfff]|\ud83e\udef1\ud83c\udffc\u200d\ud83e\udef2\ud83c[\udffb\udffd-\udfff]|\ud83e\udef1\ud83c\udffd\u200d\ud83e\udef2\ud83c[\udffb\udffc\udffe\udfff]|\ud83e\udef1\ud83c\udffe\u200d\ud83e\udef2\ud83c[\udffb-\udffd\udfff]|\ud83e\udef1\ud83c\udfff\u200d\ud83e\udef2\ud83c[\udffb-\udffe]|\ud83d\udc68\u200d\u2764\ufe0f\u200d\ud83d\udc68|\ud83d\udc69\u200d\u2764\ufe0f\u200d\ud83d[\udc68\udc69]|\ud83e\uddd1\u200d\ud83e\udd1d\u200d\ud83e\uddd1|\ud83d\udc6b\ud83c[\udffb-\udfff]|\ud83d\udc6c\ud83c[\udffb-\udfff]|\ud83d\udc6d\ud83c[\udffb-\udfff]|\ud83d\udc8f\ud83c[\udffb-\udfff]|\ud83d\udc91\ud83c[\udffb-\udfff]|\ud83e\udd1d\ud83c[\udffb-\udfff]|\ud83d[\udc6b-\udc6d\udc8f\udc91]|\ud83e\udd1d)|(?:\ud83d[\udc68\udc69]|\ud83e\uddd1)(?:\ud83c[\udffb-\udfff])?\u200d(?:\u2695\ufe0f|\u2696\ufe0f|\u2708\ufe0f|\ud83c[\udf3e\udf73\udf7c\udf84\udf93\udfa4\udfa8\udfeb\udfed]|\ud83d[\udcbb\udcbc\udd27\udd2c\ude80\ude92]|\ud83e[\uddaf-\uddb3\uddbc\uddbd])|(?:\ud83c[\udfcb\udfcc]|\ud83d[\udd74\udd75]|\u26f9)((?:\ud83c[\udffb-\udfff]|\ufe0f)\u200d[\u2640\u2642]\ufe0f)|(?:\ud83c[\udfc3\udfc4\udfca]|\ud83d[\udc6e\udc70\udc71\udc73\udc77\udc81\udc82\udc86\udc87\ude45-\ude47\ude4b\ude4d\ude4e\udea3\udeb4-\udeb6]|\ud83e[\udd26\udd35\udd37-\udd39\udd3d\udd3e\uddb8\uddb9\uddcd-\uddcf\uddd4\uddd6-\udddd])(?:\ud83c[\udffb-\udfff])?\u200d[\u2640\u2642]\ufe0f|(?:\ud83d\udc68\u200d\ud83d\udc68\u200d\ud83d\udc66\u200d\ud83d\udc66|\ud83d\udc68\u200d\ud83d\udc68\u200d\ud83d\udc67\u200d\ud83d[\udc66\udc67]|\ud83d\udc68\u200d\ud83d\udc69\u200d\ud83d\udc66\u200d\ud83d\udc66|\ud83d\udc68\u200d\ud83d\udc69\u200d\ud83d\udc67\u200d\ud83d[\udc66\udc67]|\ud83d\udc69\u200d\ud83d\udc69\u200d\ud83d\udc66\u200d\ud83d\udc66|\ud83d\udc69\u200d\ud83d\udc69\u200d\ud83d\udc67\u200d\ud83d[\udc66\udc67]|\ud83d\udc68\u200d\ud83d\udc66\u200d\ud83d\udc66|\ud83d\udc68\u200d\ud83d\udc67\u200d\ud83d[\udc66\udc67]|\ud83d\udc68\u200d\ud83d\udc68\u200d\ud83d[\udc66\udc67]|\ud83d\udc68\u200d\ud83d\udc69\u200d\ud83d[\udc66\udc67]|\ud83d\udc69\u200d\ud83d\udc66\u200d\ud83d\udc66|\ud83d\udc69\u200d\ud83d\udc67\u200d\ud83d[\udc66\udc67]|\ud83d\udc69\u200d\ud83d\udc69\u200d\ud83d[\udc66\udc67]|\ud83c\udff3\ufe0f\u200d\u26a7\ufe0f|\ud83c\udff3\ufe0f\u200d\ud83c\udf08|\ud83d\ude36\u200d\ud83c\udf2b\ufe0f|\u2764\ufe0f\u200d\ud83d\udd25|\u2764\ufe0f\u200d\ud83e\ude79|\ud83c\udff4\u200d\u2620\ufe0f|\ud83d\udc15\u200d\ud83e\uddba|\ud83d\udc3b\u200d\u2744\ufe0f|\ud83d\udc41\u200d\ud83d\udde8|\ud83d\udc68\u200d\ud83d[\udc66\udc67]|\ud83d\udc69\u200d\ud83d[\udc66\udc67]|\ud83d\udc6f\u200d\u2640\ufe0f|\ud83d\udc6f\u200d\u2642\ufe0f|\ud83d\ude2e\u200d\ud83d\udca8|\ud83d\ude35\u200d\ud83d\udcab|\ud83e\udd3c\u200d\u2640\ufe0f|\ud83e\udd3c\u200d\u2642\ufe0f|\ud83e\uddde\u200d\u2640\ufe0f|\ud83e\uddde\u200d\u2642\ufe0f|\ud83e\udddf\u200d\u2640\ufe0f|\ud83e\udddf\u200d\u2642\ufe0f|\ud83d\udc08\u200d\u2b1b)|[#*0-9]\ufe0f?\u20e3|(?:[©®\u2122\u265f]\ufe0f)|(?:\ud83c[\udc04\udd70\udd71\udd7e\udd7f\ude02\ude1a\ude2f\ude37\udf21\udf24-\udf2c\udf36\udf7d\udf96\udf97\udf99-\udf9b\udf9e\udf9f\udfcd\udfce\udfd4-\udfdf\udff3\udff5\udff7]|\ud83d[\udc3f\udc41\udcfd\udd49\udd4a\udd6f\udd70\udd73\udd76-\udd79\udd87\udd8a-\udd8d\udda5\udda8\uddb1\uddb2\uddbc\uddc2-\uddc4\uddd1-\uddd3\udddc-\uddde\udde1\udde3\udde8\uddef\uddf3\uddfa\udecb\udecd-\udecf\udee0-\udee5\udee9\udef0\udef3]|[\u203c\u2049\u2139\u2194-\u2199\u21a9\u21aa\u231a\u231b\u2328\u23cf\u23ed-\u23ef\u23f1\u23f2\u23f8-\u23fa\u24c2\u25aa\u25ab\u25b6\u25c0\u25fb-\u25fe\u2600-\u2604\u260e\u2611\u2614\u2615\u2618\u2620\u2622\u2623\u2626\u262a\u262e\u262f\u2638-\u263a\u2640\u2642\u2648-\u2653\u2660\u2663\u2665\u2666\u2668\u267b\u267f\u2692-\u2697\u2699\u269b\u269c\u26a0\u26a1\u26a7\u26aa\u26ab\u26b0\u26b1\u26bd\u26be\u26c4\u26c5\u26c8\u26cf\u26d1\u26d3\u26d4\u26e9\u26ea\u26f0-\u26f5\u26f8\u26fa\u26fd\u2702\u2708\u2709\u270f\u2712\u2714\u2716\u271d\u2721\u2733\u2734\u2744\u2747\u2757\u2763\u2764\u27a1\u2934\u2935\u2b05-\u2b07\u2b1b\u2b1c\u2b50\u2b55\u3030\u303d\u3297\u3299])(?:\ufe0f|(?!\ufe0e))|(?:(?:\ud83c[\udfcb\udfcc]|\ud83d[\udd74\udd75\udd90]|[\u261d\u26f7\u26f9\u270c\u270d])(?:\ufe0f|(?!\ufe0e))|(?:\ud83c[\udf85\udfc2-\udfc4\udfc7\udfca]|\ud83d[\udc42\udc43\udc46-\udc50\udc66-\udc69\udc6e\udc70-\udc78\udc7c\udc81-\udc83\udc85-\udc87\udcaa\udd7a\udd95\udd96\ude45-\ude47\ude4b-\ude4f\udea3\udeb4-\udeb6\udec0\udecc]|\ud83e[\udd0c\udd0f\udd18-\udd1c\udd1e\udd1f\udd26\udd30-\udd39\udd3d\udd3e\udd77\uddb5\uddb6\uddb8\uddb9\uddbb\uddcd-\uddcf\uddd1-\udddd\udec3-\udec5\udef0-\udef6]|[\u270a\u270b]))(?:\ud83c[\udffb-\udfff])?|(?:\ud83c\udff4\udb40\udc67\udb40\udc62\udb40\udc65\udb40\udc6e\udb40\udc67\udb40\udc7f|\ud83c\udff4\udb40\udc67\udb40\udc62\udb40\udc73\udb40\udc63\udb40\udc74\udb40\udc7f|\ud83c\udff4\udb40\udc67\udb40\udc62\udb40\udc77\udb40\udc6c\udb40\udc73\udb40\udc7f|\ud83c\udde6\ud83c[\udde8-\uddec\uddee\uddf1\uddf2\uddf4\uddf6-\uddfa\uddfc\uddfd\uddff]|\ud83c\udde7\ud83c[\udde6\udde7\udde9-\uddef\uddf1-\uddf4\uddf6-\uddf9\uddfb\uddfc\uddfe\uddff]|\ud83c\udde8\ud83c[\udde6\udde8\udde9\uddeb-\uddee\uddf0-\uddf5\uddf7\uddfa-\uddff]|\ud83c\udde9\ud83c[\uddea\uddec\uddef\uddf0\uddf2\uddf4\uddff]|\ud83c\uddea\ud83c[\udde6\udde8\uddea\uddec\udded\uddf7-\uddfa]|\ud83c\uddeb\ud83c[\uddee-\uddf0\uddf2\uddf4\uddf7]|\ud83c\uddec\ud83c[\udde6\udde7\udde9-\uddee\uddf1-\uddf3\uddf5-\uddfa\uddfc\uddfe]|\ud83c\udded\ud83c[\uddf0\uddf2\uddf3\uddf7\uddf9\uddfa]|\ud83c\uddee\ud83c[\udde8-\uddea\uddf1-\uddf4\uddf6-\uddf9]|\ud83c\uddef\ud83c[\uddea\uddf2\uddf4\uddf5]|\ud83c\uddf0\ud83c[\uddea\uddec-\uddee\uddf2\uddf3\uddf5\uddf7\uddfc\uddfe\uddff]|\ud83c\uddf1\ud83c[\udde6-\udde8\uddee\uddf0\uddf7-\uddfb\uddfe]|\ud83c\uddf2\ud83c[\udde6\udde8-\udded\uddf0-\uddff]|\ud83c\uddf3\ud83c[\udde6\udde8\uddea-\uddec\uddee\uddf1\uddf4\uddf5\uddf7\uddfa\uddff]|\ud83c\uddf4\ud83c\uddf2|\ud83c\uddf5\ud83c[\udde6\uddea-\udded\uddf0-\uddf3\uddf7-\uddf9\uddfc\uddfe]|\ud83c\uddf6\ud83c\udde6|\ud83c\uddf7\ud83c[\uddea\uddf4\uddf8\uddfa\uddfc]|\ud83c\uddf8\ud83c[\udde6-\uddea\uddec-\uddf4\uddf7-\uddf9\uddfb\uddfd-\uddff]|\ud83c\uddf9\ud83c[\udde6\udde8\udde9\uddeb-\udded\uddef-\uddf4\uddf7\uddf9\uddfb\uddfc\uddff]|\ud83c\uddfa\ud83c[\udde6\uddec\uddf2\uddf3\uddf8\uddfe\uddff]|\ud83c\uddfb\ud83c[\udde6\udde8\uddea\uddec\uddee\uddf3\uddfa]|\ud83c\uddfc\ud83c[\uddeb\uddf8]|\ud83c\uddfd\ud83c\uddf0|\ud83c\uddfe\ud83c[\uddea\uddf9]|\ud83c\uddff\ud83c[\udde6\uddf2\uddfc]|\ud83c[\udccf\udd8e\udd91-\udd9a\udde6-\uddff\ude01\ude32-\ude36\ude38-\ude3a\ude50\ude51\udf00-\udf20\udf2d-\udf35\udf37-\udf7c\udf7e-\udf84\udf86-\udf93\udfa0-\udfc1\udfc5\udfc6\udfc8\udfc9\udfcf-\udfd3\udfe0-\udff0\udff4\udff8-\udfff]|\ud83d[\udc00-\udc3e\udc40\udc44\udc45\udc51-\udc65\udc6a\udc6f\udc79-\udc7b\udc7d-\udc80\udc84\udc88-\udc8e\udc90\udc92-\udca9\udcab-\udcfc\udcff-\udd3d\udd4b-\udd4e\udd50-\udd67\udda4\uddfb-\ude44\ude48-\ude4a\ude80-\udea2\udea4-\udeb3\udeb7-\udebf\udec1-\udec5\uded0-\uded2\uded5-\uded7\udedd-\udedf\udeeb\udeec\udef4-\udefc\udfe0-\udfeb\udff0]|\ud83e[\udd0d\udd0e\udd10-\udd17\udd20-\udd25\udd27-\udd2f\udd3a\udd3c\udd3f-\udd45\udd47-\udd76\udd78-\uddb4\uddb7\uddba\uddbc-\uddcc\uddd0\uddde-\uddff\ude70-\ude74\ude78-\ude7c\ude80-\ude86\ude90-\udeac\udeb0-\udeba\udec0-\udec2\uded0-\uded9\udee0-\udee7]|[\u23e9-\u23ec\u23f0\u23f3\u267e\u26ce\u2705\u2728\u274c\u274e\u2753-\u2755\u2795-\u2797\u27b0\u27bf\ue50a])|\ufe0f/g,UFE0Fg=/\uFE0F/g,U200D=String.fromCharCode(8205),rescaper=/[&<>'"]/g,shouldntBeParsed=/^(?:iframe|noframes|noscript|script|select|style|textarea)$/,fromCharCode=String.fromCharCode;return twemoji;function createText(text,clean){return document.createTextNode(clean?text.replace(UFE0Fg,""):text)}function escapeHTML(s){return s.replace(rescaper,replacer)}function defaultImageSrcGenerator(icon,options){return "".concat(options.base,options.size,"/",icon,options.ext)}function grabAllTextNodes(node,allText){var childNodes=node.childNodes,length=childNodes.length,subnode,nodeType;while(length--){subnode=childNodes[length];nodeType=subnode.nodeType;if(nodeType===3){allText.push(subnode);}else if(nodeType===1&&!("ownerSVGElement"in subnode)&&!shouldntBeParsed.test(subnode.nodeName.toLowerCase())){grabAllTextNodes(subnode,allText);}}return allText}function grabTheRightIcon(rawText){return toCodePoint(rawText.indexOf(U200D)<0?rawText.replace(UFE0Fg,""):rawText)}function parseNode(node,options){var allText=grabAllTextNodes(node,[]),length=allText.length,attrib,attrname,modified,fragment,subnode,text,match,i,index,img,rawText,iconId,src;while(length--){modified=false;fragment=document.createDocumentFragment();subnode=allText[length];text=subnode.nodeValue;i=0;while(match=re.exec(text)){index=match.index;if(index!==i){fragment.appendChild(createText(text.slice(i,index),true));}rawText=match[0];iconId=grabTheRightIcon(rawText);i=index+rawText.length;src=options.callback(iconId,options);if(iconId&&src){img=new Image;img.onerror=options.onerror;img.setAttribute("draggable","false");attrib=options.attributes(rawText,iconId);for(attrname in attrib){if(attrib.hasOwnProperty(attrname)&&attrname.indexOf("on")!==0&&!img.hasAttribute(attrname)){img.setAttribute(attrname,attrib[attrname]);}}img.className=options.className;img.alt=rawText;img.src=src;modified=true;fragment.appendChild(img);}if(!img)fragment.appendChild(createText(rawText,false));img=null;}if(modified){if(i<text.length){fragment.appendChild(createText(text.slice(i),true));}subnode.parentNode.replaceChild(fragment,subnode);}}return node}function parseString(str,options){return replace(str,function(rawText){var ret=rawText,iconId=grabTheRightIcon(rawText),src=options.callback(iconId,options),attrib,attrname;if(iconId&&src){ret="<img ".concat('class="',options.className,'" ','draggable="false" ','alt="',rawText,'"',' src="',src,'"');attrib=options.attributes(rawText,iconId);for(attrname in attrib){if(attrib.hasOwnProperty(attrname)&&attrname.indexOf("on")!==0&&ret.indexOf(" "+attrname+"=")===-1){ret=ret.concat(" ",attrname,'="',escapeHTML(attrib[attrname]),'"');}}ret=ret.concat("/>");}return ret})}function replacer(m){return escaper[m]}function returnNull(){return null}function toSizeSquaredAsset(value){return typeof value==="number"?value+"x"+value:value}function fromCodePoint(codepoint){var code=typeof codepoint==="string"?parseInt(codepoint,16):codepoint;if(code<65536){return fromCharCode(code)}code-=65536;return fromCharCode(55296+(code>>10),56320+(code&1023))}function parse(what,how){if(!how||typeof how==="function"){how={callback:how};}return (typeof what==="string"?parseString:parseNode)(what,{callback:how.callback||defaultImageSrcGenerator,attributes:typeof how.attributes==="function"?how.attributes:returnNull,base:typeof how.base==="string"?how.base:twemoji.base,ext:how.ext||twemoji.ext,size:how.folder||toSizeSquaredAsset(how.size||twemoji.size),className:how.className||twemoji.className,onerror:how.onerror||twemoji.onerror})}function replace(text,callback){return String(text).replace(re,callback)}function test(text){re.lastIndex=0;var result=re.test(text);re.lastIndex=0;return result}function toCodePoint(unicodeSurrogates,sep){var r=[],c=0,p=0,i=0;while(i<unicodeSurrogates.length){c=unicodeSurrogates.charCodeAt(i++);if(p){r.push((65536+(p-55296<<10)+(c-56320)).toString(16));p=0;}else if(55296<=c&&c<=56319){p=c;}else {r.push(c.toString(16));}}return r.join(sep||"-")}}();
+
+const Text$3 = styled$1.span `
+  &::selection {
+    background: rgba(46, 170, 220, 0.2);
+  }
+  img.emoji {
+    height: 1em;
+    width: 1em;
+    margin: 0 0.05em 0 0.1em;
+    vertical-align: -0.1em;
+    &::selection {
+      background: rgba(46, 170, 220, 0.2);
+    }
+  }
+  ${({ attributes, formats }) => {
+    return Object.keys(attributes).map((key) => {
+        const styleFormat = `inline/style/${key}`;
+        if (attributes[key] && formats[styleFormat]) {
+            return formats[styleFormat](attributes[key]);
+        }
+        return;
+    });
+}}
+`;
+const Link$1 = styled$1.a `
+  &::selection {
+    background: rgba(46, 170, 220, 0.2);
+  }
+  img.emoji {
+    height: 1em;
+    width: 1em;
+    margin: 0 0.05em 0 0.1em;
+    vertical-align: -0.1em;
+    &::selection {
+      background: rgba(46, 170, 220, 0.2);
+    }
+  }
+  ${({ attributes, formats }) => {
+    return Object.keys(attributes).map((key) => {
+        const styleFormat = `inline/style/${key}`;
+        if (attributes[key] && formats[styleFormat]) {
+            return formats[styleFormat](attributes[key]);
+        }
+        return;
+    });
+}}
+`;
+const InlineText = (_a) => {
+    var { inline, formats, editor, scrollContainer } = _a, props = __rest$1(_a, ["inline", "formats", "editor", "scrollContainer"]);
+    const memoInnerHTML = React__namespace.useMemo(() => {
+        const text = inline.text.replaceAll('\n', '<br>');
+        return {
+            __html: twemoji.parse(text, {
+                folder: 'svg',
+                ext: '.svg',
+                base: 'https://cdn.jsdelivr.net/gh/twitter/twemoji@latest/assets/',
+            }),
+        };
+    }, [inline]);
+    const handleClickLink = React__namespace.useCallback(() => {
+        window.open(inline.attributes['link'], '_blank', 'noreferrer');
+    }, [inline]);
+    return (jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: inline.attributes['link'] ? (jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: jsxRuntimeExports.jsx(Link$1, Object.assign({ href: inline.attributes['link'], target: "_blank", dangerouslySetInnerHTML: memoInnerHTML, formats: formats, attributes: inline.attributes, onClick: handleClickLink }, props)) })) : (jsxRuntimeExports.jsx(Text$3, Object.assign({ dangerouslySetInnerHTML: memoInnerHTML, formats: formats, attributes: inline.attributes }, props))) }));
+};
+
+const Text$2 = styled$1.span `
+  &::selection {
+    background: rgba(46, 170, 220, 0.2);
+  }
+
+  &.token.comment,
+  &.token.prolog,
+  &.token.doctype,
+  &.token.cdata {
+    color: #8292a2;
+  }
+
+  &.token.punctuation {
+    color: #f8f8f2;
+  }
+
+  &.token.namespace {
+    opacity: 0.7;
+  }
+
+  &.token.property,
+  &.token.tag,
+  &.token.constant,
+  &.token.symbol,
+  &.token.deleted {
+    color: #f92672;
+  }
+
+  &.token.boolean,
+  &.token.number {
+    color: #ae81ff;
+  }
+
+  &.token.selector,
+  &.token.attr-name,
+  &.token.string,
+  &.token.char,
+  &.token.builtin,
+  &.token.inserted {
+    color: #a6e22e;
+  }
+
+  &.token.operator,
+  &.token.entity,
+  &.token.url,
+  .language-css &.token.string,
+  .style &.token.string,
+  &.token.variable {
+    color: #f8f8f2;
+  }
+
+  &.token.atrule,
+  &.token.attr-value,
+  &.token.function,
+  &.token.class-name {
+    color: #e6db74;
+  }
+
+  &.token.keyword {
+    color: #66d9ef;
+  }
+
+  &.token.regex,
+  &.token.important {
+    color: #fd971f;
+  }
+
+  &.token.important,
+  &.token.bold {
+    font-weight: bold;
+  }
+  &.token.italic {
+    font-style: italic;
+  }
+
+  &.token.entity {
+    cursor: help;
+  }
+`;
+const CodeToken = (_a) => {
+    var { inline, formats, editor, scrollContainer, attributes } = _a, props = __rest$1(_a, ["inline", "formats", "editor", "scrollContainer", "attributes"]);
+    return (jsxRuntimeExports.jsx(Text$2, Object.assign({ className: `token ${attributes.tokenType}` }, props, { children: inline.text })));
+};
+
+const Bold = () => Ce$1 `
+  font-weight: bold;
+`;
+
+const Underline = () => Ce$1 `
+  border-bottom: 0.05em solid;
+`;
+
+const Strike = () => Ce$1 `
+  text-decoration: line-through;
+`;
+
+const InlineCode = () => Ce$1 `
+  background: rgba(135, 131, 120, 0.15);
+  color: #eb5757;
+  border-radius: 3px;
+  font-size: 85%;
+  padding: 0.2em 0.4em;
+`;
+
+const Italic = () => Ce$1 `
+  transform: skewX(-20deg);
+  display: inline-block;
+`;
+
+const Color = (color) => Ce$1 `
+  ${color && `color: ${color};`}
+`;
+
+const Link = () => Ce$1 `
+  cursor: pointer;
+`;
+
+const FormatAttachment = React__namespace.memo((_a) => {
+    var { size = baseIconProps.size, fill = baseIconProps.fill } = _a; __rest$1(_a, ["size", "fill"]);
+    return (jsxRuntimeExports.jsx(Icon, Object.assign({ width: size, height: size, viewBox: "0 0 20 20", fill: "none", xmlns: "http://www.w3.org/2000/svg" }, { children: jsxRuntimeExports.jsx(Path, { d: "M15.4167 13.3346H5.83333C3.99167 13.3346 2.5 11.843 2.5 10.0013C2.5 8.15964 3.99167 6.66797 5.83333 6.66797H16.25C17.4 6.66797 18.3333 7.6013 18.3333 8.7513C18.3333 9.9013 17.4 10.8346 16.25 10.8346H7.5C7.04167 10.8346 6.66667 10.4596 6.66667 10.0013C6.66667 9.54297 7.04167 9.16797 7.5 9.16797H15.4167V7.91797H7.5C6.35 7.91797 5.41667 8.8513 5.41667 10.0013C5.41667 11.1513 6.35 12.0846 7.5 12.0846H16.25C18.0917 12.0846 19.5833 10.593 19.5833 8.7513C19.5833 6.90964 18.0917 5.41797 16.25 5.41797H5.83333C3.3 5.41797 1.25 7.46797 1.25 10.0013C1.25 12.5346 3.3 14.5846 5.83333 14.5846H15.4167V13.3346Z", fill: "white" }) })));
+});
+
+const Container$3 = styled$1.div `
+  position: fixed;
+  bottom: 12px;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 34px;
+  display: flex;
+  align-items: center;
+  position: absolute;
+  background-color: #18181b;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  z-index: 1;
+`;
+const Button$1 = styled$1.a `
+  display: flex;
+  padding: 7px;
+  ${({ active }) => active && 'background: rgba(255, 255, 255, 0.15)'};
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.4);
+  }
+`;
+const Divider = styled$1.div `
+  width: 1px;
+  height: 100%;
+  background: #fff;
+  opacity: 0.2;
+`;
+const GlobalToolbar = React__namespace.memo((_a) => {
+    var { editor } = _a, props = __rest$1(_a, ["editor"]);
+    const [formats, setFormats] = React__namespace.useState({});
+    const [blockType, setBlockType] = React__namespace.useState();
+    const [isDisplay, setDisplay] = React__namespace.useState(false);
+    const formatBlock = React__namespace.useCallback((type, attributes = {}, childBlocks = []) => {
+        const caretPosition = editor.getCaretPosition();
+        if (!caretPosition || caretPosition.childBlockId)
+            return;
+        editor.getModule('toolbar').setUpdating(true);
+        const selectedBlocks = editor.getModule('selector').getSelectedBlocks();
+        if (selectedBlocks.length > 0) {
+            const updateIds = selectedBlocks.map((v) => {
+                return v.id;
+            });
+            editor
+                .getModule('toolbar')
+                .formatMultiBlocks(updateIds, blockType !== type ? type : 'PARAGRAPH', attributes, childBlocks);
+            editor.getModule('clipboard').focus();
+        }
+        else {
+            editor
+                .getModule('toolbar')
+                .formatBlock(blockType !== type ? type : 'PARAGRAPH', attributes, childBlocks);
+        }
+        setTimeout(() => {
+            editor.getModule('toolbar').setUpdating(false);
+        }, 100);
+    }, [formats, blockType]);
+    const handleHeader1 = React__namespace.useCallback((event) => {
+        event.preventDefault();
+        formatBlock('HEADER1');
+    }, [formats, blockType]);
+    const handleHeader2 = React__namespace.useCallback((event) => {
+        event.preventDefault();
+        formatBlock('HEADER2');
+    }, [formats, blockType]);
+    const handleHeader3 = React__namespace.useCallback((event) => {
+        event.preventDefault();
+        formatBlock('HEADER3');
+    }, [formats, blockType]);
+    const handleCodeBlock = React__namespace.useCallback((event) => {
+        event.preventDefault();
+        formatBlock('CODE-BLOCK');
+    }, [formats, blockType]);
+    const handleDecision = React__namespace.useCallback((event) => {
+        event.preventDefault();
+        formatBlock('DECISION');
+    }, [formats, blockType]);
+    const handleTask = React__namespace.useCallback((event) => {
+        event.preventDefault();
+        formatBlock('TASK');
+    }, [formats, blockType]);
+    const handleBlockquote = React__namespace.useCallback((event) => {
+        event.preventDefault();
+        formatBlock('BLOCKQUOTE');
+    }, [formats, blockType]);
+    const handleOrderedList = React__namespace.useCallback((event) => {
+        event.preventDefault();
+        formatBlock('ORDERED-LIST');
+    }, [formats, blockType]);
+    const handleBulletList = React__namespace.useCallback((event) => {
+        event.preventDefault();
+        formatBlock('BULLET-LIST');
+    }, [formats, blockType]);
+    const handleTable = React__namespace.useCallback((event) => {
+        event.preventDefault();
+        const caretPosition = editor.getCaretPosition();
+        if (!caretPosition)
+            return;
+        const parentBlock = editor.getModule('editor').createBlock({
+            prevId: caretPosition.blockId,
+            type: 'TABLE',
+            attributes: { tableC: 2, tableR: 2 },
+            focus: false,
+            historyPush: true,
+        });
+        editor.createChildBlocks(parentBlock.id, [
+            Object.assign(Object.assign({}, createBlock('PARAGRAPH')), { name: 'r0-c0' }),
+            Object.assign(Object.assign({}, createBlock('PARAGRAPH')), { name: 'r0-c1' }),
+            Object.assign(Object.assign({}, createBlock('PARAGRAPH')), { name: 'r1-c0' }),
+            Object.assign(Object.assign({}, createBlock('PARAGRAPH')), { name: 'r1-c1' }),
+        ]);
+    }, [formats, blockType]);
+    const handleFileUpload = React__namespace.useCallback((event) => {
+        event.preventDefault();
+        const caretPosition = editor.getCaretPosition();
+        if (!caretPosition)
+            return;
+        const fileHolder = document.createElement('input');
+        fileHolder.setAttribute('type', 'file');
+        fileHolder.setAttribute('accept', '*');
+        fileHolder.setAttribute('style', 'visibility:hidden');
+        fileHolder.onchange = () => {
+            var _a;
+            editor
+                .getModule('uploader')
+                .upload(Array.from((_a = fileHolder.files) !== null && _a !== void 0 ? _a : []), caretPosition.blockId);
+        };
+        fileHolder.click();
+        document.body.appendChild(fileHolder);
+        setTimeout(() => {
+            document.body.removeChild(fileHolder);
+        }, 10);
+    }, [formats, blockType, editor]);
+    React__namespace.useEffect(() => {
+        const subs = new Subscription();
+        const eventEmitter = editor.getEventEmitter();
+        subs.add(eventEmitter
+            .select(EditorEvents.EVENT_SELECTION_CHANGE)
+            .pipe(combineLatestWith(eventEmitter.select(EditorEvents.EVENT_BLOCK_SELECTED)))
+            .subscribe((v) => {
+            if (editor.getModule('toolbar').getUpdating())
+                return;
+            const caret = editor.getCaretPosition();
+            const selectedBlocks = editor.getModule('selector').getSelectedBlocks();
+            if (selectedBlocks.length < 1 && (!caret || !editor.hasFocus())) {
+                setDisplay(false);
+                return;
+            }
+            setDisplay(true);
+            if (!caret)
+                return;
+            const targetBlock = editor.getBlock(caret.blockId);
+            if (!targetBlock)
+                return;
+            // setFormats(editor.getFormats(caret.blockId, caret.index, caret.length));
+            setBlockType(targetBlock.type);
+        }));
+        return () => {
+            subs.unsubscribe();
+        };
+    }, []);
+    return ReactDOM.createPortal(jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: isDisplay && (jsxRuntimeExports.jsxs(Container$3, Object.assign({}, props, { children: [jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$1, Object.assign({ href: "#", onClick: handleHeader1, active: blockType === 'HEADER1' }, { children: jsxRuntimeExports.jsx(FormatHeader1, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u898B\u51FA\u3057(\u5927)\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$1, Object.assign({ href: "#", onClick: handleHeader2, active: blockType === 'HEADER2' }, { children: jsxRuntimeExports.jsx(FormatHeader2, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u898B\u51FA\u3057(\u4E2D)\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$1, Object.assign({ href: "#", onClick: handleHeader3, active: blockType === 'HEADER3' }, { children: jsxRuntimeExports.jsx(FormatHeader3, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u898B\u51FA\u3057(\u5C0F)\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Divider, {}), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$1, Object.assign({ href: "#", active: blockType === 'CODE-BLOCK', onClick: handleCodeBlock }, { children: jsxRuntimeExports.jsx(FormatCodeBlock, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u30B3\u30FC\u30C9\u30D6\u30ED\u30C3\u30AF\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$1, Object.assign({ href: "#", active: blockType === 'BLOCKQUOTE', onClick: handleBlockquote }, { children: jsxRuntimeExports.jsx(FormatBlockQuote, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u5F15\u7528\u30D6\u30ED\u30C3\u30AF\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Divider, {}), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$1, Object.assign({ href: "#", active: blockType === 'BULLET-LIST', onClick: handleBulletList }, { children: jsxRuntimeExports.jsx(FormatBulletList, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u7B87\u6761\u66F8\u304D\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$1, Object.assign({ href: "#", active: blockType === 'ORDERED-LIST', onClick: handleOrderedList }, { children: jsxRuntimeExports.jsx(FormatNumberList, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u756A\u53F7\u4ED8\u304D\u30EA\u30B9\u30C8\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Divider, {}), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$1, Object.assign({ href: "#", active: blockType === 'TASK', onClick: handleTask }, { children: jsxRuntimeExports.jsx(FormatTask, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u30BF\u30B9\u30AF\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$1, Object.assign({ href: "#", active: blockType === 'DECISION', onClick: handleDecision }, { children: jsxRuntimeExports.jsx(FormatDecision, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u6C7A\u5B9A\u4E8B\u9805\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Divider, {}), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$1, Object.assign({ href: "#", active: false, onClick: handleFileUpload }, { children: jsxRuntimeExports.jsx(FormatAttachment, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u30D5\u30A1\u30A4\u30EB\u3092\u6DFB\u4ED8" })), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$1, Object.assign({ href: "#", active: false, onClick: handleTable }, { children: jsxRuntimeExports.jsx(FormatDecision, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u30C6\u30FC\u30D6\u30EB\u3092\u8FFD\u52A0" }))] }))) }), document.body);
+});
+
+const TOOLBAR_CHILD_WIDTH = 34;
+const Container$2 = styled$1.div `
+  height: 34px;
+  align-items: center;
+  position: absolute;
+  display: ${({ isDisplay }) => (isDisplay ? 'flex' : 'none')};
+  transform: translateY(-100%);
+  background-color: #18181b;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  z-index: 1;
+`;
+const Button = styled$1.a `
+  display: flex;
+  padding: 7px;
+  ${({ active }) => active && 'background: rgba(255, 255, 255, 0.15)'};
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.4);
+  }
+`;
+styled$1.div `
+  width: 1px;
+  height: 100%;
+  background: #fff;
+  opacity: 0.2;
+`;
+const BubbleToolbar = React__namespace.memo((_a) => {
+    var _b, _c, _d;
+    var { editor, scrollContainer } = _a, props = __rest$1(_a, ["editor", "scrollContainer"]);
+    const [formats, setFormats] = React__namespace.useState({});
+    const [position, setPosition] = React__namespace.useState();
+    const [isDisplay, setDisplay] = React__namespace.useState(false);
+    const [currentCaretPosition, setCurrentCaretPosition] = React__namespace.useState();
+    const [toolbarWidth, setToolbarWidth] = React__namespace.useState(0);
+    const containerRef = React__namespace.useRef(null);
+    const handleBold = React__namespace.useCallback((event) => {
+        event.preventDefault();
+        editor.getModule('toolbar').setUpdating(true);
+        editor.getModule('toolbar').formatInline({ bold: !(formats === null || formats === void 0 ? void 0 : formats.bold) });
+        setTimeout(() => {
+            editor.getModule('toolbar').setUpdating(false);
+        }, 100);
+    }, [formats]);
+    const handleItalic = React__namespace.useCallback((event) => {
+        event.preventDefault();
+        editor.getModule('toolbar').setUpdating(true);
+        editor.getModule('toolbar').formatInline({ italic: !(formats === null || formats === void 0 ? void 0 : formats.italic) });
+        setTimeout(() => {
+            editor.getModule('toolbar').setUpdating(false);
+        }, 100);
+    }, [formats]);
+    const handleUnderline = React__namespace.useCallback((event) => {
+        event.preventDefault();
+        editor.getModule('toolbar').setUpdating(true);
+        editor.getModule('toolbar').formatInline({ underline: !(formats === null || formats === void 0 ? void 0 : formats.underline) });
+        setTimeout(() => {
+            editor.getModule('toolbar').setUpdating(false);
+        }, 100);
+    }, [formats]);
+    const handleStrike = React__namespace.useCallback((event) => {
+        event.preventDefault();
+        editor.getModule('toolbar').setUpdating(true);
+        editor.getModule('toolbar').formatInline({ strike: !(formats === null || formats === void 0 ? void 0 : formats.strike) });
+        setTimeout(() => {
+            editor.getModule('toolbar').setUpdating(false);
+        }, 100);
+    }, [formats]);
+    const handleLink = React__namespace.useCallback((event) => {
+        event.preventDefault();
+        const eventEmitter = editor.getEventEmitter();
+        eventEmitter.emit(EditorEvents.EVENT_LINK_CLICK, {
+            mode: 'openEnterLink',
+            link: formats === null || formats === void 0 ? void 0 : formats.link,
+            caretPosition: currentCaretPosition,
+        });
+    }, [formats, currentCaretPosition]);
+    const handleInlineCode = React__namespace.useCallback((event) => {
+        event.preventDefault();
+        editor.getModule('toolbar').setUpdating(true);
+        editor.getModule('toolbar').formatInline({ code: !(formats === null || formats === void 0 ? void 0 : formats.code) });
+        setTimeout(() => {
+            editor.getModule('toolbar').setUpdating(false);
+        }, 100);
+    }, [formats]);
+    const handleColor = React__namespace.useCallback((event) => {
+        event.preventDefault();
+        const eventEmitter = editor.getEventEmitter();
+        eventEmitter.emit(EditorEvents.EVENT_PALETTE_CLICK, {
+            caretPosition: currentCaretPosition,
+        });
+    }, [formats, currentCaretPosition]);
+    const handleMouseDown = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+    };
+    React__namespace.useEffect(() => {
+        const subs = new Subscription();
+        const eventEmitter = editor.getEventEmitter();
+        const updatePosition = (caret) => {
+            var _a;
+            const container = getHtmlElement(scrollContainer);
+            if (container) {
+                const containerRect = container.getBoundingClientRect();
+                const top = ((_a = container === null || container === void 0 ? void 0 : container.scrollTop) !== null && _a !== void 0 ? _a : 0) + caret.rect.top - containerRect.top - 4; // ブロックとツールバーの隙間をあける
+                const left = caret.rect.left - containerRect.left - toolbarWidth / 2;
+                setPosition({ top, left });
+            }
+            else {
+                const scrollEl = document.scrollingElement;
+                const top = scrollEl.scrollTop + caret.rect.top - 4;
+                const left = caret.rect.left - toolbarWidth / 2;
+                setPosition({ top, left });
+            }
+        };
+        subs.add(eventEmitter.select(EditorEvents.EVENT_SELECTION_CHANGE).subscribe((v) => {
+            var _a, _b;
+            if (editor.getModule('toolbar').getUpdating())
+                return;
+            const caret = editor.getCaretPosition();
+            if (!caret) {
+                setPosition(undefined);
+                setDisplay(false);
+                return;
+            }
+            const block = editor.getBlock(caret.blockId);
+            const { disableDecorationFormats } = editor.getSettings();
+            if (!block || disableDecorationFormats.includes(block.type) || !editor.hasFocus()) {
+                setPosition(undefined);
+                setDisplay(false);
+                return;
+            }
+            if (caret.childBlockId) {
+                const childBlock = block.childBlocks.find((v) => v.id === caret.childBlockId);
+                // 子要素の場合
+                if (childBlock) {
+                    updatePosition(caret);
+                    setDisplay(!caret.collapsed);
+                    setFormats(editor.getFormats(caret.blockId, caret.index, caret.length));
+                    return;
+                }
+            }
+            const blockLength = (_b = editor.getBlockLength((_a = caret === null || caret === void 0 ? void 0 : caret.blockId) !== null && _a !== void 0 ? _a : '')) !== null && _b !== void 0 ? _b : 0;
+            if (blockLength < 1) {
+                setPosition(undefined);
+                setDisplay(false);
+                return;
+            }
+            updatePosition(caret);
+            setDisplay(!caret.collapsed);
+            setFormats(editor.getFormats(caret.blockId, caret.index, caret.length));
+        }));
+        subs.add(eventEmitter.select(EditorEvents.EVENT_BLOCK_RERENDER).subscribe(() => {
+            var _a;
+            if ((_a = editor.getModule('toolbar')) === null || _a === void 0 ? void 0 : _a.getUpdating())
+                return;
+            setDisplay(false);
+            setTimeout(() => {
+                const caret = editor.getCaretPosition();
+                if (!caret)
+                    return;
+                updatePosition(caret);
+                setDisplay(!caret.collapsed);
+            });
+        }));
+        return () => {
+            subs.unsubscribe();
+        };
+    }, [editor, scrollContainer, toolbarWidth]);
+    React__namespace.useEffect(() => {
+        setTimeout(() => {
+            if (!containerRef.current)
+                return;
+            editor.getModule('toolbar').setBubbleToolbarRef(containerRef.current);
+            setToolbarWidth((containerRef.current.children.length - 1) * TOOLBAR_CHILD_WIDTH);
+        });
+    }, [editor]);
+    return ReactDOM.createPortal(jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: jsxRuntimeExports.jsxs(Container$2, Object.assign({ id: "bubble-toolbar", style: {
+                top: (_b = position === null || position === void 0 ? void 0 : position.top) !== null && _b !== void 0 ? _b : 0,
+                left: (_c = position === null || position === void 0 ? void 0 : position.left) !== null && _c !== void 0 ? _c : 0,
+            }, isDisplay: isDisplay, ref: containerRef, onMouseDown: handleMouseDown }, props, { children: [jsxRuntimeExports.jsxs(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button, Object.assign({ href: "#", onClick: handleBold, active: !!(formats === null || formats === void 0 ? void 0 : formats.bold) }, { children: jsxRuntimeExports.jsx(FormatBold, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: ["\u592A\u5B57", jsxRuntimeExports.jsx("br", {}), jsxRuntimeExports.jsx("div", Object.assign({ className: "description" }, { children: "Ctrl + B" }))] })), jsxRuntimeExports.jsxs(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button, Object.assign({ href: "#", onClick: handleItalic, active: !!(formats === null || formats === void 0 ? void 0 : formats.italic) }, { children: jsxRuntimeExports.jsx(FormatItalic, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: ["\u659C\u4F53", jsxRuntimeExports.jsx("br", {}), jsxRuntimeExports.jsx("div", Object.assign({ className: "description" }, { children: "Ctrl + I" }))] })), jsxRuntimeExports.jsxs(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button, Object.assign({ href: "#", onClick: handleUnderline, active: !!(formats === null || formats === void 0 ? void 0 : formats.underline) }, { children: jsxRuntimeExports.jsx(FormatUnderLine, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: ["\u4E0B\u7DDA", jsxRuntimeExports.jsx("br", {}), jsxRuntimeExports.jsx("div", Object.assign({ className: "description" }, { children: "Ctrl + U" }))] })), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button, Object.assign({ href: "#", onClick: handleStrike, active: !!(formats === null || formats === void 0 ? void 0 : formats.strike) }, { children: jsxRuntimeExports.jsx(FormatStrike, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u6253\u6D88\u3057\u7DDA" })), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button, Object.assign({ id: "toolbar-palette", href: "#", onClick: handleColor, active: !!(formats === null || formats === void 0 ? void 0 : formats.color) }, { children: jsxRuntimeExports.jsx(FormatColor, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u6587\u5B57\u8272\u3092\u5909\u66F4" })), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button, Object.assign({ id: "toolbar-link", href: "#", onClick: handleLink, active: !!(formats === null || formats === void 0 ? void 0 : formats.link) }, { children: jsxRuntimeExports.jsx(FormatLink, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u30EA\u30F3\u30AF\u3092\u8FFD\u52A0" })), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button, Object.assign({ href: "#", onClick: handleInlineCode, active: !!(formats === null || formats === void 0 ? void 0 : formats.code) }, { children: jsxRuntimeExports.jsx(FormatCode, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u30A4\u30F3\u30E9\u30A4\u30F3\u30B3\u30FC\u30C9" }))] })) }), (_d = getHtmlElement(scrollContainer)) !== null && _d !== void 0 ? _d : document.body);
+});
 
 class EditorModule {
     constructor({ eventEmitter, editor }) {
@@ -23319,14 +24230,14 @@ class EditorModule {
         this.editor.blur();
         setTimeout(() => {
             this.editor.setCaretPosition({ blockId: lastBlock.id });
-            this.editor.scrollIntoView();
+            this.scrollToBlock(lastBlock.id, 'end');
         }, 10);
     }
-    scrollToBlock(blockId) {
+    scrollToBlock(blockId, position = 'center') {
         const el = getBlockElementById(blockId);
         if (!el)
             return;
-        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        el.scrollIntoView({ behavior: 'smooth', block: position });
     }
 }
 
@@ -23335,6 +24246,9 @@ class KeyBoardModule {
     constructor({ eventEmitter, editor }) {
         this.sync = throttle(200, (blockId, blockElement) => {
             this.editor.sync(blockId, blockElement, false);
+        });
+        this.syncChildBlock = throttle(200, (parentBlockId, blockId, blockKey, blockElement) => {
+            this.editor.syncChildBlock(parentBlockId, blockId, blockKey, blockElement);
         });
         this.syncCodeBlock = debounce(300, (blockId, blockElement) => {
             this.editor.sync(blockId, blockElement, true);
@@ -23351,14 +24265,14 @@ class KeyBoardModule {
             key: KeyCodes.ENTER,
             composing: true,
             prevented: true,
-            except: ['CODE-BLOCK'],
+            except: ['CODE-BLOCK', 'TABLE'],
             handler: this._handleEnter.bind(this),
         });
         this.addBinding({
             key: KeyCodes.NUMPAD_ENTER,
             composing: true,
             prevented: true,
-            except: ['CODE-BLOCK'],
+            except: ['CODE-BLOCK', 'TABLE'],
             handler: this._handleEnter.bind(this),
         });
         // code-block enter
@@ -23380,21 +24294,25 @@ class KeyBoardModule {
         this.addBinding({
             key: KeyCodes.ARROW_UP,
             collapsed: true,
+            except: ['TABLE'],
             handler: this._handleKeyUp.bind(this),
         });
         this.addBinding({
             key: KeyCodes.ARROW_DOWN,
             collapsed: true,
+            except: ['TABLE'],
             handler: this._handleKeyDown.bind(this),
         });
         this.addBinding({
             key: KeyCodes.ARROW_LEFT,
             collapsed: true,
+            except: ['TABLE'],
             handler: this._handleKeyLeft.bind(this),
         });
         this.addBinding({
             key: KeyCodes.ARROW_RIGHT,
             collapsed: true,
+            except: ['TABLE'],
             handler: this._handleKeyRight.bind(this),
         });
         // selector operation
@@ -23417,12 +24335,14 @@ class KeyBoardModule {
             key: KeyCodes.BACKSPACE,
             prevented: true,
             overwriteAllEvents: true,
+            except: ['TABLE'],
             handler: this._handleBackspace.bind(this),
         });
         this.addBinding({
             key: KeyCodes.DELETE,
             prevented: true,
             overwriteAllEvents: true,
+            except: ['TABLE'],
             handler: this._handleDelete.bind(this),
         });
         this.addBinding({
@@ -23433,14 +24353,14 @@ class KeyBoardModule {
         this.addBinding({
             key: KeyCodes.TAB,
             prevented: true,
-            except: ['CODE-BLOCK'],
+            except: ['CODE-BLOCK', 'TABLE'],
             handler: this._handleIndent.bind(this),
         });
         this.addBinding({
             key: KeyCodes.TAB,
             shiftKey: true,
             prevented: true,
-            except: ['CODE-BLOCK'],
+            except: ['CODE-BLOCK', 'TABLE'],
             handler: this._handleOutdent.bind(this),
         });
         this.addBinding({
@@ -23494,15 +24414,97 @@ class KeyBoardModule {
                 key: KeyCodes.D,
                 prevented: true,
                 ctrlKey: true,
+                except: ['TABLE'],
                 handler: this._handleDelete.bind(this),
             });
             this.addBinding({
                 key: KeyCodes.H,
                 prevented: true,
                 ctrlKey: true,
+                except: ['TABLE'],
                 handler: this._handleBackspace.bind(this),
             });
+            this.addBinding({
+                key: KeyCodes.D,
+                prevented: true,
+                ctrlKey: true,
+                only: ['TABLE'],
+                handler: this._handleTableDelete.bind(this),
+            });
+            this.addBinding({
+                key: KeyCodes.H,
+                prevented: true,
+                ctrlKey: true,
+                only: ['TABLE'],
+                handler: this._handleTableBackspace.bind(this),
+            });
         }
+        // table
+        this.addBinding({
+            key: KeyCodes.ENTER,
+            composing: true,
+            prevented: true,
+            only: ['TABLE'],
+            handler: this._handleTableEnter.bind(this),
+        });
+        this.addBinding({
+            key: KeyCodes.NUMPAD_ENTER,
+            composing: true,
+            prevented: true,
+            only: ['TABLE'],
+            handler: this._handleTableEnter.bind(this),
+        });
+        this.addBinding({
+            key: KeyCodes.BACKSPACE,
+            prevented: true,
+            overwriteAllEvents: true,
+            only: ['TABLE'],
+            handler: this._handleTableBackspace.bind(this),
+        });
+        this.addBinding({
+            key: KeyCodes.DELETE,
+            prevented: true,
+            overwriteAllEvents: true,
+            only: ['TABLE'],
+            handler: this._handleTableDelete.bind(this),
+        });
+        this.addBinding({
+            key: KeyCodes.ARROW_UP,
+            collapsed: true,
+            only: ['TABLE'],
+            handler: this._handleTableKeyUp.bind(this),
+        });
+        this.addBinding({
+            key: KeyCodes.ARROW_DOWN,
+            collapsed: true,
+            only: ['TABLE'],
+            handler: this._handleTableKeyDown.bind(this),
+        });
+        this.addBinding({
+            key: KeyCodes.ARROW_LEFT,
+            collapsed: true,
+            only: ['TABLE'],
+            handler: this._handleTableKeyLeft.bind(this),
+        });
+        this.addBinding({
+            key: KeyCodes.ARROW_RIGHT,
+            collapsed: true,
+            only: ['TABLE'],
+            handler: this._handleTableKeyRight.bind(this),
+        });
+        this.addBinding({
+            key: KeyCodes.TAB,
+            prevented: true,
+            only: ['TABLE'],
+            handler: this._handleTableTab.bind(this),
+        });
+        this.addBinding({
+            key: KeyCodes.TAB,
+            shiftKey: true,
+            prevented: true,
+            only: ['TABLE'],
+            handler: this._handleTableShiftTab.bind(this),
+        });
     }
     onDestroy() {
         this.bindings = [];
@@ -23515,9 +24517,10 @@ class KeyBoardModule {
         this.composing = false;
     }
     onInput(e) {
+        const nativeRange = this.editor.getNativeRange();
+        const el = nativeRange === null || nativeRange === void 0 ? void 0 : nativeRange.startContainer;
         setTimeout(() => {
-            const nativeRange = this.editor.getNativeRange();
-            const [blockId, blockElement] = getBlockId(nativeRange === null || nativeRange === void 0 ? void 0 : nativeRange.startContainer);
+            const [blockId, blockElement] = getBlockId(el);
             if (this.composing || !blockId || !blockElement) {
                 return;
             }
@@ -23529,6 +24532,20 @@ class KeyBoardModule {
                 return;
             }
             this.sync(blockId, blockElement);
+        });
+    }
+    onInputChildBlock(parentBlockId, e) {
+        const nativeRange = this.editor.getNativeRange();
+        const el = nativeRange === null || nativeRange === void 0 ? void 0 : nativeRange.startContainer;
+        setTimeout(() => {
+            const parentBlock = this.editor.getBlock(parentBlockId);
+            if (!parentBlock)
+                return;
+            const [blockId, blockKey, blockElement] = getChildBlockId(el);
+            if (this.composing || !blockId || !blockKey || !blockElement) {
+                return;
+            }
+            this.syncChildBlock(parentBlockId, blockId, blockKey, blockElement);
         });
     }
     onKeyPress(e) { }
@@ -23559,7 +24576,8 @@ class KeyBoardModule {
         });
     }
     _trigger(e, props, caretPosition) {
-        const { key, collapsed = false, empty = false, formats = [], metaKey = false, ctrlKey = false, shiftKey = false, shortKey = false, altKey = false, prevented = false, composing = false, overwriteAllEvents = false, only = [], except = [], handler, } = props;
+        const { key, collapsed = false, empty = false, formats = [], metaKey = false, ctrlKey = false, shiftKey = false, shortKey = false, altKey = false, prevented = false, composing = false, overwriteAllEvents = false, // shiftやctrlとの同時押し含めすべて
+        only = [], except = [], handler, } = props;
         if (!composing && this.composing)
             return false;
         if (!caretPosition)
@@ -23645,7 +24663,7 @@ class KeyBoardModule {
         }
     }
     _handleKeyLeft(caretPosition, editor, event) {
-        var _a;
+        var _a, _b;
         const caret = editor.getCaretPosition();
         if (caret) {
             const blockLength = editor.getBlockLength(caret.blockId);
@@ -23655,8 +24673,24 @@ class KeyBoardModule {
                 event.preventDefault();
                 const blocks = editor.getBlocks();
                 const currentIndex = blocks.findIndex((v) => v.id === caret.blockId);
-                if (currentIndex !== -1 && currentIndex > 0) {
+                if (currentIndex > 0) {
                     const nextBlockLength = (_a = editor.getBlockLength(blocks[currentIndex - 1].id)) !== null && _a !== void 0 ? _a : 0;
+                    //tableの場合だけの処理
+                    if (blocks[currentIndex - 1].type === 'TABLE') {
+                        const rIndex = blocks[currentIndex - 1].attributes.tableR - 1;
+                        const cIndex = blocks[currentIndex - 1].attributes.tableC - 1;
+                        const lastChild = blocks[currentIndex - 1].childBlocks.find((v) => v.name === `r${rIndex}-c${cIndex}`);
+                        if (!lastChild)
+                            return;
+                        const lastChildBlockLength = (_b = editor.getChildBlockLength(lastChild.id)) !== null && _b !== void 0 ? _b : 0;
+                        editor.setCaretPosition({
+                            blockId: blocks[currentIndex - 1].id,
+                            childBlockId: lastChild.id,
+                            index: lastChildBlockLength,
+                            nextElementDirection: 'up',
+                        });
+                        return;
+                    }
                     editor.setCaretPosition({
                         blockId: blocks[currentIndex - 1].id,
                         index: nextBlockLength,
@@ -23678,6 +24712,21 @@ class KeyBoardModule {
                 const blocks = editor.getBlocks();
                 const currentIndex = blocks.findIndex((v) => v.id === caret.blockId);
                 if (currentIndex !== -1 && currentIndex < blocks.length - 1) {
+                    //次がtableの場合だけの処理
+                    if (blocks[currentIndex + 1].type === 'TABLE') {
+                        const rIndex = 0;
+                        const cIndex = 0;
+                        const firstChild = blocks[currentIndex + 1].childBlocks.find((v) => v.name === `r${rIndex}-c${cIndex}`);
+                        if (!firstChild)
+                            return;
+                        editor.setCaretPosition({
+                            blockId: blocks[currentIndex + 1].id,
+                            childBlockId: firstChild.id,
+                            index: 0,
+                        });
+                        setTimeout(() => editor.updateCaretRect(), 10);
+                        return;
+                    }
                     editor.setCaretPosition({ blockId: blocks[currentIndex + 1].id });
                 }
             }
@@ -24103,6 +25152,382 @@ class KeyBoardModule {
         }, 10);
         editor.render([block.id]);
     }
+    // table
+    _handleTableBackspace(caretPosition, editor) {
+        const block = editor.getBlock(caretPosition.blockId);
+        if (!caretPosition.childBlockId || !block)
+            return;
+        const childBlockIndex = block.childBlocks.findIndex((v) => v.id === caretPosition.childBlockId);
+        if (childBlockIndex === -1)
+            return;
+        const childBlocks = copyObject(block.childBlocks);
+        let deletedContents;
+        let caretIndex;
+        if (caretPosition.collapsed) {
+            caretIndex = caretPosition.index - 1;
+            deletedContents = deleteInlineContents(childBlocks[childBlockIndex].contents, caretIndex, 1);
+            deletedContents[deletedContents.length - 1].text =
+                deletedContents[deletedContents.length - 1].text;
+        }
+        else {
+            if (caretPosition.length < 1)
+                return;
+            caretIndex = caretPosition.index;
+            deletedContents = deleteInlineContents(childBlocks[childBlockIndex].contents, caretPosition.index, caretPosition.length);
+        }
+        editor.updateChildBlock(block.id, Object.assign(Object.assign({}, block.childBlocks[childBlockIndex]), { contents: deletedContents }));
+        editor.blur();
+        editor.renderChild(block.id, [block.childBlocks[childBlockIndex].id]);
+        setTimeout(() => {
+            editor.setCaretPosition({
+                blockId: block.id,
+                childBlockId: caretPosition.childBlockId,
+                index: caretIndex,
+            });
+            editor.updateCaretRect();
+        }, 10);
+    }
+    _handleTableDelete(caretPosition, editor) {
+        const block = editor.getBlock(caretPosition.blockId);
+        if (!caretPosition.childBlockId || !block)
+            return;
+        const childBlockIndex = block.childBlocks.findIndex((v) => v.id === caretPosition.childBlockId);
+        if (childBlockIndex === -1)
+            return;
+        const childBlocks = copyObject(block.childBlocks);
+        let deletedContents;
+        if (caretPosition.collapsed) {
+            deletedContents = deleteInlineContents(childBlocks[childBlockIndex].contents, caretPosition.index, 1);
+        }
+        else {
+            if (caretPosition.length < 1)
+                return;
+            deletedContents = deleteInlineContents(childBlocks[childBlockIndex].contents, caretPosition.index, caretPosition.length);
+        }
+        editor.updateChildBlock(block.id, Object.assign(Object.assign({}, block.childBlocks[childBlockIndex]), { contents: deletedContents }));
+        editor.blur();
+        editor.renderChild(block.id, [block.childBlocks[childBlockIndex].id]);
+        setTimeout(() => {
+            editor.setCaretPosition({
+                blockId: block.id,
+                childBlockId: caretPosition.childBlockId,
+                index: caretPosition.index,
+            });
+            editor.updateCaretRect();
+        }, 10);
+    }
+    _handleTableKeyLeft(caretPosition, editor, event) {
+        var _a, _b, _c, _d;
+        const block = editor.getBlock(caretPosition.blockId);
+        if (!caretPosition.childBlockId || !block)
+            return;
+        const childBlockIndex = block.childBlocks.findIndex((v) => v.id === caretPosition.childBlockId);
+        if (childBlockIndex === -1 || !block.childBlocks[childBlockIndex].name)
+            return;
+        const match = (_a = block.childBlocks[childBlockIndex].name) === null || _a === void 0 ? void 0 : _a.match(/^r([0-9]+)-c([0-9]+)/);
+        if (!match)
+            return;
+        let currentR = Number(match[1]);
+        let currentC = Number(match[2]);
+        const blockLength = editor.getChildBlockLength(block.childBlocks[childBlockIndex].id);
+        if (blockLength === null)
+            return;
+        if (blockLength === 0 || caretPosition.index === 0) {
+            event.preventDefault();
+            if (currentC === 0 && currentR === 0) {
+                // １つ前のブロックへ飛ばす
+                const blocks = editor.getBlocks();
+                const currentBlockIndex = blocks.findIndex((v) => v.id === caretPosition.blockId);
+                if (currentBlockIndex > 0) {
+                    const nextBlockLength = (_b = editor.getBlockLength(blocks[currentBlockIndex - 1].id)) !== null && _b !== void 0 ? _b : 0;
+                    //次がtableの場合だけの処理
+                    if (blocks[currentBlockIndex - 1].type === 'TABLE') {
+                        const rIndex = blocks[currentBlockIndex - 1].attributes.tableR - 1;
+                        const cIndex = blocks[currentBlockIndex - 1].attributes.tableC - 1;
+                        const lastChild = blocks[currentBlockIndex - 1].childBlocks.find((v) => v.name === `r${rIndex}-c${cIndex}`);
+                        if (!lastChild)
+                            return;
+                        const lastChildBlockLength = (_c = editor.getChildBlockLength(lastChild.id)) !== null && _c !== void 0 ? _c : 0;
+                        editor.setCaretPosition({
+                            blockId: blocks[currentBlockIndex - 1].id,
+                            childBlockId: lastChild.id,
+                            index: lastChildBlockLength,
+                            nextElementDirection: 'up',
+                        });
+                        setTimeout(() => editor.updateCaretRect(), 10);
+                        return;
+                    }
+                    editor.setCaretPosition({
+                        blockId: blocks[currentBlockIndex - 1].id,
+                        index: nextBlockLength,
+                        nextElementDirection: 'up',
+                    });
+                    setTimeout(() => editor.updateCaretRect(), 10);
+                    return;
+                }
+            }
+            if (currentC === 0) {
+                currentR--;
+                currentC = block.attributes.tableC - 1;
+            }
+            else {
+                currentC--;
+            }
+            const prevChild = block.childBlocks.find((v) => v.name === `r${currentR}-c${currentC}`);
+            if (!prevChild)
+                return;
+            const prevBlockLength = (_d = editor.getChildBlockLength(prevChild.id)) !== null && _d !== void 0 ? _d : 0;
+            editor.setCaretPosition({
+                blockId: block.id,
+                childBlockId: prevChild.id,
+                index: prevBlockLength,
+            });
+        }
+        setTimeout(() => editor.updateCaretRect(), 10);
+    }
+    _handleTableKeyRight(caretPosition, editor, event) {
+        var _a;
+        const block = editor.getBlock(caretPosition.blockId);
+        if (!caretPosition.childBlockId || !block)
+            return;
+        const childBlockIndex = block.childBlocks.findIndex((v) => v.id === caretPosition.childBlockId);
+        if (childBlockIndex === -1 || !block.childBlocks[childBlockIndex].name)
+            return;
+        const match = (_a = block.childBlocks[childBlockIndex].name) === null || _a === void 0 ? void 0 : _a.match(/^r([0-9]+)-c([0-9]+)/);
+        if (!match)
+            return;
+        let currentR = Number(match[1]);
+        let currentC = Number(match[2]);
+        const blockLength = editor.getChildBlockLength(block.childBlocks[childBlockIndex].id);
+        if (blockLength === null)
+            return;
+        if (blockLength === 0 || blockLength === caretPosition.index) {
+            event.preventDefault();
+            // １つ先のブロックへ飛ばす
+            if (currentC === block.attributes.tableC - 1 && currentR === block.attributes.tableR - 1) {
+                const blocks = editor.getBlocks();
+                const currentBlockIndex = blocks.findIndex((v) => v.id === caretPosition.blockId);
+                if (currentBlockIndex === -1 || currentBlockIndex >= blocks.length - 1)
+                    return;
+                //次がtableの場合だけの処理
+                if (blocks[currentBlockIndex + 1].type === 'TABLE') {
+                    const rIndex = 0;
+                    const cIndex = 0;
+                    const firstChild = blocks[currentBlockIndex + 1].childBlocks.find((v) => v.name === `r${rIndex}-c${cIndex}`);
+                    if (!firstChild)
+                        return;
+                    editor.setCaretPosition({
+                        blockId: blocks[currentBlockIndex + 1].id,
+                        childBlockId: firstChild.id,
+                        index: 0,
+                    });
+                    setTimeout(() => editor.updateCaretRect(), 10);
+                    return;
+                }
+                editor.setCaretPosition({
+                    blockId: blocks[currentBlockIndex + 1].id,
+                    index: 0,
+                });
+                setTimeout(() => editor.updateCaretRect(), 10);
+                return;
+            }
+            if (currentC === block.attributes.tableC - 1) {
+                currentR++;
+                currentC = 0;
+            }
+            else {
+                currentC++;
+            }
+            const nextChild = block.childBlocks.find((v) => v.name === `r${currentR}-c${currentC}`);
+            if (!nextChild)
+                return;
+            editor.setCaretPosition({
+                blockId: block.id,
+                childBlockId: nextChild.id,
+                index: 0,
+            });
+        }
+        setTimeout(() => editor.updateCaretRect(), 10);
+    }
+    _handleTableKeyUp(caretPosition, editor, event) {
+        var _a, _b;
+        if (!caretPosition.isTop)
+            return;
+        const block = editor.getBlock(caretPosition.blockId);
+        if (!caretPosition.childBlockId || !block)
+            return;
+        const childBlockIndex = block.childBlocks.findIndex((v) => v.id === caretPosition.childBlockId);
+        if (childBlockIndex === -1 || !block.childBlocks[childBlockIndex].name)
+            return;
+        const match = (_a = block.childBlocks[childBlockIndex].name) === null || _a === void 0 ? void 0 : _a.match(/^r([0-9]+)-c([0-9]+)/);
+        if (!match)
+            return;
+        let currentR = Number(match[1]);
+        let currentC = Number(match[2]);
+        if (currentR > 0) {
+            const prevChild = block.childBlocks.find((v) => v.name === `r${currentR - 1}-c${currentC}`);
+            if (!prevChild)
+                return;
+            const settings = editor.getSettings();
+            const container = getHtmlElement(settings.scrollContainer);
+            const prevChildEl = getBlockElementById(prevChild.id, true);
+            if (!prevChildEl)
+                return;
+            // １つ前の要素が見切れてる場合は強制スクロール
+            const prevChildRect = prevChildEl.getBoundingClientRect();
+            if (prevChildRect.top < 0) {
+                if (container) {
+                    container.scrollTop -= 40;
+                }
+                else {
+                    if (document.scrollingElement) {
+                        document.scrollingElement.scrollTop -= 40;
+                    }
+                }
+            }
+            const prevChildBlockLength = (_b = editor.getChildBlockLength(prevChild.id)) !== null && _b !== void 0 ? _b : 0;
+            event.preventDefault();
+            editor.setCaretPosition({
+                blockId: block.id,
+                childBlockId: prevChild.id,
+                index: prevChildBlockLength,
+                nextElementDirection: 'up',
+            });
+            editor.updateCaretRect();
+            return;
+        }
+        if (editor.prev()) {
+            event.preventDefault();
+        }
+        else {
+            setTimeout(() => editor.updateCaretRect(), 10);
+        }
+    }
+    _handleTableKeyDown(caretPosition, editor, event) {
+        var _a, _b;
+        if (!caretPosition.isBottom)
+            return;
+        const block = editor.getBlock(caretPosition.blockId);
+        if (!caretPosition.childBlockId || !block)
+            return;
+        const childBlockIndex = block.childBlocks.findIndex((v) => v.id === caretPosition.childBlockId);
+        if (childBlockIndex === -1 || !block.childBlocks[childBlockIndex].name)
+            return;
+        const match = (_a = block.childBlocks[childBlockIndex].name) === null || _a === void 0 ? void 0 : _a.match(/^r([0-9]+)-c([0-9]+)/);
+        if (!match)
+            return;
+        let currentR = Number(match[1]);
+        let currentC = Number(match[2]);
+        if (currentR < block.attributes.tableR - 1) {
+            const nextChild = block.childBlocks.find((v) => v.name === `r${currentR + 1}-c${currentC}`);
+            if (!nextChild)
+                return;
+            const settings = editor.getSettings();
+            const container = getHtmlElement(settings.scrollContainer);
+            const nextChildEl = getBlockElementById(nextChild.id, true);
+            if (!nextChildEl)
+                return;
+            // １つ先の要素が見切れてる場合は強制スクロール
+            const nextChildRect = nextChildEl.getBoundingClientRect();
+            if (container) {
+                const containerRect = container.getBoundingClientRect();
+                if (nextChildRect.top + nextChildRect.height >= containerRect.top + containerRect.height) {
+                    container.scrollTop += nextChildRect.height;
+                }
+            }
+            else {
+                if (document.scrollingElement) {
+                    document.scrollingElement.scrollTop += nextChildRect.height;
+                }
+            }
+            const prevChildBlockLength = (_b = editor.getChildBlockLength(nextChild.id)) !== null && _b !== void 0 ? _b : 0;
+            event.preventDefault();
+            editor.setCaretPosition({
+                blockId: block.id,
+                childBlockId: nextChild.id,
+                index: prevChildBlockLength,
+            });
+            editor.updateCaretRect();
+            return;
+        }
+        if (editor.next()) {
+            event.preventDefault();
+        }
+        else {
+            setTimeout(() => editor.updateCaretRect(), 10);
+        }
+    }
+    _handleTableEnter(caretPosition, editor) {
+        if (this.composing) {
+            return;
+        }
+    }
+    _handleTableTab(caretPosition, editor) {
+        var _a, _b;
+        const block = editor.getBlock(caretPosition.blockId);
+        if (!caretPosition.childBlockId || !block)
+            return;
+        const childBlockIndex = block.childBlocks.findIndex((v) => v.id === caretPosition.childBlockId);
+        if (childBlockIndex === -1 || !block.childBlocks[childBlockIndex].name)
+            return;
+        const match = (_a = block.childBlocks[childBlockIndex].name) === null || _a === void 0 ? void 0 : _a.match(/^r([0-9]+)-c([0-9]+)/);
+        if (!match)
+            return;
+        let currentR = Number(match[1]);
+        let currentC = Number(match[2]);
+        // １つ前のセルへ移動
+        if (currentR === block.attributes.tableR - 1 && currentC === block.attributes.tableC - 1)
+            return;
+        if (currentC === block.attributes.tableC - 1) {
+            currentR++;
+            currentC = 0;
+        }
+        else {
+            currentC++;
+        }
+        const nextChild = block.childBlocks.find((v) => v.name === `r${currentR}-c${currentC}`);
+        if (!nextChild)
+            return;
+        const nextBlockLength = (_b = editor.getChildBlockLength(nextChild.id)) !== null && _b !== void 0 ? _b : 0;
+        editor.setCaretPosition({
+            blockId: block.id,
+            childBlockId: nextChild.id,
+            index: nextBlockLength,
+        });
+    }
+    _handleTableShiftTab(caretPosition, editor) {
+        var _a, _b;
+        const block = editor.getBlock(caretPosition.blockId);
+        if (!caretPosition.childBlockId || !block)
+            return;
+        const childBlockIndex = block.childBlocks.findIndex((v) => v.id === caretPosition.childBlockId);
+        if (childBlockIndex === -1 || !block.childBlocks[childBlockIndex].name)
+            return;
+        const match = (_a = block.childBlocks[childBlockIndex].name) === null || _a === void 0 ? void 0 : _a.match(/^r([0-9]+)-c([0-9]+)/);
+        if (!match)
+            return;
+        let currentR = Number(match[1]);
+        let currentC = Number(match[2]);
+        // １つ先のセルへ移動
+        if (currentR === 0 && currentC === 0)
+            return;
+        if (currentC === 0) {
+            currentR--;
+            currentC = block.attributes.tableC - 1;
+        }
+        else {
+            currentC--;
+        }
+        const nextChild = block.childBlocks.find((v) => v.name === `r${currentR}-c${currentC}`);
+        if (!nextChild)
+            return;
+        const nextBlockLength = (_b = editor.getChildBlockLength(nextChild.id)) !== null && _b !== void 0 ? _b : 0;
+        editor.setCaretPosition({
+            blockId: block.id,
+            childBlockId: nextChild.id,
+            index: nextBlockLength,
+        });
+    }
 }
 
 class LoggerModule {
@@ -24178,11 +25603,19 @@ class ToolbarModule {
         const block = this.editor.getBlock(caretPosition.blockId);
         if (!block)
             return;
-        this.editor.formatText(block.id, caretPosition.index, caretPosition.length, attributes);
+        // 子ブロックの場合
+        if (caretPosition.childBlockId) {
+            this.editor.formatChildBlockText(block.id, caretPosition.childBlockId, caretPosition.index, caretPosition.length, attributes);
+            this.editor.renderChild(block.id, [caretPosition.childBlockId]);
+        }
+        else {
+            this.editor.formatText(block.id, caretPosition.index, caretPosition.length, attributes);
+            this.editor.render([block.id]);
+        }
         this.editor.blur();
-        this.editor.render([block.id]);
         setTimeout(() => this.editor.setCaretPosition({
             blockId: block.id,
+            childBlockId: caretPosition === null || caretPosition === void 0 ? void 0 : caretPosition.childBlockId,
             index: caretPosition === null || caretPosition === void 0 ? void 0 : caretPosition.index,
             length: caretPosition === null || caretPosition === void 0 ? void 0 : caretPosition.length,
         }), 10);
@@ -24197,14 +25630,14 @@ class ToolbarModule {
         });
         this.editor.render(blockIds);
     }
-    formatBlock(type, attributes = {}) {
+    formatBlock(type, attributes = {}, childBlocks = []) {
         const caretPosition = this.editor.getCaretPosition();
         if (!caretPosition)
             return;
         const block = this.editor.getBlock(caretPosition.blockId);
         if (!block)
             return;
-        this.editor.updateBlock(Object.assign(Object.assign({}, block), { type, attributes: Object.assign(Object.assign({}, block.attributes), attributes) }));
+        this.editor.updateBlock(Object.assign(Object.assign({}, block), { type, attributes: Object.assign(Object.assign({}, block.attributes), attributes), childBlocks }));
         this.editor.numberingList();
         this.editor.render([block.id]);
         this.editor.blur();
@@ -24214,12 +25647,12 @@ class ToolbarModule {
             length: caretPosition.length,
         }), 10);
     }
-    formatMultiBlocks(blockIds, type, attributes = {}) {
+    formatMultiBlocks(blockIds, type, attributes = {}, childBlocks = []) {
         blockIds.forEach((blockId) => {
             const block = this.editor.getBlock(blockId);
             if (!block)
                 return;
-            this.editor.updateBlock(Object.assign(Object.assign({}, block), { type, attributes: Object.assign(Object.assign({}, block.attributes), attributes) }));
+            this.editor.updateBlock(Object.assign(Object.assign({}, block), { type, attributes: Object.assign(Object.assign({}, block.attributes), attributes), childBlocks }));
         });
         this.editor.numberingList();
         this.editor.render(blockIds);
@@ -24255,6 +25688,11 @@ class SelectorModule {
         this.eventEmitter.info('init selector module');
         this.addBinding({
             key: KeyCodes.BACKSPACE,
+            prevented: true,
+            handler: this._handleBackspace.bind(this),
+        });
+        this.addBinding({
+            key: KeyCodes.DELETE,
             prevented: true,
             handler: this._handleBackspace.bind(this),
         });
@@ -24723,11 +26161,20 @@ class SelectorModule {
         editor.getModule('toolbar').formatInlineMultiBlocks(blockIds, { underline: !isFormatted });
     }
     _handleBackspace(editor) {
+        const blocks = editor.getBlocks();
         const selectedBlocks = editor.getModule('selector').getSelectedBlocks();
         if (selectedBlocks.length < 1)
             return;
         editor.getModule('editor').deleteBlocks(selectedBlocks.map((block) => block.id));
+        const startIndex = blocks.findIndex((block) => block.id === selectedBlocks[0].id);
+        const prev = startIndex !== 1 ? blocks[startIndex - 1] : null;
         this.reset();
+        setTimeout(() => {
+            var _a;
+            const blocks = editor.getBlocks();
+            editor.setCaretPosition({ blockId: (_a = prev === null || prev === void 0 ? void 0 : prev.id) !== null && _a !== void 0 ? _a : blocks[0].id });
+            editor.updateCaretRect();
+        }, 10);
     }
     _handleSelectorUp() {
         const blocks = this.editor.getBlocks();
@@ -25862,11 +27309,12 @@ var lib = {
 function getTextLength(ops = []) {
     let length = 0;
     ops.forEach((op) => {
+        var _a, _b;
         if (op.li) {
-            length += stringLength(op.li.text.replaceAll(/\uFEFF/gi, ''));
+            length += stringLength(((_a = op.li.text) !== null && _a !== void 0 ? _a : '').replaceAll(/\uFEFF/gi, ''));
         }
         if (op.ld) {
-            length -= stringLength(op.ld.text.replaceAll(/\uFEFF/gi, ''));
+            length -= stringLength(((_b = op.ld.text) !== null && _b !== void 0 ? _b : '').replaceAll(/\uFEFF/gi, ''));
         }
         if (op.si) {
             length += stringLength(op.si.replaceAll(/\uFEFF/gi, ''));
@@ -25974,6 +27422,10 @@ class HistoryModule {
         if (op.type === HistoryType.UPDATE_CONTENTS && (op.undo.length < 1 || op.redo.length < 1)) {
             return;
         }
+        if (op.type === HistoryType.CHILD_BLOCK_UPDATE_CONTENTS &&
+            (op.undo.length < 1 || op.redo.length < 1)) {
+            return;
+        }
         this.tmpUndo.push(op);
         if (force) {
             this.optimizeOp();
@@ -25982,24 +27434,33 @@ class HistoryModule {
             this.debouncedOptimizeOp();
         }
     }
-    // Deleting the operation history to avoid interfering with each other's changes during collaborative editing.
+    // 共同編集時はコンフリクト対策で同じブロックを編集したらupdate_contents以外の処理は消す
     transform(transformOp) {
+        const blockId = 'parentBlockId' in transformOp ? transformOp.parentBlockId : transformOp.blockId;
         this.stack.undo = this.stack.undo
             .map((ops) => {
             return ops.filter((op) => {
-                return transformOp.blockId !== op.blockId;
+                if ('parentBlockId' in op &&
+                    ['child_block_add_block', 'child_block_remove_block'].includes(op.type)) {
+                    return blockId !== op.parentBlockId;
+                }
+                return blockId !== op.blockId;
             });
         })
             .filter((ops) => ops.length > 0);
         this.stack.redo = this.stack.redo
             .map((ops) => {
             return ops.filter((op) => {
-                return transformOp.blockId !== op.blockId;
+                if ('parentBlockId' in op &&
+                    ['child_block_add_block', 'child_block_remove_block'].includes(op.type)) {
+                    return blockId !== op.parentBlockId;
+                }
+                return blockId !== op.blockId;
             });
         })
             .filter((ops) => ops.length > 0);
         const caret = this.editor.getCaretPosition();
-        if (caret && caret.blockId === transformOp.blockId) {
+        if (caret && caret.blockId === transformOp.blockId && !caret.childBlockId) {
             if (transformOp.type === HistoryType.UPDATE_CONTENTS && transformOp.redo) {
                 this.editor.blur();
                 const block = this.editor.getBlock(caret.blockId);
@@ -26017,20 +27478,31 @@ class HistoryModule {
             }
         }
     }
-    // Deleting the operation history to avoid interfering with each other's changes during collaborative editing.
+    // 共同編集時はコンフリクト対策で同じブロックを編集したらupdate_contents以外の処理は消す
     transformMultiLineOp(transformOps) {
-        const ids = transformOps.map((v) => v.blockId);
+        const parentIds = [
+            ...transformOps.map((v) => !('parentBlockId' in v) && v.blockId),
+            ...transformOps.map((v) => 'parentBlockId' in v && v.parentBlockId),
+        ];
         this.stack.undo = this.stack.undo
             .map((ops) => {
             return ops.filter((op) => {
-                return !ids.includes(op.blockId);
+                if ('parentBlockId' in op &&
+                    ['child_block_add_block', 'child_block_remove_block'].includes(op.type)) {
+                    return !parentIds.includes(op.parentBlockId);
+                }
+                return !parentIds.includes(op.blockId);
             });
         })
             .filter((ops) => ops.length > 0);
         this.stack.redo = this.stack.redo
             .map((ops) => {
             return ops.filter((op) => {
-                return !ids.includes(op.blockId);
+                if ('parentBlockId' in op &&
+                    ['child_block_add_block', 'child_block_remove_block'].includes(op.type)) {
+                    return !parentIds.includes(op.parentBlockId);
+                }
+                return !parentIds.includes(op.blockId);
             });
         })
             .filter((ops) => ops.length > 0);
@@ -26042,7 +27514,11 @@ class HistoryModule {
         const updateOps = this.tmpUndo
             .filter((tmp) => tmp.type === HistoryType.UPDATE_CONTENTS)
             .reverse();
-        const otherOps = this.tmpUndo.filter((tmp) => tmp.type !== HistoryType.UPDATE_CONTENTS);
+        const updateChildOps = this.tmpUndo
+            .filter((tmp) => tmp.type === HistoryType.CHILD_BLOCK_UPDATE_CONTENTS)
+            .reverse();
+        const otherOps = this.tmpUndo.filter((tmp) => tmp.type !== HistoryType.UPDATE_CONTENTS &&
+            tmp.type !== HistoryType.CHILD_BLOCK_UPDATE_CONTENTS);
         otherOps.forEach((tmp) => {
             const index = optimizedUndo.findIndex((v) => v.blockId === tmp.blockId && v.type === tmp.type);
             if (index === -1) {
@@ -26058,6 +27534,22 @@ class HistoryModule {
             }
             if (tmp.type === HistoryType.UPDATE_CONTENTS &&
                 optimizedUndo[index].type === HistoryType.UPDATE_CONTENTS) {
+                if (optimizedUndo[index].undo && tmp.undo) {
+                    optimizedUndo[index].undo = lib.type.compose(optimizedUndo[index].undo, tmp.undo);
+                }
+                if (optimizedUndo[index].redo && tmp.redo) {
+                    optimizedUndo[index].redo = lib.type.compose(tmp.redo, optimizedUndo[index].redo);
+                }
+            }
+        });
+        updateChildOps.forEach((tmp) => {
+            const index = optimizedUndo.findIndex((v) => v.blockId === tmp.blockId && v.type === tmp.type);
+            if (index === -1) {
+                optimizedUndo.push(tmp);
+                return;
+            }
+            if (tmp.type === HistoryType.CHILD_BLOCK_UPDATE_CONTENTS &&
+                optimizedUndo[index].type === HistoryType.CHILD_BLOCK_UPDATE_CONTENTS) {
                 if (optimizedUndo[index].undo && tmp.undo) {
                     optimizedUndo[index].undo = lib.type.compose(optimizedUndo[index].undo, tmp.undo);
                 }
@@ -26087,6 +27579,33 @@ class HistoryModule {
             const addOps = ops.filter((v) => v.type === HistoryType.ADD_BLOCK);
             const removeOps = ops.filter((v) => v.type === HistoryType.REMOVE_BLOCK);
             const updateOps = ops.filter((v) => v.type === HistoryType.UPDATE_CONTENTS);
+            const childBlockUpdateOps = ops.filter((v) => v.type === HistoryType.CHILD_BLOCK_UPDATE_CONTENTS);
+            const childBlockAddOps = ops.filter((v) => v.type === HistoryType.CHILD_BLOCK_ADD_BLOCK);
+            const childBlockRemoveOps = ops.filter((v) => v.type === HistoryType.CHILD_BLOCK_REMOVE_BLOCK);
+            childBlockUpdateOps.forEach((op, i) => {
+                this.executeJson0(op.blockId, op.undo, op.parentBlockId);
+                this.editor.renderChild(op.parentBlockId, [op.blockId], true);
+                if (i === childBlockUpdateOps.length - 1 && addOps.length < 1 && removeOps.length < 1) {
+                    this.moveCaret(op, op.position, 'undo');
+                }
+            });
+            childBlockAddOps.forEach((op, i) => {
+                this.editor.deleteChildBlocks(op.parentBlockId, [op.block.id]);
+                this.editor.renderChild(op.parentBlockId, [op.blockId], true);
+            });
+            childBlockRemoveOps.forEach((op, i) => {
+                this.editor.createChildBlocks(op.parentBlockId, [copyObject(op.block)]);
+                if (i === childBlockRemoveOps.length - 1) {
+                    setTimeout(() => {
+                        this.editor.setCaretPosition({
+                            blockId: op.parentBlockId,
+                            childBlockId: op.block.id,
+                            index: 0,
+                        });
+                        this.editor.updateCaretRect();
+                    }, 10);
+                }
+            });
             updateOps.forEach((op, i) => {
                 this.executeJson0(op.blockId, op.undo);
                 affectedIds.push(op.blockId);
@@ -26142,14 +27661,18 @@ class HistoryModule {
                     if (v.type === HistoryType.REMOVE_BLOCK) {
                         return Object.assign(Object.assign({}, v), { type: HistoryType.ADD_BLOCK });
                     }
-                    if (v.type !== HistoryType.UPDATE_CONTENTS)
-                        return v;
+                    if (v.type === HistoryType.CHILD_BLOCK_ADD_BLOCK) {
+                        return Object.assign(Object.assign({}, v), { type: HistoryType.CHILD_BLOCK_REMOVE_BLOCK });
+                    }
+                    if (v.type === HistoryType.CHILD_BLOCK_REMOVE_BLOCK) {
+                        return Object.assign(Object.assign({}, v), { type: HistoryType.CHILD_BLOCK_ADD_BLOCK });
+                    }
                     return Object.assign(Object.assign({}, v), { undo: v.redo, redo: v.undo });
                 });
                 this.eventEmitter.emit(EditorEvents.EVENT_EDITOR_CHANGED, copyObject(chenged));
             });
             this.editor.numberingList();
-            this.editor.render(affectedIds);
+            this.editor.render(affectedIds, true);
             this.isUpdating = false;
         }
     }
@@ -26165,6 +27688,9 @@ class HistoryModule {
             const addOps = ops.filter((v) => v.type === HistoryType.ADD_BLOCK);
             const removeOps = ops.filter((v) => v.type === HistoryType.REMOVE_BLOCK);
             const updateOps = ops.filter((v) => v.type === HistoryType.UPDATE_CONTENTS);
+            const childBlockUpdateOps = ops.filter((v) => v.type === HistoryType.CHILD_BLOCK_UPDATE_CONTENTS);
+            const childBlockAddOps = ops.filter((v) => v.type === HistoryType.CHILD_BLOCK_ADD_BLOCK);
+            const childBlockRemoveOps = ops.filter((v) => v.type === HistoryType.CHILD_BLOCK_REMOVE_BLOCK);
             removeOps.forEach((op, i) => {
                 this.editor.deleteBlock(op.blockId);
                 affectedIds.push(op.blockId);
@@ -26202,15 +27728,37 @@ class HistoryModule {
                 }
             });
             updateOps.forEach((op, i) => {
-                switch (op.type) {
-                    case HistoryType.UPDATE_CONTENTS: {
-                        this.executeJson0(op.blockId, op.redo);
-                        affectedIds.push(op.blockId);
-                        if (i === updateOps.length - 1) {
-                            this.moveCaret(op, op.position, 'redo');
-                        }
-                        break;
-                    }
+                this.executeJson0(op.blockId, op.redo);
+                affectedIds.push(op.blockId);
+                if (i === updateOps.length - 1) {
+                    this.moveCaret(op, op.position, 'redo');
+                }
+            });
+            childBlockRemoveOps.forEach((op, i) => {
+                this.editor.deleteChildBlocks(op.parentBlockId, [op.block.id]);
+                this.editor.renderChild(op.parentBlockId, [op.blockId], true);
+            });
+            childBlockAddOps.forEach((op, i) => {
+                this.editor.createChildBlocks(op.parentBlockId, [copyObject(op.block)]);
+                this.editor.renderChild(op.parentBlockId, [op.blockId], true);
+                if (i === childBlockUpdateOps.length - 1 && childBlockUpdateOps.length < 1) {
+                    setTimeout(() => {
+                        var _a;
+                        const textIndex = (_a = this.editor.getChildBlockLength(op.blockId)) !== null && _a !== void 0 ? _a : 0;
+                        this.editor.setCaretPosition({
+                            blockId: op.parentBlockId,
+                            childBlockId: op.blockId,
+                            index: textIndex,
+                        });
+                        this.editor.updateCaretRect();
+                    }, 10);
+                }
+            });
+            childBlockUpdateOps.forEach((op, i) => {
+                this.executeJson0(op.blockId, op.redo, op.parentBlockId);
+                this.editor.renderChild(op.parentBlockId, [op.blockId], true);
+                if (i === childBlockUpdateOps.length - 1) {
+                    this.moveCaret(op, op.position, 'redo');
                 }
             });
             this.stack.undo.push(ops);
@@ -26218,26 +27766,47 @@ class HistoryModule {
                 this.eventEmitter.emit(EditorEvents.EVENT_EDITOR_CHANGED, copyObject(ops));
             });
             this.editor.numberingList();
-            this.editor.render(affectedIds);
+            this.editor.render(affectedIds, true);
             this.isUpdating = false;
         }
     }
-    executeJson0(blockId, ops) {
+    executeJson0(blockId, ops, parentBlockId) {
         try {
-            const block = this.editor.getBlock(blockId);
-            if (!block)
-                return;
-            const updatedBlock = lib.type.apply(block, ops);
-            this.editor.updateBlock(Object.assign(Object.assign({}, updatedBlock), { contents: updatedBlock.contents.map((content) => {
-                    var _a, _b, _c, _d, _e;
-                    return {
-                        id: (_a = content.id) !== null && _a !== void 0 ? _a : v4(),
-                        attributes: (_b = content.attributes) !== null && _b !== void 0 ? _b : {},
-                        text: (_c = content.text) !== null && _c !== void 0 ? _c : '',
-                        type: (_d = content.type) !== null && _d !== void 0 ? _d : 'TEXT',
-                        isEmbed: (_e = content.isEmbed) !== null && _e !== void 0 ? _e : false,
-                    };
-                }) }), EventSources.USER);
+            if (parentBlockId) {
+                const parentBlock = this.editor.getBlock(parentBlockId);
+                if (!parentBlock)
+                    return;
+                const block = parentBlock.childBlocks.find((v) => v.id === blockId);
+                if (!block)
+                    return;
+                const updatedBlock = lib.type.apply(block, ops);
+                this.editor.updateChildBlock(parentBlockId, Object.assign(Object.assign({}, updatedBlock), { contents: updatedBlock.contents.map((content) => {
+                        var _a, _b, _c, _d, _e;
+                        return {
+                            id: (_a = content.id) !== null && _a !== void 0 ? _a : v4(),
+                            attributes: (_b = content.attributes) !== null && _b !== void 0 ? _b : {},
+                            text: (_c = content.text) !== null && _c !== void 0 ? _c : '',
+                            type: (_d = content.type) !== null && _d !== void 0 ? _d : 'TEXT',
+                            isEmbed: (_e = content.isEmbed) !== null && _e !== void 0 ? _e : false,
+                        };
+                    }) }), EventSources.USER);
+            }
+            else {
+                const block = this.editor.getBlock(blockId);
+                if (!block)
+                    return;
+                const updatedBlock = lib.type.apply(block, ops);
+                this.editor.updateBlock(Object.assign(Object.assign({}, updatedBlock), { contents: updatedBlock.contents.map((content) => {
+                        var _a, _b, _c, _d, _e;
+                        return {
+                            id: (_a = content.id) !== null && _a !== void 0 ? _a : v4(),
+                            attributes: (_b = content.attributes) !== null && _b !== void 0 ? _b : {},
+                            text: (_c = content.text) !== null && _c !== void 0 ? _c : '',
+                            type: (_d = content.type) !== null && _d !== void 0 ? _d : 'TEXT',
+                            isEmbed: (_e = content.isEmbed) !== null && _e !== void 0 ? _e : false,
+                        };
+                    }) }), EventSources.USER);
+            }
         }
         catch (e) {
             this.eventEmitter.info('Failed to restore hisotry', e);
@@ -26264,19 +27833,39 @@ class HistoryModule {
         let positionIndex = (_b = position.index) !== null && _b !== void 0 ? _b : 0;
         let positionLength = (_c = position.length) !== null && _c !== void 0 ? _c : 0;
         setTimeout(() => {
-            var _a;
-            const blockLength = (_a = this.editor.getBlockLength(position.blockId)) !== null && _a !== void 0 ? _a : 0;
-            if (positionIndex + affectedLength + positionLength > blockLength) {
-                affectedLength = 0;
+            var _a, _b;
+            const block = this.editor.getBlock(position.blockId);
+            if (!block)
+                return;
+            if (position.childBlockId) {
+                const childBlockLength = (_a = getBlockLength(position.childBlockId, true)) !== null && _a !== void 0 ? _a : 0;
+                if (positionIndex + affectedLength + positionLength > childBlockLength) {
+                    affectedLength = 0;
+                }
+                if (positionIndex + positionLength > childBlockLength) {
+                    positionLength = 0;
+                }
+                this.editor.setCaretPosition({
+                    blockId: position.blockId,
+                    childBlockId: position.childBlockId,
+                    index: positionIndex + affectedLength,
+                    length: positionLength,
+                });
             }
-            if (positionIndex + positionLength > blockLength) {
-                positionLength = 0;
+            else {
+                const blockLength = (_b = this.editor.getBlockLength(position.blockId)) !== null && _b !== void 0 ? _b : 0;
+                if (positionIndex + affectedLength + positionLength > blockLength) {
+                    affectedLength = 0;
+                }
+                if (positionIndex + positionLength > blockLength) {
+                    positionLength = 0;
+                }
+                this.editor.setCaretPosition({
+                    blockId: position.blockId,
+                    index: positionIndex + affectedLength,
+                    length: positionLength,
+                });
             }
-            this.editor.setCaretPosition({
-                blockId: position.blockId,
-                index: positionIndex + affectedLength,
-                length: positionLength,
-            });
             this.editor.updateCaretRect();
         }, 20);
     }
@@ -26308,9 +27897,11 @@ class ClipboardModule {
         this.subs.unsubscribe();
     }
     onPaste(event) {
-        var _a, _b;
+        var _a;
         event.preventDefault();
         const caretPosition = this.editor.getCaretPosition();
+        if (!caretPosition)
+            return;
         const dataTransferItems = (_a = event.clipboardData.items) !== null && _a !== void 0 ? _a : [];
         const files = [];
         for (let i = 0; i < dataTransferItems.length; i++) {
@@ -26324,15 +27915,17 @@ class ClipboardModule {
             return;
         }
         const clipboardJson = event.clipboardData.getData('text/shibuya-formats');
-        const prevBlock = this.editor.getBlock((_b = caretPosition === null || caretPosition === void 0 ? void 0 : caretPosition.blockId) !== null && _b !== void 0 ? _b : '');
-        if (caretPosition && prevBlock && clipboardJson) {
+        const prevBlock = this.editor.getBlock(caretPosition.blockId);
+        if (prevBlock && clipboardJson) {
             const { type, data } = JSON.parse(clipboardJson);
             // blocks
             if (prevBlock && type === 'blocks') {
                 const appendBlocks = data;
                 let prevBlockId = prevBlock.id;
                 const affectedIds = appendBlocks.map((v, i) => {
-                    const appendBlock = Object.assign(Object.assign({}, v), { id: v4() });
+                    const appendBlock = Object.assign(Object.assign({}, v), { id: v4(), childBlocks: v.childBlocks.map((c) => {
+                            return Object.assign(Object.assign({}, c), { id: v4() });
+                        }) });
                     this.editor.createBlock(appendBlock, prevBlockId);
                     prevBlockId = appendBlock.id;
                     return appendBlock.id;
@@ -26350,7 +27943,7 @@ class ClipboardModule {
                     this.editor.getModule('editor').scrollToBlock(prevBlockId);
                 }, 10);
             }
-            else if (type === 'inlines') {
+            else if (type === 'inlines' && !caretPosition.childBlockId) {
                 const appendContents = data;
                 let contents = copyObject(prevBlock.contents);
                 if (caretPosition.length > 0) {
@@ -26372,6 +27965,37 @@ class ClipboardModule {
                 setTimeout(() => {
                     this.editor.setCaretPosition({
                         blockId: prevBlock.id,
+                        index: caretPosition.index + appendTextLength,
+                    });
+                    this.editor.updateCaretRect();
+                }, 10);
+            }
+            else if (type === 'inlines' && caretPosition.childBlockId) {
+                const targetBlock = prevBlock.childBlocks.find((v) => v.id === caretPosition.childBlockId);
+                if (!targetBlock)
+                    return;
+                const appendContents = data;
+                let contents = copyObject(targetBlock.contents);
+                if (caretPosition.length > 0) {
+                    contents = deleteInlineContents(contents, caretPosition.index, caretPosition.length);
+                }
+                const [first, last] = splitInlineContents(contents, caretPosition.index);
+                const appendTextLength = stringLength(appendContents
+                    .map((v) => v.text)
+                    .join('')
+                    .replaceAll(/\uFEFF/gi, ''));
+                this.editor.updateChildBlock(prevBlock.id, Object.assign(Object.assign({}, targetBlock), { contents: [
+                        ...first,
+                        ...appendContents.map((v) => {
+                            return Object.assign(Object.assign({}, v), { id: v4() });
+                        }),
+                        ...last,
+                    ] }));
+                this.editor.renderChild(prevBlock.id, [targetBlock.id]);
+                setTimeout(() => {
+                    this.editor.setCaretPosition({
+                        blockId: prevBlock.id,
+                        childBlockId: targetBlock.id,
                         index: caretPosition.index + appendTextLength,
                     });
                     this.editor.updateCaretRect();
@@ -26503,7 +28127,6 @@ class ClipboardModule {
         }
     }
     onCopy(event) {
-        var _a;
         event.preventDefault();
         const selectedBlocks = this.editor.getModule('selector').getSelectedBlocks();
         if (selectedBlocks.length > 0) {
@@ -26513,9 +28136,23 @@ class ClipboardModule {
         else {
             // inline
             const caretPosition = this.editor.getCaretPosition();
-            const block = this.editor.getBlock((_a = caretPosition === null || caretPosition === void 0 ? void 0 : caretPosition.blockId) !== null && _a !== void 0 ? _a : '');
-            if (block && caretPosition && !caretPosition.collapsed && caretPosition.length > 0) {
-                const inlineContents = getInlineContents(block.contents, caretPosition.index, caretPosition.length);
+            if (!caretPosition)
+                return;
+            const block = this.editor.getBlock(caretPosition.blockId);
+            if (!block)
+                return;
+            let contents = [];
+            if (caretPosition.childBlockId) {
+                const childBlock = block.childBlocks.find((v) => v.id === caretPosition.childBlockId);
+                if (!childBlock)
+                    return;
+                contents = childBlock.contents;
+            }
+            else {
+                contents = block.contents;
+            }
+            if (!caretPosition.collapsed && caretPosition.length > 0) {
+                const inlineContents = getInlineContents(contents, caretPosition.index, caretPosition.length);
                 this._saveInlineContents(event.nativeEvent, inlineContents);
             }
         }
@@ -26893,13 +28530,15 @@ class UploaderModule {
                             focus: false,
                             historyPush: false,
                         });
-                        // If the last block is an embedded element
+                        // 次の行が埋め込み要素だったら空行を追加
                         const blocks = this.editor.getBlocks();
                         const addIndex = blocks.findIndex((block) => block.id === addBlock.id);
-                        if (blocks.length > 0 && addIndex === blocks.length - 1) {
+                        const { embeddedBlocks } = this.editor.getSettings();
+                        if (blocks[addIndex + 1] && embeddedBlocks.includes(blocks[addIndex + 1].type)) {
                             this.editor.getModule('editor').createBlock({
                                 prevId: addBlock.id,
                                 type: 'PARAGRAPH',
+                                focus: false,
                             });
                         }
                         setTimeout(() => {
@@ -27230,7 +28869,7 @@ const Editor = React__namespace.memo(React__namespace.forwardRef((_a, forwardRef
             scrollMarginTop: (_b = settings.scrollMarginTop) !== null && _b !== void 0 ? _b : 100,
             scrollMarginBottom: (_c = settings.scrollMarginBottom) !== null && _c !== void 0 ? _c : 250,
             allowFormats: (_d = settings.allowFormats) !== null && _d !== void 0 ? _d : [],
-            embeddedBlocks: (_e = settings.embeddedBlocks) !== null && _e !== void 0 ? _e : ['IMAGE', 'FILE'],
+            embeddedBlocks: (_e = settings.embeddedBlocks) !== null && _e !== void 0 ? _e : ['IMAGE', 'FILE', 'TABLE'],
             collaborationLevel: (_f = settings.collaborationLevel) !== null && _f !== void 0 ? _f : 'block',
             indentableFormats: (_g = settings.indentableFormats) !== null && _g !== void 0 ? _g : ['ORDERED-LIST', 'BULLET-LIST'],
             disableDecorationFormats: (_h = settings.disableDecorationFormats) !== null && _h !== void 0 ? _h : ['CODE-BLOCK'],
@@ -27256,6 +28895,7 @@ const Editor = React__namespace.memo(React__namespace.forwardRef((_a, forwardRef
         'block/task': Task,
         'block/image': Image$1,
         'block/file': File,
+        'block/table': Table,
         'inline/text': InlineText,
         'inline/code-token': CodeToken,
         'inline/style/bold': Bold,
@@ -27481,8 +29121,8 @@ const Editor = React__namespace.memo(React__namespace.forwardRef((_a, forwardRef
     }, [blockFormats]);
     React__namespace.useImperativeHandle(forwardRef, () => editor, [editor]);
     const BlockItem = blockFormats['block/container'];
-    return (jsxRuntimeExports.jsxs(Container, Object.assign({ ref: containerRef }, props, { children: [jsxRuntimeExports.jsx(Inner, Object.assign({ ref: editorRef, onClick: handleClick, onKeyDown: handleKeyDown, onPaste: handlePaste, onCopy: handleCopy, onCut: handleCut, onDrop: handleDrop, onDrag: handleDrag, onDragOver: handleDragOver, placeholder: showPlaceholder ? placeholder : '' }, { children: memoBlocks.map((block, index) => {
-                    return (jsxRuntimeExports.jsx(BlockItem, { formats: blockFormats, editor: memoEditor, blockId: block.id, readOnly: readOnly, selected: block.selected, scrollContainer: settings.scrollContainer, onBeforeInput: handleInput, onCompositionStart: handleCompositionStart, onCompositionEnd: handleCompositionEnd }, block.id));
+    return (jsxRuntimeExports.jsxs(Container, Object.assign({ ref: containerRef }, props, { children: [jsxRuntimeExports.jsx(Inner, Object.assign({ ref: editorRef, onClick: handleClick, onKeyDown: handleKeyDown, onPaste: handlePaste, onCopy: handleCopy, onCut: handleCut, onDrop: handleDrop, onDrag: handleDrag, onDragOver: handleDragOver, onCompositionStart: handleCompositionStart, onCompositionEnd: handleCompositionEnd, onBeforeInput: handleInput, placeholder: showPlaceholder ? placeholder : '' }, { children: memoBlocks.map((block, index) => {
+                    return (jsxRuntimeExports.jsx(BlockItem, { formats: blockFormats, editor: memoEditor, blockId: block.id, readOnly: readOnly, selected: block.selected, scrollContainer: settings.scrollContainer }, block.id));
                 }) })), jsxRuntimeExports.jsx(MarginBottom, { onClick: handleContainerClick }), jsxRuntimeExports.jsx(MemoGlobalToolbar, { editor: memoEditor }), jsxRuntimeExports.jsx(MemoBubbleToolbar, { editor: memoEditor, scrollContainer: settings.scrollContainer }), jsxRuntimeExports.jsx(Collaborators, { editor: memoEditor }), jsxRuntimeExports.jsx(MemoLinkPopup, { editor: memoEditor, scrollContainer: settings.scrollContainer }), jsxRuntimeExports.jsx(MemoPalettePopup, { editor: memoEditor, scrollContainer: settings.scrollContainer }), jsxRuntimeExports.jsx(Selector, { contentEditable: true, className: "clipboard", onKeyDown: handleSelectorKeyDown, onBeforeInput: handleSelectorInput, onCopy: handleCopy, onCut: handleCut })] })));
 }));
 
@@ -27526,12 +29166,15 @@ exports.OrderedList = OrderedList;
 exports.Paragraph = Paragraph;
 exports.SelectorModule = SelectorModule;
 exports.Strike = Strike;
+exports.Table = Table;
+exports.TableCell = TableCell;
 exports.Task = Task;
 exports.TocModule = TocModule;
 exports.ToolbarModule = ToolbarModule;
 exports.Underline = Underline;
 exports.UploaderModule = UploaderModule;
 exports.useBlockRenderer = useBlockRenderer;
+exports.useChildBlockRenderer = useChildBlockRenderer;
 exports.useEditor = useEditor;
 exports.useEventEmitter = useEventEmitter;
 exports.useMutationObserver = useMutationObserver;

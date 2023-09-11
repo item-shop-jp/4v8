@@ -778,7 +778,9 @@ export class KeyBoardModule implements Module {
     if (!block || disableDecorationFormats.includes(block.type)) {
       return;
     }
-    const formats = editor.getFormats(caret.blockId, caret.index, caret.length);
+    const formats = caret.childBlockId
+      ? editor.getChildFormats(caret.blockId, caret.childBlockId, caret.index, caret.length)
+      : editor.getFormats(caret.blockId, caret.index, caret.length);
     editor.getModule('toolbar').formatInline({ bold: !formats?.bold });
   }
 
@@ -794,7 +796,9 @@ export class KeyBoardModule implements Module {
     if (!block || disableDecorationFormats.includes(block.type)) {
       return;
     }
-    const formats = editor.getFormats(caret.blockId, caret.index, caret.length);
+    const formats = caret.childBlockId
+      ? editor.getChildFormats(caret.blockId, caret.childBlockId, caret.index, caret.length)
+      : editor.getFormats(caret.blockId, caret.index, caret.length);
     editor.getModule('toolbar').formatInline({ italic: !formats?.italic });
   }
 
@@ -810,7 +814,9 @@ export class KeyBoardModule implements Module {
     if (!block || disableDecorationFormats.includes(block.type)) {
       return;
     }
-    const formats = editor.getFormats(caret.blockId, caret.index, caret.length);
+    const formats = caret.childBlockId
+      ? editor.getChildFormats(caret.blockId, caret.childBlockId, caret.index, caret.length)
+      : editor.getFormats(caret.blockId, caret.index, caret.length);
     editor.getModule('toolbar').formatInline({ underline: !formats?.underline });
   }
 

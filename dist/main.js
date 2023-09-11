@@ -22316,6 +22316,19 @@ function useEditor({ settings, eventEmitter, }) {
         }
         return getDuplicateAttributes(block.contents, index, length);
     }, []);
+    const getChildFormats = React__namespace.useCallback((parentBlockId, blockId, index, length = 0) => {
+        const parentBlock = blocksRef.current.find((v) => v.id === parentBlockId);
+        if (!parentBlock)
+            return {};
+        const block = parentBlock.childBlocks.find((v) => v.id === blockId);
+        if (!block)
+            return {};
+        if (length === 0) {
+            index = index === 0 ? index : index - 1;
+            length = 1;
+        }
+        return getDuplicateAttributes(block.contents, index, length);
+    }, []);
     const formatText = React__namespace.useCallback((blockId, index, length, attributes = {}) => {
         const block = blocksRef.current.find((v) => v.id === blockId);
         if (!block)
@@ -22979,6 +22992,7 @@ function useEditor({ settings, eventEmitter, }) {
             blur,
             hasFocus,
             getFormats,
+            getChildFormats,
             formatText,
             formatChildBlockText,
             setBlocks,
@@ -24067,7 +24081,7 @@ const BubbleToolbar = React__namespace.memo((_a) => {
                 if (childBlock) {
                     updatePosition(caret);
                     setDisplay(!caret.collapsed);
-                    setFormats(editor.getFormats(caret.blockId, caret.index, caret.length));
+                    setFormats(editor.getChildFormats(caret.blockId, caret.childBlockId, caret.index, caret.length));
                     return;
                 }
             }
@@ -24868,7 +24882,9 @@ class KeyBoardModule {
         if (!block || disableDecorationFormats.includes(block.type)) {
             return;
         }
-        const formats = editor.getFormats(caret.blockId, caret.index, caret.length);
+        const formats = caret.childBlockId
+            ? editor.getChildFormats(caret.blockId, caret.childBlockId, caret.index, caret.length)
+            : editor.getFormats(caret.blockId, caret.index, caret.length);
         editor.getModule('toolbar').formatInline({ bold: !(formats === null || formats === void 0 ? void 0 : formats.bold) });
     }
     _handleItalic(caretPosition, editor, event) {
@@ -24880,7 +24896,9 @@ class KeyBoardModule {
         if (!block || disableDecorationFormats.includes(block.type)) {
             return;
         }
-        const formats = editor.getFormats(caret.blockId, caret.index, caret.length);
+        const formats = caret.childBlockId
+            ? editor.getChildFormats(caret.blockId, caret.childBlockId, caret.index, caret.length)
+            : editor.getFormats(caret.blockId, caret.index, caret.length);
         editor.getModule('toolbar').formatInline({ italic: !(formats === null || formats === void 0 ? void 0 : formats.italic) });
     }
     _handleUnderline(caretPosition, editor, event) {
@@ -24892,7 +24910,9 @@ class KeyBoardModule {
         if (!block || disableDecorationFormats.includes(block.type)) {
             return;
         }
-        const formats = editor.getFormats(caret.blockId, caret.index, caret.length);
+        const formats = caret.childBlockId
+            ? editor.getChildFormats(caret.blockId, caret.childBlockId, caret.index, caret.length)
+            : editor.getFormats(caret.blockId, caret.index, caret.length);
         editor.getModule('toolbar').formatInline({ underline: !(formats === null || formats === void 0 ? void 0 : formats.underline) });
     }
     _handleIndent(caretPosition, editor, event) {

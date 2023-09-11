@@ -291,6 +291,21 @@ export function useEditor({
     return blockUtils.getDuplicateAttributes(block.contents, index, length);
   }, []);
 
+  const getChildFormats = React.useCallback(
+    (parentBlockId: string, blockId: string, index: number, length: number = 0) => {
+      const parentBlock = blocksRef.current.find((v) => v.id === parentBlockId);
+      if (!parentBlock) return {};
+      const block = parentBlock.childBlocks.find((v) => v.id === blockId);
+      if (!block) return {};
+      if (length === 0) {
+        index = index === 0 ? index : index - 1;
+        length = 1;
+      }
+      return blockUtils.getDuplicateAttributes(block.contents, index, length);
+    },
+    [],
+  );
+
   const formatText = React.useCallback(
     (blockId: string, index: number, length: number, attributes: InlineAttributes = {}) => {
       const block = blocksRef.current.find((v) => v.id === blockId);
@@ -1171,6 +1186,7 @@ export function useEditor({
       blur,
       hasFocus,
       getFormats,
+      getChildFormats,
       formatText,
       formatChildBlockText,
       setBlocks,

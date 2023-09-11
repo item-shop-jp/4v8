@@ -211,7 +211,14 @@ export const BubbleToolbar = React.memo(
             if (childBlock) {
               updatePosition(caret);
               setDisplay(!caret.collapsed);
-              setFormats(editor.getFormats(caret.blockId, caret.index, caret.length));
+              setFormats(
+                editor.getChildFormats(
+                  caret.blockId,
+                  caret.childBlockId,
+                  caret.index,
+                  caret.length,
+                ),
+              );
               return;
             }
           }

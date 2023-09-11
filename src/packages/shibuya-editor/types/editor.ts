@@ -45,6 +45,12 @@ export interface EditorController {
   blur(): void;
   hasFocus(): boolean;
   getFormats(blockId: string, index: number, length?: number): InlineAttributes;
+  getChildFormats(
+    parentBlockId: string,
+    blockId: string,
+    index: number,
+    length?: number,
+  ): InlineAttributes;
   formatText(blockId: string, index: number, length: number, attributes: InlineAttributes): void;
   formatChildBlockText(
     blockId: string,

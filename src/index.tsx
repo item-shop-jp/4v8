@@ -7,7 +7,6 @@ import { EditorController } from './packages/shibuya-editor/types/editor';
 import { Editor, Paragraph, Header1 } from './packages/shibuya-editor';
 
 const ScrollContainer = styled.div`
-  margin: 50px auto;
   max-width: 600px;
   height: 600px;
   overflow: auto;
@@ -55,12 +54,12 @@ const settings = {
         });
       },
       onDownload: (files: string[]) => {
-        console.log(123, files);
+        // console.log(123, files);
       },
     },
     toc: {
       onChange: (labels: { type: string; label: string }[]) => {
-        console.log(123, labels);
+        // console.log(123, labels);
       },
     },
   },
@@ -83,14 +82,6 @@ export const Container: React.FC = React.memo(() => {
   React.useEffect(() => {
     if (!editorRef2.current) return;
     const subs: Subscription = new Subscription();
-
-    setTimeout(() => {
-      editorRef2.current?.setBlocks(
-        JSON.parse(
-          '[{"id":"OodywE2HkiW1KeTBPCa96","contents":[{"id":"OYbvu_ZB9QppDCeIOSfbZ","attributes":{"bold":true},"text":"今日はいい天気ですね!!🤗","type":"TEXT","isEmbed":false}],"attributes":{"assignees":[{"id":"aaa2","name":"笹川裕也","selected":false},{"id":"aaa1","name":"田中 健太郎","imageUrl":"https://lh3.googleusercontent.com/a-/AAuE7mDqNcnkUNpr7-X6WOAp4QaSI399ToQaP38tSD5x=s100","selected":false}]},"type":"TASK","meta":{"listNumber":0}}]',
-        ),
-      );
-    }, 20);
 
     editorRef2.current.getModule('collaborator').setMembers([
       {
@@ -116,10 +107,17 @@ export const Container: React.FC = React.memo(() => {
     const eventEmitter = editorRef2.current.getEventEmitter();
     subs.add(
       eventEmitter.select(EditorEvents.EVENT_EDITOR_CHANGED).subscribe((payload) => {
-        payload.forEach((v: any) => {
-          const block = editorRef2.current?.getBlock(v.blockId);
-          // console.log(JSON.stringify(block));
-        });
+        // payload.forEach((v: any) => {
+        //   if (v.parentBlockId) {
+        //     const block = editorRef2.current?.getBlock(v.parentBlockId);
+        //     if (!block) return;
+        //     const child = block.childBlocks.find((c) => c.id === v.blockId);
+        //     console.log(JSON.stringify(child));
+        //   } else {
+        //     const block = editorRef2.current?.getBlock(v.blockId);
+        //     console.log(JSON.stringify(block));
+        //   }
+        // });
       }),
     );
     return () => {

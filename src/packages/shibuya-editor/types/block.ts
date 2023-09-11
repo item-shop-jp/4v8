@@ -8,6 +8,7 @@ export type BlockType =
   | 'CODE-BLOCK'
   | 'DECISION'
   | 'TASK'
+  | 'TABLE'
   | 'HEADER1'
   | 'HEADER2'
   | 'HEADER3'
@@ -23,7 +24,9 @@ export interface Block {
   contents: Inline[];
   attributes: BlockAttributes;
   type: BlockType;
+  childBlocks: Block[];
   meta?: BlockAttributes;
+  name?: string;
 }
 
 export interface BlockAttributes {

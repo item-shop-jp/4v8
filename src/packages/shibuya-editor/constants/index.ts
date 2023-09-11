@@ -1,5 +1,12 @@
 import { Source } from '../types/editor';
-import { AddOp, UpdateOp, RemoveOp } from '../types/history';
+import {
+  AddOp,
+  UpdateOp,
+  RemoveOp,
+  UpdateChildBlockOp,
+  AddChildBlockOp,
+  RemoveChildBlockOp,
+} from '../types/history';
 
 export const KeyCodes = {
   ESC: 'Escape',
@@ -48,6 +55,8 @@ export const EditorEvents = {
   EVENT_EDITOR_CHANGED: 'editor-changed',
   EVENT_BLOCK_RERENDER: 'block-rerender',
   EVENT_BLOCK_RERENDER_FORCE: 'block-rerender-force',
+  EVENT_CHILD_BLOCK_RERENDER: 'child-block-rerender',
+  EVENT_CHILD_BLOCK_RERENDER_FORCE: 'child-block-rerender-force',
   EVENT_BLOCK_SELECTED: 'block-selected', // Selector Mode (Block)
   EVENT_SELECTION_CHANGE: 'selection-change',
   EVENT_LINK_CLICK: 'button-clicked',
@@ -63,6 +72,9 @@ export const HistoryType = {
   UPDATE_CONTENTS: 'update_contents' as UpdateOp['type'],
   ADD_BLOCK: 'add_block' as AddOp['type'],
   REMOVE_BLOCK: 'remove_block' as RemoveOp['type'],
+  CHILD_BLOCK_UPDATE_CONTENTS: 'child_block_update_contents' as UpdateChildBlockOp['type'],
+  CHILD_BLOCK_ADD_BLOCK: 'child_block_add_block' as AddChildBlockOp['type'],
+  CHILD_BLOCK_REMOVE_BLOCK: 'child_block_remove_block' as RemoveChildBlockOp['type'],
 };
 
 export const EventSources: {

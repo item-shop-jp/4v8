@@ -1,5 +1,6 @@
 export interface CaretPosition {
   blockId: string;
+  childBlockId: string | null;
   blockFormat: string;
   index: number;
   length: number;

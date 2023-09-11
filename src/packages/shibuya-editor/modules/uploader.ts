@@ -82,15 +82,18 @@ export class UploaderModule implements Module {
               focus: false,
               historyPush: false,
             });
-            // If the last block is an embedded element
+            // 次の行が埋め込み要素だったら空行を追加
             const blocks = this.editor.getBlocks();
             const addIndex = blocks.findIndex((block) => block.id === addBlock.id);
-            if (blocks.length > 0 && addIndex === blocks.length - 1) {
+            const { embeddedBlocks } = this.editor.getSettings();
+            if (blocks[addIndex + 1] && embeddedBlocks.includes(blocks[addIndex + 1].type)) {
               this.editor.getModule('editor').createBlock({
                 prevId: addBlock.id,
                 type: 'PARAGRAPH',
+                focus: false,
               });
             }
+
             setTimeout(() => {
               const el = getBlockElementById(addBlock.id);
               el?.scrollIntoView({ behavior: 'smooth', block: 'center' });

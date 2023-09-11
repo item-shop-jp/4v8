@@ -27,7 +27,7 @@ const ListItem = styled.div<Pick<BulletListProps, 'placeholder'>>`
     font-family: Arial;
     font-size: 1.5em;
     line-height: 1;
-    top: 3px;
+    top: 1px;
     content: var(--content);
     left: calc(18px + 1em * var(--indent));
   }

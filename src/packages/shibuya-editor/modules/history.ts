@@ -7,9 +7,19 @@ import { EventEmitter } from '../utils/event-emitter';
 import { getTextLength, getStartIndex } from '../utils/json0';
 import { Block } from '../types/block';
 import { EditorController, Source } from '../types/editor';
-import { Op, JSON0, UpdateOp, AddOp, RemoveOp } from '../types/history';
+import {
+  Op,
+  JSON0,
+  UpdateOp,
+  AddOp,
+  RemoveOp,
+  UpdateChildBlockOp,
+  AddChildBlockOp,
+  RemoveChildBlockOp,
+} from '../types/history';
 import { EditorEvents, EventSources, HistoryType } from '../constants';
 import { copyObject } from '../utils/object';
+import { getBlockLength } from '../utils/block';
 import { CaretPosition } from '../types/caret';
 
 interface Props {
@@ -97,10 +107,17 @@ export class HistoryModule implements Module {
   record(op: Op, force = false) {
     this.stack.redo = [];
     const position = this.editor.getCaretPosition();
+
     if (position) {
       op.position = position;
     }
     if (op.type === HistoryType.UPDATE_CONTENTS && (op.undo.length < 1 || op.redo.length < 1)) {
+      return;
+    }
+    if (
+      op.type === HistoryType.CHILD_BLOCK_UPDATE_CONTENTS &&
+      (op.undo.length < 1 || op.redo.length < 1)
+    ) {
       return;
     }
     this.tmpUndo.push(op);
@@ -111,25 +128,40 @@ export class HistoryModule implements Module {
     }
   }
 
-  // Deleting the operation history to avoid interfering with each other's changes during collaborative editing.
+  // 共同編集時はコンフリクト対策で同じブロックを編集したらupdate_contents以外の処理は消す
   transform(transformOp: Op) {
+    const blockId =
+      'parentBlockId' in transformOp ? transformOp.parentBlockId : transformOp.blockId;
+
     this.stack.undo = this.stack.undo
       .map((ops) => {
         return ops.filter((op) => {
-          return transformOp.blockId !== op.blockId;
+          if (
+            'parentBlockId' in op &&
+            ['child_block_add_block', 'child_block_remove_block'].includes(op.type)
+          ) {
+            return blockId !== op.parentBlockId;
+          }
+          return blockId !== op.blockId;
         });
       })
       .filter((ops) => ops.length > 0);
     this.stack.redo = this.stack.redo
       .map((ops) => {
         return ops.filter((op) => {
-          return transformOp.blockId !== op.blockId;
+          if (
+            'parentBlockId' in op &&
+            ['child_block_add_block', 'child_block_remove_block'].includes(op.type)
+          ) {
+            return blockId !== op.parentBlockId;
+          }
+          return blockId !== op.blockId;
         });
       })
       .filter((ops) => ops.length > 0);
 
     const caret = this.editor.getCaretPosition();
-    if (caret && caret.blockId === transformOp.blockId) {
+    if (caret && caret.blockId === transformOp.blockId && !caret.childBlockId) {
       if (transformOp.type === HistoryType.UPDATE_CONTENTS && transformOp.redo) {
         this.editor.blur();
         const block = this.editor.getBlock(caret.blockId);
@@ -148,21 +180,36 @@ export class HistoryModule implements Module {
     }
   }
 
-  // Deleting the operation history to avoid interfering with each other's changes during collaborative editing.
+  // 共同編集時はコンフリクト対策で同じブロックを編集したらupdate_contents以外の処理は消す
   transformMultiLineOp(transformOps: Op[]) {
-    const ids = transformOps.map((v) => v.blockId);
+    const parentIds = [
+      ...transformOps.map((v) => !('parentBlockId' in v) && v.blockId),
+      ...transformOps.map((v) => 'parentBlockId' in v && v.parentBlockId),
+    ];
 
     this.stack.undo = this.stack.undo
       .map((ops) => {
         return ops.filter((op) => {
-          return !ids.includes(op.blockId);
+          if (
+            'parentBlockId' in op &&
+            ['child_block_add_block', 'child_block_remove_block'].includes(op.type)
+          ) {
+            return !parentIds.includes(op.parentBlockId);
+          }
+          return !parentIds.includes(op.blockId);
         });
       })
       .filter((ops) => ops.length > 0);
     this.stack.redo = this.stack.redo
       .map((ops) => {
         return ops.filter((op) => {
-          return !ids.includes(op.blockId);
+          if (
+            'parentBlockId' in op &&
+            ['child_block_add_block', 'child_block_remove_block'].includes(op.type)
+          ) {
+            return !parentIds.includes(op.parentBlockId);
+          }
+          return !parentIds.includes(op.blockId);
         });
       })
       .filter((ops) => ops.length > 0);
@@ -174,7 +221,15 @@ export class HistoryModule implements Module {
     const updateOps = this.tmpUndo
       .filter((tmp) => tmp.type === HistoryType.UPDATE_CONTENTS)
       .reverse();
-    const otherOps = this.tmpUndo.filter((tmp) => tmp.type !== HistoryType.UPDATE_CONTENTS);
+    const updateChildOps = this.tmpUndo
+      .filter((tmp) => tmp.type === HistoryType.CHILD_BLOCK_UPDATE_CONTENTS)
+      .reverse();
+    const otherOps = this.tmpUndo.filter(
+      (tmp) =>
+        tmp.type !== HistoryType.UPDATE_CONTENTS &&
+        tmp.type !== HistoryType.CHILD_BLOCK_UPDATE_CONTENTS,
+    );
+
     otherOps.forEach((tmp) => {
       const index = optimizedUndo.findIndex(
         (v) => v.blockId === tmp.blockId && v.type === tmp.type,
@@ -210,6 +265,32 @@ export class HistoryModule implements Module {
         }
       }
     });
+    updateChildOps.forEach((tmp) => {
+      const index = optimizedUndo.findIndex(
+        (v) => v.blockId === tmp.blockId && v.type === tmp.type,
+      );
+      if (index === -1) {
+        optimizedUndo.push(tmp);
+        return;
+      }
+      if (
+        tmp.type === HistoryType.CHILD_BLOCK_UPDATE_CONTENTS &&
+        optimizedUndo[index].type === HistoryType.CHILD_BLOCK_UPDATE_CONTENTS
+      ) {
+        if ((optimizedUndo[index] as UpdateChildBlockOp).undo && tmp.undo) {
+          (optimizedUndo[index] as UpdateChildBlockOp).undo = json0.type.compose(
+            (optimizedUndo[index] as UpdateChildBlockOp).undo,
+            tmp.undo,
+          );
+        }
+        if ((optimizedUndo[index] as UpdateChildBlockOp).redo && tmp.redo) {
+          (optimizedUndo[index] as UpdateChildBlockOp).redo = json0.type.compose(
+            tmp.redo,
+            (optimizedUndo[index] as UpdateChildBlockOp).redo,
+          );
+        }
+      }
+    });
     this.tmpUndo = [];
     this.stack.undo.push(optimizedUndo);
     setTimeout(() => {
@@ -237,6 +318,43 @@ export class HistoryModule implements Module {
       const updateOps: UpdateOp[] = ops.filter(
         (v) => v.type === HistoryType.UPDATE_CONTENTS,
       ) as UpdateOp[];
+      const childBlockUpdateOps: UpdateChildBlockOp[] = ops.filter(
+        (v) => v.type === HistoryType.CHILD_BLOCK_UPDATE_CONTENTS,
+      ) as UpdateChildBlockOp[];
+      const childBlockAddOps: AddChildBlockOp[] = ops.filter(
+        (v) => v.type === HistoryType.CHILD_BLOCK_ADD_BLOCK,
+      ) as AddChildBlockOp[];
+      const childBlockRemoveOps: RemoveChildBlockOp[] = ops.filter(
+        (v) => v.type === HistoryType.CHILD_BLOCK_REMOVE_BLOCK,
+      ) as RemoveChildBlockOp[];
+
+      childBlockUpdateOps.forEach((op, i) => {
+        this.executeJson0(op.blockId, op.undo, op.parentBlockId);
+        this.editor.renderChild(op.parentBlockId, [op.blockId], true);
+        if (i === childBlockUpdateOps.length - 1 && addOps.length < 1 && removeOps.length < 1) {
+          this.moveCaret(op, op.position, 'undo');
+        }
+      });
+
+      childBlockAddOps.forEach((op, i) => {
+        this.editor.deleteChildBlocks(op.parentBlockId, [op.block.id]);
+        this.editor.renderChild(op.parentBlockId, [op.blockId], true);
+      });
+
+      childBlockRemoveOps.forEach((op, i) => {
+        this.editor.createChildBlocks(op.parentBlockId, [copyObject(op.block)]);
+
+        if (i === childBlockRemoveOps.length - 1) {
+          setTimeout(() => {
+            this.editor.setCaretPosition({
+              blockId: op.parentBlockId,
+              childBlockId: op.block.id,
+              index: 0,
+            });
+            this.editor.updateCaretRect();
+          }, 10);
+        }
+      });
 
       updateOps.forEach((op, i) => {
         this.executeJson0(op.blockId, op.undo);
@@ -292,7 +410,12 @@ export class HistoryModule implements Module {
           if (v.type === HistoryType.REMOVE_BLOCK) {
             return { ...v, type: HistoryType.ADD_BLOCK };
           }
-          if (v.type !== HistoryType.UPDATE_CONTENTS) return v;
+          if (v.type === HistoryType.CHILD_BLOCK_ADD_BLOCK) {
+            return { ...v, type: HistoryType.CHILD_BLOCK_REMOVE_BLOCK };
+          }
+          if (v.type === HistoryType.CHILD_BLOCK_REMOVE_BLOCK) {
+            return { ...v, type: HistoryType.CHILD_BLOCK_ADD_BLOCK };
+          }
           return {
             ...v,
             undo: v.redo,
@@ -303,7 +426,7 @@ export class HistoryModule implements Module {
       });
 
       this.editor.numberingList();
-      this.editor.render(affectedIds);
+      this.editor.render(affectedIds, true);
       this.isUpdating = false;
     }
   }
@@ -324,6 +447,15 @@ export class HistoryModule implements Module {
       const updateOps: UpdateOp[] = ops.filter(
         (v) => v.type === HistoryType.UPDATE_CONTENTS,
       ) as UpdateOp[];
+      const childBlockUpdateOps: UpdateChildBlockOp[] = ops.filter(
+        (v) => v.type === HistoryType.CHILD_BLOCK_UPDATE_CONTENTS,
+      ) as UpdateChildBlockOp[];
+      const childBlockAddOps: AddChildBlockOp[] = ops.filter(
+        (v) => v.type === HistoryType.CHILD_BLOCK_ADD_BLOCK,
+      ) as AddChildBlockOp[];
+      const childBlockRemoveOps: RemoveChildBlockOp[] = ops.filter(
+        (v) => v.type === HistoryType.CHILD_BLOCK_REMOVE_BLOCK,
+      ) as RemoveChildBlockOp[];
 
       removeOps.forEach((op, i) => {
         this.editor.deleteBlock(op.blockId);
@@ -360,55 +492,109 @@ export class HistoryModule implements Module {
       });
 
       updateOps.forEach((op, i) => {
-        switch (op.type) {
-          case HistoryType.UPDATE_CONTENTS: {
-            this.executeJson0(op.blockId, op.redo);
-            affectedIds.push(op.blockId);
-            if (i === updateOps.length - 1) {
-              this.moveCaret(op, op.position, 'redo');
-            }
-            break;
-          }
+        this.executeJson0(op.blockId, op.redo);
+        affectedIds.push(op.blockId);
+        if (i === updateOps.length - 1) {
+          this.moveCaret(op, op.position, 'redo');
         }
       });
+
+      childBlockRemoveOps.forEach((op, i) => {
+        this.editor.deleteChildBlocks(op.parentBlockId, [op.block.id]);
+        this.editor.renderChild(op.parentBlockId, [op.blockId], true);
+      });
+
+      childBlockAddOps.forEach((op, i) => {
+        this.editor.createChildBlocks(op.parentBlockId, [copyObject(op.block)]);
+        this.editor.renderChild(op.parentBlockId, [op.blockId], true);
+        if (i === childBlockUpdateOps.length - 1 && childBlockUpdateOps.length < 1) {
+          setTimeout(() => {
+            const textIndex = this.editor.getChildBlockLength(op.blockId) ?? 0;
+            this.editor.setCaretPosition({
+              blockId: op.parentBlockId,
+              childBlockId: op.blockId,
+              index: textIndex,
+            });
+            this.editor.updateCaretRect();
+          }, 10);
+        }
+      });
+
+      childBlockUpdateOps.forEach((op, i) => {
+        this.executeJson0(op.blockId, op.redo, op.parentBlockId);
+        this.editor.renderChild(op.parentBlockId, [op.blockId], true);
+        if (i === childBlockUpdateOps.length - 1) {
+          this.moveCaret(op, op.position, 'redo');
+        }
+      });
+
       this.stack.undo.push(ops);
       setTimeout(() => {
         this.eventEmitter.emit(EditorEvents.EVENT_EDITOR_CHANGED, copyObject(ops));
       });
       this.editor.numberingList();
-      this.editor.render(affectedIds);
+      this.editor.render(affectedIds, true);
       this.isUpdating = false;
     }
   }
 
-  executeJson0(blockId: string, ops: JSON0[]) {
+  executeJson0(blockId: string, ops: JSON0[], parentBlockId?: string) {
     try {
-      const block = this.editor.getBlock(blockId);
-      if (!block) return;
-      const updatedBlock: Block = json0.type.apply(block, ops);
-      this.editor.updateBlock(
-        {
-          ...updatedBlock,
-          contents: updatedBlock.contents.map((content) => {
-            return {
-              id: content.id ?? uuidv4(),
-              attributes: content.attributes ?? {},
-              text: content.text ?? '',
-              type: content.type ?? 'TEXT',
-              isEmbed: content.isEmbed ?? false,
-            };
-          }),
-        },
-        EventSources.USER,
-      );
+      if (parentBlockId) {
+        const parentBlock = this.editor.getBlock(parentBlockId);
+        if (!parentBlock) return;
+        const block = parentBlock.childBlocks.find((v) => v.id === blockId);
+        if (!block) return;
+        const updatedBlock: Block = json0.type.apply(block, ops);
+        this.editor.updateChildBlock(
+          parentBlockId,
+          {
+            ...updatedBlock,
+            contents: updatedBlock.contents.map((content) => {
+              return {
+                id: content.id ?? uuidv4(),
+                attributes: content.attributes ?? {},
+                text: content.text ?? '',
+                type: content.type ?? 'TEXT',
+                isEmbed: content.isEmbed ?? false,
+              };
+            }),
+          },
+          EventSources.USER,
+        );
+      } else {
+        const block = this.editor.getBlock(blockId);
+        if (!block) return;
+        const updatedBlock: Block = json0.type.apply(block, ops);
+        this.editor.updateBlock(
+          {
+            ...updatedBlock,
+            contents: updatedBlock.contents.map((content) => {
+              return {
+                id: content.id ?? uuidv4(),
+                attributes: content.attributes ?? {},
+                text: content.text ?? '',
+                type: content.type ?? 'TEXT',
+                isEmbed: content.isEmbed ?? false,
+              };
+            }),
+          },
+          EventSources.USER,
+        );
+      }
     } catch (e) {
       this.eventEmitter.info('Failed to restore hisotry', e);
     }
   }
 
-  moveCaret(op: UpdateOp, position?: CaretPosition, type: 'undo' | 'redo' = 'undo') {
+  moveCaret(
+    op: UpdateOp | UpdateChildBlockOp,
+    position?: CaretPosition,
+    type: 'undo' | 'redo' = 'undo',
+  ) {
     if (!position) {
       const blockLength = this.editor.getBlockLength(op.blockId) ?? 0;
+
       setTimeout(() => {
         this.editor.setCaretPosition({
           blockId: op.blockId,
@@ -426,19 +612,39 @@ export class HistoryModule implements Module {
     let positionLength = position.length ?? 0;
 
     setTimeout(() => {
-      const blockLength = this.editor.getBlockLength(position.blockId) ?? 0;
+      const block = this.editor.getBlock(position.blockId);
+      if (!block) return;
+      if (position.childBlockId) {
+        const childBlockLength = getBlockLength(position.childBlockId, true) ?? 0;
+        if (positionIndex + affectedLength + positionLength > childBlockLength) {
+          affectedLength = 0;
+        }
+        if (positionIndex + positionLength > childBlockLength) {
+          positionLength = 0;
+        }
+        this.editor.setCaretPosition({
+          blockId: position.blockId,
+          childBlockId: position.childBlockId,
+          index: positionIndex + affectedLength,
+          length: positionLength,
+        });
+      } else {
+        const blockLength = this.editor.getBlockLength(position.blockId) ?? 0;
 
-      if (positionIndex + affectedLength + positionLength > blockLength) {
-        affectedLength = 0;
+        if (positionIndex + affectedLength + positionLength > blockLength) {
+          affectedLength = 0;
+        }
+        if (positionIndex + positionLength > blockLength) {
+          positionLength = 0;
+        }
+
+        this.editor.setCaretPosition({
+          blockId: position.blockId,
+          index: positionIndex + affectedLength,
+          length: positionLength,
+        });
       }
-      if (positionIndex + positionLength > blockLength) {
-        positionLength = 0;
-      }
-      this.editor.setCaretPosition({
-        blockId: position.blockId,
-        index: positionIndex + affectedLength,
-        length: positionLength,
-      });
+
       this.editor.updateCaretRect();
     }, 20);
   }

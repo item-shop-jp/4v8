@@ -11,7 +11,7 @@ interface ContainerProps {
   scrollContainer?: HTMLElement | string;
 }
 
-export const InlineContainer: React.VFC<ContainerProps> = ({
+export const InlineContainer: React.FC<ContainerProps> = ({
   contents,
   formats,
   editor,

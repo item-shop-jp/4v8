@@ -16,8 +16,9 @@ import {
   FormatNumberList,
   FormatTask,
 } from '../icons';
-import { BlockType } from '../../types';
+import { Block, BlockAttributes, BlockType } from '../../types';
 import { Tooltip } from '../popups';
+import { createBlock } from '../../utils/block';
 import { FormatAttachment } from '../icons/toolbar/FormatAttachment';
 
 export interface GlobalToolbarProps {
@@ -64,7 +65,9 @@ export const GlobalToolbar = React.memo(({ editor, ...props }: GlobalToolbarProp
   const [isDisplay, setDisplay] = React.useState(false);
 
   const formatBlock = React.useCallback(
-    (type: BlockType) => {
+    (type: BlockType, attributes: BlockAttributes = {}, childBlocks: Block[] = []) => {
+      const caretPosition = editor.getCaretPosition();
+      if (!caretPosition || caretPosition.childBlockId) return;
       editor.getModule('toolbar').setUpdating(true);
       const selectedBlocks = editor.getModule('selector').getSelectedBlocks();
       if (selectedBlocks.length > 0) {
@@ -73,10 +76,17 @@ export const GlobalToolbar = React.memo(({ editor, ...props }: GlobalToolbarProp
         });
         editor
           .getModule('toolbar')
-          .formatMultiBlocks(updateIds, blockType !== type ? type : 'PARAGRAPH');
+          .formatMultiBlocks(
+            updateIds,
+            blockType !== type ? type : 'PARAGRAPH',
+            attributes,
+            childBlocks,
+          );
         editor.getModule('clipboard').focus();
       } else {
-        editor.getModule('toolbar').formatBlock(blockType !== type ? type : 'PARAGRAPH');
+        editor
+          .getModule('toolbar')
+          .formatBlock(blockType !== type ? type : 'PARAGRAPH', attributes, childBlocks);
       }
 
       setTimeout(() => {
@@ -152,6 +162,28 @@ export const GlobalToolbar = React.memo(({ editor, ...props }: GlobalToolbarProp
     (event: React.MouseEvent) => {
       event.preventDefault();
       formatBlock('BULLET-LIST');
+    },
+    [formats, blockType],
+  );
+
+  const handleTable = React.useCallback(
+    (event: React.MouseEvent) => {
+      event.preventDefault();
+      const caretPosition = editor.getCaretPosition();
+      if (!caretPosition) return;
+      const parentBlock = editor.getModule('editor').createBlock({
+        prevId: caretPosition.blockId,
+        type: 'TABLE',
+        attributes: { tableC: 2, tableR: 2 },
+        focus: false,
+        historyPush: true,
+      });
+      editor.createChildBlocks(parentBlock.id, [
+        { ...createBlock('PARAGRAPH'), name: 'r0-c0' },
+        { ...createBlock('PARAGRAPH'), name: 'r0-c1' },
+        { ...createBlock('PARAGRAPH'), name: 'r1-c0' },
+        { ...createBlock('PARAGRAPH'), name: 'r1-c1' },
+      ]);
     },
     [formats, blockType],
   );
@@ -333,6 +365,17 @@ export const GlobalToolbar = React.memo(({ editor, ...props }: GlobalToolbarProp
             position={'top'}
           >
             ファイルを添付
+          </Tooltip>
+          <Tooltip
+            targetElement={
+              <Button href="#" active={false} onClick={handleTable}>
+                <FormatDecision size="20" />
+              </Button>
+            }
+            maxWidth={200}
+            position={'top'}
+          >
+            テーブルを追加
           </Tooltip>
         </Container>
       )}

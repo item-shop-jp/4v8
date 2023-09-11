@@ -10,7 +10,7 @@ import { createInline } from '../utils/inline';
 import { Module } from '../types/module';
 import { EditorController, Source } from '../types/editor';
 import { copyObject } from '../utils/object';
-import { BlockAttributes, BlockType } from '../types/block';
+import { Block, BlockAttributes, BlockType } from '../types/block';
 import { Inline } from '../types/inline';
 
 interface Props {
@@ -169,13 +169,13 @@ export class EditorModule implements Module {
     this.editor.blur();
     setTimeout(() => {
       this.editor.setCaretPosition({ blockId: lastBlock.id });
-      this.editor.scrollIntoView();
+      this.scrollToBlock(lastBlock.id, 'end');
     }, 10);
   }
 
-  scrollToBlock(blockId: string) {
+  scrollToBlock(blockId: string, position: ScrollLogicalPosition = 'center') {
     const el = getBlockElementById(blockId);
     if (!el) return;
-    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    el.scrollIntoView({ behavior: 'smooth', block: position });
   }
 }

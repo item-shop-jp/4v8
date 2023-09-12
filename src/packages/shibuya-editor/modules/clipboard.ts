@@ -86,11 +86,18 @@ export class ClipboardModule implements Module {
           const appendBlock = {
             ...v,
             id: uuidv4(),
-            childBlocks: v.childBlocks.map((c) => {
-              return { ...c, id: uuidv4() };
-            }),
+            childBlocks: [],
           };
           this.editor.createBlock(appendBlock, prevBlockId);
+          // 子コンポーネントが１つ以上あったら
+          if (v.childBlocks.length > 0) {
+            this.editor.createChildBlocks(
+              appendBlock.id,
+              v.childBlocks.map((c) => {
+                return { ...c, id: uuidv4() };
+              }),
+            );
+          }
           prevBlockId = appendBlock.id;
           return appendBlock.id;
         });

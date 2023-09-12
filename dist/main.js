@@ -27943,10 +27943,14 @@ class ClipboardModule {
                 const appendBlocks = data;
                 let prevBlockId = prevBlock.id;
                 const affectedIds = appendBlocks.map((v, i) => {
-                    const appendBlock = Object.assign(Object.assign({}, v), { id: v4(), childBlocks: v.childBlocks.map((c) => {
-                            return Object.assign(Object.assign({}, c), { id: v4() });
-                        }) });
+                    const appendBlock = Object.assign(Object.assign({}, v), { id: v4(), childBlocks: [] });
                     this.editor.createBlock(appendBlock, prevBlockId);
+                    // 子コンポーネントが１つ以上あったら
+                    if (v.childBlocks.length > 0) {
+                        this.editor.createChildBlocks(appendBlock.id, v.childBlocks.map((c) => {
+                            return Object.assign(Object.assign({}, c), { id: v4() });
+                        }));
+                    }
                     prevBlockId = appendBlock.id;
                     return appendBlock.id;
                 });

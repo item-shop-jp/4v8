@@ -328,34 +328,6 @@ export class HistoryModule implements Module {
         (v) => v.type === HistoryType.CHILD_BLOCK_REMOVE_BLOCK,
       ) as RemoveChildBlockOp[];
 
-      childBlockUpdateOps.forEach((op, i) => {
-        this.executeJson0(op.blockId, op.undo, op.parentBlockId);
-        this.editor.renderChild(op.parentBlockId, [op.blockId], true);
-        if (i === childBlockUpdateOps.length - 1 && addOps.length < 1 && removeOps.length < 1) {
-          this.moveCaret(op, op.position, 'undo');
-        }
-      });
-
-      childBlockAddOps.forEach((op, i) => {
-        this.editor.deleteChildBlocks(op.parentBlockId, [op.block.id]);
-        this.editor.renderChild(op.parentBlockId, [op.blockId], true);
-      });
-
-      childBlockRemoveOps.forEach((op, i) => {
-        this.editor.createChildBlocks(op.parentBlockId, [copyObject(op.block)]);
-
-        if (i === childBlockRemoveOps.length - 1) {
-          setTimeout(() => {
-            this.editor.setCaretPosition({
-              blockId: op.parentBlockId,
-              childBlockId: op.block.id,
-              index: 0,
-            });
-            this.editor.updateCaretRect();
-          }, 10);
-        }
-      });
-
       updateOps.forEach((op, i) => {
         this.executeJson0(op.blockId, op.undo);
         affectedIds.push(op.blockId);
@@ -381,15 +353,10 @@ export class HistoryModule implements Module {
       });
 
       removeOps.forEach((op, i) => {
-        const removedBlock = copyObject(op.block);
         if (op.prevBlockId) {
-          this.editor.createBlock({ ...removedBlock, childBlocks: [] }, op.prevBlockId);
+          this.editor.createBlock(copyObject(op.block), op.prevBlockId);
         } else {
-          this.editor.createBlock({ ...removedBlock, childBlocks: [] }, op.prevBlockId, 'prepend');
-        }
-
-        if (removedBlock.childBlocks.length > 0) {
-          this.editor.createChildBlocks(removedBlock.id, removedBlock.childBlocks);
+          this.editor.createBlock(copyObject(op.block), op.prevBlockId, 'prepend');
         }
 
         affectedIds.push(op.blockId);
@@ -402,6 +369,34 @@ export class HistoryModule implements Module {
             });
             this.editor.updateCaretRect();
             if (op.blockId) this.editor.getModule('editor').scrollToBlock(op.blockId);
+          }, 10);
+        }
+      });
+
+      childBlockUpdateOps.forEach((op, i) => {
+        this.executeJson0(op.blockId, op.undo, op.parentBlockId);
+        this.editor.renderChild(op.parentBlockId, [op.blockId], true);
+        if (i === childBlockUpdateOps.length - 1 && addOps.length < 1 && removeOps.length < 1) {
+          this.moveCaret(op, op.position, 'undo');
+        }
+      });
+
+      childBlockAddOps.forEach((op, i) => {
+        this.editor.deleteChildBlocks(op.parentBlockId, [op.block.id]);
+        this.editor.renderChild(op.parentBlockId, [op.blockId], true);
+      });
+
+      childBlockRemoveOps.forEach((op, i) => {
+        this.editor.createChildBlocks(op.parentBlockId, [copyObject(op.block)]);
+
+        if (i === childBlockRemoveOps.length - 1) {
+          setTimeout(() => {
+            this.editor.setCaretPosition({
+              blockId: op.parentBlockId,
+              childBlockId: op.block.id,
+              index: 0,
+            });
+            this.editor.updateCaretRect();
           }, 10);
         }
       });
@@ -481,15 +476,10 @@ export class HistoryModule implements Module {
       });
 
       addOps.forEach((op, i) => {
-        const addedBlock = copyObject(op.block);
         if (op.prevBlockId) {
-          this.editor.createBlock({ ...addedBlock, childBlocks: [] }, op.prevBlockId);
+          this.editor.createBlock(copyObject(op.block), op.prevBlockId);
         } else {
-          this.editor.createBlock({ ...addedBlock, childBlocks: [] }, op.prevBlockId, 'prepend');
-        }
-
-        if (addedBlock.childBlocks.length > 0) {
-          this.editor.createChildBlocks(addedBlock.id, addedBlock.childBlocks);
+          this.editor.createBlock(copyObject(op.block), op.prevBlockId, 'prepend');
         }
 
         affectedIds.push(op.blockId);

@@ -104,7 +104,7 @@ export const Collaborators = React.memo(({ editor }: CollaboratorProps) => {
         window.getComputedStyle(blockEl).getPropertyValue('padding-top'),
         10,
       );
-      console.log(paddingTop);
+
       let top =
         containerScrollTop +
         rect.top -

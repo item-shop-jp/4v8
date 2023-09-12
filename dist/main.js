@@ -27651,11 +27651,15 @@ class HistoryModule {
                 }
             });
             removeOps.forEach((op, i) => {
+                const removedBlock = copyObject(op.block);
                 if (op.prevBlockId) {
-                    this.editor.createBlock(copyObject(op.block), op.prevBlockId);
+                    this.editor.createBlock(Object.assign(Object.assign({}, removedBlock), { childBlocks: [] }), op.prevBlockId);
                 }
                 else {
-                    this.editor.createBlock(copyObject(op.block), op.prevBlockId, 'prepend');
+                    this.editor.createBlock(Object.assign(Object.assign({}, removedBlock), { childBlocks: [] }), op.prevBlockId, 'prepend');
+                }
+                if (removedBlock.childBlocks.length > 0) {
+                    this.editor.createChildBlocks(removedBlock.id, removedBlock.childBlocks);
                 }
                 affectedIds.push(op.blockId);
                 if (i === removeOps.length - 1) {
@@ -27731,7 +27735,16 @@ class HistoryModule {
                 }
             });
             addOps.forEach((op, i) => {
-                this.editor.createBlock(copyObject(op.block), op.prevBlockId);
+                const addedBlock = copyObject(op.block);
+                if (op.prevBlockId) {
+                    this.editor.createBlock(Object.assign(Object.assign({}, addedBlock), { childBlocks: [] }), op.prevBlockId);
+                }
+                else {
+                    this.editor.createBlock(Object.assign(Object.assign({}, addedBlock), { childBlocks: [] }), op.prevBlockId, 'prepend');
+                }
+                if (addedBlock.childBlocks.length > 0) {
+                    this.editor.createChildBlocks(addedBlock.id, addedBlock.childBlocks);
+                }
                 affectedIds.push(op.blockId);
                 if (i === addOps.length - 1 && updateOps.length < 1) {
                     setTimeout(() => {
@@ -28817,7 +28830,6 @@ const Collaborators = React__namespace.memo(({ editor }) => {
             const rect = blockEl.getBoundingClientRect();
             // １行以上の要素は気持ちパディングを取る
             const paddingTop = parseInt(window.getComputedStyle(blockEl).getPropertyValue('padding-top'), 10);
-            console.log(paddingTop);
             let top = containerScrollTop +
                 rect.top -
                 ((_a = containerRect === null || containerRect === void 0 ? void 0 : containerRect.top) !== null && _a !== void 0 ? _a : 0) -

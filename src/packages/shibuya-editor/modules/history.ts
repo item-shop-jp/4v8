@@ -381,10 +381,15 @@ export class HistoryModule implements Module {
       });
 
       removeOps.forEach((op, i) => {
+        const removedBlock = copyObject(op.block);
         if (op.prevBlockId) {
-          this.editor.createBlock(copyObject(op.block), op.prevBlockId);
+          this.editor.createBlock({ ...removedBlock, childBlocks: [] }, op.prevBlockId);
         } else {
-          this.editor.createBlock(copyObject(op.block), op.prevBlockId, 'prepend');
+          this.editor.createBlock({ ...removedBlock, childBlocks: [] }, op.prevBlockId, 'prepend');
+        }
+
+        if (removedBlock.childBlocks.length > 0) {
+          this.editor.createChildBlocks(removedBlock.id, removedBlock.childBlocks);
         }
 
         affectedIds.push(op.blockId);
@@ -476,7 +481,17 @@ export class HistoryModule implements Module {
       });
 
       addOps.forEach((op, i) => {
-        this.editor.createBlock(copyObject(op.block), op.prevBlockId);
+        const addedBlock = copyObject(op.block);
+        if (op.prevBlockId) {
+          this.editor.createBlock({ ...addedBlock, childBlocks: [] }, op.prevBlockId);
+        } else {
+          this.editor.createBlock({ ...addedBlock, childBlocks: [] }, op.prevBlockId, 'prepend');
+        }
+
+        if (addedBlock.childBlocks.length > 0) {
+          this.editor.createChildBlocks(addedBlock.id, addedBlock.childBlocks);
+        }
+
         affectedIds.push(op.blockId);
         if (i === addOps.length - 1 && updateOps.length < 1) {
           setTimeout(() => {

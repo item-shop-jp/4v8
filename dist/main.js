@@ -22867,11 +22867,15 @@ function useEditor({ settings, eventEmitter, }) {
         const currentIndex = blocksRef.current.findIndex((v) => v.id === blockId);
         if (currentIndex === -1)
             return;
+        const removedBlock = copyObject(blocksRef.current[currentIndex]);
+        if (removedBlock.childBlocks.length > 0) {
+            deleteChildBlocks(removedBlock.id, removedBlock.childBlocks.map((v) => v.id));
+        }
         eventEmitter.emit(EditorEvents.EVENT_EDITOR_HISTORY_PUSH, {
             payload: {
                 type: HistoryType.REMOVE_BLOCK,
                 blockId: blocksRef.current[currentIndex].id,
-                block: copyObject(blocksRef.current[currentIndex]),
+                block: Object.assign(Object.assign({}, removedBlock), { childBlocks: [] }),
                 prevBlockId: (_a = blocksRef.current[currentIndex - 1]) === null || _a === void 0 ? void 0 : _a.id,
             },
             source,
@@ -22886,10 +22890,14 @@ function useEditor({ settings, eventEmitter, }) {
             payload: deleteBlocks.map((block) => {
                 var _a;
                 const currentIndex = blocksRef.current.findIndex((v) => v.id === block.id);
+                const removedBlock = copyObject(block);
+                if (removedBlock.childBlocks.length > 0) {
+                    deleteChildBlocks(removedBlock.id, removedBlock.childBlocks.map((v) => v.id));
+                }
                 return {
                     type: HistoryType.REMOVE_BLOCK,
                     blockId: block.id,
-                    block: copyObject(block),
+                    block: Object.assign(Object.assign({}, removedBlock), { childBlocks: [] }),
                     prevBlockId: (_a = blocksRef.current[currentIndex - 1]) === null || _a === void 0 ? void 0 : _a.id,
                 };
             }),

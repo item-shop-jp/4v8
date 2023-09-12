@@ -1021,11 +1021,19 @@ export function useEditor({
 
     if (currentIndex === -1) return;
 
+    const removedBlock = copyObject(blocksRef.current[currentIndex]);
+
+    if (removedBlock.childBlocks.length > 0) {
+      deleteChildBlocks(
+        removedBlock.id,
+        removedBlock.childBlocks.map((v) => v.id),
+      );
+    }
     eventEmitter.emit(EditorEvents.EVENT_EDITOR_HISTORY_PUSH, {
       payload: {
         type: HistoryType.REMOVE_BLOCK,
         blockId: blocksRef.current[currentIndex].id,
-        block: copyObject(blocksRef.current[currentIndex]),
+        block: { ...removedBlock, childBlocks: [] },
         prevBlockId: blocksRef.current[currentIndex - 1]?.id,
       },
       source,
@@ -1043,10 +1051,19 @@ export function useEditor({
       eventEmitter.emit(EditorEvents.EVENT_EDITOR_HISTORY_PUSH, {
         payload: deleteBlocks.map((block) => {
           const currentIndex = blocksRef.current.findIndex((v) => v.id === block.id);
+          const removedBlock = copyObject(block);
+
+          if (removedBlock.childBlocks.length > 0) {
+            deleteChildBlocks(
+              removedBlock.id,
+              removedBlock.childBlocks.map((v) => v.id),
+            );
+          }
+
           return {
             type: HistoryType.REMOVE_BLOCK,
             blockId: block.id,
-            block: copyObject(block),
+            block: { ...removedBlock, childBlocks: [] },
             prevBlockId: blocksRef.current[currentIndex - 1]?.id,
           };
         }),

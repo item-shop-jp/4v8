@@ -45,11 +45,25 @@ export interface EditorController {
   blur(): void;
   hasFocus(): boolean;
   getFormats(blockId: string, index: number, length?: number): InlineAttributes;
+  getChildFormats(
+    parentBlockId: string,
+    blockId: string,
+    index: number,
+    length?: number,
+  ): InlineAttributes;
   formatText(blockId: string, index: number, length: number, attributes: InlineAttributes): void;
+  formatChildBlockText(
+    blockId: string,
+    childBlockId: string,
+    index: number,
+    length: number,
+    attributes: InlineAttributes,
+  ): void;
   setBlocks(blocks: Block[]): void;
   getBlocks(): Block[];
   getBlock(blockId: string): Block | null;
   getBlockLength(blockId: string): number | null;
+  getChildBlockLength(blockId: string): number | null;
   createBlock(appendBlock: Block, prevBlockId?: string, type?: 'prepend' | 'append'): void;
   createBlock(
     appendBlock: Block,
@@ -63,18 +77,32 @@ export interface EditorController {
   deleteBlock(blockId: string, source: Source): void;
   deleteBlocks(blockIds: string[]): void;
   deleteBlocks(blockIds: string[], source: Source): void;
+  createChildBlocks(parentBlockId: string, blocks: Block[]): void;
+  createChildBlocks(parentBlockId: string, blocks: Block[], source: Source): void;
+  updateChildBlock(parentBlockId: string, block: Block): void;
+  updateChildBlock(parentBlockId: string, block: Block, source: Source): void;
+  deleteChildBlocks(parentBlockId: string, blockIds: string[]): void;
+  deleteChildBlocks(parentBlockId: string, blockIds: string[], source: Source): void;
   sync(blockId?: string, blockElement?: HTMLElement, forceUpdate?: boolean): void;
+  syncChildBlock(
+    parentBlockId: string,
+    blockId?: string,
+    blockKey?: string,
+    blockElement?: HTMLElement,
+    forceUpdate?: boolean,
+  ): void;
   setCaretPosition(
     caretPosition: Partial<CaretPosition> & { nextElementDirection?: 'up' | 'down' },
   ): void;
   getCaretPosition(): CaretPosition | null;
   getNativeRange(): Range | null;
-  scrollIntoView(blockId?: string): void;
   updateCaretPositionRef(caret?: CaretPosition): void;
   updateCaretRect(rect?: DOMRect): DOMRect | null;
+  getLastCaretRect(): DOMRect | null;
   prev(params?: PositionParams): boolean;
   next(params?: PositionParams): boolean;
   render(affectedIds?: string[], isForce?: boolean): void;
+  renderChild(parentBlockId: string, affectedIds?: string[], isForce?: boolean): void;
   numberingList(): void;
   addModule(
     name: string,

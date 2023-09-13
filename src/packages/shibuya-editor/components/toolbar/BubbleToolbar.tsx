@@ -191,14 +191,33 @@ export const BubbleToolbar = React.memo(
             return;
           }
           const block = editor.getBlock(caret.blockId);
-          const blockLength = editor.getBlockLength(caret?.blockId ?? '') ?? 0;
+
           const { disableDecorationFormats } = editor.getSettings();
-          if (
-            !block ||
-            disableDecorationFormats.includes(block.type) ||
-            !editor.hasFocus() ||
-            blockLength < 1
-          ) {
+          if (!block || disableDecorationFormats.includes(block.type) || !editor.hasFocus()) {
+            setPosition(undefined);
+            setDisplay(false);
+            return;
+          }
+          if (caret.childBlockId) {
+            const childBlock = block.childBlocks.find((v) => v.id === caret.childBlockId);
+            // 子要素の場合
+            if (childBlock) {
+              updatePosition(caret);
+              setDisplay(!caret.collapsed);
+              setFormats(
+                editor.getChildFormats(
+                  caret.blockId,
+                  caret.childBlockId,
+                  caret.index,
+                  caret.length,
+                ),
+              );
+              return;
+            }
+          }
+
+          const blockLength = editor.getBlockLength(caret?.blockId ?? '') ?? 0;
+          if (blockLength < 1) {
             setPosition(undefined);
             setDisplay(false);
             return;

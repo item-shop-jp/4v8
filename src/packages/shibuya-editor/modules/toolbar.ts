@@ -1,7 +1,7 @@
 import { Module } from '../types/module';
 import { EventEmitter } from '../utils/event-emitter';
 import { EditorController } from '../types/editor';
-import { BlockType, BlockAttributes } from '../types/block';
+import { BlockType, BlockAttributes, Block } from '../types/block';
 import { InlineAttributes } from '../types/inline';
 import { CaretPosition } from '../types/caret';
 
@@ -44,13 +44,28 @@ export class ToolbarModule implements Module {
     if (!caretPosition) return;
     const block = this.editor.getBlock(caretPosition.blockId);
     if (!block) return;
-    this.editor.formatText(block.id, caretPosition.index, caretPosition.length, attributes);
+
+    // 子ブロックの場合
+    if (caretPosition.childBlockId) {
+      this.editor.formatChildBlockText(
+        block.id,
+        caretPosition.childBlockId,
+        caretPosition.index,
+        caretPosition.length,
+        attributes,
+      );
+      this.editor.renderChild(block.id, [caretPosition.childBlockId]);
+    } else {
+      this.editor.formatText(block.id, caretPosition.index, caretPosition.length, attributes);
+      this.editor.render([block.id]);
+    }
+
     this.editor.blur();
-    this.editor.render([block.id]);
     setTimeout(
       () =>
         this.editor.setCaretPosition({
           blockId: block.id,
+          childBlockId: caretPosition?.childBlockId,
           index: caretPosition?.index,
           length: caretPosition?.length,
         }),
@@ -68,12 +83,17 @@ export class ToolbarModule implements Module {
     this.editor.render(blockIds);
   }
 
-  formatBlock(type: BlockType, attributes: BlockAttributes = {}) {
+  formatBlock(type: BlockType, attributes: BlockAttributes = {}, childBlocks: Block[] = []) {
     const caretPosition = this.editor.getCaretPosition();
     if (!caretPosition) return;
     const block = this.editor.getBlock(caretPosition.blockId);
     if (!block) return;
-    this.editor.updateBlock({ ...block, type, attributes: { ...block.attributes, ...attributes } });
+    this.editor.updateBlock({
+      ...block,
+      type,
+      attributes: { ...block.attributes, ...attributes },
+      childBlocks,
+    });
     this.editor.numberingList();
     this.editor.render([block.id]);
     this.editor.blur();
@@ -88,7 +108,12 @@ export class ToolbarModule implements Module {
     );
   }
 
-  formatMultiBlocks(blockIds: string[], type: BlockType, attributes: InlineAttributes = {}) {
+  formatMultiBlocks(
+    blockIds: string[],
+    type: BlockType,
+    attributes: InlineAttributes = {},
+    childBlocks: Block[] = [],
+  ) {
     blockIds.forEach((blockId) => {
       const block = this.editor.getBlock(blockId);
       if (!block) return;
@@ -96,6 +121,7 @@ export class ToolbarModule implements Module {
         ...block,
         type,
         attributes: { ...block.attributes, ...attributes },
+        childBlocks,
       });
     });
     this.editor.numberingList();

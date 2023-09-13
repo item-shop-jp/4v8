@@ -1,6 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { Subscription } from 'rxjs';
+import { debounce } from 'throttle-debounce';
 import { EditorEvents } from '../constants';
 import { EditorController } from '../types/editor';
 import { CollaboratingMember } from '../modules/collaborator';
@@ -67,6 +68,16 @@ export const Collaborators = React.memo(({ editor }: CollaboratorProps) => {
         });
       }),
     );
+    const debouncedUpdate = debounce(200, () => {
+      setCollaborators((prev) => {
+        return [...prev];
+      });
+    });
+    subs.add(
+      eventEmitter.select(EditorEvents.EVENT_EDITOR_HISTORY_PUSH).subscribe(() => {
+        debouncedUpdate();
+      }),
+    );
     subs.add(
       eventEmitter.select(EditorEvents.EVENT_COLLABORATOR_REMOVE_ALL).subscribe(() => {
         setCollaborators([]);
@@ -87,8 +98,20 @@ export const Collaborators = React.memo(({ editor }: CollaboratorProps) => {
       const containerScrollTop = containerEl ? containerEl.scrollTop : 0;
       const containerRect = containerEl?.getBoundingClientRect();
       const rect = blockEl.getBoundingClientRect();
+
+      // １行以上の要素は気持ちパディングを取る
+      const paddingTop = parseInt(
+        window.getComputedStyle(blockEl).getPropertyValue('padding-top'),
+        10,
+      );
+
       let top =
-        containerScrollTop + rect.top - (containerRect?.top ?? 0) - (options.marginTop ?? 0);
+        containerScrollTop +
+        rect.top -
+        (containerRect?.top ?? 0) -
+        (options.marginTop ?? 0) +
+        (paddingTop > 4 ? paddingTop : 0);
+      // 複数人が同じ場所をフォーカスしている場合
       if (r.find((x) => x.top === top)) {
         top = top + 16;
       }

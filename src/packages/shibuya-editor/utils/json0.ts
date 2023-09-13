@@ -4,12 +4,13 @@ import { Inline } from '../types/inline';
 
 export function getTextLength(ops: JSON0[] = []): number {
   let length = 0;
+
   ops.forEach((op) => {
     if (op.li) {
-      length += stringLength(op.li.text.replaceAll(/\uFEFF/gi, ''));
+      length += stringLength((op.li.text ?? '').replaceAll(/\uFEFF/gi, ''));
     }
     if (op.ld) {
-      length -= stringLength(op.ld.text.replaceAll(/\uFEFF/gi, ''));
+      length -= stringLength((op.ld.text ?? '').replaceAll(/\uFEFF/gi, ''));
     }
     if (op.si) {
       length += stringLength(op.si.replaceAll(/\uFEFF/gi, ''));

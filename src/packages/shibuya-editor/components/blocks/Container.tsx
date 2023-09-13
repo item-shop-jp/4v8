@@ -5,6 +5,7 @@ import { EditorController } from '../../types/editor';
 import { useBlockRenderer } from '../../hooks/use-block-renderer';
 import { InlineContainer } from '../inlines/Container';
 import { textToPrismaToken } from '../../utils/code-block';
+import { getBlockElementById } from '../../utils/block';
 
 interface BlockProps {
   blockId: string;
@@ -44,11 +45,6 @@ export const BlockContainer: React.FC<BlockProps> = React.memo(
       }
       if (block?.type === 'CODE-BLOCK') {
         const text = block.contents.map((content) => content.text).join('');
-        const contents = textToPrismaToken(text, block.attributes?.language ?? 'typescript').map(
-          (v, i) => {
-            return { ...v, id: i };
-          },
-        );
         return InlineContainer({
           contents: textToPrismaToken(text, block.attributes?.language ?? 'typescript'),
           formats,
@@ -61,6 +57,23 @@ export const BlockContainer: React.FC<BlockProps> = React.memo(
 
     const blockFormat = `block/${block?.type.toLocaleLowerCase()}`;
     const Container: React.FC<any> = formats[blockFormat] ?? formats['block/paragraph'];
+
+    const memoOverlay = React.useMemo(() => {
+      const blockEl = getBlockElementById(blockId);
+      if (!blockEl || !blockEl.parentElement) return;
+      let rect = blockEl.getBoundingClientRect();
+      if (block?.type === 'TABLE') {
+        const tableRect = blockEl.querySelector('table')?.getBoundingClientRect();
+        if (tableRect) rect = tableRect;
+      }
+      const parentRect = blockEl.parentElement.getBoundingClientRect();
+      return {
+        width: rect.width,
+        height: rect.height,
+        left: rect.left - parentRect.left,
+        top: rect.top - parentRect.top,
+      };
+    }, [blockId, selected]);
 
     return (
       <Outer
@@ -79,6 +92,7 @@ export const BlockContainer: React.FC<BlockProps> = React.memo(
           data-format={blockFormat}
           formats={formats}
           attributes={block?.attributes}
+          childBlocks={block?.childBlocks}
           meta={block?.meta ?? {}}
           contents={memoContents}
           editor={editor}
@@ -86,7 +100,7 @@ export const BlockContainer: React.FC<BlockProps> = React.memo(
           selected={selected}
           {...props}
         />
-        {selected && <Overlay />}
+        {selected && <Overlay style={memoOverlay} />}
       </Outer>
     );
   },

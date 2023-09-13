@@ -9,14 +9,15 @@ import { Inline, InlineAttributes, InlineType } from '../types/inline';
 export function createBlock(
   type: BlockType,
   contents: Inline[] = [],
-  attributes?: BlockAttributes,
-  meta?: BlockAttributes,
+  attributes: BlockAttributes = {},
+  meta: BlockAttributes = {},
 ): Block {
   return {
     id: uuidv4(),
     contents: contents.length < 1 ? [createInline('TEXT')] : contents,
-    attributes: attributes ?? {},
-    meta: meta ?? {},
+    attributes,
+    meta,
+    childBlocks: [],
     type,
   };
 }
@@ -31,8 +32,23 @@ export function getBlockId(node: HTMLElement): [string, HTMLElement] | [] {
   return getBlockId(node.parentElement);
 }
 
-export function getBlockElementById(blockId: string): HTMLElement | null {
-  const element = document.querySelector<HTMLElement>('[data-block-id="' + blockId + '"]');
+export function getChildBlockId(node: HTMLElement): [string, string, HTMLElement] | [] {
+  if (node.dataset?.childBlockId) {
+    return [
+      node.dataset.childBlockId,
+      node.dataset.childBlockKey ?? node.dataset.childBlockId,
+      node,
+    ];
+  }
+  if (!node.parentElement) {
+    return [];
+  }
+  return getChildBlockId(node.parentElement);
+}
+
+export function getBlockElementById(blockId: string, isChild = false): HTMLElement | null {
+  const query = isChild ? `[data-child-block-id="${blockId}"]` : `[data-block-id="${blockId}"]`;
+  const element = document.querySelector<HTMLElement>(query);
   if (!element) return null;
   return element;
 }
@@ -55,8 +71,13 @@ export function getBlockOuterElementById(blockId: string): HTMLElement | null {
   return outerEl;
 }
 
-export function getBlockLength(block: string | HTMLElement): number | null {
-  const element = block instanceof HTMLElement ? block : getBlockElementById(block);
+export function getBlockLength(block: string | HTMLElement, isChild = false): number | null {
+  let element;
+  if (isChild) {
+    element = block instanceof HTMLElement ? block : getBlockElementById(block, true);
+  } else {
+    element = block instanceof HTMLElement ? block : getBlockElementById(block);
+  }
   if (!element) return null;
   let cumulativeLength = 0;
   for (let i = 0; i < element.children.length; i++) {
@@ -122,8 +143,14 @@ export function convertHTMLtoInlines(block: string | HTMLElement): {
 export function getNativeIndexFromBlockIndex(
   block: string | HTMLElement,
   index: number,
+  isChild = false,
 ): { node: ChildNode; index: number } | null {
-  const element = block instanceof HTMLElement ? block : getBlockElementById(block);
+  let element;
+  if (isChild) {
+    element = block instanceof HTMLElement ? block : getBlockElementById(block, true);
+  } else {
+    element = block instanceof HTMLElement ? block : getBlockElementById(block);
+  }
   if (!element) return null;
   let cumulativeLength = 0;
   for (let i = 0; i < element.children.length; i++) {
@@ -182,6 +209,56 @@ export function getBlockIndexFromNativeIndex(
   const [inlineId, inlineElement] = getInlineId(ChildNode);
   const [blockId, blockElement] = getBlockId(ChildNode);
   if (!inlineId || !inlineElement || !blockElement || !blockId) return null;
+
+  let cumulativeLength = 0;
+  for (let i = 0; i < blockElement.children.length; i++) {
+    const targetElement = blockElement.children[i] as HTMLElement;
+    const format = targetElement.dataset.format?.replace(/^inline\//, '').toUpperCase();
+    if (format) {
+      const inlineLength = isEmbed(format as InlineType)
+        ? 1
+        : stringLength(getInlineText(targetElement));
+
+      if (targetElement === inlineElement) {
+        const childNodes = Array.from(inlineElement.childNodes);
+        let normalizedOffset = 0;
+        for (let j = 0; j < childNodes.length; j++) {
+          if (childNodes[j] === ChildNode) {
+            const offestText = childNodes[j].textContent ?? '';
+            // emoji support
+            const offsetTextIndex = stringLength(offestText.slice(0, offset));
+            normalizedOffset += offsetTextIndex;
+            break;
+          }
+          if (ChildNode.contains(childNodes[j]) && j === offset) {
+            break;
+          }
+          // <br> only line support
+          if (ChildNode === inlineElement && j === offset) {
+            normalizedOffset += 1;
+            break;
+          }
+          let nodeLength = stringLength(childNodes[j].textContent ?? '');
+          nodeLength = nodeLength > 0 ? nodeLength : 1;
+          normalizedOffset += nodeLength;
+        }
+
+        return { blockId, index: cumulativeLength + normalizedOffset };
+      }
+      cumulativeLength += inlineLength;
+    }
+  }
+  return null;
+}
+
+export function getChildBlockIndexFromNativeIndex(
+  ChildNode: HTMLElement,
+  offset: number,
+): { blockId: string; index: number } | null {
+  const [inlineId, inlineElement] = getInlineId(ChildNode);
+  const [blockId, blockKey, blockElement] = getChildBlockId(ChildNode);
+  if (!inlineId || !inlineElement || !blockElement || !blockId) return null;
+
   let cumulativeLength = 0;
   for (let i = 0; i < blockElement.children.length; i++) {
     const targetElement = blockElement.children[i] as HTMLElement;

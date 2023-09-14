@@ -101,6 +101,7 @@ export class ClipboardModule implements Module {
           prevBlockId = appendBlock.id;
           return appendBlock.id;
         });
+        this.editor.getModule('history')?.optimizeOp();
         this.editor.numberingList();
         this.editor.render(affectedIds);
         setTimeout(() => {

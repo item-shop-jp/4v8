@@ -27930,7 +27930,7 @@ class ClipboardModule {
         this.subs.unsubscribe();
     }
     onPaste(event) {
-        var _a;
+        var _a, _b;
         event.preventDefault();
         const caretPosition = this.editor.getCaretPosition();
         if (!caretPosition)
@@ -27967,6 +27967,7 @@ class ClipboardModule {
                     prevBlockId = appendBlock.id;
                     return appendBlock.id;
                 });
+                (_b = this.editor.getModule('history')) === null || _b === void 0 ? void 0 : _b.optimizeOp();
                 this.editor.numberingList();
                 this.editor.render(affectedIds);
                 setTimeout(() => {

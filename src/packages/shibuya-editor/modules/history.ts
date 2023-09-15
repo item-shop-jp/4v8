@@ -335,7 +335,7 @@ export class HistoryModule implements Module {
           this.moveCaret(op, op.position, 'undo');
         }
       });
-
+      console.log(ops);
       addOps.forEach((op, i) => {
         this.editor.deleteBlock(op.blockId);
         affectedIds.push(op.blockId);
@@ -354,9 +354,9 @@ export class HistoryModule implements Module {
 
       removeOps.forEach((op, i) => {
         if (op.prevBlockId) {
-          this.editor.createBlock(copyObject(op.block), op.prevBlockId);
+          this.editor.createBlock(op.block, op.prevBlockId);
         } else {
-          this.editor.createBlock(copyObject(op.block), op.prevBlockId, 'prepend');
+          this.editor.createBlock(op.block, op.prevBlockId, 'prepend');
         }
 
         affectedIds.push(op.blockId);
@@ -387,7 +387,7 @@ export class HistoryModule implements Module {
       });
 
       childBlockRemoveOps.forEach((op, i) => {
-        this.editor.createChildBlocks(op.parentBlockId, [copyObject(op.block)]);
+        this.editor.createChildBlocks(op.parentBlockId, [op.block]);
 
         if (i === childBlockRemoveOps.length - 1) {
           setTimeout(() => {
@@ -477,9 +477,9 @@ export class HistoryModule implements Module {
 
       addOps.forEach((op, i) => {
         if (op.prevBlockId) {
-          this.editor.createBlock(copyObject(op.block), op.prevBlockId);
+          this.editor.createBlock(op.block, op.prevBlockId);
         } else {
-          this.editor.createBlock(copyObject(op.block), op.prevBlockId, 'prepend');
+          this.editor.createBlock(op.block, op.prevBlockId, 'prepend');
         }
 
         affectedIds.push(op.blockId);
@@ -510,7 +510,7 @@ export class HistoryModule implements Module {
       });
 
       childBlockAddOps.forEach((op, i) => {
-        this.editor.createChildBlocks(op.parentBlockId, [copyObject(op.block)]);
+        this.editor.createChildBlocks(op.parentBlockId, [op.block]);
         this.editor.renderChild(op.parentBlockId, [op.blockId], true);
         if (i === childBlockUpdateOps.length - 1 && childBlockUpdateOps.length < 1) {
           setTimeout(() => {
@@ -599,15 +599,15 @@ export class HistoryModule implements Module {
   ) {
     if (!position) {
       const blockLength = this.editor.getBlockLength(op.blockId) ?? 0;
-
+      const targetBlockId = 'parentBlockId' in op ? op.parentBlockId : op.blockId;
       setTimeout(() => {
         this.editor.setCaretPosition({
-          blockId: op.blockId,
+          blockId: targetBlockId,
           index: blockLength,
           length: 0,
         });
         this.editor.updateCaretRect();
-        if (op.blockId) this.editor.getModule('editor').scrollToBlock(op.blockId);
+        this.editor.getModule('editor').scrollToBlock(targetBlockId);
       }, 10);
       return;
     }
@@ -649,7 +649,7 @@ export class HistoryModule implements Module {
           length: positionLength,
         });
       }
-
+      this.editor.getModule('editor').scrollToBlock(position.blockId);
       this.editor.updateCaretRect();
     }, 20);
   }

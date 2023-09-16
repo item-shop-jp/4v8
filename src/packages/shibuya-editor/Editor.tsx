@@ -17,6 +17,7 @@ import {
   Image,
   File,
   Table,
+  YouTube,
 } from './components/blocks';
 import { InlineText, CodeToken } from './components/inlines';
 import { Bold, Strike, Underline, InlineCode, Italic, Color, Link } from './components/styles';
@@ -117,7 +118,7 @@ export const Editor = React.memo(
           scrollMarginTop: settings.scrollMarginTop ?? 100,
           scrollMarginBottom: settings.scrollMarginBottom ?? 250,
           allowFormats: settings.allowFormats ?? [],
-          embeddedBlocks: settings.embeddedBlocks ?? ['IMAGE', 'FILE', 'TABLE'],
+          embeddedBlocks: settings.embeddedBlocks ?? ['IMAGE', 'FILE', 'TABLE', 'YOUTUBE'],
           collaborationLevel: settings.collaborationLevel ?? 'block',
           indentableFormats: settings.indentableFormats ?? ['ORDERED-LIST', 'BULLET-LIST'],
           disableDecorationFormats: settings.disableDecorationFormats ?? ['CODE-BLOCK'],
@@ -144,6 +145,7 @@ export const Editor = React.memo(
         'block/image': Image,
         'block/file': File,
         'block/table': Table,
+        'block/youtube': YouTube,
         'inline/text': InlineText,
         'inline/code-token': CodeToken,
         'inline/style/bold': Bold,

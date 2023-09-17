@@ -259,16 +259,13 @@ export class ClipboardModule implements Module {
       /^(?:(?:https?:)?\/\/)?(?:www\.)?(?:m\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
     const youtubeMatch = clipboardText.match(youtubeRegExp);
     if (prevBlock && caretPosition && youtubeMatch && youtubeMatch[1]) {
-      const appendBlock = {
-        id: uuidv4(),
-        attributes: { videoId: youtubeMatch[1] },
+      this.editor.updateBlock({
+        ...prevBlock,
         type: 'YOUTUBE',
-        prevId: prevBlock.id,
-      };
-      this.editor.getModule('editor').createBlock(appendBlock);
-      setTimeout(() => {
-        this.editor.getModule('editor').scrollToBlock(appendBlock.id);
-      }, 10);
+        attributes: { videoId: youtubeMatch[1] },
+      });
+      this.editor.render([prevBlock.id]);
+      return;
     }
 
     // url link

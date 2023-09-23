@@ -8,7 +8,7 @@ import { EditorController } from '../../types/editor';
 import { Inline, InlineAttributes } from '../../types/inline';
 import { getHtmlElement } from '../../utils/dom';
 import { TOOLBAR_CHILD_WIDTH } from '../toolbar';
-import { getBlockId } from '../../utils/block';
+import { getBlockId, getRangeByElement } from '../../utils/block';
 import { copyObject } from '../../utils/object';
 
 export interface LinkPopupProps {
@@ -81,6 +81,18 @@ export const LinkPopup = React.memo(({ editor, scrollContainer, ...props }: Prop
   const modalRef = React.useRef<HTMLDivElement>(null);
   const linkUrlRef = React.useRef<string>();
 
+  const getRange = React.useCallback(() => {
+    const parent = inlineElement?.parentElement;
+    if (!parent) return;
+    const [blockId] = getBlockId(parent);
+    if (!blockId) return;
+    const range = getRangeByElement(inlineElement as HTMLElement);
+    const block = editor.getBlock(blockId);
+    const blockRect = parent.getBoundingClientRect();
+    if (!range || !block) return;
+    return [range, block];
+  }, []);
+
   const handleChange = React.useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       setLinkUrl(event.target.value);
@@ -92,6 +104,7 @@ export const LinkPopup = React.memo(({ editor, scrollContainer, ...props }: Prop
     (event: React.KeyboardEvent<HTMLInputElement>) => {
       if (event.code === KeyCodes.ENTER) {
         handleSave();
+        setPopupOpen(false);
       }
     },
     [linkUrl, currentCaretPosition],
@@ -113,41 +126,31 @@ export const LinkPopup = React.memo(({ editor, scrollContainer, ...props }: Prop
     setPopupOpen(false);
   }, [updateEditor, currentCaretPosition, editor]);
 
-  const handleChangeInlineText = React.useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      if (!inline) return;
-      setInline({ ...inline, text: event.target.value });
-    },
-    [inline],
-  );
-
   const handleSave = React.useCallback(() => {
+    // 最初にリンクにするときはキャレット情報があるので、インラインのレンジは使わない
     if (!currentCaretPosition) {
       const parent = inlineElement?.parentElement;
       if (!parent) return;
       const [blockId] = getBlockId(parent);
       if (!blockId) return;
+      const range = getRangeByElement(inlineElement as HTMLElement);
       const block = editor.getBlock(blockId);
-      console.log(block, inline);
-      if (!block || !inline) return;
-      const inlineIndex = block.contents.findIndex((v) => v.id === inline.id);
-      console.log(inlineIndex);
-      if (inlineIndex === -1) return;
-      editor.updateBlock({
-        ...block,
-        contents: copyObject([
-          ...block.contents.slice(0, inlineIndex),
-          {
-            ...block.contents[inlineIndex],
-            attributes: {
-              ...block.contents[inlineIndex].attributes,
-              link: linkUrl,
-            },
-          },
-          ...block.contents.slice(inlineIndex + 1),
-        ]),
-      });
-      editor.render([block.id]);
+      const blockRect = parent.getBoundingClientRect();
+      if (!range || !block) return;
+      editor.getModule('toolbar').formatInline(
+        { link: linkUrl },
+        {
+          blockId,
+          index: range[0],
+          length: range[1] - range[0],
+          childBlockId: null,
+          collapsed: false,
+          isBottom: true,
+          isTop: true,
+          rect: blockRect,
+          blockFormat: `block/${block?.type.toLocaleLowerCase()}`,
+        },
+      );
     } else {
       editor.getModule('toolbar').setUpdating(true);
       editor.getModule('toolbar').formatInline({ link: linkUrl }, currentCaretPosition);
@@ -170,13 +173,9 @@ export const LinkPopup = React.memo(({ editor, scrollContainer, ...props }: Prop
         const container = getHtmlElement(scrollContainer);
         const caret = editor.getCaretPosition();
         setPopupOpen(true);
-        console.log(caret, v.inline);
         if (!caret || v.inline) {
           const element = document.querySelector(`[data-inline-id="${v.inline.id}"]`);
-          console.log(element);
           setInlineElement(element);
-          // const htmlElement = document.getElementsByClassName(`[data-inline-id="${v.inline.id}"]`);
-          // console.log(htmlElement, getBlockId(htmlElement[0] as HTMLElement));
           const linkRect = element?.getBoundingClientRect();
           if (!container) return;
           const containerRect = container.getBoundingClientRect();
@@ -213,10 +212,10 @@ export const LinkPopup = React.memo(({ editor, scrollContainer, ...props }: Prop
           const left = caret?.rect.left;
           setPopupPosition({ top, left });
         }
-
         if (caret) {
           setFormats(editor.getFormats(caret?.blockId, caret?.index, caret?.length));
         }
+        // 選択範囲がある場合はキャレットがあるのでセットする
         setCurrentCaretPosition(v.caretPosition ? v.caretPosition : caret);
       }),
     );
@@ -267,6 +266,7 @@ export const LinkPopup = React.memo(({ editor, scrollContainer, ...props }: Prop
                     placeholder="リンク先を入力してください"
                     onChange={handleChange}
                     onBlur={handleSave}
+                    onKeyDown={handleKeyDown}
                   />
                 </div>
                 <DeleteButton onClick={handleDelete}>リンクを解除する</DeleteButton>

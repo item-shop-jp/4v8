@@ -8,6 +8,8 @@ import { EditorController } from '../../types/editor';
 import { Inline, InlineAttributes } from '../../types/inline';
 import { getHtmlElement } from '../../utils/dom';
 import { TOOLBAR_CHILD_WIDTH } from '../toolbar';
+import { getBlockId } from '../../utils/block';
+import { copyObject } from '../../utils/object';
 
 export interface LinkPopupProps {
   editor: EditorController;
@@ -58,9 +60,13 @@ const EnterLinkContainer = styled.input<{ position: 'absolute' | 'relative' }>`
   font-size: 14px;
 `;
 
-const DeleteButton = styled.div`
+const DeleteButton = styled.button`
   font-size: 14px;
   cursor: pointer;
+`;
+
+const StyledInput = styled.input`
+  display: block;
 `;
 
 export const LinkPopup = React.memo(({ editor, scrollContainer, ...props }: Props) => {
@@ -69,6 +75,7 @@ export const LinkPopup = React.memo(({ editor, scrollContainer, ...props }: Prop
   const [inline, setInline] = React.useState<Inline>();
   const [popupMode, setPopupMode] = React.useState();
   const [popupOpen, setPopupOpen] = React.useState(false);
+  const [inlineElement, setInlineElement] = React.useState<Element | null>(null);
   const [popupPosition, setPopupPosition] = React.useState<PopupPosition>();
   const [currentCaretPosition, setCurrentCaretPosition] = React.useState<CaretPosition | null>();
   const modalRef = React.useRef<HTMLDivElement>(null);
@@ -95,7 +102,6 @@ export const LinkPopup = React.memo(({ editor, scrollContainer, ...props }: Prop
       editor.getModule('toolbar').setUpdating(true);
       callback();
       setTimeout(() => editor.getModule('toolbar').setUpdating(false), 100);
-      setPopupOpen(false);
     },
     [editor],
   );
@@ -104,17 +110,51 @@ export const LinkPopup = React.memo(({ editor, scrollContainer, ...props }: Prop
     updateEditor(() => {
       editor.getModule('toolbar').formatInline({ link: '' }, currentCaretPosition);
     });
-  }, [updateEditor, currentCaretPosition]);
+    setPopupOpen(false);
+  }, [updateEditor, currentCaretPosition, editor]);
+
+  const handleChangeInlineText = React.useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      if (!inline) return;
+      setInline({ ...inline, text: event.target.value });
+    },
+    [inline],
+  );
 
   const handleSave = React.useCallback(() => {
-    updateEditor(() => {
+    if (!currentCaretPosition) {
+      const parent = inlineElement?.parentElement;
+      if (!parent) return;
+      const [blockId] = getBlockId(parent);
+      if (!blockId) return;
+      const block = editor.getBlock(blockId);
+      console.log(block, inline);
+      if (!block || !inline) return;
+      const inlineIndex = block.contents.findIndex((v) => v.id === inline.id);
+      console.log(inlineIndex);
+      if (inlineIndex === -1) return;
+      editor.updateBlock({
+        ...block,
+        contents: copyObject([
+          ...block.contents.slice(0, inlineIndex),
+          {
+            ...block.contents[inlineIndex],
+            attributes: {
+              ...block.contents[inlineIndex].attributes,
+              link: linkUrl,
+            },
+          },
+          ...block.contents.slice(inlineIndex + 1),
+        ]),
+      });
+      editor.render([block.id]);
+    } else {
+      editor.getModule('toolbar').setUpdating(true);
       editor.getModule('toolbar').formatInline({ link: linkUrl }, currentCaretPosition);
-    });
-  }, [updateEditor, linkUrl, currentCaretPosition]);
-
-  const handleClick = React.useCallback((event: React.MouseEvent<HTMLInputElement>) => {
-    event.stopPropagation();
-  }, []);
+      setTimeout(() => editor.getModule('toolbar').setUpdating(false), 100);
+    }
+    setTimeout(() => editor.focus(), 10);
+  }, [inline, linkUrl, currentCaretPosition, editor, inlineElement, getBlockId]);
 
   React.useEffect(() => {
     const subs = new Subscription();
@@ -125,19 +165,18 @@ export const LinkPopup = React.memo(({ editor, scrollContainer, ...props }: Prop
         if (v.mode) {
           setPopupMode(v.mode);
         }
-        if (v.link) {
-          setLinkUrl(v.link);
-        } else {
-          setLinkUrl('');
-        }
-        if (v.inline) {
-          setInline(v.inline);
-        }
+        setLinkUrl(v.link ?? '');
+        setInline(v.inline ?? undefined);
         const container = getHtmlElement(scrollContainer);
         const caret = editor.getCaretPosition();
         setPopupOpen(true);
-        if (!caret) {
+        console.log(caret, v.inline);
+        if (!caret || v.inline) {
           const element = document.querySelector(`[data-inline-id="${v.inline.id}"]`);
+          console.log(element);
+          setInlineElement(element);
+          // const htmlElement = document.getElementsByClassName(`[data-inline-id="${v.inline.id}"]`);
+          // console.log(htmlElement, getBlockId(htmlElement[0] as HTMLElement));
           const linkRect = element?.getBoundingClientRect();
           if (!container) return;
           const containerRect = container.getBoundingClientRect();
@@ -149,6 +188,7 @@ export const LinkPopup = React.memo(({ editor, scrollContainer, ...props }: Prop
               left,
             });
           }
+          setCurrentCaretPosition(null);
           return;
         }
         const linkRect = document.getElementById('toolbar-link')?.getBoundingClientRect();
@@ -173,10 +213,11 @@ export const LinkPopup = React.memo(({ editor, scrollContainer, ...props }: Prop
           const left = caret?.rect.left;
           setPopupPosition({ top, left });
         }
-        setFormats(editor.getFormats(caret?.blockId, caret?.index, caret?.length));
-        if (!currentCaretPosition) {
-          setCurrentCaretPosition(v.caretPosition ? v.caretPosition : caret);
+
+        if (caret) {
+          setFormats(editor.getFormats(caret?.blockId, caret?.index, caret?.length));
         }
+        setCurrentCaretPosition(v.caretPosition ? v.caretPosition : caret);
       }),
     );
     return () => {
@@ -209,8 +250,6 @@ export const LinkPopup = React.memo(({ editor, scrollContainer, ...props }: Prop
                 {...props}
                 value={linkUrl}
                 placeholder="リンク先を入力してください"
-                onMouseDown={handleClick}
-                onClick={handleClick}
                 onChange={handleChange}
                 onBlur={handleSave}
                 onKeyDown={handleKeyDown}
@@ -222,16 +261,12 @@ export const LinkPopup = React.memo(({ editor, scrollContainer, ...props }: Prop
                 left={popupPosition?.left ?? 0}
               >
                 <div>
-                  <div>URL</div>
-                  <input
-                    {...props}
+                  URL
+                  <StyledInput
                     value={linkUrl}
                     placeholder="リンク先を入力してください"
-                    onMouseDown={handleClick}
-                    onClick={handleClick}
                     onChange={handleChange}
                     onBlur={handleSave}
-                    onKeyDown={handleKeyDown}
                   />
                 </div>
                 <DeleteButton onClick={handleDelete}>リンクを解除する</DeleteButton>

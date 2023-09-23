@@ -87,7 +87,7 @@ const PopupLinkText = styled.div`
   text-overflow: ellipsis;
 `;
 
-const EditButton = styled.div`
+const EditButton = styled.button`
   cursor: pointer;
   display: inline-block;
   flex-shrink: 0;

@@ -81,6 +81,7 @@
   },
   "dependencies": {
     "json0-ot-diff": "1.1.2",
-    "styled-components": "5.3.10"
+    "styled-components": "5.3.10",
+    "unicount": "^1.2.0"
   }
 }

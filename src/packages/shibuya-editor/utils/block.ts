@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import isEqual from 'lodash.isequal';
-import stringLength from 'string-length';
+import { uniCount } from 'unicount';
 import * as otText from 'ot-text-unicode';
 import { createInline, isEmbed, getInlineId, getInlineText } from './inline';
 import { Block, BlockType, BlockAttributes } from '../types/block';
@@ -85,7 +85,7 @@ export function getBlockLength(block: string | HTMLElement, isChild = false): nu
     const format = targetElement.dataset.format?.replace(/^inline\//, '').toUpperCase();
     const inlineLength = isEmbed(format as InlineType)
       ? 1
-      : stringLength(getInlineText(targetElement).replaceAll(/\uFEFF/gi, ''));
+      : uniCount(getInlineText(targetElement).replaceAll(/\uFEFF/gi, ''));
     cumulativeLength += inlineLength;
   }
   return cumulativeLength;
@@ -163,7 +163,7 @@ export function getNativeIndexFromBlockIndex(
         const childNodes = targetElement.childNodes;
         for (let j = 0; j < childNodes.length; j++) {
           const node = childNodes[j] as HTMLElement;
-          let nodeLength = stringLength(node.textContent ?? '');
+          let nodeLength = uniCount(node.textContent ?? '');
           nodeLength = nodeLength > 0 ? nodeLength : 1;
           if (index <= cumulativeLength + nodeLength) {
             if (node instanceof Image) {
@@ -217,7 +217,7 @@ export function getBlockIndexFromNativeIndex(
     if (format) {
       const inlineLength = isEmbed(format as InlineType)
         ? 1
-        : stringLength(getInlineText(targetElement));
+        : uniCount(getInlineText(targetElement));
 
       if (targetElement === inlineElement) {
         const childNodes = Array.from(inlineElement.childNodes);
@@ -226,7 +226,7 @@ export function getBlockIndexFromNativeIndex(
           if (childNodes[j] === ChildNode) {
             const offestText = childNodes[j].textContent ?? '';
             // emoji support
-            const offsetTextIndex = stringLength(offestText.slice(0, offset));
+            const offsetTextIndex = uniCount(offestText.slice(0, offset));
             normalizedOffset += offsetTextIndex;
             break;
           }
@@ -238,7 +238,7 @@ export function getBlockIndexFromNativeIndex(
             normalizedOffset += 1;
             break;
           }
-          let nodeLength = stringLength(childNodes[j].textContent ?? '');
+          let nodeLength = uniCount(childNodes[j].textContent ?? '');
           nodeLength = nodeLength > 0 ? nodeLength : 1;
           normalizedOffset += nodeLength;
         }
@@ -257,7 +257,7 @@ export function getRangeByElement(el: HTMLElement): [number, number] | null {
   const start = getBlockIndexFromNativeIndex(inline as HTMLElement, 0);
   const end = getBlockIndexFromNativeIndex(
     inline as HTMLElement,
-    stringLength(getInlineText(inline).replaceAll(/\uFEFF/gi, '')),
+    uniCount(getInlineText(inline).replaceAll(/\uFEFF/gi, '')),
   );
   if (!start || !end) return null;
   return [start.index, end.index];
@@ -278,7 +278,7 @@ export function getChildBlockIndexFromNativeIndex(
     if (format) {
       const inlineLength = isEmbed(format as InlineType)
         ? 1
-        : stringLength(getInlineText(targetElement));
+        : uniCount(getInlineText(targetElement));
 
       if (targetElement === inlineElement) {
         const childNodes = Array.from(inlineElement.childNodes);
@@ -287,7 +287,7 @@ export function getChildBlockIndexFromNativeIndex(
           if (childNodes[j] === ChildNode) {
             const offestText = childNodes[j].textContent ?? '';
             // emoji support
-            const offsetTextIndex = stringLength(offestText.slice(0, offset));
+            const offsetTextIndex = uniCount(offestText.slice(0, offset));
             normalizedOffset += offsetTextIndex;
             break;
           }
@@ -299,7 +299,7 @@ export function getChildBlockIndexFromNativeIndex(
             normalizedOffset += 1;
             break;
           }
-          let nodeLength = stringLength(childNodes[j].textContent ?? '');
+          let nodeLength = uniCount(childNodes[j].textContent ?? '');
           nodeLength = nodeLength > 0 ? nodeLength : 1;
           normalizedOffset += nodeLength;
         }
@@ -323,7 +323,7 @@ export function deleteInlineContents(
   const destContents = [];
   let cumulativeLength = 0;
   for (let i = 0; i < contents.length; i++) {
-    const inlineLength = contents[i].isEmbed ? 1 : stringLength(contents[i].text);
+    const inlineLength = contents[i].isEmbed ? 1 : uniCount(contents[i].text);
     if (
       length > 0 &&
       endIndex >= cumulativeLength &&
@@ -332,13 +332,13 @@ export function deleteInlineContents(
       if (!contents[i].isEmbed) {
         let deleteIndex = startIndex - cumulativeLength;
         deleteIndex = deleteIndex > 0 ? deleteIndex : 0;
-        const textlength = stringLength(contents[i].text) - deleteIndex;
+        const textlength = uniCount(contents[i].text) - deleteIndex;
         const deletelength = textlength - length >= 0 ? length : textlength;
         length -= deletelength;
         const removeOp = otText.remove(deleteIndex, deletelength);
         const text = otText.type.apply(contents[i].text, removeOp);
 
-        if (stringLength(text) > 0) {
+        if (uniCount(text) > 0) {
           destContents.push({ ...contents[i], text });
         }
       } else {
@@ -366,12 +366,12 @@ export function insertTextInlineContents(
   const destContents = [];
   let processedIndex = 0;
   for (let i = 0; i < contents.length; i++) {
-    const inlineLength = contents[i].isEmbed ? 1 : stringLength(contents[i].text);
+    const inlineLength = contents[i].isEmbed ? 1 : uniCount(contents[i].text);
     if (index > processedIndex && index <= processedIndex + inlineLength) {
       const insertIndex = index - processedIndex;
       const insertOp = otText.insert(insertIndex, text);
       const insertedText = otText.type.apply(contents[i].text, insertOp);
-      if (stringLength(insertedText) > 0) {
+      if (uniCount(insertedText) > 0) {
         destContents.push({ ...contents[i], text: insertedText });
       }
     } else {
@@ -395,7 +395,7 @@ export function setAttributesForInlineContents(
   const destContents = [];
   let cumulativeLength = 0;
   for (let i = 0; i < contents.length; i++) {
-    const inlineLength = contents[i].isEmbed ? 1 : stringLength(contents[i].text);
+    const inlineLength = contents[i].isEmbed ? 1 : uniCount(contents[i].text);
     if (
       length > 0 &&
       endIndex >= cumulativeLength &&
@@ -404,7 +404,7 @@ export function setAttributesForInlineContents(
       if (!contents[i].isEmbed) {
         let formatIndex = startIndex - cumulativeLength;
         formatIndex = formatIndex > 0 ? formatIndex : 0;
-        const textlength = stringLength(contents[i].text) - formatIndex;
+        const textlength = uniCount(contents[i].text) - formatIndex;
         const formatlength = textlength - length >= 0 ? length : textlength;
         length -= formatlength;
         const firstText = otText.type.apply(
@@ -415,10 +415,7 @@ export function setAttributesForInlineContents(
           contents[i].text,
           otText.type.compose(
             otText.remove(0, formatIndex),
-            otText.remove(
-              formatlength,
-              stringLength(contents[i].text) - (formatIndex + formatlength),
-            ),
+            otText.remove(formatlength, uniCount(contents[i].text) - (formatIndex + formatlength)),
           ),
         );
         const lastText = otText.type.apply(
@@ -469,13 +466,13 @@ export function splitInlineContents(contents: Inline[], index: number): [Inline[
   const lastContents: Inline[] = [];
   let cumulativeLength = 0;
   for (let i = 0; i < contents.length; i++) {
-    const inlineLength = contents[i].isEmbed ? 1 : stringLength(contents[i].text);
+    const inlineLength = contents[i].isEmbed ? 1 : uniCount(contents[i].text);
     if (startIndex >= cumulativeLength && startIndex < cumulativeLength + inlineLength) {
       if (!contents[i].isEmbed) {
         const sliceIndex = startIndex - cumulativeLength;
         const firstText = otText.type.apply(
           contents[i].text,
-          otText.remove(sliceIndex, stringLength(contents[i].text) - sliceIndex),
+          otText.remove(sliceIndex, uniCount(contents[i].text) - sliceIndex),
         );
         const lastText = otText.type.apply(contents[i].text, otText.remove(0, sliceIndex));
         if (firstText.length > 0) {
@@ -533,7 +530,7 @@ export function getInlineContents(contents: Inline[], index: number, length: num
   const destContents = [];
   let cumulativeLength = 0;
   for (let i = 0; i < contents.length; i++) {
-    const inlineLength = contents[i].isEmbed ? 1 : stringLength(contents[i].text);
+    const inlineLength = contents[i].isEmbed ? 1 : uniCount(contents[i].text);
     if (
       length > 0 &&
       endIndex >= cumulativeLength &&
@@ -542,7 +539,7 @@ export function getInlineContents(contents: Inline[], index: number, length: num
       if (!contents[i].isEmbed) {
         let selectedIndex = startIndex - cumulativeLength;
         selectedIndex = selectedIndex > 0 ? selectedIndex : 0;
-        const textlength = stringLength(contents[i].text);
+        const textlength = uniCount(contents[i].text);
         const deleteTextlength = textlength - selectedIndex;
         const selectedLength = textlength - length >= 0 ? length : textlength;
         const deletelength = deleteTextlength - length >= 0 ? length : deleteTextlength;
@@ -557,7 +554,7 @@ export function getInlineContents(contents: Inline[], index: number, length: num
         }
         const removeFirst = otText.remove(0, selectedIndex);
         text = otText.type.apply(text, removeFirst);
-        if (stringLength(text) > 0) {
+        if (uniCount(text) > 0) {
           destContents.push({ ...contents[i], text });
         }
       } else {
@@ -581,7 +578,7 @@ export function getDuplicateAttributes(
   const destContents = [];
   let cumulativeLength = 0;
   for (let i = 0; i < contents.length; i++) {
-    const inlineLength = contents[i].isEmbed ? 1 : stringLength(contents[i].text);
+    const inlineLength = contents[i].isEmbed ? 1 : uniCount(contents[i].text);
     if (length < 1) {
       break;
     }
@@ -589,17 +586,17 @@ export function getDuplicateAttributes(
       if (!contents[i].isEmbed) {
         let selectedIndex = startIndex - cumulativeLength;
         selectedIndex = selectedIndex > 0 ? selectedIndex : 0;
-        const textlength = stringLength(contents[i].text) - selectedIndex;
+        const textlength = uniCount(contents[i].text) - selectedIndex;
         const selectedlength = textlength - length >= 0 ? length : textlength;
         length -= selectedlength;
         const text = otText.type.apply(
           contents[i].text,
           otText.remove(
             selectedIndex + selectedlength,
-            stringLength(contents[i].text) - (selectedIndex + selectedlength),
+            uniCount(contents[i].text) - (selectedIndex + selectedlength),
           ),
         );
-        if (stringLength(text) > 0) {
+        if (uniCount(text) > 0) {
           destContents.push({ ...contents[i].attributes });
         }
       } else {

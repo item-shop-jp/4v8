@@ -16,7 +16,7 @@ import {
 import { CaretPosition } from '../types/caret';
 import { Block, BlockType } from '../types';
 import { createInline } from '../utils/inline';
-import stringLength from 'string-length';
+import { uniCount } from 'unicount';
 import { copyObject } from '../utils/object';
 import { caretRangeFromPoint } from '../utils/range';
 import { getHtmlElement } from '../utils/dom';
@@ -1021,7 +1021,7 @@ export class KeyBoardModule implements Module {
     let text = '';
     let affectedLine = 0;
     lines.forEach((line, i) => {
-      const lineLength = stringLength(line);
+      const lineLength = uniCount(line);
       if (
         (processedIndex <= caret.index && caret.index <= processedIndex + lineLength) ||
         (processedIndex > caret.index && caret.index + caret.length > processedIndex) ||
@@ -1077,7 +1077,7 @@ export class KeyBoardModule implements Module {
     let affectedIndex = 2;
     let isLineHead = false;
     lines.forEach((line, i) => {
-      const lineLength = stringLength(line);
+      const lineLength = uniCount(line);
       if (
         (processedIndex <= caret.index && caret.index <= processedIndex + lineLength) ||
         (processedIndex > caret.index && caret.index + caret.length > processedIndex) ||

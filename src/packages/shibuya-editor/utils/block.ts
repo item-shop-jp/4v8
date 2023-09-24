@@ -164,6 +164,13 @@ export function getNativeIndexFromBlockIndex(
         for (let j = 0; j < childNodes.length; j++) {
           const node = childNodes[j] as HTMLElement;
           let nodeLength = uniCount(node.textContent ?? '');
+          //twimoji support
+          if (childNodes[j].nodeType === Node.ELEMENT_NODE) {
+            const emojiNode = childNodes[j] as HTMLElement;
+            if (emojiNode.tagName === 'IMG' && emojiNode.className.includes('emoji')) {
+              nodeLength = uniCount(emojiNode.getAttribute('alt') ?? '');
+            }
+          }
           nodeLength = nodeLength > 0 ? nodeLength : 1;
           if (index <= cumulativeLength + nodeLength) {
             if (node instanceof Image) {

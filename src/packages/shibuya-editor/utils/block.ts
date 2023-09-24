@@ -280,6 +280,18 @@ export function getRangeByElement(el: HTMLElement): [number, number] | null {
   return [start.index, end.index];
 }
 
+export function getChildBlockRangeByElement(el: HTMLElement): [number, number] | null {
+  const [inlineId, inline] = getInlineId(el);
+  if (!inline) return null;
+  const start = getChildBlockIndexFromNativeIndex(inline as HTMLElement, 0);
+  const end = getChildBlockIndexFromNativeIndex(
+    inline as HTMLElement,
+    uniCount(getInlineText(inline).replaceAll(/\uFEFF/gi, '')),
+  );
+  if (!start || !end) return null;
+  return [start.index, end.index];
+}
+
 export function getChildBlockIndexFromNativeIndex(
   ChildNode: HTMLElement,
   offset: number,

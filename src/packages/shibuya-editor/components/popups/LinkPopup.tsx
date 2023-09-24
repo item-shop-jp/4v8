@@ -8,7 +8,12 @@ import { EditorController } from '../../types/editor';
 import { Inline, InlineAttributes } from '../../types/inline';
 import { getHtmlElement } from '../../utils/dom';
 import { TOOLBAR_CHILD_WIDTH } from '../toolbar';
-import { getBlockId, getRangeByElement } from '../../utils/block';
+import {
+  getBlockId,
+  getChildBlockId,
+  getChildBlockRangeByElement,
+  getRangeByElement,
+} from '../../utils/block';
 import { copyObject } from '../../utils/object';
 
 export interface LinkPopupProps {
@@ -120,11 +125,56 @@ export const LinkPopup = React.memo(({ editor, scrollContainer, ...props }: Prop
   );
 
   const handleDelete = React.useCallback(() => {
-    updateEditor(() => {
-      editor.getModule('toolbar').formatInline({ link: '' }, currentCaretPosition);
-    });
+    const parent = inlineElement?.parentElement;
+    if (!parent) return;
+    const [blockId] = getBlockId(parent);
+    if (!blockId) return;
+    const [childBlockId] = getChildBlockId(parent);
+    const block = editor.getBlock(blockId);
+    const blockRect = parent.getBoundingClientRect();
+    if (childBlockId) {
+      const childRange = getChildBlockRangeByElement(inlineElement as HTMLElement);
+      if (!childRange || !block) return;
+      editor.getModule('toolbar').formatInline(
+        { link: '' },
+        {
+          blockId: block.id,
+          index: childRange[0],
+          length: childRange[1] - childRange[0],
+          childBlockId,
+          collapsed: false,
+          isBottom: true,
+          isTop: true,
+          rect: blockRect,
+          blockFormat: `block/${block?.type.toLocaleLowerCase()}`,
+        },
+      );
+    } else {
+      if (blockId) {
+        const range = getRangeByElement(inlineElement as HTMLElement);
+        if (!range || !block) return;
+        editor.getModule('toolbar').formatInline(
+          { link: '' },
+          {
+            blockId,
+            index: range[0],
+            length: range[1] - range[0],
+            childBlockId: null,
+            collapsed: false,
+            isBottom: true,
+            isTop: true,
+            rect: blockRect,
+            blockFormat: `block/${block?.type.toLocaleLowerCase()}`,
+          },
+        );
+      }
+    }
+
     setPopupOpen(false);
-  }, [updateEditor, currentCaretPosition, editor]);
+    setInline(undefined);
+    setInlineElement(null);
+    setTimeout(() => editor.focus(), 10);
+  }, [updateEditor, currentCaretPosition, editor, inlineElement]);
 
   const handleSave = React.useCallback(() => {
     // 最初にリンクにするときはキャレット情報があるので、インラインのレンジは使わない

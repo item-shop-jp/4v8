@@ -233,12 +233,22 @@ export function getBlockIndexFromNativeIndex(
           if (ChildNode.contains(childNodes[j]) && j === offset) {
             break;
           }
+
           // <br> only line support
           if (ChildNode === inlineElement && j === offset) {
             normalizedOffset += 1;
             break;
           }
+
           let nodeLength = uniCount(childNodes[j].textContent ?? '');
+
+          //twimoji support
+          if (childNodes[j].nodeType === Node.ELEMENT_NODE) {
+            const emojiNode = childNodes[j] as HTMLElement;
+            if (emojiNode.tagName === 'IMG' && emojiNode.className.includes('emoji')) {
+              nodeLength = uniCount(emojiNode.getAttribute('alt') ?? '');
+            }
+          }
           nodeLength = nodeLength > 0 ? nodeLength : 1;
           normalizedOffset += nodeLength;
         }

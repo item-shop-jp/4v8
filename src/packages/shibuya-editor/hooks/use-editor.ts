@@ -1116,7 +1116,10 @@ export function useEditor({
     // 埋め込み要素が最後だったら空行を追加
     const lastIndex = blocksRef.current.length - 1;
     const { embeddedBlocks } = getSettings();
-    if (embeddedBlocks.includes(blocksRef.current[lastIndex].type)) {
+    if (
+      embeddedBlocks.includes(blocksRef.current[lastIndex].type) &&
+      !blocksRef.current[lastIndex].meta?.isUploading
+    ) {
       const createdBlock = getModule('editor').createBlock({
         prevId: blocksRef.current[lastIndex].id,
         type: 'PARAGRAPH',

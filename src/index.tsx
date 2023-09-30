@@ -107,17 +107,18 @@ export const Container: React.FC = React.memo(() => {
     const eventEmitter = editorRef2.current.getEventEmitter();
     subs.add(
       eventEmitter.select(EditorEvents.EVENT_EDITOR_CHANGED).subscribe((payload) => {
-        // payload.forEach((v: any) => {
-        //   if (v.parentBlockId) {
-        //     const block = editorRef2.current?.getBlock(v.parentBlockId);
-        //     if (!block) return;
-        //     const child = block.childBlocks.find((c) => c.id === v.blockId);
-        //     console.log(JSON.stringify(child));
-        //   } else {
-        //     const block = editorRef2.current?.getBlock(v.blockId);
-        //     console.log(JSON.stringify(block));
-        //   }
-        // });
+        payload.forEach((v: any) => {
+          console.log(v);
+          // if (v.parentBlockId) {
+          //   const block = editorRef2.current?.getBlock(v.parentBlockId);
+          //   if (!block) return;
+          //   const child = block.childBlocks.find((c) => c.id === v.blockId);
+          //   console.log(JSON.stringify(child));
+          // } else {
+          //   const block = editorRef2.current?.getBlock(v.blockId);
+          //   console.log(JSON.stringify(block));
+          // }
+        });
       }),
     );
     return () => {

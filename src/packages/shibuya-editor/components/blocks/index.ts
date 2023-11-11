@@ -13,3 +13,4 @@ export * from './Task';
 export * from './embeds/Image';
 export * from './embeds/File';
 export * from './embeds/Table';
+export * from './embeds/YouTube';

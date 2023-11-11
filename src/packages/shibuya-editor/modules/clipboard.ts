@@ -101,6 +101,7 @@ export class ClipboardModule implements Module {
           prevBlockId = appendBlock.id;
           return appendBlock.id;
         });
+        this.editor.getModule('history')?.optimizeOp();
         this.editor.numberingList();
         this.editor.render(affectedIds);
         setTimeout(() => {
@@ -182,8 +183,6 @@ export class ClipboardModule implements Module {
     }
 
     const clipboardText = event.clipboardData.getData('text/plain');
-    const linkRegExp = new RegExp(`^https?://[a-zA-Z0-9-_.!'()*;/?:@&=+$,%#]+$`, 'i');
-    const linkMatch = clipboardText.match(linkRegExp);
     const clipboardTextBlocks = clipboardText.replaceAll(/(\r|\r\n)/g, '\n').split('\n');
 
     // 複数行のコピペ対応
@@ -255,7 +254,23 @@ export class ClipboardModule implements Module {
       return;
     }
 
+    // youtube embed
+    const youtubeRegExp =
+      /^(?:(?:https?:)?\/\/)?(?:www\.)?(?:m\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
+    const youtubeMatch = clipboardText.match(youtubeRegExp);
+    if (prevBlock && caretPosition && youtubeMatch && youtubeMatch[1]) {
+      this.editor.updateBlock({
+        ...prevBlock,
+        type: 'YOUTUBE',
+        attributes: { videoId: youtubeMatch[1] },
+      });
+      this.editor.render([prevBlock.id]);
+      return;
+    }
+
     // url link
+    const linkRegExp = new RegExp(`^https?://[a-zA-Z0-9-_.!'()*;/?:@&=+$,%#]+$`, 'i');
+    const linkMatch = clipboardText.match(linkRegExp);
     if (prevBlock && caretPosition && linkMatch) {
       if (caretPosition.length > 0) {
         this.editor.formatText(prevBlock.id, caretPosition.index, caretPosition.length, {

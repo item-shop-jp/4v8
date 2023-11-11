@@ -9827,7 +9827,7 @@ const CheckList = React__namespace.memo((_a) => {
         } }, props, { children: [jsxRuntimeExports.jsx(CheckBoxOuter$1, Object.assign({ onClick: handleClickCheckBox }, { children: jsxRuntimeExports.jsx(CheckSquare, { size: "20px", checked: checked }) })), contents] })));
 });
 
-const Container$d = styled$1.blockquote `
+const Container$e = styled$1.blockquote `
   outline: 0;
   margin: 0 0 0 12px;
   padding: 2px 12px;
@@ -9837,7 +9837,7 @@ const Container$d = styled$1.blockquote `
 `;
 const Blockquote = React__namespace.memo((_a) => {
     var { blockId, contents, editor } = _a, props = __rest$1(_a, ["blockId", "contents", "editor"]);
-    return (jsxRuntimeExports.jsx(Container$d, Object.assign({ spellCheck: false }, props, { children: contents })));
+    return (jsxRuntimeExports.jsx(Container$e, Object.assign({ spellCheck: false }, props, { children: contents })));
 });
 
 const P$1 = styled$1.p `
@@ -11499,7 +11499,7 @@ const Wrapper$2 = styled$1.div `
   overflow: auto;
   border-radius: 0.3em;
 `;
-const Container$c = styled$1.div `
+const Container$d = styled$1.div `
   outline: 0;
   color: #f8f8f2;
   text-shadow: 0 1px rgba(0, 0, 0, 0.3);
@@ -11576,12 +11576,12 @@ const CodeBlock = React__namespace.memo((_a) => {
         var _a;
         return (_a = attributes === null || attributes === void 0 ? void 0 : attributes.language) !== null && _a !== void 0 ? _a : 'typescript';
     }, [attributes]);
-    return (jsxRuntimeExports.jsxs(Wrapper$2, Object.assign({ onMouseEnter: handleShowSelector, onMouseLeave: handleHideSelector }, { children: [jsxRuntimeExports.jsx(Container$c, Object.assign({ spellCheck: false }, props, { children: contents })), jsxRuntimeExports.jsx(LanguageSelectButton, Object.assign({ opacity: displayButtons ? 1 : 0, contentEditable: false, onClick: handleClickLanguageSelectButton }, { children: memoLanguage })), displayLanguageSelector && (jsxRuntimeExports.jsx(LanguageSelector, { children: CodeBlockLanguages.map((v, i) => {
+    return (jsxRuntimeExports.jsxs(Wrapper$2, Object.assign({ onMouseEnter: handleShowSelector, onMouseLeave: handleHideSelector }, { children: [jsxRuntimeExports.jsx(Container$d, Object.assign({ spellCheck: false }, props, { children: contents })), jsxRuntimeExports.jsx(LanguageSelectButton, Object.assign({ opacity: displayButtons ? 1 : 0, contentEditable: false, onClick: handleClickLanguageSelectButton }, { children: memoLanguage })), displayLanguageSelector && (jsxRuntimeExports.jsx(LanguageSelector, { children: CodeBlockLanguages.map((v, i) => {
                     return (jsxRuntimeExports.jsx("div", Object.assign({ className: "button", onClick: handleSelectLanguage(v) }, { children: v }), i));
                 }) }))] })));
 });
 
-const Container$b = styled$1.div `
+const Container$c = styled$1.div `
   font-size: 1rem;
   outline: 0;
   margin: 0;
@@ -11620,7 +11620,7 @@ const Decision = React__namespace.memo((_a) => {
     React__namespace.useEffect(() => {
         handleChangeElement();
     }, []);
-    return (jsxRuntimeExports.jsxs(Container$b, Object.assign({ ref: headerRef, spellCheck: false, placeholder: showPlaceholder ? placeholder : '' }, props, { children: [jsxRuntimeExports.jsx(IconOuter, { children: jsxRuntimeExports.jsx(Decision$1, { size: "24px" }) }), contents] })));
+    return (jsxRuntimeExports.jsxs(Container$c, Object.assign({ ref: headerRef, spellCheck: false, placeholder: showPlaceholder ? placeholder : '' }, props, { children: [jsxRuntimeExports.jsx(IconOuter, { children: jsxRuntimeExports.jsx(Decision$1, { size: "24px" }) }), contents] })));
 });
 
 function getHtmlElement(el) {
@@ -11638,7 +11638,7 @@ const FormatAttachment = React__namespace.memo((_a) => {
     return (jsxRuntimeExports.jsx(Icon, Object.assign({ width: size, height: size, viewBox: "0 0 20 20", fill: "none", xmlns: "http://www.w3.org/2000/svg" }, { children: jsxRuntimeExports.jsx(Path, { d: "M15.4167 13.3346H5.83333C3.99167 13.3346 2.5 11.843 2.5 10.0013C2.5 8.15964 3.99167 6.66797 5.83333 6.66797H16.25C17.4 6.66797 18.3333 7.6013 18.3333 8.7513C18.3333 9.9013 17.4 10.8346 16.25 10.8346H7.5C7.04167 10.8346 6.66667 10.4596 6.66667 10.0013C6.66667 9.54297 7.04167 9.16797 7.5 9.16797H15.4167V7.91797H7.5C6.35 7.91797 5.41667 8.8513 5.41667 10.0013C5.41667 11.1513 6.35 12.0846 7.5 12.0846H16.25C18.0917 12.0846 19.5833 10.593 19.5833 8.7513C19.5833 6.90964 18.0917 5.41797 16.25 5.41797H5.83333C3.3 5.41797 1.25 7.46797 1.25 10.0013C1.25 12.5346 3.3 14.5846 5.83333 14.5846H15.4167V13.3346Z", fill: "white" }) })));
 });
 
-const Container$a = styled$1.div `
+const Container$b = styled$1.div `
   position: fixed;
   bottom: 12px;
   left: 50%;
@@ -11798,11 +11798,11 @@ const GlobalToolbar = React__namespace.memo((_a) => {
             subs.unsubscribe();
         };
     }, []);
-    return ReactDOM.createPortal(jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: isDisplay && (jsxRuntimeExports.jsxs(Container$a, Object.assign({}, props, { children: [jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$3, Object.assign({ href: "#", onClick: handleHeader1, active: blockType === 'HEADER1' }, { children: jsxRuntimeExports.jsx(FormatHeader1, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u898B\u51FA\u3057(\u5927)\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$3, Object.assign({ href: "#", onClick: handleHeader2, active: blockType === 'HEADER2' }, { children: jsxRuntimeExports.jsx(FormatHeader2, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u898B\u51FA\u3057(\u4E2D)\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$3, Object.assign({ href: "#", onClick: handleHeader3, active: blockType === 'HEADER3' }, { children: jsxRuntimeExports.jsx(FormatHeader3, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u898B\u51FA\u3057(\u5C0F)\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Divider, {}), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$3, Object.assign({ href: "#", active: blockType === 'CODE-BLOCK', onClick: handleCodeBlock }, { children: jsxRuntimeExports.jsx(FormatCodeBlock, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u30B3\u30FC\u30C9\u30D6\u30ED\u30C3\u30AF\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$3, Object.assign({ href: "#", active: blockType === 'BLOCKQUOTE', onClick: handleBlockquote }, { children: jsxRuntimeExports.jsx(FormatBlockQuote, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u5F15\u7528\u30D6\u30ED\u30C3\u30AF\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Divider, {}), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$3, Object.assign({ href: "#", active: blockType === 'BULLET-LIST', onClick: handleBulletList }, { children: jsxRuntimeExports.jsx(FormatBulletList, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u7B87\u6761\u66F8\u304D\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$3, Object.assign({ href: "#", active: blockType === 'ORDERED-LIST', onClick: handleOrderedList }, { children: jsxRuntimeExports.jsx(FormatNumberList, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u756A\u53F7\u4ED8\u304D\u30EA\u30B9\u30C8\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Divider, {}), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$3, Object.assign({ href: "#", active: blockType === 'TASK', onClick: handleTask }, { children: jsxRuntimeExports.jsx(FormatTask, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u30BF\u30B9\u30AF\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$3, Object.assign({ href: "#", active: blockType === 'DECISION', onClick: handleDecision }, { children: jsxRuntimeExports.jsx(FormatDecision, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u6C7A\u5B9A\u4E8B\u9805\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Divider, {}), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$3, Object.assign({ href: "#", active: false, onClick: handleFileUpload }, { children: jsxRuntimeExports.jsx(FormatAttachment, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u30D5\u30A1\u30A4\u30EB\u3092\u6DFB\u4ED8" })), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$3, Object.assign({ href: "#", active: false, onClick: handleTable }, { children: jsxRuntimeExports.jsx(FormatDecision, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u30C6\u30FC\u30D6\u30EB\u3092\u8FFD\u52A0" }))] }))) }), document.body);
+    return ReactDOM.createPortal(jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: isDisplay && (jsxRuntimeExports.jsxs(Container$b, Object.assign({}, props, { children: [jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$3, Object.assign({ href: "#", onClick: handleHeader1, active: blockType === 'HEADER1' }, { children: jsxRuntimeExports.jsx(FormatHeader1, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u898B\u51FA\u3057(\u5927)\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$3, Object.assign({ href: "#", onClick: handleHeader2, active: blockType === 'HEADER2' }, { children: jsxRuntimeExports.jsx(FormatHeader2, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u898B\u51FA\u3057(\u4E2D)\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$3, Object.assign({ href: "#", onClick: handleHeader3, active: blockType === 'HEADER3' }, { children: jsxRuntimeExports.jsx(FormatHeader3, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u898B\u51FA\u3057(\u5C0F)\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Divider, {}), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$3, Object.assign({ href: "#", active: blockType === 'CODE-BLOCK', onClick: handleCodeBlock }, { children: jsxRuntimeExports.jsx(FormatCodeBlock, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u30B3\u30FC\u30C9\u30D6\u30ED\u30C3\u30AF\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$3, Object.assign({ href: "#", active: blockType === 'BLOCKQUOTE', onClick: handleBlockquote }, { children: jsxRuntimeExports.jsx(FormatBlockQuote, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u5F15\u7528\u30D6\u30ED\u30C3\u30AF\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Divider, {}), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$3, Object.assign({ href: "#", active: blockType === 'BULLET-LIST', onClick: handleBulletList }, { children: jsxRuntimeExports.jsx(FormatBulletList, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u7B87\u6761\u66F8\u304D\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$3, Object.assign({ href: "#", active: blockType === 'ORDERED-LIST', onClick: handleOrderedList }, { children: jsxRuntimeExports.jsx(FormatNumberList, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u756A\u53F7\u4ED8\u304D\u30EA\u30B9\u30C8\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Divider, {}), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$3, Object.assign({ href: "#", active: blockType === 'TASK', onClick: handleTask }, { children: jsxRuntimeExports.jsx(FormatTask, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u30BF\u30B9\u30AF\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$3, Object.assign({ href: "#", active: blockType === 'DECISION', onClick: handleDecision }, { children: jsxRuntimeExports.jsx(FormatDecision, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u6C7A\u5B9A\u4E8B\u9805\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Divider, {}), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$3, Object.assign({ href: "#", active: false, onClick: handleFileUpload }, { children: jsxRuntimeExports.jsx(FormatAttachment, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u30D5\u30A1\u30A4\u30EB\u3092\u6DFB\u4ED8" })), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$3, Object.assign({ href: "#", active: false, onClick: handleTable }, { children: jsxRuntimeExports.jsx(FormatDecision, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u30C6\u30FC\u30D6\u30EB\u3092\u8FFD\u52A0" }))] }))) }), document.body);
 });
 
 const TOOLBAR_CHILD_WIDTH = 34;
-const Container$9 = styled$1.div `
+const Container$a = styled$1.div `
   height: 34px;
   align-items: center;
   position: absolute;
@@ -11970,7 +11970,7 @@ const BubbleToolbar = React__namespace.memo((_a) => {
             setToolbarWidth((containerRef.current.children.length - 1) * TOOLBAR_CHILD_WIDTH);
         });
     }, [editor]);
-    return ReactDOM.createPortal(jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: jsxRuntimeExports.jsxs(Container$9, Object.assign({ id: "bubble-toolbar", style: {
+    return ReactDOM.createPortal(jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: jsxRuntimeExports.jsxs(Container$a, Object.assign({ id: "bubble-toolbar", style: {
                 top: (_b = position === null || position === void 0 ? void 0 : position.top) !== null && _b !== void 0 ? _b : 0,
                 left: (_c = position === null || position === void 0 ? void 0 : position.left) !== null && _c !== void 0 ? _c : 0,
             }, isDisplay: isDisplay, ref: containerRef, onMouseDown: handleMouseDown }, props, { children: [jsxRuntimeExports.jsxs(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$2, Object.assign({ href: "#", onClick: handleBold, active: !!(formats === null || formats === void 0 ? void 0 : formats.bold) }, { children: jsxRuntimeExports.jsx(FormatBold, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: ["\u592A\u5B57", jsxRuntimeExports.jsx("br", {}), jsxRuntimeExports.jsx("div", Object.assign({ className: "description" }, { children: "Ctrl + B" }))] })), jsxRuntimeExports.jsxs(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$2, Object.assign({ href: "#", onClick: handleItalic, active: !!(formats === null || formats === void 0 ? void 0 : formats.italic) }, { children: jsxRuntimeExports.jsx(FormatItalic, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: ["\u659C\u4F53", jsxRuntimeExports.jsx("br", {}), jsxRuntimeExports.jsx("div", Object.assign({ className: "description" }, { children: "Ctrl + I" }))] })), jsxRuntimeExports.jsxs(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$2, Object.assign({ href: "#", onClick: handleUnderline, active: !!(formats === null || formats === void 0 ? void 0 : formats.underline) }, { children: jsxRuntimeExports.jsx(FormatUnderLine, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: ["\u4E0B\u7DDA", jsxRuntimeExports.jsx("br", {}), jsxRuntimeExports.jsx("div", Object.assign({ className: "description" }, { children: "Ctrl + U" }))] })), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$2, Object.assign({ href: "#", onClick: handleStrike, active: !!(formats === null || formats === void 0 ? void 0 : formats.strike) }, { children: jsxRuntimeExports.jsx(FormatStrike, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u6253\u6D88\u3057\u7DDA" })), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$2, Object.assign({ id: "toolbar-palette", href: "#", onClick: handleColor, active: !!(formats === null || formats === void 0 ? void 0 : formats.color) }, { children: jsxRuntimeExports.jsx(FormatColor, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u6587\u5B57\u8272\u3092\u5909\u66F4" })), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$2, Object.assign({ id: "toolbar-link", href: "#", onClick: handleLink, active: !!(formats === null || formats === void 0 ? void 0 : formats.link) }, { children: jsxRuntimeExports.jsx(FormatLink, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u30EA\u30F3\u30AF\u3092\u8FFD\u52A0" })), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$2, Object.assign({ href: "#", onClick: handleInlineCode, active: !!(formats === null || formats === void 0 ? void 0 : formats.code) }, { children: jsxRuntimeExports.jsx(FormatCode, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u30A4\u30F3\u30E9\u30A4\u30F3\u30B3\u30FC\u30C9" }))] })) }), (_d = getHtmlElement(scrollContainer)) !== null && _d !== void 0 ? _d : document.body);
@@ -12216,7 +12216,7 @@ const LinkPopup = React__namespace.memo((_a) => {
     return ReactDOM.createPortal(popupOpen && (jsxRuntimeExports.jsx("div", Object.assign({ ref: modalRef }, { children: popupMode === 'openEnterLink' && (jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: !linkUrlRef.current ? (jsxRuntimeExports.jsx(EnterLinkContainer, Object.assign({ position: "absolute", style: { top: (_b = popupPosition === null || popupPosition === void 0 ? void 0 : popupPosition.top) !== null && _b !== void 0 ? _b : 0, left: (_c = popupPosition === null || popupPosition === void 0 ? void 0 : popupPosition.left) !== null && _c !== void 0 ? _c : 0 } }, props, { value: linkUrl, placeholder: "\u30EA\u30F3\u30AF\u5148\u3092\u5165\u529B\u3057\u3066\u304F\u3060\u3055\u3044", onChange: handleChange, onBlur: handleSave, onKeyDown: handleKeyDown }))) : (jsxRuntimeExports.jsxs(LinkPopupContainer, Object.assign({ position: "absolute", top: (_d = popupPosition === null || popupPosition === void 0 ? void 0 : popupPosition.top) !== null && _d !== void 0 ? _d : 0, left: (_e = popupPosition === null || popupPosition === void 0 ? void 0 : popupPosition.left) !== null && _e !== void 0 ? _e : 0 }, { children: [jsxRuntimeExports.jsxs("div", { children: ["URL", jsxRuntimeExports.jsx(StyledInput, { value: linkUrl, placeholder: "\u30EA\u30F3\u30AF\u5148\u3092\u5165\u529B\u3057\u3066\u304F\u3060\u3055\u3044", onChange: handleChange, onBlur: handleSave, onKeyDown: handleKeyDown })] }), jsxRuntimeExports.jsx(DeleteButton, Object.assign({ onClick: handleDelete }, { children: "\u30EA\u30F3\u30AF\u3092\u89E3\u9664\u3059\u308B" }))] }))) })) }))), (_f = getHtmlElement(scrollContainer)) !== null && _f !== void 0 ? _f : document.body);
 });
 
-const Container$8 = styled$1.div `
+const Container$9 = styled$1.div `
   position: absolute;
   background-color: #18181b;
   border: 1px solid #ccc;
@@ -12321,7 +12321,7 @@ const PalettePopup = React__namespace.memo(({ editor, scrollContainer }) => {
             document.removeEventListener('click', handleClose, true);
         };
     }, [popupOpen]);
-    return ReactDOM.createPortal(popupOpen && (jsxRuntimeExports.jsxs(Container$8, Object.assign({ ref: modalRef, id: "palette-popup", style: { top: (_a = position === null || position === void 0 ? void 0 : position.top) !== null && _a !== void 0 ? _a : 0, left: (_b = position === null || position === void 0 ? void 0 : position.left) !== null && _b !== void 0 ? _b : 0 } }, { children: [jsxRuntimeExports.jsx(Color$1, { color: "#EF4444", onClick: handleFormatColor('#EF4444') }), jsxRuntimeExports.jsx(Color$1, { color: "#55B938", onClick: handleFormatColor('#55B938') }), jsxRuntimeExports.jsx(Color$1, { color: "#EAC645", onClick: handleFormatColor('#EAC645') }), jsxRuntimeExports.jsx(Color$1, { color: "#5296D5", onClick: handleFormatColor('#5296D5') })] }))), (_c = getHtmlElement(scrollContainer)) !== null && _c !== void 0 ? _c : document.body);
+    return ReactDOM.createPortal(popupOpen && (jsxRuntimeExports.jsxs(Container$9, Object.assign({ ref: modalRef, id: "palette-popup", style: { top: (_a = position === null || position === void 0 ? void 0 : position.top) !== null && _a !== void 0 ? _a : 0, left: (_b = position === null || position === void 0 ? void 0 : position.left) !== null && _b !== void 0 ? _b : 0 } }, { children: [jsxRuntimeExports.jsx(Color$1, { color: "#EF4444", onClick: handleFormatColor('#EF4444') }), jsxRuntimeExports.jsx(Color$1, { color: "#55B938", onClick: handleFormatColor('#55B938') }), jsxRuntimeExports.jsx(Color$1, { color: "#EAC645", onClick: handleFormatColor('#EAC645') }), jsxRuntimeExports.jsx(Color$1, { color: "#5296D5", onClick: handleFormatColor('#5296D5') })] }))), (_c = getHtmlElement(scrollContainer)) !== null && _c !== void 0 ? _c : document.body);
 });
 
 function buildFormatLongFn(args) {
@@ -18595,7 +18595,7 @@ const AssigneePicker = React__namespace.memo((_a) => {
                 }) })] })), (_b = getHtmlElement(scrollContainer)) !== null && _b !== void 0 ? _b : document.body);
 });
 
-const Container$7 = styled$1.div `
+const Container$8 = styled$1.div `
   display: flex;
   position: relative;
   user-select: none;
@@ -18747,7 +18747,7 @@ const Tooltip = (_a) => {
             setDelayTimer(window.setTimeout(() => setDisplay(true), delay));
         }
     }, [_isDisplay, delay]);
-    return (jsxRuntimeExports.jsxs(Container$7, Object.assign({ ref: containerRef, onMouseOver: handleMouseOver, onMouseOut: handleMouseOut }, props, { children: [targetElement, isDisplay && (jsxRuntimeExports.jsx(TooltipContainer, Object.assign({ containerRect: containerRect, maxWidth: maxWidth, position: position, border: border, fontWeight: fontWeight, fontSize: fontSize, isDisplay: _isDisplay }, { children: children })))] })));
+    return (jsxRuntimeExports.jsxs(Container$8, Object.assign({ ref: containerRef, onMouseOver: handleMouseOver, onMouseOut: handleMouseOut }, props, { children: [targetElement, isDisplay && (jsxRuntimeExports.jsx(TooltipContainer, Object.assign({ containerRect: containerRect, maxWidth: maxWidth, position: position, border: border, fontWeight: fontWeight, fontSize: fontSize, isDisplay: _isDisplay }, { children: children })))] })));
 };
 
 function formatDate(date) {
@@ -18805,7 +18805,7 @@ const IconButton = styled$1.div `
   color: #a1a1aa;
   flex-direction: row-reverse;
 `;
-const Container$6 = styled$1.div `
+const Container$7 = styled$1.div `
   font-size: 1rem;
   outline: 0;
   margin: 0;
@@ -18964,7 +18964,7 @@ const Task = React__namespace.memo((_a) => {
         modalPosition.top = ((_l = scrollEl === null || scrollEl === void 0 ? void 0 : scrollEl.scrollTop) !== null && _l !== void 0 ? _l : 0) + ((_m = blockRect === null || blockRect === void 0 ? void 0 : blockRect.top) !== null && _m !== void 0 ? _m : 0) - 60;
         modalPosition.left = ((_o = editorRect === null || editorRect === void 0 ? void 0 : editorRect.left) !== null && _o !== void 0 ? _o : 0) + ((_p = editorRect === null || editorRect === void 0 ? void 0 : editorRect.width) !== null && _p !== void 0 ? _p : 0) - 400;
     }
-    return (jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [jsxRuntimeExports.jsxs(Wrapper, Object.assign({ onMouseOver: handleMouseOver, onMouseOut: handleMouseOut, style: isHover ? { backgroundColor: '#f7f9fa' } : {} }, { children: [jsxRuntimeExports.jsxs(Container$6, Object.assign({ ref: headerRef, spellCheck: false, placeholder: showPlaceholder ? placeholder : '', style: {
+    return (jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [jsxRuntimeExports.jsxs(Wrapper, Object.assign({ onMouseOver: handleMouseOver, onMouseOut: handleMouseOut, style: isHover ? { backgroundColor: '#f7f9fa' } : {} }, { children: [jsxRuntimeExports.jsxs(Container$7, Object.assign({ ref: headerRef, spellCheck: false, placeholder: showPlaceholder ? placeholder : '', style: {
                             textDecoration: checked ? 'line-through' : 'none',
                         } }, props, { children: [jsxRuntimeExports.jsx(CheckBoxOuter, Object.assign({ onClick: handleClickCheckBox }, { children: jsxRuntimeExports.jsx(CheckSquare, { size: "24px", checked: checked }) })), contents] })), jsxRuntimeExports.jsxs(Buttons, { children: [((_q = attributes === null || attributes === void 0 ? void 0 : attributes.assignees) !== null && _q !== void 0 ? _q : []).length > 0 ? (jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsxs(IconButton, Object.assign({ onClick: handleClickAssigneePicker }, { children: [attributes.assignees.slice(0, 2).map((assignee, i) => {
                                             return (jsxRuntimeExports.jsx(MemberIcon, Object.assign({ style: { right: `${12 * i}px` } }, { children: assignee.imageUrl ? (jsxRuntimeExports.jsx("img", { draggable: "false", src: assignee.imageUrl })) : (jsxRuntimeExports.jsx(Text$4, { children: assignee.name.slice(0, 1) })) }), assignee.id));
@@ -19720,7 +19720,7 @@ var __assign = (undefined && undefined.__assign) || function () {
     return __assign.apply(this, arguments);
 };
 
-const Container$5 = styled$1.div `
+const Container$6 = styled$1.div `
   outline: none;
   display: flex;
   margin: 0;
@@ -19851,7 +19851,7 @@ const Image$1 = React__namespace.memo((_a) => {
             window.removeEventListener('mouseup', handleMouseUp, true);
         };
     }, [dragParams]);
-    return (jsxRuntimeExports.jsx(Container$5, Object.assign({}, props, { contentEditable: false, draggable: "false" }, { children: jsxRuntimeExports.jsxs(Inner$2, Object.assign({ onMouseEnter: handleMouseEnter, onMouseLeave: handleMouseLeave }, { children: [jsxRuntimeExports.jsx("img", { src: thumbnail, onClick: handleClick, ref: imageRef, width: imageWidth, draggable: "false" }), isUploading ? (jsxRuntimeExports.jsx(Loading$1, { children: jsxRuntimeExports.jsx(MutatingDots, { height: "100", width: "100", color: "#4fa94d", secondaryColor: "#4fa94d", radius: "12.5", ariaLabel: "mutating-dots-loading", visible: true }) })) : (jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [jsxRuntimeExports.jsx(LeftImageResizer, Object.assign({ onMouseDown: handleMouseDown('left') }, { children: jsxRuntimeExports.jsx(ResizeHandler, { opacity: displayResizer ? 1 : 0 }) })), jsxRuntimeExports.jsx(RightImageResizer, Object.assign({ onMouseDown: handleMouseDown('right') }, { children: jsxRuntimeExports.jsx(ResizeHandler, { opacity: displayResizer ? 1 : 0 }) }))] }))] })) })));
+    return (jsxRuntimeExports.jsx(Container$6, Object.assign({}, props, { contentEditable: false, draggable: "false" }, { children: jsxRuntimeExports.jsxs(Inner$2, Object.assign({ onMouseEnter: handleMouseEnter, onMouseLeave: handleMouseLeave }, { children: [jsxRuntimeExports.jsx("img", { src: thumbnail, onClick: handleClick, ref: imageRef, width: imageWidth, draggable: "false" }), isUploading ? (jsxRuntimeExports.jsx(Loading$1, { children: jsxRuntimeExports.jsx(MutatingDots, { height: "100", width: "100", color: "#4fa94d", secondaryColor: "#4fa94d", radius: "12.5", ariaLabel: "mutating-dots-loading", visible: true }) })) : (jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [jsxRuntimeExports.jsx(LeftImageResizer, Object.assign({ onMouseDown: handleMouseDown('left') }, { children: jsxRuntimeExports.jsx(ResizeHandler, { opacity: displayResizer ? 1 : 0 }) })), jsxRuntimeExports.jsx(RightImageResizer, Object.assign({ onMouseDown: handleMouseDown('right') }, { children: jsxRuntimeExports.jsx(ResizeHandler, { opacity: displayResizer ? 1 : 0 }) }))] }))] })) })));
 });
 
 const BYTE_UNITS = [
@@ -19977,7 +19977,7 @@ function prettyBytes(number, options) {
 	return prefix + numberString + separator + unit;
 }
 
-const Container$4 = styled$1.div `
+const Container$5 = styled$1.div `
   outline: none;
   display: flex;
   align-items: center;
@@ -20034,7 +20034,7 @@ const File = React__namespace.memo((_a) => {
         var _a;
         editor.getModule('uploader').download((_a = attributes === null || attributes === void 0 ? void 0 : attributes.files) !== null && _a !== void 0 ? _a : []);
     }, [attributes]);
-    return (jsxRuntimeExports.jsxs(Container$4, Object.assign({ ref: imageRef }, props, { contentEditable: false }, { children: [jsxRuntimeExports.jsx(IconContainer, { children: jsxRuntimeExports.jsx("svg", Object.assign({ width: "16", height: "16", viewBox: "0 0 24 24", fill: "none", xmlns: "http://www.w3.org/2000/svg" }, { children: jsxRuntimeExports.jsx("path", { d: "M18.5 16H7C4.79 16 3 14.21 3 12C3 9.79 4.79 8 7 8H19.5C20.88 8 22 9.12 22 10.5C22 11.88 20.88 13 19.5 13H9C8.45 13 8 12.55 8 12C8 11.45 8.45 11 9 11H18.5V9.5H9C7.62 9.5 6.5 10.62 6.5 12C6.5 13.38 7.62 14.5 9 14.5H19.5C21.71 14.5 23.5 12.71 23.5 10.5C23.5 8.29 21.71 6.5 19.5 6.5H7C3.96 6.5 1.5 8.96 1.5 12C1.5 15.04 3.96 17.5 7 17.5H18.5V16Z", fill: "#18181B" }) })) }), jsxRuntimeExports.jsx(Inner$1, { children: jsxRuntimeExports.jsx(FileName, { children: attributes === null || attributes === void 0 ? void 0 : attributes.fileName }) }), jsxRuntimeExports.jsxs(Size, { children: [prettyBytes(attributes === null || attributes === void 0 ? void 0 : attributes.size), isUploading && (jsxRuntimeExports.jsx(Loading, { children: jsxRuntimeExports.jsx(RotatingLines, { strokeColor: "grey", strokeWidth: "5", animationDuration: "0.75", width: "18", visible: true }) }))] }), jsxRuntimeExports.jsx(IconContainer, { children: jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button, Object.assign({ onClick: handleDownload }, { children: jsxRuntimeExports.jsx(Download, {}) })), maxWidth: 200, position: 'bottom' }, { children: "\u30D5\u30A1\u30A4\u30EB\u3092\u30C0\u30A6\u30F3\u30ED\u30FC\u30C9\u3059\u308B" })) })] })));
+    return (jsxRuntimeExports.jsxs(Container$5, Object.assign({ ref: imageRef }, props, { contentEditable: false }, { children: [jsxRuntimeExports.jsx(IconContainer, { children: jsxRuntimeExports.jsx("svg", Object.assign({ width: "16", height: "16", viewBox: "0 0 24 24", fill: "none", xmlns: "http://www.w3.org/2000/svg" }, { children: jsxRuntimeExports.jsx("path", { d: "M18.5 16H7C4.79 16 3 14.21 3 12C3 9.79 4.79 8 7 8H19.5C20.88 8 22 9.12 22 10.5C22 11.88 20.88 13 19.5 13H9C8.45 13 8 12.55 8 12C8 11.45 8.45 11 9 11H18.5V9.5H9C7.62 9.5 6.5 10.62 6.5 12C6.5 13.38 7.62 14.5 9 14.5H19.5C21.71 14.5 23.5 12.71 23.5 10.5C23.5 8.29 21.71 6.5 19.5 6.5H7C3.96 6.5 1.5 8.96 1.5 12C1.5 15.04 3.96 17.5 7 17.5H18.5V16Z", fill: "#18181B" }) })) }), jsxRuntimeExports.jsx(Inner$1, { children: jsxRuntimeExports.jsx(FileName, { children: attributes === null || attributes === void 0 ? void 0 : attributes.fileName }) }), jsxRuntimeExports.jsxs(Size, { children: [prettyBytes(attributes === null || attributes === void 0 ? void 0 : attributes.size), isUploading && (jsxRuntimeExports.jsx(Loading, { children: jsxRuntimeExports.jsx(RotatingLines, { strokeColor: "grey", strokeWidth: "5", animationDuration: "0.75", width: "18", visible: true }) }))] }), jsxRuntimeExports.jsx(IconContainer, { children: jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button, Object.assign({ onClick: handleDownload }, { children: jsxRuntimeExports.jsx(Download, {}) })), maxWidth: 200, position: 'bottom' }, { children: "\u30D5\u30A1\u30A4\u30EB\u3092\u30C0\u30A6\u30F3\u30ED\u30FC\u30C9\u3059\u308B" })) })] })));
 });
 
 function useChildBlockRenderer({ parentBlockId, blockId, editor }) {
@@ -23606,7 +23606,7 @@ function useEventEmitter() {
     return [eventEmitter, { on, removeAll }];
 }
 
-const Container$3 = styled$1.div `
+const Container$4 = styled$1.div `
   outline: none;
   display: flex;
   margin: 0;
@@ -24035,7 +24035,7 @@ const Table = React__namespace.memo((_a) => {
             window.removeEventListener('mouseup', handleMouseUp, true);
         };
     }, [dragParams, childBlocks, tableSettings]);
-    return (jsxRuntimeExports.jsx(Container$3, Object.assign({}, props, { contentEditable: false, draggable: "false", onBeforeInput: handleInput }, { children: jsxRuntimeExports.jsx(StyledTable, Object.assign({ ref: tableRef }, { children: memoContents })) })));
+    return (jsxRuntimeExports.jsx(Container$4, Object.assign({}, props, { contentEditable: false, draggable: "false", onBeforeInput: handleInput }, { children: jsxRuntimeExports.jsx(StyledTable, Object.assign({ ref: tableRef }, { children: memoContents })) })));
 });
 const TableCell = React__namespace.memo(({ parentBlockId, blockId, formats, scrollContainer, editor }) => {
     const block = useChildBlockRenderer({ parentBlockId, blockId, editor });
@@ -24049,6 +24049,24 @@ const TableCell = React__namespace.memo(({ parentBlockId, blockId, formats, scro
             }) })));
     }, [block === null || block === void 0 ? void 0 : block.id, block === null || block === void 0 ? void 0 : block.contents, editor, scrollContainer]);
     return jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: memoContent });
+});
+
+const Container$3 = styled$1.div `
+  position: relative;
+  padding-bottom: 56.25%;
+  padding-top: 30px;
+  height: 0;
+  overflow: hidden;
+  iframe {
+    position: absolute;
+    inset: 12px;
+    width: calc(100% - 24px);
+    height: 100%;
+  }
+`;
+const YouTube = React__namespace.memo((_a) => {
+    var { blockId, contents, attributes, editor } = _a, props = __rest$1(_a, ["blockId", "contents", "attributes", "editor"]);
+    return (jsxRuntimeExports.jsx(Container$3, Object.assign({}, props, { contentEditable: false }, { children: jsxRuntimeExports.jsx("iframe", { src: `https://www.youtube.com/embed/${attributes.videoId}`, title: "YouTube video player", frameBorder: "0", allow: "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture", allowFullScreen: true }) })));
 });
 
 /*! Copyright Twitter Inc. and other contributors. Licensed under MIT */
@@ -27839,6 +27857,7 @@ class HistoryModule {
                     this.moveCaret(op, op.position, 'undo');
                 }
             });
+            console.log(ops);
             addOps.forEach((op, i) => {
                 this.editor.deleteBlock(op.blockId);
                 affectedIds.push(op.blockId);
@@ -27858,10 +27877,10 @@ class HistoryModule {
             });
             removeOps.forEach((op, i) => {
                 if (op.prevBlockId) {
-                    this.editor.createBlock(copyObject(op.block), op.prevBlockId);
+                    this.editor.createBlock(op.block, op.prevBlockId);
                 }
                 else {
-                    this.editor.createBlock(copyObject(op.block), op.prevBlockId, 'prepend');
+                    this.editor.createBlock(op.block, op.prevBlockId, 'prepend');
                 }
                 affectedIds.push(op.blockId);
                 if (i === removeOps.length - 1) {
@@ -27890,7 +27909,7 @@ class HistoryModule {
                 this.editor.renderChild(op.parentBlockId, [op.blockId], true);
             });
             childBlockRemoveOps.forEach((op, i) => {
-                this.editor.createChildBlocks(op.parentBlockId, [copyObject(op.block)]);
+                this.editor.createChildBlocks(op.parentBlockId, [op.block]);
                 if (i === childBlockRemoveOps.length - 1) {
                     setTimeout(() => {
                         this.editor.setCaretPosition({
@@ -27962,10 +27981,10 @@ class HistoryModule {
             });
             addOps.forEach((op, i) => {
                 if (op.prevBlockId) {
-                    this.editor.createBlock(copyObject(op.block), op.prevBlockId);
+                    this.editor.createBlock(op.block, op.prevBlockId);
                 }
                 else {
-                    this.editor.createBlock(copyObject(op.block), op.prevBlockId, 'prepend');
+                    this.editor.createBlock(op.block, op.prevBlockId, 'prepend');
                 }
                 affectedIds.push(op.blockId);
                 if (i === addOps.length - 1 && updateOps.length < 1) {
@@ -27994,7 +28013,7 @@ class HistoryModule {
                 this.editor.renderChild(op.parentBlockId, [op.blockId], true);
             });
             childBlockAddOps.forEach((op, i) => {
-                this.editor.createChildBlocks(op.parentBlockId, [copyObject(op.block)]);
+                this.editor.createChildBlocks(op.parentBlockId, [op.block]);
                 this.editor.renderChild(op.parentBlockId, [op.blockId], true);
                 if (i === childBlockUpdateOps.length - 1 && childBlockUpdateOps.length < 1) {
                     setTimeout(() => {
@@ -28071,15 +28090,15 @@ class HistoryModule {
         var _a, _b, _c;
         if (!position) {
             const blockLength = (_a = this.editor.getBlockLength(op.blockId)) !== null && _a !== void 0 ? _a : 0;
+            const targetBlockId = 'parentBlockId' in op ? op.parentBlockId : op.blockId;
             setTimeout(() => {
                 this.editor.setCaretPosition({
-                    blockId: op.blockId,
+                    blockId: targetBlockId,
                     index: blockLength,
                     length: 0,
                 });
                 this.editor.updateCaretRect();
-                if (op.blockId)
-                    this.editor.getModule('editor').scrollToBlock(op.blockId);
+                this.editor.getModule('editor').scrollToBlock(targetBlockId);
             }, 10);
             return;
         }
@@ -28121,6 +28140,7 @@ class HistoryModule {
                     length: positionLength,
                 });
             }
+            this.editor.getModule('editor').scrollToBlock(position.blockId);
             this.editor.updateCaretRect();
         }, 20);
     }
@@ -28152,7 +28172,7 @@ class ClipboardModule {
         this.subs.unsubscribe();
     }
     onPaste(event) {
-        var _a;
+        var _a, _b;
         event.preventDefault();
         const caretPosition = this.editor.getCaretPosition();
         if (!caretPosition)
@@ -28189,6 +28209,7 @@ class ClipboardModule {
                     prevBlockId = appendBlock.id;
                     return appendBlock.id;
                 });
+                (_b = this.editor.getModule('history')) === null || _b === void 0 ? void 0 : _b.optimizeOp();
                 this.editor.numberingList();
                 this.editor.render(affectedIds);
                 setTimeout(() => {
@@ -28263,8 +28284,6 @@ class ClipboardModule {
             return;
         }
         const clipboardText = event.clipboardData.getData('text/plain');
-        const linkRegExp = new RegExp(`^https?://[a-zA-Z0-9-_.!'()*;/?:@&=+$,%#]+$`, 'i');
-        const linkMatch = clipboardText.match(linkRegExp);
         const clipboardTextBlocks = clipboardText.replaceAll(/(\r|\r\n)/g, '\n').split('\n');
         // 複数行のコピペ対応
         if (prevBlock && clipboardTextBlocks.length > 1 && prevBlock.type !== 'CODE-BLOCK') {
@@ -28335,7 +28354,17 @@ class ClipboardModule {
             }, 10);
             return;
         }
+        // youtube embed
+        const youtubeRegExp = /^(?:(?:https?:)?\/\/)?(?:www\.)?(?:m\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
+        const youtubeMatch = clipboardText.match(youtubeRegExp);
+        if (prevBlock && caretPosition && youtubeMatch && youtubeMatch[1]) {
+            this.editor.updateBlock(Object.assign(Object.assign({}, prevBlock), { type: 'YOUTUBE', attributes: { videoId: youtubeMatch[1] } }));
+            this.editor.render([prevBlock.id]);
+            return;
+        }
         // url link
+        const linkRegExp = new RegExp(`^https?://[a-zA-Z0-9-_.!'()*;/?:@&=+$,%#]+$`, 'i');
+        const linkMatch = clipboardText.match(linkRegExp);
         if (prevBlock && caretPosition && linkMatch) {
             if (caretPosition.length > 0) {
                 this.editor.formatText(prevBlock.id, caretPosition.index, caretPosition.length, {
@@ -29116,7 +29145,7 @@ const Editor = React__namespace.memo(React__namespace.forwardRef((_a, forwardRef
             scrollMarginTop: (_b = settings.scrollMarginTop) !== null && _b !== void 0 ? _b : 100,
             scrollMarginBottom: (_c = settings.scrollMarginBottom) !== null && _c !== void 0 ? _c : 250,
             allowFormats: (_d = settings.allowFormats) !== null && _d !== void 0 ? _d : [],
-            embeddedBlocks: (_e = settings.embeddedBlocks) !== null && _e !== void 0 ? _e : ['IMAGE', 'FILE', 'TABLE'],
+            embeddedBlocks: (_e = settings.embeddedBlocks) !== null && _e !== void 0 ? _e : ['IMAGE', 'FILE', 'TABLE', 'YOUTUBE'],
             collaborationLevel: (_f = settings.collaborationLevel) !== null && _f !== void 0 ? _f : 'block',
             indentableFormats: (_g = settings.indentableFormats) !== null && _g !== void 0 ? _g : ['ORDERED-LIST', 'BULLET-LIST'],
             disableDecorationFormats: (_h = settings.disableDecorationFormats) !== null && _h !== void 0 ? _h : ['CODE-BLOCK'],
@@ -29143,6 +29172,7 @@ const Editor = React__namespace.memo(React__namespace.forwardRef((_a, forwardRef
         'block/image': Image$1,
         'block/file': File,
         'block/table': Table,
+        'block/youtube': YouTube,
         'inline/text': InlineText,
         'inline/code-token': CodeToken,
         'inline/style/bold': Bold,
@@ -29421,6 +29451,7 @@ exports.TocModule = TocModule;
 exports.ToolbarModule = ToolbarModule;
 exports.Underline = Underline;
 exports.UploaderModule = UploaderModule;
+exports.YouTube = YouTube;
 exports.useBlockRenderer = useBlockRenderer;
 exports.useChildBlockRenderer = useChildBlockRenderer;
 exports.useEditor = useEditor;

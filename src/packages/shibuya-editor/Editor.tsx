@@ -44,6 +44,7 @@ import { LinkPopup } from './components/popups';
 import { Formats, Block, Settings, EditorController } from './types';
 import { Collaborators } from './components/Collaborators';
 import { PalettePopup } from './components/popups/PalettePopup';
+import { useMutationObserver } from './hooks';
 
 interface Props {
   readOnly?: boolean;
@@ -161,6 +162,15 @@ export const Editor = React.memo(
       const [blocks, setBlocks] = React.useState<Block[]>([]);
       const [selectedIds, setSelectedIds] = React.useState<string[]>([]);
       const [showPlaceholder, setShowPlaceholder] = React.useState(false);
+      const handleChangeElement = React.useCallback(() => {
+        if (!containerRef.current) return;
+        const innerText = (containerRef.current as HTMLElement).innerText.replaceAll(
+          /\uFEFF/gi,
+          '',
+        );
+        setShowPlaceholder(innerText.length < 1);
+      }, []);
+      useMutationObserver(containerRef, handleChangeElement);
 
       const handleKeyDown = React.useCallback(
         (event: React.KeyboardEvent) => {
@@ -313,16 +323,6 @@ export const Editor = React.memo(
           eventEmitter.select(EditorEvents.EVENT_BLOCK_RERENDER).subscribe(() => {
             const renderBlocks = editor.getBlocks();
             setBlocks(renderBlocks);
-
-            if (
-              renderBlocks.length <= 1 &&
-              renderBlocks[0].type === 'PARAGRAPH' &&
-              (getBlockLength(renderBlocks[0].id) ?? 0) < 1
-            ) {
-              setShowPlaceholder(true);
-            } else {
-              setShowPlaceholder(false);
-            }
 
             if (renderBlocks.length > 2000) {
               editor.getModule('selector').changeAreaMoveDelay(300);

@@ -19,28 +19,31 @@ export interface OrderedListProps {
 const ListItem = styled.div<Pick<OrderedListProps, 'placeholder'>>`
   font-size: 1rem;
   outline: 0;
-  margin: 0;
-  padding: 2px 12px 2px;
+  margin: 0.25rem 0;
   box-sizing: border-box;
   position: relative;
-  padding-left: calc(40px + 1.5em * var(--indent));
+  padding: 2px 0 2px calc(1.5rem + 1.5rem * var(--indent));
+  line-height: 1.6;
+
   ::before {
     position: absolute;
-    height: 1em;
-    left: calc(8px + 1.5em * (var(--indent) - 1));
-    width: 3em;
-    text-align: right;
+    left: 0;
+    top: 0.125rem;
+    font-weight: 700;
+    font-size: 0.875rem;
+    color: rgba(60, 60, 60, .33);
     content: var(--content);
   }
+
   ${({ placeholder }) => {
     return (
-      placeholder &&
-      css`
-        ::after {
-          opacity: 0.3;
-          content: attr(placeholder);
-        }
-      `
+            placeholder &&
+            css`
+              ::after {
+                opacity: 0.3;
+                content: attr(placeholder);
+              }
+            `
     );
   }}
 `;

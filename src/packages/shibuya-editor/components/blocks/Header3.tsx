@@ -15,12 +15,12 @@ export interface Header3Props {
   editor: EditorController;
 }
 const Header = styled.h3`
-  font-size: 18px;
+  font-size: 1.2rem;
   outline: 0;
-  margin: 0;
-  padding: 4px 12px;
+  margin: 3rem 0 1.25rem;
   box-sizing: border-box;
-  padding-left: calc(12px + 1.5em * var(--indent));
+  padding: 4px 0 4px calc(1.5rem * var(--indent));
+
   ::after {
     opacity: 0.3;
     content: attr(placeholder);

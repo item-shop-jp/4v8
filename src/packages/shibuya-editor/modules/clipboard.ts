@@ -14,7 +14,7 @@ import {
   splitInlineContents,
 } from '../utils/block';
 import { Inline } from '../types/inline';
-import stringLength from 'string-length';
+import { uniCount } from 'unicount';
 import { createInline } from '../utils/inline';
 import { copyObject } from '../utils/object';
 
@@ -120,7 +120,7 @@ export class ClipboardModule implements Module {
           contents = deleteInlineContents(contents, caretPosition.index, caretPosition.length);
         }
         const [first, last] = splitInlineContents(contents, caretPosition.index);
-        const appendTextLength = stringLength(
+        const appendTextLength = uniCount(
           appendContents
             .map((v) => v.text)
             .join('')
@@ -153,7 +153,7 @@ export class ClipboardModule implements Module {
           contents = deleteInlineContents(contents, caretPosition.index, caretPosition.length);
         }
         const [first, last] = splitInlineContents(contents, caretPosition.index);
-        const appendTextLength = stringLength(
+        const appendTextLength = uniCount(
           appendContents
             .map((v) => v.text)
             .join('')
@@ -199,7 +199,7 @@ export class ClipboardModule implements Module {
           const patternHeader = /^#{1,6}\s/;
           const matchHeader = inlineText.match(patternHeader);
           if (matchHeader) {
-            const headerLength = stringLength(matchHeader[0]);
+            const headerLength = uniCount(matchHeader[0]);
             inlineText = inlineText.replace(patternHeader, '');
             blockType = `HEADER${headerLength - 1}`;
           }
@@ -299,7 +299,7 @@ export class ClipboardModule implements Module {
         setTimeout(() => {
           this.editor.setCaretPosition({
             blockId: prevBlock.id,
-            index: caretPosition.index + stringLength(clipboardText),
+            index: caretPosition.index + uniCount(clipboardText),
           });
           this.editor.updateCaretRect();
         }, 10);
@@ -323,7 +323,7 @@ export class ClipboardModule implements Module {
       setTimeout(() => {
         this.editor.setCaretPosition({
           blockId: prevBlock.id,
-          index: caretPosition.index + stringLength(clipboardText),
+          index: caretPosition.index + uniCount(clipboardText),
         });
         this.editor.updateCaretRect();
       }, 10);

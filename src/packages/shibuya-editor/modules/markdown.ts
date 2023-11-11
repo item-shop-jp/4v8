@@ -1,4 +1,4 @@
-import stringLength from 'string-length';
+import { uniCount } from 'unicount';
 import * as otText from 'ot-text-unicode';
 import { Module } from '../types/module';
 import { EventEmitter } from '../utils/event-emitter';
@@ -149,7 +149,7 @@ export class MarkdownShortcutModule implements Module {
     const block = this.editor.getBlock(caret.blockId);
     if (!block) return isExecuted;
     let targetText = block.contents.map((v) => v.text).join('');
-    const targetLength = stringLength(targetText) - caret.index;
+    const targetLength = uniCount(targetText) - caret.index;
     if (targetLength > 0) {
       const removeOp = otText.remove(caret.index, targetLength);
       targetText = otText.type.apply(targetText, removeOp);
@@ -234,35 +234,35 @@ export class MarkdownShortcutModule implements Module {
   }
 
   private _handleBlockquote(caret: CaretPosition, match: RegExpMatchArray) {
-    this.formatBlock(caret.blockId, 'BLOCKQUOTE', 0, stringLength(match[0]));
+    this.formatBlock(caret.blockId, 'BLOCKQUOTE', 0, uniCount(match[0]));
   }
 
   private _handleOrderedList(caret: CaretPosition, match: RegExpMatchArray) {
-    this.formatBlock(caret.blockId, 'ORDERED-LIST', 0, stringLength(match[0]));
+    this.formatBlock(caret.blockId, 'ORDERED-LIST', 0, uniCount(match[0]));
   }
 
   private _handleBulletList(caret: CaretPosition, match: RegExpMatchArray) {
-    this.formatBlock(caret.blockId, 'BULLET-LIST', 0, stringLength(match[0]));
+    this.formatBlock(caret.blockId, 'BULLET-LIST', 0, uniCount(match[0]));
   }
 
   private _handleCodeBlock(caret: CaretPosition, match: RegExpMatchArray) {
-    this.formatBlock(caret.blockId, 'CODE-BLOCK', 0, stringLength(match[0]));
+    this.formatBlock(caret.blockId, 'CODE-BLOCK', 0, uniCount(match[0]));
   }
 
   private _handleCheckTask(caret: CaretPosition, match: RegExpMatchArray) {
-    this.formatBlock(caret.blockId, 'TASK', 0, stringLength(match[0]), {
+    this.formatBlock(caret.blockId, 'TASK', 0, uniCount(match[0]), {
       checked: false,
     });
   }
 
   private _handleCheckedTask(caret: CaretPosition, match: RegExpMatchArray) {
-    this.formatBlock(caret.blockId, 'TASK', 0, stringLength(match[0]), {
+    this.formatBlock(caret.blockId, 'TASK', 0, uniCount(match[0]), {
       checked: true,
     });
   }
 
   private _handleImage(caret: CaretPosition, match: RegExpMatchArray) {
-    this.formatBlock(caret.blockId, 'IMAGE', 0, stringLength(match[0]), {
+    this.formatBlock(caret.blockId, 'IMAGE', 0, uniCount(match[0]), {
       thumbnail: match[2],
       original: match[2],
       alt: match[1] ?? '',
@@ -271,7 +271,7 @@ export class MarkdownShortcutModule implements Module {
   }
 
   private _handleHeader(caret: CaretPosition, match: RegExpMatchArray) {
-    const length = stringLength(match[0]);
+    const length = uniCount(match[0]);
     switch (length) {
       case 1:
         this.formatBlock(caret.blockId, 'HEADER1', 0, length);
@@ -295,40 +295,40 @@ export class MarkdownShortcutModule implements Module {
   }
 
   private _handleBold(caret: CaretPosition, match: RegExpMatchArray) {
-    const index = stringLength(match[1]);
-    const openeTagLength = stringLength(match[2]);
-    const contentLength = stringLength(match[3]);
-    const closeTagLength = stringLength(match[4]);
+    const index = uniCount(match[1]);
+    const openeTagLength = uniCount(match[2]);
+    const contentLength = uniCount(match[3]);
+    const closeTagLength = uniCount(match[4]);
     this.formatInline(caret.blockId, index, openeTagLength, contentLength, closeTagLength, {
       bold: true,
     });
   }
 
   private _handleItalic(caret: CaretPosition, match: RegExpMatchArray) {
-    const index = stringLength(match[1]);
-    const openeTagLength = stringLength(match[2]);
-    const contentLength = stringLength(match[3]);
-    const closeTagLength = stringLength(match[4]);
+    const index = uniCount(match[1]);
+    const openeTagLength = uniCount(match[2]);
+    const contentLength = uniCount(match[3]);
+    const closeTagLength = uniCount(match[4]);
     this.formatInline(caret.blockId, index, openeTagLength, contentLength, closeTagLength, {
       italic: true,
     });
   }
 
   private _handleStrike(caret: CaretPosition, match: RegExpMatchArray) {
-    const index = stringLength(match[1]);
-    const openeTagLength = stringLength(match[2]);
-    const contentLength = stringLength(match[3]);
-    const closeTagLength = stringLength(match[4]);
+    const index = uniCount(match[1]);
+    const openeTagLength = uniCount(match[2]);
+    const contentLength = uniCount(match[3]);
+    const closeTagLength = uniCount(match[4]);
     this.formatInline(caret.blockId, index, openeTagLength, contentLength, closeTagLength, {
       strike: true,
     });
   }
 
   private _handleInlineCode(caret: CaretPosition, match: RegExpMatchArray) {
-    const index = stringLength(match[1]);
-    const openeTagLength = stringLength(match[2]);
-    const contentLength = stringLength(match[3]);
-    const closeTagLength = stringLength(match[4]);
+    const index = uniCount(match[1]);
+    const openeTagLength = uniCount(match[2]);
+    const contentLength = uniCount(match[3]);
+    const closeTagLength = uniCount(match[4]);
     this.formatInline(caret.blockId, index, openeTagLength, contentLength, closeTagLength, {
       code: true,
     });
@@ -336,8 +336,8 @@ export class MarkdownShortcutModule implements Module {
   private _handleLink(caret: CaretPosition, match: RegExpMatchArray) {
     const block = this.editor.getBlock(caret.blockId);
     if (!block) return;
-    const matchLength = stringLength(match[0]);
-    const index = stringLength(match[1]);
+    const matchLength = uniCount(match[0]);
+    const index = uniCount(match[1]);
     const linkText = match[2];
     const url = match[3];
     this.editor.getModule('history').optimizeOp();
@@ -351,7 +351,7 @@ export class MarkdownShortcutModule implements Module {
     setTimeout(() => {
       this.editor.setCaretPosition({
         blockId: block.id,
-        index: index + stringLength(linkText),
+        index: index + uniCount(linkText),
       });
     }, 10);
   }

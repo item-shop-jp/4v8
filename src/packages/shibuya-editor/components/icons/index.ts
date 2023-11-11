@@ -20,3 +20,4 @@ export * from './Schedule';
 export * from './Assignment';
 export * from './Close';
 export * from './Download';
+export * from './Copy';

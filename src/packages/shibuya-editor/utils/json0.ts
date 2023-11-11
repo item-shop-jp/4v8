@@ -1,4 +1,4 @@
-import stringLength from 'string-length';
+import { uniCount } from 'unicount';
 import { JSON0 } from '../types/history';
 import { Inline } from '../types/inline';
 
@@ -7,16 +7,16 @@ export function getTextLength(ops: JSON0[] = []): number {
 
   ops.forEach((op) => {
     if (op.li) {
-      length += stringLength((op.li.text ?? '').replaceAll(/\uFEFF/gi, ''));
+      length += uniCount((op.li.text ?? '').replaceAll(/\uFEFF/gi, ''));
     }
     if (op.ld) {
-      length -= stringLength((op.ld.text ?? '').replaceAll(/\uFEFF/gi, ''));
+      length -= uniCount((op.ld.text ?? '').replaceAll(/\uFEFF/gi, ''));
     }
     if (op.si) {
-      length += stringLength(op.si.replaceAll(/\uFEFF/gi, ''));
+      length += uniCount(op.si.replaceAll(/\uFEFF/gi, ''));
     }
     if (op.sd) {
-      length -= stringLength(op.sd.replaceAll(/\uFEFF/gi, ''));
+      length -= uniCount(op.sd.replaceAll(/\uFEFF/gi, ''));
     }
   });
   return length;
@@ -44,11 +44,11 @@ export function getStartIndex(contents: Inline[], ops: JSON0[] = []): number {
   for (let i = 0; i < contents.length; i++) {
     if (arrayIndex === i) {
       // emoji support
-      const currentTextIndex = stringLength(contents[i].text.slice(0, textIndex));
+      const currentTextIndex = uniCount(contents[i].text.slice(0, textIndex));
       index += currentTextIndex;
       break;
     }
-    index += stringLength(contents[i].text);
+    index += uniCount(contents[i].text);
   }
 
   return index;

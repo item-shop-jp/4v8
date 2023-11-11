@@ -9375,12 +9375,13 @@ function useMutationObserver(ref, callback, options = {
 }
 
 const Header$3 = styled$1.h1 `
-  font-size: 24px;
   outline: 0;
-  margin: 0;
-  padding: 12px;
+  margin: 6rem 0 3rem;
+  font-size: 2.5rem;
+  line-height: 1.4;
+  letter-spacing: -.02em;
   box-sizing: border-box;
-  padding-left: calc(12px + 1.5em * var(--indent));
+  padding-left: calc(1.5em * var(--indent));
   ::after {
     opacity: 0.3;
     content: attr(placeholder);
@@ -9404,12 +9405,15 @@ const Header1 = React__namespace.memo((_a) => {
 });
 
 const Header$2 = styled$1.h2 `
-  font-size: 20px;
+  font-size: 1.5rem;
+  line-height: 2.25rem;
   outline: 0;
-  margin: 0;
-  padding: 8px 12px;
   box-sizing: border-box;
-  padding-left: calc(12px + 1.5em * var(--indent));
+  padding: 1.5rem 0 0 calc(1.5rem * var(--indent));
+  margin: 4rem 0 2rem;
+  border-top: 1px solid rgba(60, 60, 60, .12);
+  
+
   ::after {
     opacity: 0.3;
     content: attr(placeholder);
@@ -9433,12 +9437,12 @@ const Header2 = React__namespace.memo((_a) => {
 });
 
 const Header$1 = styled$1.h3 `
-  font-size: 18px;
+  font-size: 1.2rem;
   outline: 0;
-  margin: 0;
-  padding: 4px 12px;
+  margin: 3rem 0 1.25rem;
   box-sizing: border-box;
-  padding-left: calc(12px + 1.5em * var(--indent));
+  padding: 4px 0 4px calc(1.5rem * var(--indent));
+
   ::after {
     opacity: 0.3;
     content: attr(placeholder);
@@ -9517,27 +9521,30 @@ function decimalToAlphabet(num) {
 const ListItem$2 = styled$1.div `
   font-size: 1rem;
   outline: 0;
-  margin: 0;
-  padding: 2px 12px 2px;
+  margin: 0.25rem 0;
   box-sizing: border-box;
   position: relative;
-  padding-left: calc(40px + 1.5em * var(--indent));
+  padding: 2px 0 2px calc(1.5rem + 1.5rem * var(--indent));
+  line-height: 1.6;
+
   ::before {
     position: absolute;
-    height: 1em;
-    left: calc(8px + 1.5em * (var(--indent) - 1));
-    width: 3em;
-    text-align: right;
+    left: 0;
+    top: 0.125rem;
+    font-weight: 700;
+    font-size: 0.875rem;
+    color: rgba(60, 60, 60, .33);
     content: var(--content);
   }
+
   ${({ placeholder }) => {
     return (placeholder &&
         Ce$1 `
-        ::after {
-          opacity: 0.3;
-          content: attr(placeholder);
-        }
-      `);
+              ::after {
+                opacity: 0.3;
+                content: attr(placeholder);
+              }
+            `);
 }}
 `;
 const OrderedList = React__namespace.memo((_a) => {
@@ -9581,28 +9588,32 @@ const OrderedList = React__namespace.memo((_a) => {
 const ListItem$1 = styled$1.div `
   font-size: 1rem;
   outline: 0;
-  margin: 0;
-  padding: 2px 12px 2px;
-  padding-left: calc(40px + 1.5em * var(--indent));
+  margin: 0.25rem 0;
+  padding: 0 0 0 calc(1.5rem + 1.5em * var(--indent));
   box-sizing: border-box;
   position: relative;
+
   ::before {
+    content: "";
     position: absolute;
-    font-family: Arial;
-    font-size: 1.5em;
-    line-height: 1;
-    top: 1px;
-    content: var(--content);
-    left: calc(18px + 1em * var(--indent));
+    width: 0.315rem;
+    height: 0.315rem;
+    border-radius: 50%;
+    background-color: rgba(60, 60, 60, .33);
+    transition: background-color .5s;
+    //left: -1.25rem;
+    top: 0.70rem;
+    left: 0;
   }
+
   ${({ placeholder }) => {
     return (placeholder &&
         Ce$1 `
-        ::after {
-          opacity: 0.3;
-          content: attr(placeholder);
-        }
-      `);
+              ::after {
+                opacity: 0.3;
+                content: attr(placeholder);
+              }
+            `);
 }}
 `;
 const BulletList = React__namespace.memo((_a) => {
@@ -9769,27 +9780,25 @@ const Copy = React__namespace.memo((_a) => {
 const ListItem = styled$1.div `
   font-size: 1rem;
   outline: 0;
-  margin: 0;
-  padding: 2px 12px 2px;
-  padding-left: calc(40px + 1.5em * var(--indent));
+  margin: 0.25rem 0;
+  padding: 0 0 0 calc(1.5em * var(--indent));
+  line-height: 1.6;
   box-sizing: border-box;
   position: relative;
   ${({ placeholder }) => {
     return (placeholder &&
         Ce$1 `
-        ::after {
-          opacity: 0.3;
-          content: attr(placeholder);
-        }
-      `);
+              ::after {
+                opacity: 0.3;
+                content: attr(placeholder);
+              }
+            `);
 }}
 `;
 const CheckBoxOuter$1 = styled$1.div `
   position: absolute;
-  left: 4px;
-  top: -3px;
-  width: 32px;
-  height: 32px;
+  left: calc(1.5em * var(--indent));
+  top: 0.25rem;
   border-radius: 15%;
   display: flex;
   align-items: center;
@@ -9824,16 +9833,18 @@ const CheckList = React__namespace.memo((_a) => {
     const checked = (_b = attributes === null || attributes === void 0 ? void 0 : attributes.checked) !== null && _b !== void 0 ? _b : false;
     return (jsxRuntimeExports.jsxs(ListItem, Object.assign({ ref: headerRef, spellCheck: false, placeholder: showPlaceholder ? placeholder : '', style: {
             textDecoration: checked ? 'line-through' : 'none',
-        } }, props, { children: [jsxRuntimeExports.jsx(CheckBoxOuter$1, Object.assign({ onClick: handleClickCheckBox }, { children: jsxRuntimeExports.jsx(CheckSquare, { size: "20px", checked: checked }) })), contents] })));
+        } }, props, { children: [jsxRuntimeExports.jsx(CheckBoxOuter$1, Object.assign({ onClick: handleClickCheckBox }, { children: jsxRuntimeExports.jsx(CheckSquare, { size: "18px", checked: checked }) })), contents] })));
 });
 
 const Container$e = styled$1.blockquote `
   outline: 0;
-  margin: 0 0 0 12px;
-  padding: 2px 12px;
+  margin: 2rem 0;
   box-sizing: border-box;
-  border-left: 3px solid #ccc;
-  padding-left: calc(12px + 1.5em * var(--indent));
+  border-left: 2px solid #eee;
+  color: #666;
+  padding: 2px 0 2px calc(1.5rem + 1.5em * var(--indent));
+  font-size: 0.875rem;
+  line-height: 1.6;
 `;
 const Blockquote = React__namespace.memo((_a) => {
     var { blockId, contents, editor } = _a, props = __rest$1(_a, ["blockId", "contents", "editor"]);
@@ -9844,10 +9855,10 @@ const P$1 = styled$1.p `
   width: 100%;
   font-size: 1rem;
   outline: 0;
-  margin: 0;
-  padding: 4px 12px;
   box-sizing: border-box;
-  padding-left: calc(12px + 1.5em * var(--indent));
+  padding: 0 12px 0 calc(1.5rem * var(--indent));
+  line-height: 1.7;
+  margin-bottom: 1.2rem;
 `;
 const Paragraph = React__namespace.memo((_a) => {
     var { blockId, formats, editor, contents } = _a, props = __rest$1(_a, ["blockId", "formats", "editor", "contents"]);
@@ -11493,17 +11504,17 @@ Prism.languages.swift['string-literal'].forEach(function (rule) {
 }(Prism));
 
 const Wrapper$2 = styled$1.div `
-  padding: 32px 0;
+  padding: 1rem 0;
   background: #272822;
   outline: 0;
   overflow: auto;
   border-radius: 0.3em;
+  margin: 2rem 0;
 `;
 const Container$d = styled$1.div `
   outline: 0;
   color: #f8f8f2;
-  text-shadow: 0 1px rgba(0, 0, 0, 0.3);
-  font-size: 14px;
+  font-size: 0.875rem;
   text-align: left;
   white-space: pre;
   word-spacing: normal;
@@ -11584,11 +11595,12 @@ const CodeBlock = React__namespace.memo((_a) => {
 const Container$c = styled$1.div `
   font-size: 1rem;
   outline: 0;
-  margin: 0;
-  padding: 4px 12px 4px;
-  padding-left: calc(40px + 1.5em * var(--indent));
+  margin: 0.25rem 0;
+  padding: 0 0 0 calc(1.5rem + 1.5em * var(--indent));
+  line-height: 1.6;
   box-sizing: border-box;
   position: relative;
+
   ::after {
     opacity: 0.3;
     content: attr(placeholder);
@@ -11596,14 +11608,13 @@ const Container$c = styled$1.div `
 `;
 const IconOuter = styled$1.div `
   position: absolute;
-  left: calc(8px + 1.5em * var(--indent));
-  top: 0;
-  width: 32px;
-  height: 32px;
+  left: calc(1.5em * var(--indent));
+  top: 0.25rem;
   border-radius: 15%;
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
   user-select: none;
 `;
 const Decision = React__namespace.memo((_a) => {
@@ -11620,7 +11631,7 @@ const Decision = React__namespace.memo((_a) => {
     React__namespace.useEffect(() => {
         handleChangeElement();
     }, []);
-    return (jsxRuntimeExports.jsxs(Container$c, Object.assign({ ref: headerRef, spellCheck: false, placeholder: showPlaceholder ? placeholder : '' }, props, { children: [jsxRuntimeExports.jsx(IconOuter, { children: jsxRuntimeExports.jsx(Decision$1, { size: "24px" }) }), contents] })));
+    return (jsxRuntimeExports.jsxs(Container$c, Object.assign({ ref: headerRef, spellCheck: false, placeholder: showPlaceholder ? placeholder : '' }, props, { children: [jsxRuntimeExports.jsx(IconOuter, { children: jsxRuntimeExports.jsx(Decision$1, { size: "18px" }) }), contents] })));
 });
 
 function getHtmlElement(el) {
@@ -18808,28 +18819,26 @@ const IconButton = styled$1.div `
 const Container$7 = styled$1.div `
   font-size: 1rem;
   outline: 0;
-  margin: 0;
-  padding: 4px 12px 4px;
-  padding-left: calc(40px + 1.5em * var(--indent));
+  margin: 0.25rem 0;
+  padding: 0 0 0 calc(1.5rem + 1.5em * var(--indent));
+  line-height: 1.6;
   box-sizing: border-box;
   position: relative;
   width: 100%;
   ${({ placeholder }) => {
     return (placeholder &&
         Ce$1 `
-        ::after {
-          opacity: 0.3;
-          content: attr(placeholder);
-        }
-      `);
+              ::after {
+                opacity: 0.3;
+                content: attr(placeholder);
+              }
+            `);
 }}
 `;
 const CheckBoxOuter = styled$1.div `
   position: absolute;
-  left: calc(8px + 1.5em * var(--indent));
-  top: 0;
-  width: 32px;
-  height: 32px;
+  left: calc(1.5em * var(--indent));
+  top: 0.25rem;
   border-radius: 15%;
   display: flex;
   align-items: center;
@@ -18966,7 +18975,7 @@ const Task = React__namespace.memo((_a) => {
     }
     return (jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [jsxRuntimeExports.jsxs(Wrapper, Object.assign({ onMouseOver: handleMouseOver, onMouseOut: handleMouseOut, style: isHover ? { backgroundColor: '#f7f9fa' } : {} }, { children: [jsxRuntimeExports.jsxs(Container$7, Object.assign({ ref: headerRef, spellCheck: false, placeholder: showPlaceholder ? placeholder : '', style: {
                             textDecoration: checked ? 'line-through' : 'none',
-                        } }, props, { children: [jsxRuntimeExports.jsx(CheckBoxOuter, Object.assign({ onClick: handleClickCheckBox }, { children: jsxRuntimeExports.jsx(CheckSquare, { size: "24px", checked: checked }) })), contents] })), jsxRuntimeExports.jsxs(Buttons, { children: [((_q = attributes === null || attributes === void 0 ? void 0 : attributes.assignees) !== null && _q !== void 0 ? _q : []).length > 0 ? (jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsxs(IconButton, Object.assign({ onClick: handleClickAssigneePicker }, { children: [attributes.assignees.slice(0, 2).map((assignee, i) => {
+                        } }, props, { children: [jsxRuntimeExports.jsx(CheckBoxOuter, Object.assign({ onClick: handleClickCheckBox }, { children: jsxRuntimeExports.jsx(CheckSquare, { size: "18px", checked: checked, fill: "#666" }) })), contents] })), jsxRuntimeExports.jsxs(Buttons, { children: [((_q = attributes === null || attributes === void 0 ? void 0 : attributes.assignees) !== null && _q !== void 0 ? _q : []).length > 0 ? (jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsxs(IconButton, Object.assign({ onClick: handleClickAssigneePicker }, { children: [attributes.assignees.slice(0, 2).map((assignee, i) => {
                                             return (jsxRuntimeExports.jsx(MemberIcon, Object.assign({ style: { right: `${12 * i}px` } }, { children: assignee.imageUrl ? (jsxRuntimeExports.jsx("img", { draggable: "false", src: assignee.imageUrl })) : (jsxRuntimeExports.jsx(Text$4, { children: assignee.name.slice(0, 1) })) }), assignee.id));
                                         }), attributes.assignees.length > 2 && (jsxRuntimeExports.jsx(MemberIcon, Object.assign({ style: { right: `${12 * 2}px` } }, { children: jsxRuntimeExports.jsxs(Text$4, { children: ["+", attributes.assignees.length - 2] }) })))] })), maxWidth: 200, position: 'bottom' }, { children: attributes.assignees.map((v) => {
                                     return (jsxRuntimeExports.jsxs(React__namespace.Fragment, { children: [v.name, jsxRuntimeExports.jsx("br", {})] }, v.id));
@@ -24365,11 +24374,12 @@ const Strike = () => Ce$1 `
 `;
 
 const InlineCode = () => Ce$1 `
-  background: rgba(135, 131, 120, 0.15);
-  color: #eb5757;
-  border-radius: 3px;
-  font-size: 85%;
-  padding: 0.2em 0.4em;
+  background: #f1f1f1;
+  color: #476582;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  padding: .15rem .5rem;
+  letter-spacing: 0.01rem;
 `;
 
 const Italic = () => Ce$1 `

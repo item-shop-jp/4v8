@@ -50,7 +50,18 @@ export const InlineText = ({
   ...props
 }: InlineTextProps) => {
   const memoInnerHTML = React.useMemo(() => {
-    const text = inline.text.replaceAll('\n', '<br>');
+    const map: { [key: string]: string } = {
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#039;',
+    };
+    const text = inline.text
+      .replace(/[&<>"']/g, function (m) {
+        return map[m];
+      })
+      .replaceAll('\n', '<br>');
     return {
       __html: twemoji.parse(text, {
         folder: 'svg',

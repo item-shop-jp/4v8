@@ -24242,7 +24242,18 @@ const Text$3 = styled$1.span `
 const InlineText = (_a) => {
     var { inline, formats, editor, scrollContainer } = _a, props = __rest$1(_a, ["inline", "formats", "editor", "scrollContainer"]);
     const memoInnerHTML = React__namespace.useMemo(() => {
-        const text = inline.text.replaceAll('\n', '<br>');
+        const map = {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#039;',
+        };
+        const text = inline.text
+            .replace(/[&<>"']/g, function (m) {
+            return map[m];
+        })
+            .replaceAll('\n', '<br>');
         return {
             __html: twemoji.parse(text, {
                 folder: 'svg',
@@ -29188,6 +29199,13 @@ const Editor = React__namespace.memo(React__namespace.forwardRef((_a, forwardRef
     const [blocks, setBlocks] = React__namespace.useState([]);
     const [selectedIds, setSelectedIds] = React__namespace.useState([]);
     const [showPlaceholder, setShowPlaceholder] = React__namespace.useState(false);
+    const handleChangeElement = React__namespace.useCallback(() => {
+        if (!containerRef.current)
+            return;
+        const innerText = containerRef.current.innerText.replaceAll(/\uFEFF/gi, '');
+        setShowPlaceholder(innerText.length < 1);
+    }, []);
+    useMutationObserver(containerRef, handleChangeElement);
     const handleKeyDown = React__namespace.useCallback((event) => {
         const keyboard = editor.getModule('keyboard');
         if (keyboard && keyboard instanceof KeyBoardModule) {
@@ -29285,17 +29303,8 @@ const Editor = React__namespace.memo(React__namespace.forwardRef((_a, forwardRef
             { name: 'toc', module: TocModule },
         ], (_a = settings === null || settings === void 0 ? void 0 : settings.modules) !== null && _a !== void 0 ? _a : {});
         subs.add(eventEmitter.select(EditorEvents.EVENT_BLOCK_RERENDER).subscribe(() => {
-            var _a;
             const renderBlocks = editor.getBlocks();
             setBlocks(renderBlocks);
-            if (renderBlocks.length <= 1 &&
-                renderBlocks[0].type === 'PARAGRAPH' &&
-                ((_a = getBlockLength(renderBlocks[0].id)) !== null && _a !== void 0 ? _a : 0) < 1) {
-                setShowPlaceholder(true);
-            }
-            else {
-                setShowPlaceholder(false);
-            }
             if (renderBlocks.length > 2000) {
                 editor.getModule('selector').changeAreaMoveDelay(300);
             }

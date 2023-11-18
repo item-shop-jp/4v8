@@ -18,11 +18,12 @@ export interface DecisionProps {
 const Container = styled.div`
   font-size: 1rem;
   outline: 0;
-  margin: 0;
-  padding: 4px 12px 4px;
-  padding-left: calc(40px + 1.5em * var(--indent));
+  margin: 0.25rem 0;
+  padding: 0 0 0 calc(1.5rem + 1.5em * var(--indent));
+  line-height: 1.6;
   box-sizing: border-box;
   position: relative;
+
   ::after {
     opacity: 0.3;
     content: attr(placeholder);
@@ -31,14 +32,13 @@ const Container = styled.div`
 
 const IconOuter = styled.div`
   position: absolute;
-  left: calc(8px + 1.5em * var(--indent));
-  top: 0;
-  width: 32px;
-  height: 32px;
+  left: calc(1.5em * var(--indent));
+  top: 0.25rem;
   border-radius: 15%;
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
   user-select: none;
 `;
 
@@ -72,7 +72,7 @@ export const Decision = React.memo(
         {...props}
       >
         <IconOuter>
-          <DecisionIcon size="24px" />
+          <DecisionIcon size="18px" />
         </IconOuter>
         {contents}
       </Container>

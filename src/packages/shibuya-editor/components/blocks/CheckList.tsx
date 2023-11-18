@@ -18,29 +18,27 @@ export interface CheckListProps {
 const ListItem = styled.div<Pick<CheckListProps, 'placeholder'>>`
   font-size: 1rem;
   outline: 0;
-  margin: 0;
-  padding: 2px 12px 2px;
-  padding-left: calc(40px + 1.5em * var(--indent));
+  margin: 0.25rem 0;
+  padding: 0 0 0 calc(1.5em * var(--indent));
+  line-height: 1.6;
   box-sizing: border-box;
   position: relative;
   ${({ placeholder }) => {
     return (
-      placeholder &&
-      css`
-        ::after {
-          opacity: 0.3;
-          content: attr(placeholder);
-        }
-      `
+            placeholder &&
+            css`
+              ::after {
+                opacity: 0.3;
+                content: attr(placeholder);
+              }
+            `
     );
   }}
 `;
 const CheckBoxOuter = styled.div`
   position: absolute;
-  left: 4px;
-  top: -3px;
-  width: 32px;
-  height: 32px;
+  left: calc(1.5em * var(--indent));
+  top: 0.25rem;
   border-radius: 15%;
   display: flex;
   align-items: center;
@@ -102,7 +100,7 @@ export const CheckList = React.memo(
         {...props}
       >
         <CheckBoxOuter onClick={handleClickCheckBox}>
-          <CheckSquare size="20px" checked={checked} />
+          <CheckSquare size="18px" checked={checked} />
         </CheckBoxOuter>
         {contents}
       </ListItem>

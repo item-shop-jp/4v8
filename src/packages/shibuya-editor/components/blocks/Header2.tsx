@@ -15,12 +15,15 @@ export interface Header2Props {
   editor: EditorController;
 }
 const Header = styled.h2`
-  font-size: 20px;
+  font-size: 1.5rem;
+  line-height: 2.25rem;
   outline: 0;
-  margin: 0;
-  padding: 8px 12px;
   box-sizing: border-box;
-  padding-left: calc(12px + 1.5em * var(--indent));
+  padding: 1.5rem 0 0 calc(1.5rem * var(--indent));
+  margin: 4rem 0 2rem;
+  border-top: 1px solid rgba(60, 60, 60, .12);
+  
+
   ::after {
     opacity: 0.3;
     content: attr(placeholder);

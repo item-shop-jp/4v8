@@ -27,18 +27,18 @@ export interface CodeBlockProps {
 }
 
 const Wrapper = styled.div`
-  padding: 32px 0;
+  padding: 1rem 0;
   background: #272822;
   outline: 0;
   overflow: auto;
   border-radius: 0.3em;
+  margin: 2rem 0;
 `;
 
 const Container = styled.div`
   outline: 0;
   color: #f8f8f2;
-  text-shadow: 0 1px rgba(0, 0, 0, 0.3);
-  font-size: 14px;
+  font-size: 0.875rem;
   text-align: left;
   white-space: pre;
   word-spacing: normal;

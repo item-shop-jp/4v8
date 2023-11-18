@@ -17,29 +17,33 @@ export interface BulletListProps {
 const ListItem = styled.div<Pick<BulletListProps, 'placeholder'>>`
   font-size: 1rem;
   outline: 0;
-  margin: 0;
-  padding: 2px 12px 2px;
-  padding-left: calc(40px + 1.5em * var(--indent));
+  margin: 0.25rem 0;
+  padding: 0 0 0 calc(1.5rem + 1.5em * var(--indent));
   box-sizing: border-box;
   position: relative;
+
   ::before {
+    content: "";
     position: absolute;
-    font-family: Arial;
-    font-size: 1.5em;
-    line-height: 1;
-    top: 1px;
-    content: var(--content);
-    left: calc(18px + 1em * var(--indent));
+    width: 0.315rem;
+    height: 0.315rem;
+    border-radius: 50%;
+    background-color: rgba(60, 60, 60, .33);
+    transition: background-color .5s;
+    //left: -1.25rem;
+    top: 0.70rem;
+    left: 0;
   }
+
   ${({ placeholder }) => {
     return (
-      placeholder &&
-      css`
-        ::after {
-          opacity: 0.3;
-          content: attr(placeholder);
-        }
-      `
+            placeholder &&
+            css`
+              ::after {
+                opacity: 0.3;
+                content: attr(placeholder);
+              }
+            `
     );
   }}
 `;

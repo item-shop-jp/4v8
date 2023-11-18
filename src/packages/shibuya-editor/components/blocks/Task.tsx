@@ -44,30 +44,28 @@ const IconButton = styled.div`
 const Container = styled.div<Pick<TaskProps, 'placeholder'>>`
   font-size: 1rem;
   outline: 0;
-  margin: 0;
-  padding: 4px 12px 4px;
-  padding-left: calc(40px + 1.5em * var(--indent));
+  margin: 0.25rem 0;
+  padding: 0 0 0 calc(1.5rem + 1.5em * var(--indent));
+  line-height: 1.6;
   box-sizing: border-box;
   position: relative;
   width: 100%;
   ${({ placeholder }) => {
     return (
-      placeholder &&
-      css`
-        ::after {
-          opacity: 0.3;
-          content: attr(placeholder);
-        }
-      `
+            placeholder &&
+            css`
+              ::after {
+                opacity: 0.3;
+                content: attr(placeholder);
+              }
+            `
     );
   }}
 `;
 const CheckBoxOuter = styled.div`
   position: absolute;
-  left: calc(8px + 1.5em * var(--indent));
-  top: 0;
-  width: 32px;
-  height: 32px;
+  left: calc(1.5em * var(--indent));
+  top: 0.25rem;
   border-radius: 15%;
   display: flex;
   align-items: center;
@@ -282,7 +280,7 @@ export const Task = React.memo(
             {...props}
           >
             <CheckBoxOuter onClick={handleClickCheckBox}>
-              <CheckSquare size="24px" checked={checked} />
+              <CheckSquare size="18px" checked={checked} fill="#666" />
             </CheckBoxOuter>
             {contents}
           </Container>

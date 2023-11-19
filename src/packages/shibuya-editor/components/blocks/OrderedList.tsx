@@ -27,23 +27,23 @@ const ListItem = styled.div<Pick<OrderedListProps, 'placeholder'>>`
 
   ::before {
     position: absolute;
-    left: 0;
+    left: calc(0.25rem + 1.5rem * var(--indent));
     top: 0.125rem;
     font-weight: 700;
     font-size: 0.875rem;
-    color: rgba(60, 60, 60, .33);
+    color: rgba(60, 60, 60, 0.33);
     content: var(--content);
   }
 
   ${({ placeholder }) => {
     return (
-            placeholder &&
-            css`
-              ::after {
-                opacity: 0.3;
-                content: attr(placeholder);
-              }
-            `
+      placeholder &&
+      css`
+        ::after {
+          opacity: 0.3;
+          content: attr(placeholder);
+        }
+      `
     );
   }}
 `;

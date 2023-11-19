@@ -23,27 +23,26 @@ const ListItem = styled.div<Pick<BulletListProps, 'placeholder'>>`
   position: relative;
 
   ::before {
-    content: "";
+    content: '';
     position: absolute;
     width: 0.315rem;
     height: 0.315rem;
     border-radius: 50%;
-    background-color: rgba(60, 60, 60, .33);
-    transition: background-color .5s;
-    //left: -1.25rem;
-    top: 0.70rem;
-    left: 0;
+    background-color: rgba(60, 60, 60, 0.33);
+    transition: background-color 0.5s;
+    left: calc(0.25rem + 1.5rem * var(--indent));
+    top: 0.7rem;
   }
 
   ${({ placeholder }) => {
     return (
-            placeholder &&
-            css`
-              ::after {
-                opacity: 0.3;
-                content: attr(placeholder);
-              }
-            `
+      placeholder &&
+      css`
+        ::after {
+          opacity: 0.3;
+          content: attr(placeholder);
+        }
+      `
     );
   }}
 `;

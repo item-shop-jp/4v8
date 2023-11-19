@@ -1,8 +1,6 @@
 import * as React from 'react';
-import { Subscription } from 'rxjs';
 import isEqual from 'lodash.isequal';
 import { debounce } from 'throttle-debounce';
-import * as json0 from 'ot-json0';
 import DiffMatchPatch from 'diff-match-patch';
 import { EventEmitter } from '../utils/event-emitter';
 import * as blockUtils from '../utils/block';

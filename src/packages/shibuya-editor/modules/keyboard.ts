@@ -646,6 +646,24 @@ export class KeyBoardModule implements Module {
       if (!block) return;
       // Ignored for null characters
       if (textLength === 0) {
+        // インデントが1以上あるならアウトデントする
+        if ((block.attributes?.indent ?? 0) > 0) {
+          editor.updateBlock({
+            ...block,
+            attributes: { ...block.attributes, indent: block.attributes.indent - 1 },
+          });
+          this.editor.numberingList();
+          this.editor.getModule('history')?.optimizeOp();
+          editor.render([block.id]);
+          setTimeout(() => {
+            this.editor.setCaretPosition({
+              blockId: block.id,
+              index: 0,
+            });
+            this.editor.updateCaretRect();
+          }, 10);
+          return;
+        }
         if (block.type !== 'PARAGRAPH') {
           editor.updateBlock({
             ...block,

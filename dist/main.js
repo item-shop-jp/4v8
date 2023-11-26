@@ -24509,9 +24509,13 @@ class EditorModule {
         this.editor.numberingList();
         this.editor.getModule('history').optimizeOp();
         this.editor.render([blocks[currentIndex].id]);
-        this.editor.blur();
         setTimeout(() => {
-            this.editor.setCaretPosition({ blockId: lastBlock.id });
+            this.editor.setCaretPosition({
+                blockId: firstBlock.id,
+                index: 0,
+            });
+            this.editor.updateCaretRect();
+            this.editor.next();
         }, 10);
     }
     scrollToBlock(blockId, position = 'center') {

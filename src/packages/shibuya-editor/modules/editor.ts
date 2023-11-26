@@ -169,7 +169,6 @@ export class EditorModule implements Module {
     this.editor.blur();
     setTimeout(() => {
       this.editor.setCaretPosition({ blockId: lastBlock.id });
-      this.scrollToBlock(lastBlock.id, 'end');
     }, 10);
   }
 

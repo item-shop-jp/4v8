@@ -24512,7 +24512,6 @@ class EditorModule {
         this.editor.blur();
         setTimeout(() => {
             this.editor.setCaretPosition({ blockId: lastBlock.id });
-            this.scrollToBlock(lastBlock.id, 'end');
         }, 10);
     }
     scrollToBlock(blockId, position = 'center') {

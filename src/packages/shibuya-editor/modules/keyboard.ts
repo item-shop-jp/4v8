@@ -645,7 +645,8 @@ export class KeyBoardModule implements Module {
     if (caretPosition.collapsed) {
       if (!block) return;
       // Ignored for null characters
-      if (textLength === 0) {
+      // blockの先頭位置でbackspaceされた場合
+      if(caretPosition.index === 0) {
         // インデントが1以上あるならアウトデントする
         if ((block.attributes?.indent ?? 0) > 0) {
           editor.updateBlock({
@@ -664,6 +665,8 @@ export class KeyBoardModule implements Module {
           }, 10);
           return;
         }
+      }
+      if (textLength === 0) {
         if (block.type !== 'PARAGRAPH') {
           editor.updateBlock({
             ...block,

@@ -9529,22 +9529,22 @@ const ListItem$2 = styled$1.div `
 
   ::before {
     position: absolute;
-    left: 0;
+    left: calc(0.25rem + 1.5rem * var(--indent));
     top: 0.125rem;
     font-weight: 700;
     font-size: 0.875rem;
-    color: rgba(60, 60, 60, .33);
+    color: rgba(60, 60, 60, 0.33);
     content: var(--content);
   }
 
   ${({ placeholder }) => {
     return (placeholder &&
         Ce$1 `
-              ::after {
-                opacity: 0.3;
-                content: attr(placeholder);
-              }
-            `);
+        ::after {
+          opacity: 0.3;
+          content: attr(placeholder);
+        }
+      `);
 }}
 `;
 const OrderedList = React__namespace.memo((_a) => {
@@ -9594,26 +9594,25 @@ const ListItem$1 = styled$1.div `
   position: relative;
 
   ::before {
-    content: "";
+    content: '';
     position: absolute;
     width: 0.315rem;
     height: 0.315rem;
     border-radius: 50%;
-    background-color: rgba(60, 60, 60, .33);
-    transition: background-color .5s;
-    //left: -1.25rem;
-    top: 0.70rem;
-    left: 0;
+    background-color: rgba(60, 60, 60, 0.33);
+    transition: background-color 0.5s;
+    left: calc(0.25rem + 1.5rem * var(--indent));
+    top: 0.7rem;
   }
 
   ${({ placeholder }) => {
     return (placeholder &&
         Ce$1 `
-              ::after {
-                opacity: 0.3;
-                content: attr(placeholder);
-              }
-            `);
+        ::after {
+          opacity: 0.3;
+          content: attr(placeholder);
+        }
+      `);
 }}
 `;
 const BulletList = React__namespace.memo((_a) => {
@@ -25037,7 +25036,7 @@ class KeyBoardModule {
         }
     }
     _handleBackspace(caretPosition, editor) {
-        var _a;
+        var _a, _b, _c, _d;
         const block = editor.getBlock(caretPosition.blockId);
         const blocks = editor.getBlocks();
         const blockIndex = blocks.findIndex((v) => v.id === caretPosition.blockId);
@@ -25048,11 +25047,29 @@ class KeyBoardModule {
             if (!block)
                 return;
             // Ignored for null characters
+            // blockの先頭位置でbackspaceされた場合
+            if (caretPosition.index === 0) {
+                // インデントが1以上あるならアウトデントする
+                if (((_b = (_a = block.attributes) === null || _a === void 0 ? void 0 : _a.indent) !== null && _b !== void 0 ? _b : 0) > 0) {
+                    editor.updateBlock(Object.assign(Object.assign({}, block), { attributes: Object.assign(Object.assign({}, block.attributes), { indent: block.attributes.indent - 1 }) }));
+                    this.editor.numberingList();
+                    (_c = this.editor.getModule('history')) === null || _c === void 0 ? void 0 : _c.optimizeOp();
+                    editor.render([block.id]);
+                    setTimeout(() => {
+                        this.editor.setCaretPosition({
+                            blockId: block.id,
+                            index: 0,
+                        });
+                        this.editor.updateCaretRect();
+                    }, 10);
+                    return;
+                }
+            }
             if (textLength === 0) {
                 if (block.type !== 'PARAGRAPH') {
                     editor.updateBlock(Object.assign(Object.assign({}, block), { attributes: Object.assign(Object.assign({}, block.attributes), { indent: false }), type: 'PARAGRAPH' }));
                     this.editor.numberingList();
-                    (_a = this.editor.getModule('history')) === null || _a === void 0 ? void 0 : _a.optimizeOp();
+                    (_d = this.editor.getModule('history')) === null || _d === void 0 ? void 0 : _d.optimizeOp();
                     editor.render([block.id]);
                     setTimeout(() => {
                         this.editor.setCaretPosition({

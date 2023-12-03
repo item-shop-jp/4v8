@@ -165,7 +165,6 @@ export class EditorModule implements Module {
     this.editor.updateBlock(firstBlock);
     this.editor.numberingList();
     this.editor.getModule('history').optimizeOp();
-    this.editor.render([blocks[currentIndex].id]);
     setTimeout(() => {
       this.editor.setCaretPosition({
         blockId: firstBlock.id,
@@ -174,6 +173,7 @@ export class EditorModule implements Module {
       this.editor.updateCaretRect();
       this.editor.next();
     }, 10);
+    this.editor.render([firstBlock.id]);
   }
 
   scrollToBlock(blockId: string, position: ScrollLogicalPosition = 'center') {

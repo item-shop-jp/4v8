@@ -53,10 +53,14 @@ const Button = styled.a<ButtonProps>`
 `;
 
 const Divider = styled.div`
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
   width: 1px;
-  height: 100%;
   background: #fff;
   opacity: 0.2;
+  pointer-events: none;
 `;
 
 export const GlobalToolbar = React.memo(({ editor, ...props }: GlobalToolbarProps) => {
@@ -67,9 +71,9 @@ export const GlobalToolbar = React.memo(({ editor, ...props }: GlobalToolbarProp
   const formatBlock = React.useCallback(
     (type: BlockType, attributes: BlockAttributes = {}, childBlocks: Block[] = []) => {
       const caretPosition = editor.getCaretPosition();
-      if (!caretPosition || caretPosition.childBlockId) return;
-      editor.getModule('toolbar').setUpdating(true);
       const selectedBlocks = editor.getModule('selector').getSelectedBlocks();
+      if (selectedBlocks.length < 1 && (!caretPosition || caretPosition.childBlockId)) return;
+      editor.getModule('toolbar').setUpdating(true);
       if (selectedBlocks.length > 0) {
         const updateIds = selectedBlocks.map((v) => {
           return v.id;
@@ -82,7 +86,11 @@ export const GlobalToolbar = React.memo(({ editor, ...props }: GlobalToolbarProp
             attributes,
             childBlocks,
           );
-        editor.getModule('clipboard').focus();
+        editor.getModule('selector').selectBlocks([]);
+        setTimeout(() => {
+          editor.getModule('selector').selectBlocks([...selectedBlocks]);
+          editor.getModule('clipboard').focus();
+        });
       } else {
         editor
           .getModule('toolbar')
@@ -247,7 +255,7 @@ export const GlobalToolbar = React.memo(({ editor, ...props }: GlobalToolbarProp
   return ReactDOM.createPortal(
     <>
       {isDisplay && (
-        <Container {...props}>
+        <Container {...props} className={'shibuya-toolbar'}>
           <Tooltip
             targetElement={
               <Button href="#" onClick={handleHeader1} active={blockType === 'HEADER1'}>
@@ -274,6 +282,7 @@ export const GlobalToolbar = React.memo(({ editor, ...props }: GlobalToolbarProp
             targetElement={
               <Button href="#" onClick={handleHeader3} active={blockType === 'HEADER3'}>
                 <FormatHeader3 size="20" />
+                <Divider />
               </Button>
             }
             maxWidth={200}
@@ -282,7 +291,6 @@ export const GlobalToolbar = React.memo(({ editor, ...props }: GlobalToolbarProp
             見出し(小)に切り替える
           </Tooltip>
 
-          <Divider />
           <Tooltip
             targetElement={
               <Button href="#" active={blockType === 'CODE-BLOCK'} onClick={handleCodeBlock}>
@@ -298,6 +306,7 @@ export const GlobalToolbar = React.memo(({ editor, ...props }: GlobalToolbarProp
             targetElement={
               <Button href="#" active={blockType === 'BLOCKQUOTE'} onClick={handleBlockquote}>
                 <FormatBlockQuote size="20" />
+                <Divider />
               </Button>
             }
             maxWidth={200}
@@ -306,7 +315,6 @@ export const GlobalToolbar = React.memo(({ editor, ...props }: GlobalToolbarProp
             引用ブロックに切り替える
           </Tooltip>
 
-          <Divider />
           <Tooltip
             targetElement={
               <Button href="#" active={blockType === 'BULLET-LIST'} onClick={handleBulletList}>
@@ -366,7 +374,7 @@ export const GlobalToolbar = React.memo(({ editor, ...props }: GlobalToolbarProp
           >
             ファイルを添付
           </Tooltip>
-          <Tooltip
+          {/* <Tooltip
             targetElement={
               <Button href="#" active={false} onClick={handleTable}>
                 <FormatDecision size="20" />
@@ -376,7 +384,7 @@ export const GlobalToolbar = React.memo(({ editor, ...props }: GlobalToolbarProp
             position={'top'}
           >
             テーブルを追加
-          </Tooltip>
+          </Tooltip> */}
         </Container>
       )}
     </>,

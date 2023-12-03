@@ -9411,8 +9411,7 @@ const Header$2 = styled$1.h2 `
   box-sizing: border-box;
   padding: 1.5rem 0 0 calc(1.5rem * var(--indent));
   margin: 4rem 0 2rem;
-  border-top: 1px solid rgba(60, 60, 60, .12);
-  
+  border-bottom: 1px solid rgba(60, 60, 60, 0.12);
 
   ::after {
     opacity: 0.3;
@@ -11670,10 +11669,14 @@ const Button$3 = styled$1.a `
   }
 `;
 const Divider = styled$1.div `
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
   width: 1px;
-  height: 100%;
   background: #fff;
   opacity: 0.2;
+  pointer-events: none;
 `;
 const GlobalToolbar = React__namespace.memo((_a) => {
     var { editor } = _a, props = __rest$1(_a, ["editor"]);
@@ -11682,10 +11685,10 @@ const GlobalToolbar = React__namespace.memo((_a) => {
     const [isDisplay, setDisplay] = React__namespace.useState(false);
     const formatBlock = React__namespace.useCallback((type, attributes = {}, childBlocks = []) => {
         const caretPosition = editor.getCaretPosition();
-        if (!caretPosition || caretPosition.childBlockId)
+        const selectedBlocks = editor.getModule('selector').getSelectedBlocks();
+        if (selectedBlocks.length < 1 && (!caretPosition || caretPosition.childBlockId))
             return;
         editor.getModule('toolbar').setUpdating(true);
-        const selectedBlocks = editor.getModule('selector').getSelectedBlocks();
         if (selectedBlocks.length > 0) {
             const updateIds = selectedBlocks.map((v) => {
                 return v.id;
@@ -11693,7 +11696,11 @@ const GlobalToolbar = React__namespace.memo((_a) => {
             editor
                 .getModule('toolbar')
                 .formatMultiBlocks(updateIds, blockType !== type ? type : 'PARAGRAPH', attributes, childBlocks);
-            editor.getModule('clipboard').focus();
+            editor.getModule('selector').selectBlocks([]);
+            setTimeout(() => {
+                editor.getModule('selector').selectBlocks([...selectedBlocks]);
+                editor.getModule('clipboard').focus();
+            });
         }
         else {
             editor
@@ -11740,7 +11747,7 @@ const GlobalToolbar = React__namespace.memo((_a) => {
         event.preventDefault();
         formatBlock('BULLET-LIST');
     }, [formats, blockType]);
-    const handleTable = React__namespace.useCallback((event) => {
+    React__namespace.useCallback((event) => {
         event.preventDefault();
         const caretPosition = editor.getCaretPosition();
         if (!caretPosition)
@@ -11808,7 +11815,7 @@ const GlobalToolbar = React__namespace.memo((_a) => {
             subs.unsubscribe();
         };
     }, []);
-    return ReactDOM.createPortal(jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: isDisplay && (jsxRuntimeExports.jsxs(Container$b, Object.assign({}, props, { children: [jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$3, Object.assign({ href: "#", onClick: handleHeader1, active: blockType === 'HEADER1' }, { children: jsxRuntimeExports.jsx(FormatHeader1, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u898B\u51FA\u3057(\u5927)\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$3, Object.assign({ href: "#", onClick: handleHeader2, active: blockType === 'HEADER2' }, { children: jsxRuntimeExports.jsx(FormatHeader2, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u898B\u51FA\u3057(\u4E2D)\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$3, Object.assign({ href: "#", onClick: handleHeader3, active: blockType === 'HEADER3' }, { children: jsxRuntimeExports.jsx(FormatHeader3, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u898B\u51FA\u3057(\u5C0F)\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Divider, {}), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$3, Object.assign({ href: "#", active: blockType === 'CODE-BLOCK', onClick: handleCodeBlock }, { children: jsxRuntimeExports.jsx(FormatCodeBlock, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u30B3\u30FC\u30C9\u30D6\u30ED\u30C3\u30AF\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$3, Object.assign({ href: "#", active: blockType === 'BLOCKQUOTE', onClick: handleBlockquote }, { children: jsxRuntimeExports.jsx(FormatBlockQuote, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u5F15\u7528\u30D6\u30ED\u30C3\u30AF\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Divider, {}), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$3, Object.assign({ href: "#", active: blockType === 'BULLET-LIST', onClick: handleBulletList }, { children: jsxRuntimeExports.jsx(FormatBulletList, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u7B87\u6761\u66F8\u304D\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$3, Object.assign({ href: "#", active: blockType === 'ORDERED-LIST', onClick: handleOrderedList }, { children: jsxRuntimeExports.jsx(FormatNumberList, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u756A\u53F7\u4ED8\u304D\u30EA\u30B9\u30C8\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Divider, {}), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$3, Object.assign({ href: "#", active: blockType === 'TASK', onClick: handleTask }, { children: jsxRuntimeExports.jsx(FormatTask, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u30BF\u30B9\u30AF\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$3, Object.assign({ href: "#", active: blockType === 'DECISION', onClick: handleDecision }, { children: jsxRuntimeExports.jsx(FormatDecision, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u6C7A\u5B9A\u4E8B\u9805\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Divider, {}), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$3, Object.assign({ href: "#", active: false, onClick: handleFileUpload }, { children: jsxRuntimeExports.jsx(FormatAttachment, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u30D5\u30A1\u30A4\u30EB\u3092\u6DFB\u4ED8" })), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$3, Object.assign({ href: "#", active: false, onClick: handleTable }, { children: jsxRuntimeExports.jsx(FormatDecision, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u30C6\u30FC\u30D6\u30EB\u3092\u8FFD\u52A0" }))] }))) }), document.body);
+    return ReactDOM.createPortal(jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: isDisplay && (jsxRuntimeExports.jsxs(Container$b, Object.assign({}, props, { className: 'shibuya-toolbar' }, { children: [jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$3, Object.assign({ href: "#", onClick: handleHeader1, active: blockType === 'HEADER1' }, { children: jsxRuntimeExports.jsx(FormatHeader1, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u898B\u51FA\u3057(\u5927)\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$3, Object.assign({ href: "#", onClick: handleHeader2, active: blockType === 'HEADER2' }, { children: jsxRuntimeExports.jsx(FormatHeader2, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u898B\u51FA\u3057(\u4E2D)\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsxs(Button$3, Object.assign({ href: "#", onClick: handleHeader3, active: blockType === 'HEADER3' }, { children: [jsxRuntimeExports.jsx(FormatHeader3, { size: "20" }), jsxRuntimeExports.jsx(Divider, {})] })), maxWidth: 200, position: 'top' }, { children: "\u898B\u51FA\u3057(\u5C0F)\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$3, Object.assign({ href: "#", active: blockType === 'CODE-BLOCK', onClick: handleCodeBlock }, { children: jsxRuntimeExports.jsx(FormatCodeBlock, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u30B3\u30FC\u30C9\u30D6\u30ED\u30C3\u30AF\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsxs(Button$3, Object.assign({ href: "#", active: blockType === 'BLOCKQUOTE', onClick: handleBlockquote }, { children: [jsxRuntimeExports.jsx(FormatBlockQuote, { size: "20" }), jsxRuntimeExports.jsx(Divider, {})] })), maxWidth: 200, position: 'top' }, { children: "\u5F15\u7528\u30D6\u30ED\u30C3\u30AF\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$3, Object.assign({ href: "#", active: blockType === 'BULLET-LIST', onClick: handleBulletList }, { children: jsxRuntimeExports.jsx(FormatBulletList, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u7B87\u6761\u66F8\u304D\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$3, Object.assign({ href: "#", active: blockType === 'ORDERED-LIST', onClick: handleOrderedList }, { children: jsxRuntimeExports.jsx(FormatNumberList, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u756A\u53F7\u4ED8\u304D\u30EA\u30B9\u30C8\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Divider, {}), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$3, Object.assign({ href: "#", active: blockType === 'TASK', onClick: handleTask }, { children: jsxRuntimeExports.jsx(FormatTask, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u30BF\u30B9\u30AF\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$3, Object.assign({ href: "#", active: blockType === 'DECISION', onClick: handleDecision }, { children: jsxRuntimeExports.jsx(FormatDecision, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u6C7A\u5B9A\u4E8B\u9805\u306B\u5207\u308A\u66FF\u3048\u308B" })), jsxRuntimeExports.jsx(Divider, {}), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$3, Object.assign({ href: "#", active: false, onClick: handleFileUpload }, { children: jsxRuntimeExports.jsx(FormatAttachment, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u30D5\u30A1\u30A4\u30EB\u3092\u6DFB\u4ED8" }))] }))) }), document.body);
 });
 
 const TOOLBAR_CHILD_WIDTH = 34;
@@ -11980,7 +11987,7 @@ const BubbleToolbar = React__namespace.memo((_a) => {
             setToolbarWidth((containerRef.current.children.length - 1) * TOOLBAR_CHILD_WIDTH);
         });
     }, [editor]);
-    return ReactDOM.createPortal(jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: jsxRuntimeExports.jsxs(Container$a, Object.assign({ id: "bubble-toolbar", style: {
+    return ReactDOM.createPortal(jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: jsxRuntimeExports.jsxs(Container$a, Object.assign({ id: "bubble-toolbar", className: 'shibuya-toolbar', style: {
                 top: (_b = position === null || position === void 0 ? void 0 : position.top) !== null && _b !== void 0 ? _b : 0,
                 left: (_c = position === null || position === void 0 ? void 0 : position.left) !== null && _c !== void 0 ? _c : 0,
             }, isDisplay: isDisplay, ref: containerRef, onMouseDown: handleMouseDown }, props, { children: [jsxRuntimeExports.jsxs(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$2, Object.assign({ href: "#", onClick: handleBold, active: !!(formats === null || formats === void 0 ? void 0 : formats.bold) }, { children: jsxRuntimeExports.jsx(FormatBold, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: ["\u592A\u5B57", jsxRuntimeExports.jsx("br", {}), jsxRuntimeExports.jsx("div", Object.assign({ className: "description" }, { children: "Ctrl + B" }))] })), jsxRuntimeExports.jsxs(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$2, Object.assign({ href: "#", onClick: handleItalic, active: !!(formats === null || formats === void 0 ? void 0 : formats.italic) }, { children: jsxRuntimeExports.jsx(FormatItalic, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: ["\u659C\u4F53", jsxRuntimeExports.jsx("br", {}), jsxRuntimeExports.jsx("div", Object.assign({ className: "description" }, { children: "Ctrl + I" }))] })), jsxRuntimeExports.jsxs(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$2, Object.assign({ href: "#", onClick: handleUnderline, active: !!(formats === null || formats === void 0 ? void 0 : formats.underline) }, { children: jsxRuntimeExports.jsx(FormatUnderLine, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: ["\u4E0B\u7DDA", jsxRuntimeExports.jsx("br", {}), jsxRuntimeExports.jsx("div", Object.assign({ className: "description" }, { children: "Ctrl + U" }))] })), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$2, Object.assign({ href: "#", onClick: handleStrike, active: !!(formats === null || formats === void 0 ? void 0 : formats.strike) }, { children: jsxRuntimeExports.jsx(FormatStrike, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u6253\u6D88\u3057\u7DDA" })), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$2, Object.assign({ id: "toolbar-palette", href: "#", onClick: handleColor, active: !!(formats === null || formats === void 0 ? void 0 : formats.color) }, { children: jsxRuntimeExports.jsx(FormatColor, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u6587\u5B57\u8272\u3092\u5909\u66F4" })), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$2, Object.assign({ id: "toolbar-link", href: "#", onClick: handleLink, active: !!(formats === null || formats === void 0 ? void 0 : formats.link) }, { children: jsxRuntimeExports.jsx(FormatLink, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u30EA\u30F3\u30AF\u3092\u8FFD\u52A0" })), jsxRuntimeExports.jsx(Tooltip, Object.assign({ targetElement: jsxRuntimeExports.jsx(Button$2, Object.assign({ href: "#", onClick: handleInlineCode, active: !!(formats === null || formats === void 0 ? void 0 : formats.code) }, { children: jsxRuntimeExports.jsx(FormatCode, { size: "20" }) })), maxWidth: 200, position: 'top' }, { children: "\u30A4\u30F3\u30E9\u30A4\u30F3\u30B3\u30FC\u30C9" }))] })) }), (_d = getHtmlElement(scrollContainer)) !== null && _d !== void 0 ? _d : document.body);
@@ -24508,7 +24515,6 @@ class EditorModule {
         this.editor.updateBlock(firstBlock);
         this.editor.numberingList();
         this.editor.getModule('history').optimizeOp();
-        this.editor.render([blocks[currentIndex].id]);
         setTimeout(() => {
             this.editor.setCaretPosition({
                 blockId: firstBlock.id,
@@ -24517,6 +24523,7 @@ class EditorModule {
             this.editor.updateCaretRect();
             this.editor.next();
         }, 10);
+        this.editor.render([firstBlock.id]);
     }
     scrollToBlock(blockId, position = 'center') {
         const el = getBlockElementById(blockId);
@@ -26196,6 +26203,10 @@ class SelectorModule {
                 return;
             }
         }
+        // ツールバー関係は無視する
+        const ancestorWithClass = e.target && e.target.closest('.shibuya-toolbar');
+        if (ancestorWithClass)
+            return;
         const [blockId] = getBlockId(e.target);
         if (blockId)
             return;

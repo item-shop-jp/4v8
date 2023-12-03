@@ -257,6 +257,7 @@ export const BubbleToolbar = React.memo(
       <>
         <Container
           id="bubble-toolbar"
+          className={'shibuya-toolbar'}
           style={{
             top: position?.top ?? 0,
             left: position?.left ?? 0,

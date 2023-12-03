@@ -21,8 +21,7 @@ const Header = styled.h2`
   box-sizing: border-box;
   padding: 1.5rem 0 0 calc(1.5rem * var(--indent));
   margin: 4rem 0 2rem;
-  border-top: 1px solid rgba(60, 60, 60, .12);
-  
+  border-bottom: 1px solid rgba(60, 60, 60, 0.12);
 
   ::after {
     opacity: 0.3;

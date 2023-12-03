@@ -258,6 +258,7 @@ export class SelectorModule implements Module {
       this.setStart(this.startBlockId);
       return;
     }
+
     this.reset();
     const [blockId] = getBlockId(e.target as HTMLElement);
     if (!blockId) return;
@@ -286,6 +287,9 @@ export class SelectorModule implements Module {
         return;
       }
     }
+    // ツールバー関係は無視する
+    const ancestorWithClass = e.target && (e.target as HTMLElement).closest('.shibuya-toolbar');
+    if (ancestorWithClass) return;
 
     const [blockId] = getBlockId(e.target as HTMLElement);
     if (blockId) return;

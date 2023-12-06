@@ -11690,12 +11690,19 @@ const GlobalToolbar = React__namespace.memo((_a) => {
             return;
         editor.getModule('toolbar').setUpdating(true);
         if (selectedBlocks.length > 0) {
-            const updateIds = selectedBlocks.map((v) => {
+            let isFormatted = true;
+            const blockIds = selectedBlocks.map((v) => {
+                if (isFormatted) {
+                    const targetBlock = editor.getBlock(v.id);
+                    if (targetBlock && targetBlock.type !== type) {
+                        isFormatted = false;
+                    }
+                }
                 return v.id;
             });
             editor
                 .getModule('toolbar')
-                .formatMultiBlocks(updateIds, blockType !== type ? type : 'PARAGRAPH', attributes, childBlocks);
+                .formatMultiBlocks(blockIds, !isFormatted ? type : 'PARAGRAPH', attributes, childBlocks);
             editor.getModule('selector').selectBlocks([]);
             setTimeout(() => {
                 editor.getModule('selector').selectBlocks([...selectedBlocks]);
@@ -11798,8 +11805,18 @@ const GlobalToolbar = React__namespace.memo((_a) => {
                 return;
             const caret = editor.getCaretPosition();
             const selectedBlocks = editor.getModule('selector').getSelectedBlocks();
-            if (selectedBlocks.length < 1 && (!caret || !editor.hasFocus())) {
+            if (selectedBlocks.length > 0) {
+                const firstType = selectedBlocks[0].type;
+                const isFormatted = selectedBlocks.every((item) => {
+                    return item.type === firstType;
+                });
+                setDisplay(true);
+                setBlockType(isFormatted ? firstType : undefined);
+                return;
+            }
+            if (!caret || !editor.hasFocus()) {
                 setDisplay(false);
+                setBlockType(undefined);
                 return;
             }
             setDisplay(true);
@@ -11808,7 +11825,6 @@ const GlobalToolbar = React__namespace.memo((_a) => {
             const targetBlock = editor.getBlock(caret.blockId);
             if (!targetBlock)
                 return;
-            // setFormats(editor.getFormats(caret.blockId, caret.index, caret.length));
             setBlockType(targetBlock.type);
         }));
         return () => {

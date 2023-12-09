@@ -288,7 +288,8 @@ export class SelectorModule implements Module {
       }
     }
     // ツールバー関係は無視する
-    const ancestorWithClass = e.target && (e.target as HTMLElement).closest('.shibuya-toolbar');
+    const ancestorWithClass =
+      e.target && (e.target as HTMLElement).closest('.shibuya-unselectable');
     if (ancestorWithClass) return;
 
     const [blockId] = getBlockId(e.target as HTMLElement);

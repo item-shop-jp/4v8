@@ -266,7 +266,7 @@ export const GlobalToolbar = React.memo(({ editor, ...props }: GlobalToolbarProp
   return ReactDOM.createPortal(
     <>
       {isDisplay && (
-        <Container {...props} className={'shibuya-toolbar'}>
+        <Container {...props} className={'shibuya-unselectable'}>
           <Tooltip
             targetElement={
               <Button href="#" onClick={handleHeader1} active={blockType === 'HEADER1'}>

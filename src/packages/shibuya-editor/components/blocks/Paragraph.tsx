@@ -15,10 +15,10 @@ const P = styled.p`
   width: 100%;
   font-size: 1rem;
   outline: 0;
+  margin: 0;
+  padding: 4px 12px;
   box-sizing: border-box;
-  padding: 0 12px 0 calc(1.5rem * var(--indent));
-  line-height: 1.7;
-  margin-bottom: 1.2rem;
+  padding-left: calc(12px + 1.5em * var(--indent));
 `;
 
 export const Paragraph = React.memo(

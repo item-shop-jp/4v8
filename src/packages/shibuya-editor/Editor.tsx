@@ -164,12 +164,17 @@ export const Editor = React.memo(
       const [showPlaceholder, setShowPlaceholder] = React.useState(false);
       const handleChangeElement = React.useCallback(() => {
         if (!containerRef.current) return;
-        const innerText = (containerRef.current as HTMLElement).innerText.replaceAll(
-          /\uFEFF/gi,
-          '',
-        );
-        setShowPlaceholder(innerText.length < 1);
-      }, []);
+        const changedBlocks = editor.getBlocks();
+        if (
+          changedBlocks.length <= 1 &&
+          changedBlocks[0].type === 'PARAGRAPH' &&
+          (getBlockLength(changedBlocks[0].id) ?? 0) < 1
+        ) {
+          setShowPlaceholder(true);
+        } else {
+          setShowPlaceholder(false);
+        }
+      }, [editor]);
       useMutationObserver(containerRef, handleChangeElement);
 
       const handleKeyDown = React.useCallback(
@@ -335,22 +340,7 @@ export const Editor = React.memo(
             }
           }),
         );
-        subs.add(
-          eventEmitter.select(EditorEvents.EVENT_EDITOR_HISTORY_PUSH).subscribe(() => {
-            setTimeout(() => {
-              const changedBlocks = editor.getBlocks();
-              if (
-                changedBlocks.length <= 1 &&
-                changedBlocks[0].type === 'PARAGRAPH' &&
-                (getBlockLength(changedBlocks[0].id) ?? 0) < 1
-              ) {
-                setShowPlaceholder(true);
-              } else {
-                setShowPlaceholder(false);
-              }
-            }, 10);
-          }),
-        );
+        subs.add(eventEmitter.select(EditorEvents.EVENT_EDITOR_HISTORY_PUSH).subscribe(() => {}));
         subs.add(
           eventEmitter.select(EditorEvents.EVENT_BLOCK_SELECTED).subscribe((blockIds: string[]) => {
             setSelectedIds(blockIds);

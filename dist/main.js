@@ -9853,10 +9853,10 @@ const P$1 = styled$1.p `
   width: 100%;
   font-size: 1rem;
   outline: 0;
+  margin: 0;
+  padding: 4px 12px;
   box-sizing: border-box;
-  padding: 0 12px 0 calc(1.5rem * var(--indent));
-  line-height: 1.7;
-  margin-bottom: 1.2rem;
+  padding-left: calc(12px + 1.5em * var(--indent));
 `;
 const Paragraph = React__namespace.memo((_a) => {
     var { blockId, formats, editor, contents } = _a, props = __rest$1(_a, ["blockId", "formats", "editor", "contents"]);
@@ -29257,11 +29257,19 @@ const Editor = React__namespace.memo(React__namespace.forwardRef((_a, forwardRef
     const [selectedIds, setSelectedIds] = React__namespace.useState([]);
     const [showPlaceholder, setShowPlaceholder] = React__namespace.useState(false);
     const handleChangeElement = React__namespace.useCallback(() => {
+        var _a;
         if (!containerRef.current)
             return;
-        const innerText = containerRef.current.innerText.replaceAll(/\uFEFF/gi, '');
-        setShowPlaceholder(innerText.length < 1);
-    }, []);
+        const changedBlocks = editor.getBlocks();
+        if (changedBlocks.length <= 1 &&
+            changedBlocks[0].type === 'PARAGRAPH' &&
+            ((_a = getBlockLength(changedBlocks[0].id)) !== null && _a !== void 0 ? _a : 0) < 1) {
+            setShowPlaceholder(true);
+        }
+        else {
+            setShowPlaceholder(false);
+        }
+    }, [editor]);
     useMutationObserver(containerRef, handleChangeElement);
     const handleKeyDown = React__namespace.useCallback((event) => {
         const keyboard = editor.getModule('keyboard');
@@ -29375,20 +29383,7 @@ const Editor = React__namespace.memo(React__namespace.forwardRef((_a, forwardRef
                 editor.getModule('selector').changeAreaMoveDelay(50);
             }
         }));
-        subs.add(eventEmitter.select(EditorEvents.EVENT_EDITOR_HISTORY_PUSH).subscribe(() => {
-            setTimeout(() => {
-                var _a;
-                const changedBlocks = editor.getBlocks();
-                if (changedBlocks.length <= 1 &&
-                    changedBlocks[0].type === 'PARAGRAPH' &&
-                    ((_a = getBlockLength(changedBlocks[0].id)) !== null && _a !== void 0 ? _a : 0) < 1) {
-                    setShowPlaceholder(true);
-                }
-                else {
-                    setShowPlaceholder(false);
-                }
-            }, 10);
-        }));
+        subs.add(eventEmitter.select(EditorEvents.EVENT_EDITOR_HISTORY_PUSH).subscribe(() => { }));
         subs.add(eventEmitter.select(EditorEvents.EVENT_BLOCK_SELECTED).subscribe((blockIds) => {
             setSelectedIds(blockIds);
         }));

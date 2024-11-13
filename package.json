@@ -1,6 +1,6 @@
 {
   "name": "shibuya-editor",
-  "version": "0.5.2",
+  "version": "0.5.5",
   "main": "dist/main.js",
   "author": "@tioken",
   "license": "MIT",

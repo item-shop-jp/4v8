@@ -158,7 +158,7 @@ export function useEditor({
 
       // rangeがブロック外に飛んでいる場合は要素の最後に飛ばす
       const [rangeBlockId] = blockUtils.getBlockId(range.commonAncestorContainer as HTMLElement);
-      if (!rangeBlockId) {
+      if (!rangeBlockId || range.commonAncestorContainer.nodeType !== Node.TEXT_NODE) {
         const nextBlockLength = getBlockLength(blocksRef.current[currentIndex - 1].id) ?? 0;
         setCaretPosition({
           blockId: blocksRef.current[currentIndex - 1].id,

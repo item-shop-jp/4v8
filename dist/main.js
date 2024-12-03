@@ -22689,7 +22689,7 @@ function useEditor({ settings, eventEmitter, }) {
             return false;
         // rangeがブロック外に飛んでいる場合は要素の最後に飛ばす
         const [rangeBlockId] = getBlockId(range.commonAncestorContainer);
-        if (!rangeBlockId) {
+        if (!rangeBlockId || range.commonAncestorContainer.nodeType !== Node.TEXT_NODE) {
             const nextBlockLength = (_f = getBlockLength$1(blocksRef.current[currentIndex - 1].id)) !== null && _f !== void 0 ? _f : 0;
             setCaretPosition({
                 blockId: blocksRef.current[currentIndex - 1].id,
@@ -24523,7 +24523,7 @@ class EditorModule {
         const [first, last] = splitInlineContents(contents, index);
         const firstBlock = Object.assign(Object.assign({}, blocks[currentIndex]), { contents: first.length < 1 ? [createInline('TEXT')] : first });
         let blockType = 'PARAGRAPH';
-        if (['ORDERED-LIST', 'BULLET-LIST'].includes(blocks[currentIndex].type)) {
+        if (['ORDERED-LIST', 'BULLET-LIST', 'TASK'].includes(blocks[currentIndex].type)) {
             blockType = blocks[currentIndex].type;
         }
         const lastBlock = createBlock(blockType, last, blocks[currentIndex].attributes);

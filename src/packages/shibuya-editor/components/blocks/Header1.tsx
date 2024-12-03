@@ -16,12 +16,11 @@ export interface Header1Props {
 }
 const Header = styled.h1`
   outline: 0;
-  margin: 6rem 0 3rem;
+  margin: 0;
   font-size: 2.5rem;
-  line-height: 1.4;
-  letter-spacing: -.02em;
   box-sizing: border-box;
-  padding-left: calc(1.5em * var(--indent));
+  padding: 12px;
+  padding-left: calc(12px + 1.5em * var(--indent));
   ::after {
     opacity: 0.3;
     content: attr(placeholder);

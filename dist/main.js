@@ -9376,12 +9376,11 @@ function useMutationObserver(ref, callback, options = {
 
 const Header$3 = styled$1.h1 `
   outline: 0;
-  margin: 6rem 0 3rem;
+  margin: 0;
   font-size: 2.5rem;
-  line-height: 1.4;
-  letter-spacing: -.02em;
   box-sizing: border-box;
-  padding-left: calc(1.5em * var(--indent));
+  padding: 12px;
+  padding-left: calc(12px + 1.5em * var(--indent));
   ::after {
     opacity: 0.3;
     content: attr(placeholder);
@@ -9405,13 +9404,11 @@ const Header1 = React__namespace.memo((_a) => {
 });
 
 const Header$2 = styled$1.h2 `
-  font-size: 1.5rem;
-  line-height: 2.25rem;
   outline: 0;
   box-sizing: border-box;
-  padding: 1.5rem 0 0 calc(1.5rem * var(--indent));
-  margin: 4rem 0 2rem;
-  border-bottom: 1px solid rgba(60, 60, 60, 0.12);
+  padding: 8px 12px;
+  padding-left: calc(12px + 1.5em * var(--indent));
+  margin: 0;
 
   ::after {
     opacity: 0.3;
@@ -9438,9 +9435,10 @@ const Header2 = React__namespace.memo((_a) => {
 const Header$1 = styled$1.h3 `
   font-size: 1.2rem;
   outline: 0;
-  margin: 3rem 0 1.25rem;
+  margin: 0;
   box-sizing: border-box;
-  padding: 4px 0 4px calc(1.5rem * var(--indent));
+  padding: 4px 12px;
+  padding-left: calc(12px + 1.5em * var(--indent));
 
   ::after {
     opacity: 0.3;
